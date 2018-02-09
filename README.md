@@ -1,8 +1,10 @@
 # capstone2k18
 University of Washington Informatics Capstone 2018
 
+
 ## Resources
 Articles/documentation that together explain our UI rationale. Meant to be read in order. Tutorials are optional.
+
 
 ### Component System
 
@@ -19,8 +21,10 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 #### Rebass
 [Documentation](http://jxnblk.com/rebass/)
 
+
 ### Design System
 [The 8-Point Grid](https://spec.fm/specifics/8-pt-grid)
+
 
 ### Working With Data
 
