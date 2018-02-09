@@ -13,6 +13,7 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 #### Styled Components
 [Documentation](https://www.styled-components.com/docs)
+
 [Rationale (optional)](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
 
 #### Rebass:
