@@ -39,3 +39,5 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 [redux-thunk](https://github.com/gaearon/redux-thunk)
 
+[reselect](https://github.com/reactjs/reselect)
+
