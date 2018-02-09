@@ -16,7 +16,7 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 [Rationale (optional)](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
 
-#### Rebass:
+#### Rebass
 [Documentation](http://jxnblk.com/rebass/)
 
 ### Design System
@@ -26,8 +26,12 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 #### Redux:
 [Documentation](https://redux.js.org/)
+
 [Basic Redux tutorial](https://egghead.io/courses/getting-started-with-redux)
+
 [Advanced Redux tutorial](https://egghead.io/courses/building-react-applications-with-idiomatic-redux)
+
 [react-redux](https://github.com/reactjs/react-redux)
+
 [redux-thunk](https://github.com/gaearon/redux-thunk)
 
