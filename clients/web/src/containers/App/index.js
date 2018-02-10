@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
-import SignUpPage from "../SignUpPage";
+import LoginPage from "../LoginPage";
 import NotFoundPage from "../NotFoundPage";
 
 class App extends Component {
@@ -14,7 +14,7 @@ class App extends Component {
                     defaultTitle="Airlift Northwest App"
                 />
                 <Switch>
-                    <Route exact path="/" component={SignUpPage} />
+                    <Route exact path="/" component={LoginPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
             </div>

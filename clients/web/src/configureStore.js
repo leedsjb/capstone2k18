@@ -6,7 +6,11 @@ import logger from "redux-logger";
 import createReducer from "./reducers";
 
 export default function configureStore(initialState = {}, history) {
-    const middleware = [reduxThunkMiddleware, routerMiddleware(history)];
+    const middleware = [
+        reduxThunkMiddleware,
+        routerMiddleware(history),
+        logger
+    ];
 
     const enhancers = [applyMiddleware(...middleware)];
 
