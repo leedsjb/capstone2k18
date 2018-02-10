@@ -5,17 +5,16 @@ import logger from "redux-logger";
 
 import createReducer from "./reducers";
 
-// TODO: Change to createReducer
-export default (initialState = {}, history) => {
+export default function configureStore(initialState = {}, history) {
     const middleware = [reduxThunkMiddleware, routerMiddleware(history)];
 
     const enhancers = [applyMiddleware(...middleware)];
 
     const store = createStore(
-        createrReducer(),
+        createReducer(),
         initialState,
-        composeEnhancers(...enhancers)
+        compose(...enhancers)
     );
 
     return store;
-};
+}
