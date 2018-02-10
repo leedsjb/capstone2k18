@@ -3,11 +3,11 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { Container, Heading } from "rebass";
 
-import { signIn } from "./actions";
+import StyledMeasure from "../../components/StyledMeasure";
 
 import SignInForm from "../SignInForm";
 
-import StyledMeasure from "../../components/StyledMeasure";
+import { signIn } from "./actions";
 
 class SignInPage extends Component {
     render() {
