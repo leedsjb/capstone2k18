@@ -2,11 +2,11 @@ const initialState = {
     pending: false
 };
 
-const loginReducer = (state = initialState, action) => {
+const signInReducer = (state = initialState, action) => {
     switch (action.type) {
         default:
             return state;
     }
 };
 
-export default loginReducer;
+export default signInReducer;

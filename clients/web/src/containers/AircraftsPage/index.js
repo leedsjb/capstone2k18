@@ -4,20 +4,20 @@ import { Container, Heading, Text } from "rebass";
 
 import StyledMeasure from "../../components/StyledMeasure";
 
-class NotFoundPage extends Component {
+class AircraftsPage extends Component {
     render() {
         return (
             <div>
                 <Helmet>
-                    <title>Page not found</title>
+                    <title>Aircrafts</title>
                 </Helmet>
                 <Container>
                     <StyledMeasure>
-                        <Heading>Page not found</Heading>
+                        <Heading is="h1">Aircrafts</Heading>
                         <Text>
-                            Sed elementum vestibulum eros, vel molestie erat
-                            egestas sit amet. Donec cursus aliquam vulputate.
-                            Aenean sit amet metus vitae magna dictum aliquet.
+                            Aliquam dignissim, est nec luctus dapibus, velit mi
+                            tristique nulla, eget hendrerit velit tortor vitae
+                            risus. Nulla mollis ex ut lorem finibus ultricies.
                         </Text>
                     </StyledMeasure>
                 </Container>
@@ -26,4 +26,4 @@ class NotFoundPage extends Component {
     }
 }
 
-export default NotFoundPage;
+export default AircraftsPage;

@@ -6,7 +6,7 @@ import renderField from "../../utils/renderField";
 import validate from "./validate";
 import warn from "./warn";
 
-const LoginForm = props => {
+const SignInForm = props => {
     const { handleSubmit, pristine, reset, submitting } = props;
 
     return (
@@ -31,7 +31,7 @@ const LoginForm = props => {
 };
 
 export default reduxForm({
-    form: "loginForm",
+    form: "signInForm",
     validate,
     warn
-})(LoginForm);
+})(SignInForm);

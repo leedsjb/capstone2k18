@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
-import LoginPage from "../LoginPage";
+import SignInPage from "../SignInPage";
+import AircraftsPage from "../AircraftsPage";
 import NotFoundPage from "../NotFoundPage";
 
 class App extends Component {
@@ -10,11 +11,12 @@ class App extends Component {
         return (
             <div>
                 <Helmet
-                    titleTemplate="%s - Airlift Northwest App"
-                    defaultTitle="Airlift Northwest App"
+                    titleTemplate="%s - Airlift Northwest"
+                    defaultTitle="Airlift Northwest"
                 />
                 <Switch>
-                    <Route exact path="/" component={LoginPage} />
+                    <Route exact path="/" component={SignInPage} />
+                    <Route path="/aircrafts" component={AircraftsPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
             </div>
