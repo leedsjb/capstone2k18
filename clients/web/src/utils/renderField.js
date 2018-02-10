@@ -1,9 +1,21 @@
 import React from "react";
+import { Label, Input } from "rebass";
 
-export default function renderField() {
+export default function renderField({
+    input,
+    label,
+    type,
+    meta: { touched, error, warning }
+}) {
     return (
         <div>
-            <p>This is a test.</p>
+            <Label>{label}</Label>
+            <div>
+                <Input {...input} placeholder={label} type={type} />
+                {touched &&
+                    ((error && <span>{error}</span>) ||
+                        (warning && <span>{warning}</span>))}
+            </div>
         </div>
     );
 }
