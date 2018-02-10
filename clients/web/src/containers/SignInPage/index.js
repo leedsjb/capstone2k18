@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
+import { connect } from "react-redux";
 import { Container, Heading } from "rebass";
+
+import { signIn } from "./actions";
 
 import SignInForm from "../SignInForm";
 
@@ -8,6 +11,8 @@ import StyledMeasure from "../../components/StyledMeasure";
 
 class SignInPage extends Component {
     render() {
+        const { signIn } = this.props;
+
         return (
             <div>
                 <Helmet>
@@ -16,11 +21,7 @@ class SignInPage extends Component {
                 <Container>
                     <StyledMeasure mx="auto">
                         <Heading is="h1">Sign in</Heading>
-                        <SignInForm
-                            handleSubmit={values => {
-                                console.log(values);
-                            }}
-                        />
+                        <SignInForm onSubmit={signIn} />
                     </StyledMeasure>
                 </Container>
             </div>
@@ -28,4 +29,8 @@ class SignInPage extends Component {
     }
 }
 
-export default SignInPage;
+const mapDispatchToProps = {
+    signIn
+};
+
+export default connect(null, mapDispatchToProps)(SignInPage);

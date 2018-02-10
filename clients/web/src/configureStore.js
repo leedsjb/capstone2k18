@@ -8,8 +8,8 @@ import createReducer from "./reducers";
 export default function configureStore(initialState = {}, history) {
     const middleware = [
         reduxThunkMiddleware,
-        routerMiddleware(history),
-        logger
+        routerMiddleware(history)
+        // logger
     ];
 
     const enhancers = [applyMiddleware(...middleware)];

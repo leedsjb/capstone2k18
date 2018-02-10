@@ -7,10 +7,10 @@ import validate from "./validate";
 import warn from "./warn";
 
 const SignInForm = props => {
-    const { handleSubmit, pristine, reset, submitting } = props;
+    const { handleSubmit, onSubmit, submitting } = props;
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <Field
                 name="email"
                 type="email"
