@@ -2,12 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Provider as RebassProvider } from "rebass";
-
-import store from "./configureStore";
-import "sanitize.css/sanitize.css";
+import createHistory from "history/createBrowserHistory";
 
 import registerServiceWorker from "./registerServiceWorker";
+import store from "./configureStore";
+import "sanitize.css/sanitize.css";
 import "./global-styles";
+
+const history = createHistory();
 
 import App from "./containers/App";
 

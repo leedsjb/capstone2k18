@@ -1,9 +1,21 @@
-import { createStore, applyMiddleware } from "redux";
-import ReduxThunk from "redux-thunk";
+import { createStore, applyMiddleware, compose } from "redux";
+import reduxThunkMiddleware from "redux-thunk";
+import { routerMiddleware } from "react-router-redux";
 import logger from "redux-logger";
 
-import reducers from "./reducers";
+import createReducer from "./reducers";
 
-const store = createStore(reducers, applyMiddleware(ReduxThunk, logger));
+// TODO: Change to createReducer
+export default (initialState = {}, history) => {
+    const middleware = [reduxThunkMiddleware, routerMiddleware(history)];
 
-export default store;
+    const enhancers = [applyMiddleware(...middleware)];
+
+    const store = createStore(
+        createrReducer(),
+        initialState,
+        composeEnhancers(...enhancers)
+    );
+
+    return store;
+};

@@ -1,9 +1,12 @@
-import { combineReducers } from "react-redux";
+import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
 
-import { signUpReducer } from "./containers/SignUpPage/reducer";
+import signUpReducer from "./containers/SignUpPage/reducer";
 
-const reducers = combineReducers({
-    signUp: signUpReducer
-});
-
-export default reducers;
+export default function createReducer(injectedReducers) {
+    return combineReducers({
+        router: routerReducer,
+        signUp: signUpReducer,
+        ...injectedReducers
+    });
+}
