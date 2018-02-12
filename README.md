@@ -1,6 +1,9 @@
 # capstone2k18
 University of Washington Informatics Capstone 2018
 
+## Development Flow
+Feature work should be done on branches named for the feature that is being developed. Once completed, create a pull request to merge
+your feature into the development branch for internal testing. To deploy to production the development branch will be merged to master. 
 
 ## Resources
 Articles/documentation that together explain our UI rationale. Meant to be read in order. Tutorials are optional.
