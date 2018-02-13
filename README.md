@@ -43,3 +43,7 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 [reselect](https://github.com/reactjs/reselect)
 
+### Advanced React
+
+[High Order Components](https://reactjs.org/docs/higher-order-components.html)
+[Render Props](https://reactjs.org/docs/render-props.html)
