@@ -5,6 +5,13 @@ University of Washington Informatics Capstone 2018
 Feature work should be done on branches named for the feature that is being developed. Once completed, create a pull request to merge
 your feature into the development branch for internal testing. To deploy to production the development branch will be merged to master. 
 
+To work with Google Cloud Platform (GCP) you may wish to install the Google Cloud SDK. The SDK allows you to interact with GCP from your
+command line. To install for macOS visit Google's [Quickstart Article](https://cloud.google.com/sdk/docs/quickstart-macos) to download the SDK.
+Once the initial install is complete be sure to:
+    1.  Run `gcloud init` to sign in to your Google account and choose a project to work with.
+    2.  Install the kubectl component to interact with Kubernetes. The component can be installed by running `gcloud components install kubectl` 
+        from your home directory. 
+
 ## Resources
 Articles/documentation that together explain our UI rationale. Meant to be read in order. Tutorials are optional.
 
