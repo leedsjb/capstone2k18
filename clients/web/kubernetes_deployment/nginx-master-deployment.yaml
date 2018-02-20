@@ -1,0 +1,36 @@
+# .yaml is a superset markup language of JSON
+# still structured around key value (key: value) pairs
+
+# helpful commands: 
+#   kubectl rollout status deployment/alnw-webclient-nginx-deployment # show deployment status
+#   kubectl get deployments # show current deployments
+#   kubectl describe service # find ingress IP
+
+# YAML Reference:
+# https://www.mirantis.com/blog/introduction-to-yaml-creating-a-kubernetes-deployment/
+
+# Kubernetes API reference:
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#deployment-v1-apps
+
+# Kubernetes NGINX Deployment Reference:
+#   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+apiVersion: apps/v1beta1 # Kubernetes API Version, Deployments is beta in GCP Kubernetes Engine
+kind: Deployment # Recommended over Replication Controller and Pod
+metadata: #key
+  name: alnw-webclient-nginx-deployment #unique key of the deployment instance
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx # "-" signifies a list item
+        image: launcher.gcr.io/google/nginx1
