@@ -1,6 +1,5 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
-import { Button } from "rebass";
 
 import renderField from "../../utils/renderField";
 import validate from "./validate";
@@ -23,9 +22,9 @@ const SignInForm = props => {
                 component={renderField}
                 label="Password"
             />
-            <Button type="submit" disabled={submitting}>
+            <button type="submit" disabled={submitting}>
                 Submit
-            </Button>
+            </button>
         </form>
     );
 };
