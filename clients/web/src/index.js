@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "styled-components";
 import { Provider as RebassProvider } from "rebass";
 import createHistory from "history/createBrowserHistory";
 import { ConnectedRouter } from "react-router-redux";
@@ -18,11 +19,11 @@ const store = configureStore(initialState, history);
 
 ReactDOM.render(
     <Provider store={store}>
-        <RebassProvider>
+        <ThemeProvider>
             <ConnectedRouter history={history}>
                 <App />
             </ConnectedRouter>
-        </RebassProvider>
+        </ThemeProvider>
     </Provider>,
     document.getElementById("root")
 );
