@@ -1,39 +1,40 @@
 # capstone2k18
+
 University of Washington Informatics Capstone 2018
 
-
 ## Resources
-Articles/documentation that together explain our UI rationale. Meant to be read in order. Tutorials are optional.
 
+Articles/documentation that together explain our UI rationale and workflow. Meant to be read in order. Tutorials are optional.
 
-### Component System
+### Basic React
 
-#### Folder Structure
+[react-router](https://github.com/ReactTraining/react-router)
+
+### Components
+
 [Components vs. containers](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
 
 [Scaling React applications (only read the folder part)](https://www.smashingmagazine.com/2016/09/how-to-scale-react-applications/)
 
-#### Styled Components
-[Documentation](https://www.styled-components.com/docs)
+[styled-components](https://www.styled-components.com/docs)
 
-[Rationale (optional)](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
+[styled-components rationale](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
 
-#### Rebass
-[Documentation](http://jxnblk.com/rebass/)
+[styled-system](https://github.com/jxnblk/styled-system)
 
+[grid-styled](http://jxnblk.com/grid-styled/)
 
-### Design System
 [The 8-Point Grid](https://spec.fm/specifics/8-pt-grid)
 
+### Redux:
 
-### Working With Data
-
-#### Redux:
-[Documentation](https://redux.js.org/)
+[redux](https://redux.js.org/)
 
 [Basic Redux tutorial](https://egghead.io/courses/getting-started-with-redux)
 
 [Advanced Redux tutorial](https://egghead.io/courses/building-react-applications-with-idiomatic-redux)
+
+[react-router-redux](https://github.com/reactjs/react-router-redux)
 
 [react-redux](https://github.com/reactjs/react-redux)
 
