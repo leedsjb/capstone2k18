@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
-import { Provider as RebassProvider } from "rebass";
 import createHistory from "history/createBrowserHistory";
 import { ConnectedRouter } from "react-router-redux";
+import theme from "./theme";
 import "sanitize.css/sanitize.css";
 
 import App from "./containers/App";
@@ -19,7 +19,7 @@ const store = configureStore(initialState, history);
 
 ReactDOM.render(
     <Provider store={store}>
-        <ThemeProvider>
+        <ThemeProvider theme={theme}>
             <ConnectedRouter history={history}>
                 <App />
             </ConnectedRouter>

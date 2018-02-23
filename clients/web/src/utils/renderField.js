@@ -1,5 +1,4 @@
 import React from "react";
-import { Label, Input } from "rebass";
 
 export default function renderField({
     input,
@@ -9,9 +8,9 @@ export default function renderField({
 }) {
     return (
         <div>
-            <Label>{label}</Label>
+            <label>{label}</label>
             <div>
-                <Input {...input} placeholder={label} type={type} />
+                <input {...input} placeholder={label} type={type} />
                 {touched &&
                     ((error && <span>{error}</span>) ||
                         (warning && <span>{warning}</span>))}

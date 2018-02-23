@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
-import { Container, Heading } from "rebass";
 
 import StyledMeasure from "../../components/StyledMeasure";
 
@@ -18,12 +17,8 @@ class SignInPage extends Component {
                 <Helmet>
                     <title>Sign in</title>
                 </Helmet>
-                <Container>
-                    <StyledMeasure mx="auto">
-                        <Heading is="h1">Sign in</Heading>
-                        <SignInForm onSubmit={signIn} />
-                    </StyledMeasure>
-                </Container>
+
+                <SignInForm onSubmit={signIn} />
             </div>
         );
     }
