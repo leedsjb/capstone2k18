@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { themeGet } from "styled-system";
-import Button from "./Button";
+import Button from "../Button";
 
 export const ButtonOutline = styled(Button)([], props => ({
     boxShadow: `inset 0 0 0 2px`,
