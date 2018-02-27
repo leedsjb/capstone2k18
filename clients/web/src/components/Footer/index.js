@@ -1,12 +1,7 @@
 import React from "react";
-import { Flex, Text } from "rebass";
 
 const Footer = props => {
-    return (
-        <Flex>
-            <Text>Footer</Text>
-        </Flex>
-    );
+    return <div>Footer</div>;
 };
 
 export default Footer;

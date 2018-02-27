@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 
-class NotFoundPage extends Component {
+class MissionsPage extends Component {
     render() {
         return (
             <div>
                 <Helmet>
-                    <title>Page not found</title>
+                    <title>Missions</title>
                 </Helmet>
-                <div>Page not found</div>
+                <div>Missions Page</div>
             </div>
         );
     }
 }
 
-export default NotFoundPage;
+export default MissionsPage;

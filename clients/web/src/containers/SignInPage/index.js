@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
-import { Container, Heading } from "rebass";
-
-import StyledMeasure from "../../components/StyledMeasure";
 
 import SignInForm from "../SignInForm";
 
-import { signIn } from "./actions";
+import { signIn } from "../../actions/auth/actions";
 
 class SignInPage extends Component {
     render() {
@@ -18,12 +15,8 @@ class SignInPage extends Component {
                 <Helmet>
                     <title>Sign in</title>
                 </Helmet>
-                <Container>
-                    <StyledMeasure mx="auto">
-                        <Heading is="h1">Sign in</Heading>
-                        <SignInForm onSubmit={signIn} />
-                    </StyledMeasure>
-                </Container>
+
+                <SignInForm onSubmit={signIn} />
             </div>
         );
     }

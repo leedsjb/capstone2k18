@@ -4,9 +4,11 @@ import { Switch, Route } from "react-router";
 
 import Footer from "../../components/Footer";
 
-import Header from "../Header";
+import Navigation from "../Navigation";
 import SignInPage from "../SignInPage";
-import AircraftsPage from "../AircraftsPage";
+import AircraftPage from "../AircraftPage";
+import MissionsPage from "../MissionsPage";
+import PersonnelPage from "../PersonnelPage";
 import NotFoundPage from "../NotFoundPage";
 
 class App extends Component {
@@ -17,10 +19,12 @@ class App extends Component {
                     titleTemplate="%s - Airlift Northwest"
                     defaultTitle="Airlift Northwest"
                 />
-                <Header />
+                <Navigation />
                 <Switch>
-                    <Route exact path="/" component={SignInPage} />
-                    <Route path="/aircrafts" component={AircraftsPage} />
+                    <Route exact path="/" component={AircraftPage} />
+                    <Route path="/missions" component={MissionsPage} />
+                    <Route path="/personnel" component={PersonnelPage} />
+                    <Route path="/signin" component={SignInPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
                 <Footer />
