@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Badge = sys(
+const Badge = sys(
     {
         fontSize: 0,
         px: 2,

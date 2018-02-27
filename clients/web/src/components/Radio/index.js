@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Radio = sys(
+const Radio = sys(
     {
         is: "input",
         type: "radio",

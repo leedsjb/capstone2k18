@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Divider = sys(
+const Divider = sys(
     {
         is: "hr",
         mx: 0,

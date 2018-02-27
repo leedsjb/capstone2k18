@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Avatar = sys(
+const Avatar = sys(
     {
         is: "img",
         size: 48,

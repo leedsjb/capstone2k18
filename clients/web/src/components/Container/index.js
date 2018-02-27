@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { Box } from "grid-styled";
 
-export const Container = sys(
+const Container = sys(
     {
         is: Box,
         px: 3,

@@ -3,7 +3,7 @@
 import sys from "system-components";
 import Badge from "../Badge";
 
-export const Circle = sys(
+const Circle = sys(
     {
         is: Badge,
         size: 24,

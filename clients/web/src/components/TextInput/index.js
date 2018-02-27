@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { theme } from "styled-system";
 
-export const TextInput = sys(
+const TextInput = sys(
     {
         is: "input",
         type: "text",

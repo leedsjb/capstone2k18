@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Label = sys(
+const Label = sys(
     {
         is: "label",
         fontSize: 1,

@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Position = sys(
+const Relative = sys(
     {
         position: "relative"
     },

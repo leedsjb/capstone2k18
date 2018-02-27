@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { themeGet } from "styled-system";
 
-export const Tooltip = sys(
+const Tooltip = sys(
     {
         color: "white",
         bg: "dark"

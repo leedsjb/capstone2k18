@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Card = sys(
+const Card = sys(
     {
         p: 2,
         bg: "white",

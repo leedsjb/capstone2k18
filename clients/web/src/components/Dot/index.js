@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Dot = sys(
+const Dot = sys(
     {
         is: "button",
         m: 0,
