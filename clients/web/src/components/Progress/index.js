@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { theme } from "styled-system";
 
-export const Progress = sys(
+const Progress = sys(
     {
         is: "progress",
         width: 1,

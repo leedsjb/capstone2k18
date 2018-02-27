@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Checkbox = sys(
+const Checkbox = sys(
     {
         is: "input",
         type: "checkbox",

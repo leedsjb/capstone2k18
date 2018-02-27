@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Border = sys(
+const Border = sys(
     {
         border: 1,
         borderColor: "gray"

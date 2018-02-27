@@ -8,7 +8,7 @@ const arrow = encodeURI(
     `data:image/svg+xml,<svg xmlns='http://www.w3c.org/2000/svg' width='32' height='32' viewbox='0 0 32 32' fill='tomato'> <path d='M0 6 L32 6 L16 28 z' /> </svg>`
 );
 
-export const Select = sys(
+const Select = sys(
     {
         is: "select",
         m: 0,

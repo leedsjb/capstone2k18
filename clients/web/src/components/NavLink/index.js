@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { themeGet } from "styled-system";
 
-export const NavLink = sys(
+const NavLink = sys(
     {
         is: "a",
         color: "inherit",

@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Image = sys(
+const Image = sys(
     {
         is: "img"
     },

@@ -30,7 +30,7 @@ export const drawerOpen = ({ open, position, size }) => {
     };
 };
 
-export const Drawer = styled(Fixed)([], space, color, zIndex, drawerOpen, {
+const Drawer = styled(Fixed)([], space, color, zIndex, drawerOpen, {
     position: "fixed",
     overflowX: "hidden",
     overflowY: "auto",

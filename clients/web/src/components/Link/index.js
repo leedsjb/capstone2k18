@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Link = sys(
+const Link = sys(
     {
         is: "a",
         color: "blue"

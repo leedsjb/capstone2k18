@@ -3,7 +3,7 @@
 import React from "react";
 import sys from "system-components";
 
-export const Heading = sys(
+const Heading = sys(
     {
         is: "h2",
         fontSize: 5,

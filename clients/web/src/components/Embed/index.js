@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Embed = sys(
+const Embed = sys(
     {
         ratio: 9 / 16
     },

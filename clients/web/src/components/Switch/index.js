@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { theme } from "styled-system";
 
-export const Switch = sys(
+const Switch = sys(
     {
         role: "checkbox",
         color: "blue",

@@ -3,7 +3,7 @@
 import sys from "system-components";
 import { themeGet } from "styled-system";
 
-export const Button = sys(
+const Button = sys(
     {
         is: "button",
         fontSize: 1,

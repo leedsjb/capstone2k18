@@ -3,7 +3,7 @@
 import sys from "system-components";
 import Text from "./Text";
 
-export const Measure = sys(
+const Measure = sys(
     {
         is: Text,
         maxWidth: "30em"

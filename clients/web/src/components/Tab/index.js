@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Tab = sys(
+const Tab = sys(
     {
         is: "a",
         fontSize: 1,

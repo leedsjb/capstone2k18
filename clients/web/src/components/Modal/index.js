@@ -4,7 +4,7 @@ import sys from "system-components";
 import { themeGet } from "styled-system";
 import Fixed from "../Fixed";
 
-export const Modal = sys(
+const Modal = sys(
     {
         is: Fixed,
         top: "50%",

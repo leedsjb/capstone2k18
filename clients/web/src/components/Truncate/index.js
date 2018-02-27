@@ -3,7 +3,7 @@
 import sys from "system-components";
 import Text from "./Text";
 
-export const Truncate = sys(
+const Truncate = sys(
     {
         is: Text
     },

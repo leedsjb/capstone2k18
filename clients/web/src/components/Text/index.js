@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Text = sys(
+const Text = sys(
     {
         m: 0
     },

@@ -2,7 +2,7 @@
 
 import sys from "system-components";
 
-export const Position = sys(
+const Sticky = sys(
     {
         position: "sticky"
     },
@@ -17,4 +17,4 @@ export const Position = sys(
 
 Sticky.displayName = "Sticky";
 
-export default Position;
+export default Sticky;
