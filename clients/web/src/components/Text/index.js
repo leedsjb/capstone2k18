@@ -1,20 +1,19 @@
-import styled from "styled-components";
-import {
-    space,
-    color,
-    fontSize,
-    fontWeight,
-    textAlign,
-    lineHeight
-} from "styled-system";
+// Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Text.js
 
-const Text = styled.p`
-    ${space}
-    ${color}
-    ${fontSize}
-    ${fontWeight}
-    ${textAlign}
-    ${lineHeight}
-`;
+import sys from "system-components";
+
+export const Text = sys(
+    {
+        m: 0
+    },
+    "space",
+    "color",
+    "fontSize",
+    "fontWeight",
+    "textAlign",
+    "lineHeight"
+);
+
+Text.displayName = "Text";
 
 export default Text;

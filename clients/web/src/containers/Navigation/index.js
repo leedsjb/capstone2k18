@@ -1,14 +1,22 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Box } from "grid-styled";
+import { Link as RouterLink } from "react-router-dom";
+
+import Link from "../../components/Link";
 
 class Navigation extends Component {
     render() {
         return (
             <Box bg="wireframe" py={3}>
-                <Link to="/">AirliftNW</Link>
-                <Link to="/missions">Missions</Link>
-                <Link to="/personnel">Personnel</Link>
+                <Link is={RouterLink} to="/">
+                    AirliftNW
+                </Link>
+                <Link is={RouterLink} to="/missions">
+                    Missions
+                </Link>
+                <Link is={RouterLink} to="/personnel">
+                    Personnel
+                </Link>
             </Box>
         );
     }

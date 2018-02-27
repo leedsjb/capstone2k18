@@ -18,6 +18,8 @@ Articles/documentation that together explain our UI rationale and workflow. Mean
 
 [styled-system](https://github.com/jxnblk/styled-system)
 
+[system-components](https://github.com/jxnblk/styled-system/tree/master/system-components)
+
 [grid-styled](http://jxnblk.com/grid-styled/)
 
 ### Redux:
