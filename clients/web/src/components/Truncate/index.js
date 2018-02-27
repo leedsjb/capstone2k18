@@ -1,7 +1,7 @@
 // Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Truncate.js
 
 import sys from "system-components";
-import Text from "./Text";
+import Text from "../Text";
 
 const Truncate = sys(
     {

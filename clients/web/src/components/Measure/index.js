@@ -1,7 +1,7 @@
 // Adaptation of https://github.com/jxnblk/rebass/blob/master/src/Measure.js
 
 import sys from "system-components";
-import Text from "./Text";
+import Text from "../Text";
 
 const Measure = sys(
     {
