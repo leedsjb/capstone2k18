@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import SignInForm from "../SignInForm";
 
-import { signIn } from "./actions";
+import { signIn } from "../../actions/auth/actions";
 
 class SignInPage extends Component {
     render() {

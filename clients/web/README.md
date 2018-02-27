@@ -10,8 +10,6 @@ Articles/documentation that together explain our UI rationale and workflow. Mean
 
 [Components vs. containers](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
 
-[Scaling React applications (only read the folder part)](https://www.smashingmagazine.com/2016/09/how-to-scale-react-applications/)
-
 [styled-components](https://www.styled-components.com/docs)
 
 [styled-components rationale](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
