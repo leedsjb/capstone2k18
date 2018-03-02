@@ -6111,7 +6111,13 @@ style-loader@0.19.0:
     stylis-rule-sheet "^0.0.7"
     supports-color "^3.2.3"
 
-"styled-system@>=1.1 || >=2.0", styled-system@>=2.0.1, styled-system@>=2.0.2, styled-system@^2.1.1:
+styled-space@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/styled-space/-/styled-space-1.0.0.tgz#1f3f081a099d746120fbe058171dbaa5bd2a22ab"
+  dependencies:
+    styled-system ">=1.0.0 || >=2.0.0"
+
+"styled-system@>=1.0.0 || >=2.0.0", "styled-system@>=1.1 || >=2.0", styled-system@>=2.0.1, styled-system@>=2.0.2, styled-system@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-2.1.1.tgz#ec7cd9c25f8413662c90a3ff1b6660cf8d744163"
   dependencies:

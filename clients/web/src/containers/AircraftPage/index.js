@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 
+import Toolbar from "../../components/Toolbar";
+import Border from "../../components/Border";
+
 class AircraftPage extends Component {
     render() {
         return (
@@ -8,7 +11,7 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <div>Aircraft Page</div>
+                <Toolbar>Test</Toolbar>
             </div>
         );
     }
