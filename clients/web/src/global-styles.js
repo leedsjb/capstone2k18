@@ -5,4 +5,9 @@ injectGlobal`
     body {
         font-family: sans-serif;
     }
+
+    #root {
+        display: flex;
+        flex-direction: column;
+    }
 `;
