@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
 import Footer from "../../components/Footer";
+import FlexFullHeight from "../../components/FlexFullHeight";
 
 import Navigation from "../Navigation";
 import SignInPage from "../SignInPage";
@@ -14,7 +15,7 @@ import NotFoundPage from "../NotFoundPage";
 class App extends Component {
     render() {
         return (
-            <div>
+            <FlexFullHeight flexDirection="column">
                 <Helmet
                     titleTemplate="%s - Airlift Northwest"
                     defaultTitle="Airlift Northwest"
@@ -28,7 +29,7 @@ class App extends Component {
                     <Route component={NotFoundPage} />
                 </Switch>
                 <Footer />
-            </div>
+            </FlexFullHeight>
         );
     }
 }
