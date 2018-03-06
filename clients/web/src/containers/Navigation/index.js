@@ -4,6 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import Link from "../../components/Link";
 import Heading from "../../components/Heading";
+import Icon from "../../components/Icon";
 
 class Navigation extends Component {
     render() {
@@ -11,6 +12,7 @@ class Navigation extends Component {
             <Box bg="wireframe" px={2} py={3}>
                 <Flex justifyContent="center">
                     <Heading is="h3" children="Test" fontSize={2} />
+                    <Icon glyph="facebook" size={24} />
                 </Flex>
             </Box>
         );
