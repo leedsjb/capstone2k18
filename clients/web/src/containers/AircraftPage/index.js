@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 import Page from "../../components/Page";
 import Toolbar from "../../components/Toolbar";
 import Border from "../../components/Border";
+import SearchBox from "../../components/SearchBox";
 
 class AircraftPage extends Component {
     render() {
@@ -12,8 +13,9 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
+                <SearchBox />
                 <Toolbar>Test</Toolbar>
-                asdas
+                Aircraft page
             </Page>
         );
     }

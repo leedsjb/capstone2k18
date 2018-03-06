@@ -7,8 +7,8 @@ import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 
 import SignInPage from "../SignInPage";
-import AircraftPage from "../AircraftPage";
 import MissionsPage from "../MissionsPage";
+import AircraftPage from "../AircraftPage";
 import PersonnelPage from "../PersonnelPage";
 import NotFoundPage from "../NotFoundPage";
 
@@ -22,8 +22,8 @@ class App extends Component {
                 />
                 <TitleBar />
                 <Switch>
-                    <Route exact path="/" component={AircraftPage} />
-                    <Route path="/missions" component={MissionsPage} />
+                    <Route exact path="/" component={MissionsPage} />
+                    <Route path="/aircraft" component={AircraftPage} />
                     <Route path="/personnel" component={PersonnelPage} />
                     <Route path="/signin" component={SignInPage} />
                     <Route component={NotFoundPage} />
