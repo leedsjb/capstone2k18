@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
-import Footer from "../../components/Footer";
 import FlexFullHeight from "../../components/FlexFullHeight";
+import TitleBar from "../../components/TitleBar";
+import TabBar from "../../components/TabBar";
 
-import Navigation from "../Navigation";
 import SignInPage from "../SignInPage";
 import AircraftPage from "../AircraftPage";
 import MissionsPage from "../MissionsPage";
@@ -20,7 +20,7 @@ class App extends Component {
                     titleTemplate="%s - Airlift Northwest"
                     defaultTitle="Airlift Northwest"
                 />
-                <Navigation />
+                <TitleBar />
                 <Switch>
                     <Route exact path="/" component={AircraftPage} />
                     <Route path="/missions" component={MissionsPage} />
@@ -28,7 +28,7 @@ class App extends Component {
                     <Route path="/signin" component={SignInPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
-                <Footer />
+                <TabBar />
             </FlexFullHeight>
         );
     }

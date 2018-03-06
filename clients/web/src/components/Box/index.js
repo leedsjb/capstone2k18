@@ -5,6 +5,7 @@ const Box = sys(
     {
         is: GSBox
     },
+    "size",
     "borders"
 );
 

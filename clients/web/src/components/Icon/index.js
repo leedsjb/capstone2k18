@@ -13,14 +13,10 @@ class Icon extends Component {
         return (
             <SVGWrapper size={size} className={"icon"} onClick={onClick}>
                 <InlineSVG
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    strokeLinejoin="round"
-                    strokeMiterlimit="1.414"
+                    fill-rule="evenodd"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-labelledby="title"
-                    viewBox="0 0 32 32"
-                    preserveAspectRatio="xMidYMid meet"
+                    viewBox="0 0 24 24"
                     fit="true"
                     id={glyph}
                 >
