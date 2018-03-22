@@ -7,15 +7,26 @@ import RouterProvider from "../../containers/RouterProvider";
 
 const TabBar = () => {
     return (
-        <RouterProvider render={({ push }) => {
-            return (
-                <Flex>
-                    <TabBarItem title="Missions" onClick={() => push("/")} />
-                    <TabBarItem title="Aircraft" onClick={() => push("/aircraft")} />
-                    <TabBarItem title="Personnel" onClick={() => push("/personnel")} />
-                </Flex>
-            );
-        }} />
+        <RouterProvider
+            render={({ push }) => {
+                return (
+                    <Flex>
+                        <TabBarItem
+                            title="Missions"
+                            onClick={() => push("/missions")}
+                        />
+                        <TabBarItem
+                            title="Aircraft"
+                            onClick={() => push("/aircraft")}
+                        />
+                        <TabBarItem
+                            title="Personnel"
+                            onClick={() => push("/personnel")}
+                        />
+                    </Flex>
+                );
+            }}
+        />
     );
 };
 
