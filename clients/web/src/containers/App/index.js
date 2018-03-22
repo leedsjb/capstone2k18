@@ -8,6 +8,7 @@ import TabBar from "../../components/TabBar";
 
 import SignInPage from "../SignInPage";
 import MissionsPage from "../MissionsPage";
+import MissionDetailPage from "../MissionDetailPage";
 import AircraftPage from "../AircraftPage";
 import PersonnelPage from "../PersonnelPage";
 import NotFoundPage from "../NotFoundPage";
@@ -22,10 +23,11 @@ class App extends Component {
                 />
                 <TitleBar />
                 <Switch>
-                    <Route exact path="/" component={MissionsPage} />
+                    <Route exact path="/" component={SignInPage} />
+                    <Route path="/missions/:id" component={MissionDetailPage} />
+                    <Route path="/missions" component={MissionsPage} />
                     <Route path="/aircraft" component={AircraftPage} />
                     <Route path="/personnel" component={PersonnelPage} />
-                    <Route path="/signin" component={SignInPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
                 <TabBar />

@@ -9,6 +9,7 @@ import Page from "../../components/Page";
 import Box from "../../components/Box";
 import Toolbar from "../../components/Toolbar";
 import ButtonDropdown from "../../components/ButtonDropdown";
+import MissionList from "../../components/MissionList";
 
 class MissionsPage extends Component {
     render() {
@@ -23,7 +24,7 @@ class MissionsPage extends Component {
                         <ButtonDropdown ml={1}>Any aircraft</ButtonDropdown>
                     </Flex>
                 </Toolbar>
-                <div>Missions Page</div>
+                <MissionList />
             </Page>
         );
     }
