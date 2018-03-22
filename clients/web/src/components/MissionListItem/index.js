@@ -1,10 +1,18 @@
 import React from "react";
 
+import RouterProvider from "../../containers/RouterProvider";
+
 const MissionListItem = () => {
     return (
-        <div>
-            <div>Mission list item</div>
-        </div>
+        <RouterProvider
+            render={({ push }) => {
+                return (
+                    <div onClick={() => push("/missions/test")}>
+                        Mission List item
+                    </div>
+                );
+            }}
+        />
     );
 };
 
