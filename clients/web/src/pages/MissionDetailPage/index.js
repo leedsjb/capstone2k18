@@ -5,6 +5,9 @@ import FlexFullHeight from "../../components/FlexFullHeight";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
+import Accordion from "../../components/Accordion";
+import AccordionSection from "../../components/AccordionSection";
+import Text from "../../components/Text";
 
 const MissionDetailPage = () => {
     return (
@@ -13,7 +16,16 @@ const MissionDetailPage = () => {
                 <title>Missions</title>
             </Helmet>
             <TitleBar />
-            <ScrollView>MissionDetailPage</ScrollView>
+            <ScrollView>
+                <Accordion>
+                    <AccordionSection title="Test">
+                        <Text>123</Text>
+                    </AccordionSection>
+                    <AccordionSection title="Test">
+                        <Text>123</Text>
+                    </AccordionSection>
+                </Accordion>
+            </ScrollView>
             <TabBar />
         </FlexFullHeight>
     );
