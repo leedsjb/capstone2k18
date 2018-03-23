@@ -3,30 +3,17 @@ import { Flex } from "grid-styled";
 
 import TabBarItem from "../TabBarItem";
 
-import RouterProvider from "../../containers/RouterProvider";
-
 const TabBar = () => {
     return (
-        <RouterProvider
-            render={({ push }) => {
-                return (
-                    <Flex>
-                        <TabBarItem
-                            title="Missions"
-                            onClick={() => push("/missions")}
-                        />
-                        <TabBarItem
-                            title="Aircraft"
-                            onClick={() => push("/aircraft")}
-                        />
-                        <TabBarItem
-                            title="Personnel"
-                            onClick={() => push("/personnel")}
-                        />
-                    </Flex>
-                );
-            }}
-        />
+        <Flex>
+            <TabBarItem title="Missions" glyph="chevronLeft" path="/missions" />
+            <TabBarItem
+                title="Aircraft"
+                glyph="navigationDrawerFilled"
+                path="/aircraft"
+            />
+            <TabBarItem title="Personnel" path="/personnel" />
+        </Flex>
     );
 };
 

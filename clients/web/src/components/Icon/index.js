@@ -13,7 +13,6 @@ class Icon extends Component {
         return (
             <SVGWrapper size={size} className={"icon"} onClick={onClick}>
                 <InlineSVG
-                    fill-rule="evenodd"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-labelledby="title"
                     viewBox="0 0 24 24"

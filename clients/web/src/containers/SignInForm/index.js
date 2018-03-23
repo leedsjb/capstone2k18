@@ -5,6 +5,8 @@ import renderField from "../../utils/renderField";
 import validate from "./validate";
 import warn from "./warn";
 
+import Button from "../../components/Button";
+
 const SignInForm = props => {
     const { handleSubmit, onSubmit, submitting } = props;
 
@@ -22,9 +24,9 @@ const SignInForm = props => {
                 component={renderField}
                 label="Password"
             />
-            <button type="submit" disabled={submitting}>
+            <Button type="submit" disabled={submitting}>
                 Submit
-            </button>
+            </Button>
         </form>
     );
 };

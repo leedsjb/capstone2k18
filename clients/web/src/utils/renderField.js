@@ -1,5 +1,8 @@
 import React from "react";
 
+import Label from "../components/Label";
+import TextInput from "../components/TextInput";
+
 export default function renderField({
     input,
     label,
@@ -8,9 +11,9 @@ export default function renderField({
 }) {
     return (
         <div>
-            <label>{label}</label>
+            <Label>{label}</Label>
             <div>
-                <input {...input} placeholder={label} type={type} />
+                <TextInput {...input} placeholder={label} type={type} />
                 {touched &&
                     ((error && <span>{error}</span>) ||
                         (warning && <span>{warning}</span>))}
