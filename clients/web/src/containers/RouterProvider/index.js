@@ -3,16 +3,17 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
 
 class RouterProvider extends Component {
     render() {
-        return this.props.render({ push: this.props.push });
+        return this.props.render({ router: this.props.router });
     }
 }
 
-const mapDispatchToProps = {
-    push
-}
+const mapStateToProps = ({ router }) => {
+    return {
+        router
+    };
+};
 
-export default connect(null, mapDispatchToProps)(RouterProvider);
+export default connect(mapStateToProps)(RouterProvider);

@@ -5,20 +5,41 @@ import { NavLink } from "react-router-dom";
 import Box from "../Box";
 import Icon from "../Icon";
 
+import RouterProvider from "../../containers/RouterProvider";
+
+import matchPath from "../../utils/matchPath";
+
+// TODO: Consider cleaning up this component and
+// revisiting the technique used to detect
+// the active route
 const TabBarItem = ({ title, glyph, path }) => {
     return (
-        <Box bg="wireframe" flex={1}>
-            <NavLink to={path}>
-                <Flex
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <Icon glyph={glyph} />
-                    {title}
-                </Flex>
-            </NavLink>
-        </Box>
+        <RouterProvider
+            render={({ router: { location } }) => {
+                const { pathname } = location;
+
+                return (
+                    <Box bg="wireframe" flex={1}>
+                        <NavLink to={path}>
+                            <Flex
+                                flexDirection="column"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Icon
+                                    glyph={
+                                        matchPath(pathname, path)
+                                            ? `${glyph}Filled`
+                                            : `${glyph}Line`
+                                    }
+                                />
+                                {title}
+                            </Flex>
+                        </NavLink>
+                    </Box>
+                );
+            }}
+        />
     );
 };
 

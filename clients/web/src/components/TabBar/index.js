@@ -6,13 +6,21 @@ import TabBarItem from "../TabBarItem";
 const TabBar = () => {
     return (
         <Flex>
-            <TabBarItem title="Missions" glyph="chevronLeft" path="/missions" />
+            <TabBarItem
+                title="Missions"
+                path="/missions"
+                glyph="medicalCross"
+            />
             <TabBarItem
                 title="Aircraft"
-                glyph="navigationDrawerFilled"
+                glyph="airplaneFlight"
                 path="/aircraft"
             />
-            <TabBarItem title="Personnel" path="/personnel" />
+            <TabBarItem
+                title="Personnel"
+                glyph="accountGroup"
+                path="/personnel"
+            />
         </Flex>
     );
 };

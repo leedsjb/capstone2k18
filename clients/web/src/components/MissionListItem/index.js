@@ -1,21 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import Box from "../../components/Box";
 
-import RouterProvider from "../../containers/RouterProvider";
-
 const MissionListItem = () => {
-    return (
-        <RouterProvider
-            render={({ push }) => {
-                return (
-                    <Box py={3} onClick={() => push("/missions/test")}>
-                        Mission List item
-                    </Box>
-                );
-            }}
-        />
-    );
+    return <Link to="/missions/test">Mission List item</Link>;
 };
 
 export default MissionListItem;

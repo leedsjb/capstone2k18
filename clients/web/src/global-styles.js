@@ -11,8 +11,5 @@ injectGlobal`
         flex-direction: column;
     }
 
-    .active {
-        background-color: red;
-        color: red;
-    }
+    .active {}
 `;

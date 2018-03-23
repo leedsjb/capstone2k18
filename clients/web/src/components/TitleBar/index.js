@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Flex } from "grid-styled";
 
 import Box from "../Box";
+import Icon from "../Icon";
 import Heading from "../Heading";
 import Fixed from "../Fixed";
 import Drawer from "../Drawer";
@@ -24,7 +25,10 @@ class TitleBar extends Component {
         return (
             <Box bg="wireframe" py={3} px={3}>
                 <Flex justifyContent="space-between" align="center">
-                    <Box size={32} bg="black" onClick={this.toggleDrawer} />
+                    <Icon
+                        glyph="navigationDrawerFilled"
+                        onClick={this.toggleDrawer}
+                    />
                     <Heading is="h3" fontSize={2}>
                         {this.props.title}
                     </Heading>
