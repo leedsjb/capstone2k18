@@ -8,7 +8,6 @@ import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
-import Box from "../../components/Box";
 import Toolbar from "../../components/Toolbar";
 import ButtonDropdown from "../../components/ButtonDropdown";
 import MissionList from "../../components/MissionList";
