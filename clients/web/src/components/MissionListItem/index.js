@@ -1,5 +1,7 @@
 import React from "react";
 
+import Box from "../../components/Box";
+
 import RouterProvider from "../../containers/RouterProvider";
 
 const MissionListItem = () => {
@@ -7,9 +9,9 @@ const MissionListItem = () => {
         <RouterProvider
             render={({ push }) => {
                 return (
-                    <div onClick={() => push("/missions/test")}>
+                    <Box py={3} onClick={() => push("/missions/test")}>
                         Mission List item
-                    </div>
+                    </Box>
                 );
             }}
         />

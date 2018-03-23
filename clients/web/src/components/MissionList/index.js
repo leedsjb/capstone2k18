@@ -7,6 +7,18 @@ const MissionList = () => {
             <MissionListItem />
             <MissionListItem />
             <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
+            <MissionListItem />
         </div>
     );
 };

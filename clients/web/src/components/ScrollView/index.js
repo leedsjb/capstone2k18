@@ -2,8 +2,11 @@
 
 import styled from "styled-components";
 
-const Page = styled.div`
+const ScrollView = styled.div`
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 `;
 
-export default Page;
+export default ScrollView;

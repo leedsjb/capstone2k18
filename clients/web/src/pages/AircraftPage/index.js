@@ -1,22 +1,30 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 
-import Page from "../../components/Page";
+import FlexFullHeight from "../../components/FlexFullHeight";
 import Toolbar from "../../components/Toolbar";
 import Border from "../../components/Border";
 import SearchBox from "../../components/SearchBox";
+import TitleBar from "../../components/TitleBar";
+import TabBar from "../../components/TabBar";
+import ScrollView from "../../components/ScrollView";
 
 class AircraftPage extends Component {
     render() {
         return (
-            <Page>
+            <FlexFullHeight flexDirection="column">
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <SearchBox />
+
+                <TitleBar />
                 <Toolbar>Test</Toolbar>
-                Aircraft page
-            </Page>
+                <ScrollView>
+                    <SearchBox />
+                    Aircraft page
+                </ScrollView>
+                <TabBar />
+            </FlexFullHeight>
         );
     }
 }

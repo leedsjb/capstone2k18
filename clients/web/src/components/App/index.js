@@ -21,7 +21,6 @@ class App extends Component {
                     titleTemplate="%s - Airlift Northwest"
                     defaultTitle="Airlift Northwest"
                 />
-                <TitleBar />
                 <Switch>
                     <Route exact path="/" component={SignInPage} />
                     <Route path="/missions/:id" component={MissionDetailPage} />
@@ -30,7 +29,6 @@ class App extends Component {
                     <Route path="/personnel" component={PersonnelPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
-                <TabBar />
             </FlexFullHeight>
         );
     }
