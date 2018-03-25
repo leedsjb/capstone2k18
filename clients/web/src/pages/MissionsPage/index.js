@@ -64,8 +64,8 @@ class MissionsPage extends Component {
 
                 <TitleBar
                     title="Missions"
-                    glyphRight="map"
-                    onClickRight={this.toggleListView}
+                    icon="map"
+                    iconOnClick={this.toggleListView}
                 />
                 <Toolbar>
                     <Flex justifyContent="center">
