@@ -9,8 +9,6 @@ import Accordion from "../../components/Accordion";
 import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
-import RouterProvider from "../../containers/RouterProvider";
-
 const MissionDetailPage = () => {
     return (
         <FlexFullHeight flexDirection="column">
