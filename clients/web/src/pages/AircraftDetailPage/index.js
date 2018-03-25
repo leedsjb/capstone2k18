@@ -9,25 +9,19 @@ import Accordion from "../../components/Accordion";
 import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
-const MissionDetailPage = () => {
+const AircraftDetailPage = () => {
     return (
         <FlexFullHeight flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
-            <TitleBar back backPath="/missions" />
+            <TitleBar back backPath="/aircraft" />
             <ScrollView>
                 <Accordion>
-                    <AccordionSection title="Radio report">
+                    <AccordionSection title="Crew">
                         <Text>123</Text>
                     </AccordionSection>
-                    <AccordionSection title="Assigned crew">
-                        <Text>123</Text>
-                    </AccordionSection>
-                    <AccordionSection title="Requestor">
-                        <Text>123</Text>
-                    </AccordionSection>
-                    <AccordionSection title="Receiver">
+                    <AccordionSection title="Level of care">
                         <Text>123</Text>
                     </AccordionSection>
                 </Accordion>
@@ -37,4 +31,4 @@ const MissionDetailPage = () => {
     );
 };
 
-export default MissionDetailPage;
+export default AircraftDetailPage;

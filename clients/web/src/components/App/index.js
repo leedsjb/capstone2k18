@@ -8,6 +8,7 @@ import SignInPage from "../../pages/SignInPage";
 import MissionsPage from "../../pages/MissionsPage";
 import MissionDetailPage from "../../pages/MissionDetailPage";
 import AircraftPage from "../../pages/AircraftPage";
+import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import PersonnelPage from "../../pages/PersonnelPage";
 import NotFoundPage from "../../pages/NotFoundPage";
 
@@ -22,6 +23,7 @@ const App = () => {
                 <Route exact path="/" component={SignInPage} />
                 <Route path="/missions/:id" component={MissionDetailPage} />
                 <Route path="/missions" component={MissionsPage} />
+                <Route path="/aircraft/:id" component={AircraftDetailPage} />
                 <Route path="/aircraft" component={AircraftPage} />
                 <Route path="/personnel" component={PersonnelPage} />
                 <Route component={NotFoundPage} />

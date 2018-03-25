@@ -8,11 +8,11 @@ import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
 
-const AircraftPage = () => {
+const GroupDetailPage = () => {
     return (
         <FlexFullHeight flexDirection="column">
             <Helmet>
-                <title>Aircraft</title>
+                <title />
             </Helmet>
 
             <TitleBar title="Aircraft" />
@@ -26,4 +26,4 @@ const AircraftPage = () => {
     );
 };
 
-export default AircraftPage;
+export default GroupDetailPage;
