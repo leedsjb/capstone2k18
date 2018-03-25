@@ -9,13 +9,15 @@ import Accordion from "../../components/Accordion";
 import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
+import RouterProvider from "../../containers/RouterProvider";
+
 const MissionDetailPage = () => {
     return (
         <FlexFullHeight flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
-            <TitleBar />
+            <TitleBar back backPath="/missions" />
             <ScrollView>
                 <Accordion>
                     <AccordionSection title="Test">

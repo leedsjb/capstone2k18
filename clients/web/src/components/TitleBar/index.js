@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Flex } from "grid-styled";
+import { Link } from "react-router-dom";
 
 import Box from "../Box";
 import Icon from "../Icon";
@@ -21,18 +22,42 @@ class TitleBar extends Component {
         });
     };
 
+    renderIconLeft = () => {
+        if (this.props.back) {
+            return (
+                <Link to={this.props.backPath}>
+                    <Icon glyph="chevronLeft" />
+                </Link>
+            );
+        }
+
+        return (
+            <Icon glyph="navigationDrawerFilled" onClick={this.toggleDrawer} />
+        );
+    };
+
+    renderIconRight = () => {
+        if (this.props.icon) {
+            return (
+                <Icon
+                    glyph={this.props.icon}
+                    onClick={this.props.iconOnClick}
+                />
+            );
+        }
+
+        return <Box w={32} />;
+    };
+
     render() {
         return (
             <Box bg="wireframe" py={3} px={3}>
                 <Flex justifyContent="space-between" align="center">
-                    <Icon
-                        glyph="navigationDrawerFilled"
-                        onClick={this.toggleDrawer}
-                    />
+                    {this.renderIconLeft()}
                     <Heading is="h3" fontSize={2}>
                         {this.props.title}
                     </Heading>
-                    <Box size={32} bg="black" />
+                    {this.renderIconRight()}
                 </Flex>
                 {this.state.drawer && (
                     <Fixed

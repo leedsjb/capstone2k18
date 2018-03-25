@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 
 import Heading from "../../components/Heading";
+import Text from "../../components/Text";
 import Container from "../../components/Container";
 
 import SignInForm from "../../containers/SignInForm";
@@ -21,6 +22,7 @@ class SignInPage extends Component {
 
                 <Container>
                     <Heading>AirliftNW Elevate</Heading>
+                    <Text>Sign in with your AMC account</Text>
                     <SignInForm onSubmit={signIn} />
                 </Container>
             </div>

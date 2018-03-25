@@ -62,9 +62,13 @@ class MissionsPage extends Component {
                     <title>Missions</title>
                 </Helmet>
 
-                <TitleBar title="Missions" />
-                <Toolbar onClick={this.toggleListView} bg="red">
-                    <Flex justifyContent="center" onClick={this.toggleListView}>
+                <TitleBar
+                    title="Missions"
+                    glyphRight="map"
+                    onClickRight={this.toggleListView}
+                />
+                <Toolbar>
+                    <Flex justifyContent="center">
                         <ButtonDropdown mr={1}>Ongoing</ButtonDropdown>
                         <ButtonDropdown ml={1}>Any aircraft</ButtonDropdown>
                     </Flex>

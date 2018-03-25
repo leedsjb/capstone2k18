@@ -7,6 +7,9 @@ const Link = sys(
         is: "a",
         color: "blue"
     },
+    {
+        textDecoration: "none"
+    },
     "space"
 );
 
