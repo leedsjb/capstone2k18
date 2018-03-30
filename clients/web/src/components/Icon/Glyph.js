@@ -141,6 +141,22 @@ const Glyph = ({ glyph }) => {
                     </g>
                 </g>
             );
+        case "grid":
+            return (
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                    <g fill="#000000">
+                        <rect x="0" y="0" width="6" height="6" />
+                        <rect x="9" y="0" width="6" height="6" />
+                        <rect x="18" y="0" width="6" height="6" />
+                        <rect x="18" y="9" width="6" height="6" />
+                        <rect x="9" y="9" width="6" height="6" />
+                        <rect x="0" y="9" width="6" height="6" />
+                        <rect x="0" y="18" width="6" height="6" />
+                        <rect x="9" y="18" width="6" height="6" />
+                        <rect x="18" y="18" width="6" height="6" />
+                    </g>
+                </g>
+            );
         default:
             return null;
     }

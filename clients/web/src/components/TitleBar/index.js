@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
+import Media from "react-media";
+import { withTheme } from "styled-components";
 
 import Box from "../Box";
 import Icon from "../Icon";
 import Heading from "../Heading";
 import Fixed from "../Fixed";
+import Circle from "../Circle";
+import Text from "../Text";
 
 class TitleBar extends Component {
     renderIconLeft = () => {
@@ -21,31 +25,41 @@ class TitleBar extends Component {
     };
 
     renderIconRight = () => {
-        if (this.props.icon) {
-            return (
-                <Icon
-                    glyph={this.props.icon}
-                    onClick={this.props.iconOnClick}
-                />
-            );
-        }
-
-        return <Box w={32} />;
+        return (
+            <Flex>
+                <Icon glyph="grid" />
+                <Circle size={32} p={0}>
+                    <Flex
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text>V</Text>
+                    </Flex>
+                </Circle>
+            </Flex>
+        );
     };
 
     render() {
         return (
-            <Box bg="wireframe" py={3} px={3}>
-                <Flex justifyContent="space-between" align="center">
-                    {this.renderIconLeft()}
-                    <Heading is="h3" fontSize={2}>
-                        {this.props.title}
-                    </Heading>
-                    {this.renderIconRight()}
-                </Flex>
-            </Box>
+            <Media query={`(min-width: ${this.props.theme.breakpoints[1]})`}>
+                {matches =>
+                    matches ? null : (
+                        <Box bg="wireframe" py={3} px={3}>
+                            <Flex justifyContent="space-between" align="center">
+                                {this.renderIconLeft()}
+                                <Heading is="h3" fontSize={2}>
+                                    {this.props.title}
+                                </Heading>
+                                {this.renderIconRight()}
+                            </Flex>
+                        </Box>
+                    )
+                }
+            </Media>
         );
     }
 }
 
-export default TitleBar;
+export default withTheme(TitleBar);

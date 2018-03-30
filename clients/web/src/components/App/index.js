@@ -2,7 +2,8 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFullHeight from "../FlexFullHeight";
+import NavigationBar from "../NavigationBar";
 
 import SignInPage from "../../pages/SignInPage";
 import MissionsPage from "../../pages/MissionsPage";
@@ -19,6 +20,7 @@ const App = () => {
                 titleTemplate="%s - Airlift Northwest"
                 defaultTitle="Airlift Northwest"
             />
+            <NavigationBar />
             <Switch>
                 <Route exact path="/" component={SignInPage} />
                 <Route path="/missions/:id" component={MissionDetailPage} />

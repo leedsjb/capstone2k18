@@ -11,7 +11,8 @@ const Circle = sys(
         borderRadius: "99999px"
     },
     "textAlign",
-    "size"
+    "size",
+    "space"
 );
 
 Circle.displayName = "Circle";
