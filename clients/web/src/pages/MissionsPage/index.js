@@ -67,12 +67,7 @@ class MissionsPage extends Component {
                     icon="map"
                     iconOnClick={this.toggleListView}
                 />
-                <Toolbar>
-                    <Flex justifyContent="center">
-                        <ButtonDropdown mr={1}>Ongoing</ButtonDropdown>
-                        <ButtonDropdown ml={1}>Any aircraft</ButtonDropdown>
-                    </Flex>
-                </Toolbar>
+
                 <ScrollView>{this.renderMissions()}</ScrollView>
                 <TabBar />
             </FlexFullHeight>

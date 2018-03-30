@@ -6,22 +6,8 @@ import Box from "../Box";
 import Icon from "../Icon";
 import Heading from "../Heading";
 import Fixed from "../Fixed";
-import Drawer from "../Drawer";
 
 class TitleBar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            drawer: false
-        };
-    }
-
-    toggleDrawer = () => {
-        this.setState({
-            drawer: !this.state.drawer
-        });
-    };
-
     renderIconLeft = () => {
         if (this.props.back) {
             return (
@@ -31,9 +17,7 @@ class TitleBar extends Component {
             );
         }
 
-        return (
-            <Icon glyph="navigationDrawerFilled" onClick={this.toggleDrawer} />
-        );
+        return <Box w={24} />;
     };
 
     renderIconRight = () => {
@@ -59,24 +43,6 @@ class TitleBar extends Component {
                     </Heading>
                     {this.renderIconRight()}
                 </Flex>
-                {this.state.drawer && (
-                    <Fixed
-                        top={0}
-                        right={0}
-                        bottom={0}
-                        left={0}
-                        onClick={this.toggleDrawer}
-                    />
-                )}
-                <Drawer
-                    open={this.state.drawer}
-                    position="left"
-                    p={3}
-                    color="white"
-                    bg="black"
-                >
-                    TODO: Change this drawer component
-                </Drawer>
             </Box>
         );
     }
