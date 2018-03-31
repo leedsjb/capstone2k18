@@ -7,9 +7,7 @@ import { withTheme } from "styled-components";
 import Box from "../Box";
 import Icon from "../Icon";
 import Heading from "../Heading";
-import Fixed from "../Fixed";
-import Circle from "../Circle";
-import Text from "../Text";
+import ProfileAvatar from "../ProfileAvatar";
 
 class TitleBar extends Component {
     renderIconLeft = () => {
@@ -26,17 +24,9 @@ class TitleBar extends Component {
 
     renderIconRight = () => {
         return (
-            <Flex>
+            <Flex alignItems="center">
                 <Icon glyph="grid" />
-                <Circle size={32} p={0}>
-                    <Flex
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Text>V</Text>
-                    </Flex>
-                </Circle>
+                <ProfileAvatar />
             </Flex>
         );
     };

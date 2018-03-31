@@ -2,14 +2,11 @@
 // (Ask Vincent)
 
 import React, { Component } from "react";
-import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
-import Toolbar from "../../components/Toolbar";
-import ButtonDropdown from "../../components/ButtonDropdown";
 import MissionList from "../../components/MissionList";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import ScrollView from "../../components/ScrollView";

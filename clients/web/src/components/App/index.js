@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { Switch, Route } from "react-router";
 
 import FlexFullHeight from "../FlexFullHeight";
-import NavigationBar from "../NavigationBar";
+import NavBar from "../NavBar";
 
 import SignInPage from "../../pages/SignInPage";
 import MissionsPage from "../../pages/MissionsPage";
@@ -20,7 +20,7 @@ const App = () => {
                 titleTemplate="%s - Airlift Northwest"
                 defaultTitle="Airlift Northwest"
             />
-            <NavigationBar />
+            <NavBar />
             <Switch>
                 <Route exact path="/" component={SignInPage} />
                 <Route path="/missions/:id" component={MissionDetailPage} />
