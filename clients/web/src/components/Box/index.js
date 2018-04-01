@@ -6,7 +6,8 @@ const Box = sys(
         is: GSBox
     },
     "size",
-    "borders"
+    "borders",
+    "maxWidth"
 );
 
 Box.displayName = "Box";

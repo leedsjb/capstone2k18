@@ -7,6 +7,7 @@ const MissionListItem = () => {
     return (
         <Box py={2}>
             <Link to="/missions/test">Mission List item</Link>
+            <Link to="/missions/4">Mission List item</Link>
         </Box>
     );
 };

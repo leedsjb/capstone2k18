@@ -1,11 +1,13 @@
 import React from "react";
 import Media from "react-media";
 import { Flex } from "grid-styled";
+import { Link } from "react-router-dom";
 import { withTheme } from "styled-components";
 
 import Box from "../Box";
 import Icon from "../Icon";
 import ProfileAvatar from "../ProfileAvatar";
+import NavBarItem from "../NavBarItem";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
@@ -17,9 +19,29 @@ const NavBar = ({ theme: { breakpoints } }) => {
                             justifyContent="space-between"
                             alignItems="center"
                         >
-                            <Flex>
-                                AirliftNW Elevate
-                                <Flex ml={4}>Missions Aircraft People</Flex>
+                            <Flex alignItems="center">
+                                <Link to="/missions">AirliftNW Elevate</Link>
+                                <Flex ml={4}>
+                                    <NavBarItem
+                                        title="missions"
+                                        path="/missions"
+                                        glyph="medicalCross"
+                                    />
+                                    <Box ml={3}>
+                                        <NavBarItem
+                                            title="aircraft"
+                                            path="/aircraft"
+                                            glyph="airplaneFlight"
+                                        />
+                                    </Box>
+                                    <Box ml={3}>
+                                        <NavBarItem
+                                            title="people"
+                                            path="/personnel"
+                                            glyph="accountGroup"
+                                        />
+                                    </Box>
+                                </Flex>
                             </Flex>
                             <Flex alignItems="center">
                                 <Icon glyph="grid" />
