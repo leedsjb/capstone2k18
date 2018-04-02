@@ -38,6 +38,7 @@ const App = ({ theme: { breakpoints } }) => {
                             />
                             <Route path="/missions" component={MissionsPage} />
                             <Route path="/aircraft" component={AircraftPage} />
+                            <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
