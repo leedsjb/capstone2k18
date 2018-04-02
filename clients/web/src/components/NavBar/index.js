@@ -37,7 +37,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                     <Box ml={3}>
                                         <NavBarItem
                                             title="People"
-                                            path="/personnel"
+                                            path="/people"
                                             glyph="accountGroup"
                                         />
                                     </Box>
