@@ -12,7 +12,7 @@ import MissionsPage from "../../pages/MissionsPage";
 import MissionDetailPage from "../../pages/MissionDetailPage";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
-import PersonnelPage from "../../pages/PersonnelPage";
+import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 
 const App = ({ theme: { breakpoints } }) => {
@@ -27,18 +27,27 @@ const App = ({ theme: { breakpoints } }) => {
                 {matches =>
                     matches ? (
                         <Switch>
-                            <Route exact path="/" component={SignInPage} />
+                            <Route
+                                exact
+                                path="/signin"
+                                component={SignInPage}
+                            />
+                            <Route
+                                path="/missions/:id"
+                                component={MissionsPage}
+                            />
                             <Route path="/missions" component={MissionsPage} />
                             <Route path="/aircraft" component={AircraftPage} />
-                            <Route
-                                path="/personnel"
-                                component={PersonnelPage}
-                            />
+                            <Route path="/people" component={PeoplePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     ) : (
                         <Switch>
-                            <Route exact path="/" component={SignInPage} />
+                            <Route
+                                exact
+                                path="/signin"
+                                component={SignInPage}
+                            />
                             <Route
                                 path="/missions/:id"
                                 component={MissionDetailPage}
@@ -49,10 +58,7 @@ const App = ({ theme: { breakpoints } }) => {
                                 component={AircraftDetailPage}
                             />
                             <Route path="/aircraft" component={AircraftPage} />
-                            <Route
-                                path="/personnel"
-                                component={PersonnelPage}
-                            />
+                            <Route path="/people" component={PeoplePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     )

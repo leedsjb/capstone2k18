@@ -6,17 +6,17 @@ import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
 
-const MissionDetailPage = () => {
+const PeoplePage = () => {
     return (
         <FlexFullHeight flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
             <TitleBar />
-            <ScrollView>Personnel page</ScrollView>
+            <ScrollView>People page</ScrollView>
             <TabBar />
         </FlexFullHeight>
     );
 };
 
-export default MissionDetailPage;
+export default PeoplePage;

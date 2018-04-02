@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 import Media from "react-media";
+import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 
@@ -14,6 +15,8 @@ import MissionList from "../../components/MissionList";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import ScrollView from "../../components/ScrollView";
 import Box from "../../components/Box";
+
+import RouterProvider from "../../containers/RouterProvider";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -25,6 +28,12 @@ class MissionsPage extends Component {
         this.state = {
             listView: true
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps !== this.props) {
+            console.log(this.props.match.params.id);
+        }
     }
 
     toggleListView = () => {
@@ -110,4 +119,10 @@ class MissionsPage extends Component {
     }
 }
 
-export default withTheme(MissionsPage);
+const mapStateToProps = ({ router }) => {
+    return {
+        router
+    };
+};
+
+export default withTheme(connect(mapStateToProps)(MissionsPage));

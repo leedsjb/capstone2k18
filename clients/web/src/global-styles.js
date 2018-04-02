@@ -12,4 +12,8 @@ injectGlobal`
     }
 
     .active {}
+
+    a {
+        text-decoration: none;
+    }
 `;

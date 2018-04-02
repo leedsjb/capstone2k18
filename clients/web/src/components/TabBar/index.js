@@ -23,7 +23,7 @@ const TabBar = ({ theme: { breakpoints } }) => {
                             path="/aircraft"
                         />
                         <TabBarItem
-                            title="Personnel"
+                            title="People"
                             glyph="accountGroup"
                             path="/personnel"
                         />
