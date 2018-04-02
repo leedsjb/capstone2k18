@@ -7,6 +7,7 @@ import SearchBox from "../../components/SearchBox";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
+import NavBar from "../../components/NavBar";
 
 const AircraftPage = () => {
     return (
@@ -16,6 +17,7 @@ const AircraftPage = () => {
             </Helmet>
 
             <TitleBar title="Aircraft" />
+            <NavBar />
             <Toolbar>Test</Toolbar>
             <ScrollView>
                 <SearchBox />

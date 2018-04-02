@@ -12,6 +12,7 @@ import DetailView from "../../components/DetailView";
 import Avatar from "../../components/Avatar";
 import Heading from "../../components/Heading";
 import ButtonIcon from "../../components/ButtonIcon";
+import NavBar from "../../components/NavBar";
 
 const PeoplePage = () => {
     return (
@@ -21,6 +22,7 @@ const PeoplePage = () => {
             </Helmet>
 
             <TitleBar title="People" />
+            <NavBar />
 
             <MasterDetailView>
                 <MasterView>

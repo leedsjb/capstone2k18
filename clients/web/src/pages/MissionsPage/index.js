@@ -10,6 +10,7 @@ import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import MissionList from "../../components/MissionList";
+import NavBar from "../../components/NavBar";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import MasterDetailView from "../../components/MasterDetailView";
 import MasterView from "../../components/MasterView";
@@ -74,6 +75,8 @@ class MissionsPage extends Component {
                     icon="map"
                     iconOnClick={this.toggleListView}
                 />
+
+                <NavBar />
 
                 <MasterDetailView>
                     <MasterView>{this.renderMissions()}</MasterView>

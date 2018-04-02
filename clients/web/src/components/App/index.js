@@ -6,6 +6,7 @@ import { withTheme } from "styled-components";
 
 import FlexFullHeight from "../FlexFullHeight";
 import NavBar from "../NavBar";
+import TitleBar from "../TitleBar";
 
 import SignInPage from "../../pages/SignInPage";
 import MissionsPage from "../../pages/MissionsPage";
@@ -14,6 +15,7 @@ import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
+import HomePage from "../../pages/HomePage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -22,16 +24,13 @@ const App = ({ theme: { breakpoints } }) => {
                 titleTemplate="%s - Airlift Northwest"
                 defaultTitle="Airlift Northwest"
             />
-            <NavBar />
+
             <Media query={`(min-width: ${breakpoints[1]})`}>
                 {matches =>
                     matches ? (
                         <Switch>
-                            <Route
-                                exact
-                                path="/signin"
-                                component={SignInPage}
-                            />
+                            <Route exact path="/" component={HomePage} />
+                            <Route path="/signin" component={SignInPage} />
                             <Route
                                 path="/missions/:id"
                                 component={MissionsPage}
@@ -44,11 +43,8 @@ const App = ({ theme: { breakpoints } }) => {
                         </Switch>
                     ) : (
                         <Switch>
-                            <Route
-                                exact
-                                path="/signin"
-                                component={SignInPage}
-                            />
+                            <Route exact path="/" component={HomePage} />
+                            <Route path="/signin" component={SignInPage} />
                             <Route
                                 path="/missions/:id"
                                 component={MissionDetailPage}

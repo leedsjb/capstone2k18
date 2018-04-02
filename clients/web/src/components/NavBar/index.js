@@ -8,6 +8,7 @@ import Box from "../Box";
 import Icon from "../Icon";
 import ProfileAvatar from "../ProfileAvatar";
 import NavBarItem from "../NavBarItem";
+import Logo from "../Logo";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
@@ -20,7 +21,9 @@ const NavBar = ({ theme: { breakpoints } }) => {
                             alignItems="center"
                         >
                             <Flex alignItems="center">
-                                <Link to="/missions">AirliftNW Elevate</Link>
+                                <Link to="/missions">
+                                    <Logo />
+                                </Link>
                                 <Flex ml={4}>
                                     <NavBarItem
                                         title="Missions"

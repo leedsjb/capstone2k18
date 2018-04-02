@@ -36,7 +36,7 @@ class TitleBar extends Component {
             <Media query={`(min-width: ${this.props.theme.breakpoints[1]})`}>
                 {matches =>
                     matches ? null : (
-                        <Box bg="wireframe" py={3} px={3}>
+                        <Box bg="wireframe" p={3}>
                             <Flex justifyContent="space-between" align="center">
                                 {this.renderIconLeft()}
                                 <Heading is="h3" fontSize={2}>
