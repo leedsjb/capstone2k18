@@ -3,8 +3,6 @@
 
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
-import { Flex } from "grid-styled";
-import Media from "react-media";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
@@ -13,10 +11,9 @@ import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import MissionList from "../../components/MissionList";
 import FlexFullHeight from "../../components/FlexFullHeight";
-import ScrollView from "../../components/ScrollView";
-import Box from "../../components/Box";
-
-import RouterProvider from "../../containers/RouterProvider";
+import MasterDetailView from "../../components/MasterDetailView";
+import MasterView from "../../components/MasterView";
+import DetailView from "../../components/DetailView";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -78,41 +75,33 @@ class MissionsPage extends Component {
                     iconOnClick={this.toggleListView}
                 />
 
-                <Flex style={{ flex: 1, overflowY: "hidden" }}>
-                    <ScrollView w={[1, 1, 1 / 2]} maxWidth={[null, null, 400]}>
-                        {this.renderMissions()}
-                    </ScrollView>
-                    <Media
-                        query={`(min-width: ${
-                            this.props.theme.breakpoints[1]
-                        })`}
-                        render={() => {
-                            return (
-                                <Map
-                                    style="mapbox://styles/mapbox/streets-v9"
-                                    containerStyle={{
-                                        flex: 1
-                                    }}
-                                >
-                                    <Layer
-                                        type="symbol"
-                                        id="marker"
-                                        layout={{
-                                            "icon-image": "marker-15"
-                                        }}
-                                    >
-                                        <Feature
-                                            coordinates={[
-                                                -0.481747846041145,
-                                                51.3233379650232
-                                            ]}
-                                        />
-                                    </Layer>
-                                </Map>
-                            );
-                        }}
-                    />
-                </Flex>
+                <MasterDetailView>
+                    <MasterView>{this.renderMissions()}</MasterView>
+                    <DetailView>
+                        <Map
+                            style="mapbox://styles/mapbox/streets-v9"
+                            containerStyle={{
+                                flex: 1
+                            }}
+                        >
+                            <Layer
+                                type="symbol"
+                                id="marker"
+                                layout={{
+                                    "icon-image": "marker-15"
+                                }}
+                            >
+                                <Feature
+                                    coordinates={[
+                                        -0.481747846041145,
+                                        51.3233379650232
+                                    ]}
+                                />
+                            </Layer>
+                        </Map>
+                    </DetailView>
+                </MasterDetailView>
+
                 <TabBar />
             </FlexFullHeight>
         );
