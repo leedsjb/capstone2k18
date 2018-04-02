@@ -95,8 +95,14 @@ class MissionsPage extends Component {
                 <MasterDetailView>
                     <MasterView>{this.renderMissions()}</MasterView>
                     <DetailView>
-                        <Flex style={{ height: "100%", width: "100%" }}>
-                            <ScrollView>
+                        <Flex
+                            style={{ height: "100%", width: "100%" }}
+                            flexDirection={[null, null, "column", "row"]}
+                        >
+                            <ScrollView
+                                maxWidth={[null, null, null, 320]}
+                                height={[null, null, "50%", "100%"]}
+                            >
                                 <Box p={3}>
                                     <Heading is="h3">Information</Heading>
                                     <Measure>
@@ -151,27 +157,31 @@ class MissionsPage extends Component {
                                     </Measure>
                                 </Box>
                             </ScrollView>
-                            <Map
-                                style="mapbox://styles/mapbox/streets-v9"
-                                containerStyle={{
-                                    flex: 1
-                                }}
-                            >
-                                <Layer
-                                    type="symbol"
-                                    id="marker"
-                                    layout={{
-                                        "icon-image": "marker-15"
+
+                            <Flex flex={1}>
+                                <Map
+                                    style="mapbox://styles/mapbox/streets-v9"
+                                    containerStyle={{
+                                        width: "100%",
+                                        height: "100%"
                                     }}
                                 >
-                                    <Feature
-                                        coordinates={[
-                                            -0.481747846041145,
-                                            51.3233379650232
-                                        ]}
-                                    />
-                                </Layer>
-                            </Map>
+                                    <Layer
+                                        type="symbol"
+                                        id="marker"
+                                        layout={{
+                                            "icon-image": "marker-15"
+                                        }}
+                                    >
+                                        <Feature
+                                            coordinates={[
+                                                -0.481747846041145,
+                                                51.3233379650232
+                                            ]}
+                                        />
+                                    </Layer>
+                                </Map>
+                            </Flex>
                         </Flex>
                     </DetailView>
                 </MasterDetailView>
