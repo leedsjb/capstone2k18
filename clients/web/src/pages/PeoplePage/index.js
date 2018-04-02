@@ -38,9 +38,9 @@ const PeoplePage = () => {
                         <Heading children="Vincent van der Meulen" is="h2" />
                         <Heading children="Maker" is="h3" />
                         <Flex>
-                            <ButtonIcon>Text</ButtonIcon>
-                            <ButtonIcon>Call</ButtonIcon>
-                            <ButtonIcon>Mail</ButtonIcon>
+                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            <ButtonIcon glyph="email">Mail</ButtonIcon>
                         </Flex>
                     </Flex>
                 </DetailView>

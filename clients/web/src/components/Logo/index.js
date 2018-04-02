@@ -1,10 +1,12 @@
 import React from "react";
 
+import StyledSpan from "./StyledSpan";
+
 const Logo = () => {
     return (
-        <div>
-            <div>AirliftNW Elevate</div>
-        </div>
+        <span>
+            <StyledSpan>AirliftNW</StyledSpan> Elevate
+        </span>
     );
 };
 

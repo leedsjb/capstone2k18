@@ -1,47 +1,19 @@
-// Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Button.js
+import React from "react";
+import { Flex } from "grid-styled";
 
-import sys from "system-components";
-import { themeGet } from "styled-system";
+import Button from "../Button";
+import Icon from "../Icon";
+import Box from "../Box";
 
-const ButtonIcon = sys(
-    {
-        is: "button",
-        fontSize: 1,
-        fontWeight: "bold",
-        lineHeight: 16 / 14,
-        m: 0,
-        px: 3,
-        py: 2,
-        color: "white",
-        bg: "blue",
-        borderRadius: 2,
-        border: 0
-    },
-    props => ({
-        fontFamily: "inherit",
-        WebkitFontSmoothing: "antialiased",
-        display: "inline-block",
-        verticalAlign: "middle",
-        textAlign: "center",
-        textDecoration: "none",
-        appearance: "none",
-        "&:hover": {
-            boxShadow: `inset 0 0 0 999px ${themeGet("colors.darken.0")(props)}`
-        },
-        "&:focus": {
-            outline: 0,
-            boxShadow: `0 0 0 2px ${themeGet("colors.blue")(props)}`
-        },
-        "&:active": {
-            backgroundColor: themeGet("colors.blue.6")(props),
-            boxShadow: `inset 0 0 8px ${themeGet("colors.darken.1")(props)}`
-        },
-        "&:disabled": {
-            opacity: 1 / 4
-        }
-    })
-);
-
-ButtonIcon.displayName = "ButtonIcon";
+const ButtonIcon = ({ glyph, children }) => {
+    return (
+        <Button>
+            <Flex alignItems="center">
+                <Icon glyph={glyph} size={16} />
+                <Box ml={2}>{children}</Box>
+            </Flex>
+        </Button>
+    );
+};
 
 export default ButtonIcon;

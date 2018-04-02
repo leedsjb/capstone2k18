@@ -13,7 +13,8 @@ injectGlobal`
 
     .active {}
 
-    a {
+    a, a:visited, a:hover, a:active {
+        color: inherit;
         text-decoration: none;
     }
 `;
