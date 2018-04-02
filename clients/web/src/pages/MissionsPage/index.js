@@ -10,6 +10,7 @@ import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
+import Box from "../../components/Box";
 import MissionList from "../../components/MissionList";
 import NavBar from "../../components/NavBar";
 import FlexFullHeight from "../../components/FlexFullHeight";
@@ -17,6 +18,8 @@ import MasterDetailView from "../../components/MasterDetailView";
 import MasterView from "../../components/MasterView";
 import DetailView from "../../components/DetailView";
 import ButtonDropdown from "../../components/ButtonDropdown";
+import Relative from "../../components/Relative";
+import Absolute from "../../components/Absolute";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -89,27 +92,36 @@ class MissionsPage extends Component {
                 <MasterDetailView>
                     <MasterView>{this.renderMissions()}</MasterView>
                     <DetailView>
-                        <Map
-                            style="mapbox://styles/mapbox/streets-v9"
-                            containerStyle={{
-                                flex: 1
-                            }}
-                        >
-                            <Layer
-                                type="symbol"
-                                id="marker"
-                                layout={{
-                                    "icon-image": "marker-15"
+                        <Relative height="100%">
+                            <Map
+                                style="mapbox://styles/mapbox/streets-v9"
+                                containerStyle={{
+                                    flex: 1,
+                                    width: "100%",
+                                    height: "100%"
                                 }}
                             >
-                                <Feature
-                                    coordinates={[
-                                        -0.481747846041145,
-                                        51.3233379650232
-                                    ]}
-                                />
-                            </Layer>
-                        </Map>
+                                <Layer
+                                    type="symbol"
+                                    id="marker"
+                                    layout={{
+                                        "icon-image": "marker-15"
+                                    }}
+                                >
+                                    <Feature
+                                        coordinates={[
+                                            -0.481747846041145,
+                                            51.3233379650232
+                                        ]}
+                                    />
+                                </Layer>
+                            </Map>
+                            <Absolute top={0} left={0} bottom={0}>
+                                <Box bg="white" height="100%">
+                                    Testing 123
+                                </Box>
+                            </Absolute>
+                        </Relative>
                     </DetailView>
                 </MasterDetailView>
 

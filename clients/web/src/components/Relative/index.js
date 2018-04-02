@@ -12,7 +12,9 @@ const Relative = sys(
     "top",
     "right",
     "bottom",
-    "left"
+    "left",
+    "width",
+    "height"
 );
 
 Relative.displayName = "Relative";
