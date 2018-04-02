@@ -47,7 +47,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 </Flex>
                             </Flex>
                             <Flex alignItems="center">
-                                <Icon glyph="grid" />
+                                <Icon glyph="grid" size={16} />
                                 <ProfileAvatar />
                             </Flex>
                         </Flex>

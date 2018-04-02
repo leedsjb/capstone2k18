@@ -33,6 +33,7 @@ const TabBarItem = ({ title, glyph, path }) => {
                                             ? `${glyph}Filled`
                                             : `${glyph}Line`
                                     }
+                                    size={24}
                                 />
                                 {title}
                             </Flex>

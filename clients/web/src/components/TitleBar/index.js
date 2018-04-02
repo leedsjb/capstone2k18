@@ -14,7 +14,7 @@ class TitleBar extends Component {
         if (this.props.back) {
             return (
                 <Link to={this.props.backPath}>
-                    <Icon glyph="chevronLeft" />
+                    <Icon glyph="chevronLeft" size={16} />
                 </Link>
             );
         }
@@ -25,7 +25,7 @@ class TitleBar extends Component {
     renderIconRight = () => {
         return (
             <Flex alignItems="center">
-                <Icon glyph="grid" />
+                <Icon glyph="grid" size={16} />
                 <ProfileAvatar />
             </Flex>
         );

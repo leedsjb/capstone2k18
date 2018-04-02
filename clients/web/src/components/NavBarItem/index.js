@@ -28,6 +28,7 @@ const NavBarItem = ({ title, glyph, path }) => {
                                         ? `${glyph}Filled`
                                         : `${glyph}Line`
                                 }
+                                size={24}
                             />
                             <Box ml={2}>{title}</Box>
                         </Flex>
