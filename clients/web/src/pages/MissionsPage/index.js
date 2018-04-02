@@ -20,6 +20,9 @@ import DetailView from "../../components/DetailView";
 import ButtonDropdown from "../../components/ButtonDropdown";
 import Relative from "../../components/Relative";
 import Absolute from "../../components/Absolute";
+import ScrollView from "../../components/ScrollView";
+import Heading from "../../components/Heading";
+import Measure from "../../components/Measure";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -92,13 +95,66 @@ class MissionsPage extends Component {
                 <MasterDetailView>
                     <MasterView>{this.renderMissions()}</MasterView>
                     <DetailView>
-                        <Relative height="100%">
+                        <Flex style={{ height: "100%", width: "100%" }}>
+                            <ScrollView>
+                                <Box p={3}>
+                                    <Heading is="h3">Information</Heading>
+                                    <Measure>
+                                        Integer posuere erat a ante venenatis
+                                        dapibus posuere velit aliquet. Donec
+                                        ullamcorper nulla non metus auctor
+                                        fringilla. Cum sociis natoque penatibus
+                                        et magnis dis parturient montes,
+                                        nascetur ridiculus mus. Duis mollis, est
+                                        non commodo luctus, nisi erat porttitor
+                                        ligula, eget lacinia odio sem nec elit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Morbi leo risus, porta
+                                        ac consectetur ac, vestibulum at eros.
+                                        Fusce dapibus, tellus ac cursus commodo,
+                                        tortor mauris condimentum nibh, ut
+                                        fermentum massa justo sit amet risus.
+                                    </Measure>
+                                    <Heading is="h3">Information</Heading>
+                                    <Measure>
+                                        Integer posuere erat a ante venenatis
+                                        dapibus posuere velit aliquet. Donec
+                                        ullamcorper nulla non metus auctor
+                                        fringilla. Cum sociis natoque penatibus
+                                        et magnis dis parturient montes,
+                                        nascetur ridiculus mus. Duis mollis, est
+                                        non commodo luctus, nisi erat porttitor
+                                        ligula, eget lacinia odio sem nec elit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Morbi leo risus, porta
+                                        ac consectetur ac, vestibulum at eros.
+                                        Fusce dapibus, tellus ac cursus commodo,
+                                        tortor mauris condimentum nibh, ut
+                                        fermentum massa justo sit amet risus.
+                                    </Measure>
+                                    <Heading is="h3">Information</Heading>
+                                    <Measure>
+                                        Integer posuere erat a ante venenatis
+                                        dapibus posuere velit aliquet. Donec
+                                        ullamcorper nulla non metus auctor
+                                        fringilla. Cum sociis natoque penatibus
+                                        et magnis dis parturient montes,
+                                        nascetur ridiculus mus. Duis mollis, est
+                                        non commodo luctus, nisi erat porttitor
+                                        ligula, eget lacinia odio sem nec elit.
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit. Morbi leo risus, porta
+                                        ac consectetur ac, vestibulum at eros.
+                                        Fusce dapibus, tellus ac cursus commodo,
+                                        tortor mauris condimentum nibh, ut
+                                        fermentum massa justo sit amet risus.
+                                    </Measure>
+                                </Box>
+                            </ScrollView>
                             <Map
                                 style="mapbox://styles/mapbox/streets-v9"
                                 containerStyle={{
-                                    flex: 1,
-                                    width: "100%",
-                                    height: "100%"
+                                    flex: 1
                                 }}
                             >
                                 <Layer
@@ -116,12 +172,7 @@ class MissionsPage extends Component {
                                     />
                                 </Layer>
                             </Map>
-                            <Absolute top={0} left={0} bottom={0}>
-                                <Box bg="white" height="100%">
-                                    Testing 123
-                                </Box>
-                            </Absolute>
-                        </Relative>
+                        </Flex>
                     </DetailView>
                 </MasterDetailView>
 

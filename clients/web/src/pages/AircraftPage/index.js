@@ -18,6 +18,7 @@ const AircraftPage = () => {
 
             <TitleBar title="Aircraft" />
             <NavBar />
+
             <Toolbar>Test</Toolbar>
             <ScrollView>
                 <SearchBox />
