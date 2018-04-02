@@ -2,6 +2,7 @@
 // (Ask Vincent)
 
 import React, { Component } from "react";
+import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
@@ -15,6 +16,7 @@ import FlexFullHeight from "../../components/FlexFullHeight";
 import MasterDetailView from "../../components/MasterDetailView";
 import MasterView from "../../components/MasterView";
 import DetailView from "../../components/DetailView";
+import ButtonDropdown from "../../components/ButtonDropdown";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -42,7 +44,13 @@ class MissionsPage extends Component {
 
     renderMissions() {
         return this.state.listView ? (
-            <MissionList />
+            <div>
+                <Flex justifyContent="center">
+                    <ButtonDropdown>Ongoing</ButtonDropdown>
+                    <ButtonDropdown>Any aircraft</ButtonDropdown>
+                </Flex>
+                <MissionList />
+            </div>
         ) : (
             <Map
                 style="mapbox://styles/mapbox/streets-v9"

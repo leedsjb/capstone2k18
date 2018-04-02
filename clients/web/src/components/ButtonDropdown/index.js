@@ -1,10 +1,17 @@
 import React from "react";
-import Button from "../Button";
+import { Flex } from "grid-styled";
 
-const ButtonDropdown = ({ children, ...props }) => {
+import Button from "../Button";
+import Icon from "../Icon";
+import Box from "../Box";
+
+const ButtonDropdown = ({ children }) => {
     return (
-        <Button {...props}>
-            {children}
+        <Button>
+            <Flex alignItems="center">
+                <Box mr={2}>{children}</Box>
+                <Icon glyph="triangleDown" size={6} />
+            </Flex>
         </Button>
     );
 };
