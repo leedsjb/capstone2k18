@@ -11,14 +11,16 @@ const Tab = sys(
         py: 2,
         color: "inherit",
         borderBottom: 2,
-        borderColor: "transparent",
         hover: {
             color: "blue"
         }
     },
     {
         textDecoration: "none"
-    }
+    },
+    props => ({
+        borderColor: props.active ? "blue" : "transparent"
+    })
 );
 
 Tab.displayName = "Tab";
