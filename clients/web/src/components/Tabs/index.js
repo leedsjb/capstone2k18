@@ -1,14 +1,28 @@
-// Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Tabs.js
+import React, { Component } from "react";
 
-import sys from "system-components";
-import { Flex } from "grid-styled";
+import Tab from "../../components/Tab";
 
-const Tabs = sys({
-    is: Flex,
-    borderBottom: 1,
-    borderColor: "gray"
-});
-
-Tabs.displayName = "Tabs";
+class Tabs extends Component {
+    render() {
+        return (
+            <div>
+                {React.Children.map(this.props.children, (child, i) => {
+                    return (
+                        <Tab
+                            active={
+                                child.key === this.props.active ? true : false
+                            }
+                            onClick={() => {
+                                this.props.onChange(child.key);
+                            }}
+                        >
+                            {child}
+                        </Tab>
+                    );
+                })}
+            </div>
+        );
+    }
+}
 
 export default Tabs;
