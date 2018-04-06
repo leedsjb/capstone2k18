@@ -1,11 +1,18 @@
 import React from "react";
-import { Flex, Text } from "rebass";
 
-const Footer = props => {
+import Text from "../Text";
+import Container from "../Container";
+import Box from "../Box";
+
+const Footer = () => {
     return (
-        <Flex>
-            <Text>Footer</Text>
-        </Flex>
+        <Box py={5}>
+            <Container>
+                <Text my={0}>
+                    Donec id elit non mi porta gravida at eget metus
+                </Text>
+            </Container>
+        </Box>
     );
 };
 

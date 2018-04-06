@@ -1,10 +1,11 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
-import { Button } from "rebass";
 
 import renderField from "../../utils/renderField";
 import validate from "./validate";
 import warn from "./warn";
+
+import Button from "../../components/Button";
 
 const SignInForm = props => {
     const { handleSubmit, onSubmit, submitting } = props;
