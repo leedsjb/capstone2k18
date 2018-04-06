@@ -1,5 +1,6 @@
 #!/bin/bash
 # Use this script to build the docker image and deploy it to the google container registry
+# Run from kubernetes_deployment folder for Dockerfile filepath to work
 
 docker build -t us.gcr.io/airliftnw-uw/webclient ../ #move to dir containing Dockerfile
 
