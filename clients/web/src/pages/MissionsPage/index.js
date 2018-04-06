@@ -33,11 +33,17 @@ class MissionsPage extends Component {
         };
     }
 
+    /*
+    componentDidMount() {
+        console.log(this.props.match.params.id);
+    }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps !== this.props) {
             console.log(this.props.match.params.id);
         }
     }
+    */
 
     toggleListView = () => {
         this.setState({
@@ -45,16 +51,20 @@ class MissionsPage extends Component {
         });
     };
 
-    renderMissions = () => {
-        return this.state.listView ? (
+    renderMissions = data => {
+        return (
             <div>
                 <Flex justifyContent="center" py={3}>
                     <ButtonDropdown>Ongoing</ButtonDropdown>
                     <ButtonDropdown ml={2}>Any aircraft</ButtonDropdown>
                 </Flex>
                 <Divider />
-                <MissionList />
+                <MissionList data={data} />
             </div>
+        );
+        /*
+        return this.state.listView ? (
+  
         ) : (
             <Map
                 style="mapbox://styles/mapbox/streets-v9"
@@ -73,6 +83,7 @@ class MissionsPage extends Component {
                 </Layer>
             </Map>
         );
+        */
     };
 
     render() {
@@ -94,9 +105,9 @@ class MissionsPage extends Component {
                             <NavBar />
 
                             <MasterDetailMapView
-                                renderMasterView={() =>
-                                    this.renderMissions(missions.data)
-                                }
+                                renderMasterView={() => {
+                                    return this.renderMissions(missions.data);
+                                }}
                                 renderDetailView={() => {
                                     return (
                                         <div>
