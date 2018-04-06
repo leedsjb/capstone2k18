@@ -6,10 +6,10 @@ const Divider = sys(
     {
         is: "hr",
         mx: 0,
-        my: 3,
+        my: 0,
         border: 0,
         borderBottom: 1,
-        borderColor: "gray"
+        borderColor: "wireframe"
     },
     "space",
     "color"
