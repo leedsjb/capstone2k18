@@ -1,5 +1,6 @@
 import React from "react";
 import { Flex } from "grid-styled";
+import { Link } from "react-router-dom";
 
 import Box from "../../components/Box";
 import Heading from "../../components/Heading";
@@ -14,20 +15,23 @@ const HomePage = () => {
         <div>
             <Box p={3}>
                 <Flex justifyContent="space-between">
-                    <Logo />
-                    <span>Sign in</span>
+                    <Link to="/">
+                        <Logo />
+                    </Link>
+                    <Link to="/missions">Sign in</Link>
                 </Flex>
             </Box>
             <Container py={5}>
-                <Heading is="h1" mt={0}>
-                    AirliftNW Elevate
-                </Heading>
+                <Measure>
+                    <Heading is="h1" mt={0}>
+                        Critical Communication for Airborne Medical Missions
+                    </Heading>
+                </Measure>
                 <Measure mt={3}>
-                    Nullam quis risus eget urna mollis ornare vel eu leo. Nullam
-                    quis risus eget urna mollis ornare vel eu leo. Donec id elit
-                    non mi porta gravida at eget metus. Maecenas sed diam eget
-                    risus varius blandit sit amet non magna. Sed posuere
-                    consectetur est at lobortis.
+                    A mission-critical, high-availability application for
+                    Airlift Northwest emergency flight nurses and pilots
+                    transporting severely ill or injured patients by helicopter
+                    to reach life-saving medical treatment.
                 </Measure>
                 <Button mt={3}>Call to action</Button>
             </Container>
