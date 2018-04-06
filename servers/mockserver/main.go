@@ -5,11 +5,6 @@ import (
 	"net/http"
 )
 
-// HelloHandler ...
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, web!"))
-}
-
 func main() {
 	addr := ":4000"
 
