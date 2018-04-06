@@ -1,9 +1,33 @@
 #!/bin/bash
-# add functionality to take in an argument to use as cluster name
-# ./cluster-deploy.sh elevate-cluster
+# Create a cluster in gcloud and deploy an application on it
+
+usage="Creates a cluster in gcloud and deploys an application on it from a given image source. 
+
+Ports for the application and LoadBalancer are defaulted to port 80.
+    
+Example:
+    # Create a cluster named 'elevate-cluster' that has '1' node
+    # and deploy an application named 'alnw-deployment' on it
+    # sourced from the image 'us.gcr.io/airliftnw-uw/webclient'
+
+    ./cluster-deploy.sh elevate-cluster 1 alnw-deployment us.gcr.io/airliftnw-uw/webclient
+    
+Usage:
+    ./cluster-deploy.sh <cluster-name> <num-nodes> <deployment-name> <image-source>"
+
+if [ "$#" -ne 4 ]; then
+    echo "$usage"    
+    exit 1
+fi
+
+clusterName=$1
+numNodes=$2
+deploymentName=$3
+imageSource=$4
+# var for ports?
 
 # create cluster(s)
-gcloud container clusters create elevate-cluster --num-nodes=1
+gcloud container clusters create $clusterName --num-nodes=$numNodes
 
 # check cluster's worker VM instances
 gcloud compute instances list
@@ -13,13 +37,13 @@ gcloud compute instances list
 # gcloud container clusters get-credentials elevate-cluster
 
 # deploy application
-kubectl run alnw-deployment --image=us.gcr.io/airliftnw-uw/webclient --port 80
+kubectl run $deploymentName --image=$imageSource --port 80
 
 # see pod created by deployment
 kubectl get pods
 
 
-kubectl expose deployment alnw-deployment --type=LoadBalancer --port 80 --target-port 80
+kubectl expose deployment $deploymentName --type=LoadBalancer --port 80 --target-port 80
 
 #check
 kubectl get service
