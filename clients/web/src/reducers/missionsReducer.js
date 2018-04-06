@@ -19,6 +19,7 @@ const missionsReducer = (state = initialState, action) => {
         case FETCH_MISSIONS_SUCCESS:
             return {
                 ...state,
+                pending: false,
                 data: action.payload
             };
         default:
