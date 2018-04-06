@@ -8,7 +8,8 @@ const Measure = sys(
         is: Text,
         maxWidth: "30em"
     },
-    "maxWidth"
+    "maxWidth",
+    "space"
 );
 
 Measure.displayName = "Measure";

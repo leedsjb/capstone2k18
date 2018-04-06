@@ -5,8 +5,6 @@ import Media from "react-media";
 import { withTheme } from "styled-components";
 
 import FlexFullHeight from "../FlexFullHeight";
-import NavBar from "../NavBar";
-import TitleBar from "../TitleBar";
 
 import SignInPage from "../../pages/SignInPage";
 import MissionsPage from "../../pages/MissionsPage";
