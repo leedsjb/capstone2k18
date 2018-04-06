@@ -5,9 +5,9 @@ import Button from "../Button";
 import Icon from "../Icon";
 import Box from "../Box";
 
-const ButtonDropdown = ({ children }) => {
+const ButtonDropdown = ({ children, ...props }) => {
     return (
-        <Button>
+        <Button {...props}>
             <Flex alignItems="center">
                 <Box mr={2}>{children}</Box>
                 <Icon glyph="triangleDown" size={6} />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 import Box from "../../components/Box";
 import Heading from "../../components/Heading";

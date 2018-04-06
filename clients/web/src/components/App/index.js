@@ -19,8 +19,8 @@ const App = ({ theme: { breakpoints } }) => {
     return (
         <FlexFullHeight flexDirection="column">
             <Helmet
-                titleTemplate="%s - Airlift Northwest"
-                defaultTitle="Airlift Northwest"
+                titleTemplate="%s - AirliftNW Elevate"
+                defaultTitle="AirliftNW Elevate"
             />
 
             <Media query={`(min-width: ${breakpoints[1]})`}>

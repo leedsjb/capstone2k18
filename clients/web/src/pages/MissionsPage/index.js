@@ -17,6 +17,7 @@ import ButtonDropdown from "../../components/ButtonDropdown";
 import Heading from "../../components/Heading";
 import Measure from "../../components/Measure";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
+import Divider from "../../components/Divider";
 
 import MissionsProvider from "../../containers/MissionsProvider";
 
@@ -47,10 +48,11 @@ class MissionsPage extends Component {
     renderMissions = () => {
         return this.state.listView ? (
             <div>
-                <Flex justifyContent="center">
+                <Flex justifyContent="center" py={3}>
                     <ButtonDropdown>Ongoing</ButtonDropdown>
-                    <ButtonDropdown>Any aircraft</ButtonDropdown>
+                    <ButtonDropdown ml={2}>Any aircraft</ButtonDropdown>
                 </Flex>
+                <Divider />
                 <MissionList />
             </div>
         ) : (
