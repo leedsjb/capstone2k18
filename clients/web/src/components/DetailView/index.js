@@ -4,7 +4,6 @@ import { Flex } from "grid-styled";
 import { withTheme } from "styled-components";
 
 import Box from "../Box";
-import ScrollView from "../ScrollView";
 
 const DetailView = ({ children, theme: { breakpoints } }) => {
     return (

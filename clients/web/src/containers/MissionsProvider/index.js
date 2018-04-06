@@ -1,9 +1,26 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
+import { fetchMissions } from "../../actions/missions/actions";
 
 class MissionsProvider extends Component {
+    componentDidMount() {
+        this.props.fetchMissions();
+    }
+
     render() {
-        return <div />;
+        return this.props.render({ missions: this.props.missions });
     }
 }
 
-export default MissionsProvider;
+const mapStateToProps = ({ missions }) => {
+    return {
+        missions
+    };
+};
+
+const mapDispatchToProps = {
+    fetchMissions
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MissionsProvider);
