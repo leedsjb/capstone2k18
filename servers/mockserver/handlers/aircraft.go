@@ -9,8 +9,8 @@ type Aircraft struct {
 	ID            int    `json:"id"`
 	Callsign      string `json:"callsign"`
 	Crew          string `json:"crew"`
-	MissionStatus string `json:"missionStatus"`
 	LevelOfCare   string `json:"levelOfCare"`
+	Class         string `json:"class"`
 	Lat           string `json:"lat"`
 	Long          string `json:"long"`
 	Area          string `json:"area"`
@@ -21,23 +21,28 @@ type Aircraft struct {
 	Status        string `json:"status"`
 	Type          string `json:"type"`
 	Vision        string `json:"vision"`
+	MissionStatus string `json:"missionStatus"`
 }
 
-/*
-// Aircraft ...
-type Aircraft struct {
-	ID           int    `json:"id"`
-	Callsign     string `json:"callsign"`
-	NNum         string `json:"nNum"`
-	Status       string `json:"status"`
-	Lat          string `json:"lat"`
-	Long         string `json:"long"`
-	Area         string `json:"area"`
-	OOSReason    string `json:"OOSReason"`
-	OOSRemaining string `json:"OOSRemaining"`
-	Type         string `json:"type"`
+// AircraftDetail ...
+type AircraftDetail struct {
+	ID            int    `json:"id"`
+	Callsign      string `json:"callsign"`
+	Crew          string `json:"crew"`
+	LevelOfCare   string `json:"levelOfCare"`
+	Class         string `json:"class"`
+	Lat           string `json:"lat"`
+	Long          string `json:"long"`
+	Area          string `json:"area"`
+	NNum          string `json:"nNum"`
+	OOSReason     string `json:"OOSReason"`
+	OOSRemaining  string `json:"OOSRemaining"`
+	OOSDuration   string `json:"OOSDuration"`
+	Status        string `json:"status"`
+	Type          string `json:"type"`
+	Vision        string `json:"vision"`
+	MissionStatus string `json:"missionStatus"`
 }
-*/
 
 var aircraft = []*Aircraft{}
 

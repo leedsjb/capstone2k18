@@ -8,8 +8,6 @@ import (
 // Mission ...
 type Mission struct {
 	ID               int    `json:"id"`
-	AircraftNNum     string `json:"aircraftNNum"`
-	AircraftCallsign string `json:"aircraftCallsign"`
 	Type             string `json:"type"`
 	NextWaypointETE  string `json:"nextWaypointETE"`
 	FlightNum        string `json:"flightNum"`
@@ -17,21 +15,25 @@ type Mission struct {
 	RadioReport      string `json:"radioReport"`
 	Crew             string `json:"crew"`
 	Requestor        string `json:"requestor"`
-}
-
-/*
-
-// Mission ...
-type Mission struct {
-	ID               int    `json:"id"`
+	AircraftID       int    `json:"aircraftID"`
 	AircraftNNum     string `json:"aircraftNNum"`
 	AircraftCallsign string `json:"aircraftCallsign"`
+}
+
+// MissionDetail ...
+type MissionDetail struct {
+	ID               int    `json:"id"`
 	Type             string `json:"type"`
 	NextWaypointETE  string `json:"nextWaypointETE"`
 	FlightNum        string `json:"flightNum"`
+	Status           string `json:"status"`
+	RadioReport      string `json:"radioReport"`
+	Crew             string `json:"crew"`
+	Requestor        string `json:"requestor"`
+	AircraftID       int    `json:"aircraftID"`
+	AircraftNNum     string `json:"aircraftNNum"`
+	AircraftCallsign string `json:"aircraftCallsign"`
 }
-
-*/
 
 var missions = []*Mission{}
 
