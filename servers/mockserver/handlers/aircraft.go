@@ -6,25 +6,38 @@ import (
 
 // Aircraft ...
 type Aircraft struct {
-	ID                 int    `json:"id"`
-	Callsign           string `json:"callsign"`
-	Crew               string `json:"crew"`
-	FlightStatus       string `json:"flightStatus"`
-	LevelOfCare        string `json:"levelOfCare"`
-	Location           string `json:"location"`
-	NNum               string `json:"nNum"`
-	OosReason          string `json:"oosReason"`
-	OosDuration        string `json:"oosDuration"`
-	ReturnToServiceEta string `json:"returnToService"`
-	Status             string `json:"status"`
-	Type               string `json:"type"`
-	Vision             string `json:"vision"`
+	ID            int    `json:"id"`
+	Callsign      string `json:"callsign"`
+	Crew          string `json:"crew"`
+	MissionStatus string `json:"missionStatus"`
+	LevelOfCare   string `json:"levelOfCare"`
+	Lat           string `json:"lat"`
+	Long          string `json:"long"`
+	Area          string `json:"area"`
+	NNum          string `json:"nNum"`
+	OOSReason     string `json:"OOSReason"`
+	OOSRemaining  string `json:"OOSRemaining"`
+	OOSDuration   string `json:"OOSDuration"`
+	Status        string `json:"status"`
+	Type          string `json:"type"`
+	Vision        string `json:"vision"`
 }
 
-// AircraftDetail ...
-type AircraftDetail struct {
-	ID int `json:"id"`
+/*
+// Aircraft ...
+type Aircraft struct {
+	ID           int    `json:"id"`
+	Callsign     string `json:"callsign"`
+	NNum         string `json:"nNum"`
+	Status       string `json:"status"`
+	Lat          string `json:"lat"`
+	Long         string `json:"long"`
+	Area         string `json:"area"`
+	OOSReason    string `json:"OOSReason"`
+	OOSRemaining string `json:"OOSRemaining"`
+	Type         string `json:"type"`
 }
+*/
 
 var aircraft = []*Aircraft{}
 

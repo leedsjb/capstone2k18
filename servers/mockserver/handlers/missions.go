@@ -8,36 +8,32 @@ import (
 // Mission ...
 type Mission struct {
 	ID               int    `json:"id"`
-	NNum             string `json:"nNum"`
-	MissionType      string `json:"missionType"`
-	Status           string `json:"status"`
-	FlightNum        string `json:"flightNum"`
+	AircraftNNum     string `json:"aircraftNNum"`
 	AircraftCallsign string `json:"aircraftCallsign"`
-}
-
-// MissionDetail ...
-type MissionDetail struct {
-	ID               int    `json:"id"`
-	NNum             string `json:"nNum"`
-	MissionType      string `json:"missionType"`
-	Status           string `json:"status"`
+	Type             string `json:"type"`
+	NextWaypointETE  string `json:"nextWaypointETE"`
 	FlightNum        string `json:"flightNum"`
-	AircraftCallsign string `json:"aircraftCallsign"`
+	Status           string `json:"status"`
 	RadioReport      string `json:"radioReport"`
 	Crew             string `json:"crew"`
 	Requestor        string `json:"requestor"`
 }
 
-var missions = []*Mission{
-	{
-		ID:               1,
-		NNum:             "N951AL",
-		MissionType:      "RW-SCENE",
-		Status:           "ongoing",
-		FlightNum:        "18-0013",
-		AircraftCallsign: "AL42",
-	},
+/*
+
+// Mission ...
+type Mission struct {
+	ID               int    `json:"id"`
+	AircraftNNum     string `json:"aircraftNNum"`
+	AircraftCallsign string `json:"aircraftCallsign"`
+	Type             string `json:"type"`
+	NextWaypointETE  string `json:"nextWaypointETE"`
+	FlightNum        string `json:"flightNum"`
 }
+
+*/
+
+var missions = []*Mission{}
 
 // MissionsHandler ...
 func MissionsHandler(w http.ResponseWriter, r *http.Request) {
