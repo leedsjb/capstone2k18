@@ -12,6 +12,9 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/missions", handlers.MissionsHandler)
+	mux.HandleFunc("/missions/", handlers.MissionDetailHandler)
+	mux.HandleFunc("/aircraft", handlers.AircraftHandler)
+	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
 
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))

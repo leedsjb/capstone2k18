@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"path"
 )
 
 // Mission ...
@@ -51,6 +52,8 @@ func MissionsHandler(w http.ResponseWriter, r *http.Request) {
 
 // MissionDetailHandler ...
 func MissionDetailHandler(w http.ResponseWriter, r *http.Request) {
+	id := path.Base(r.URL.Path)
+	print(id)
 	switch r.Method {
 	case "GET":
 		return
