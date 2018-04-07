@@ -17,6 +17,8 @@ func main() {
 	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
 	mux.HandleFunc("/people", handlers.PeopleHandler)
 	mux.HandleFunc("/people/", handlers.PersonDetailHandler)
+	mux.HandleFunc("/groups", handlers.GroupsHandler)
+	mux.HandleFunc("/groups/", handlers.GroupDetailHandler)
 
 	wrappedMux := handlers.NewCORSHandler(mux)
 

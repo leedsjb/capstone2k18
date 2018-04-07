@@ -47,8 +47,8 @@ var missionDetails = []*MissionDetail{
 		Requestor:        "First Last",
 		Vision:           "IFR",
 		AircraftID:       3,
-		AircraftNNum:     "N951AL",
-		AircraftCallsign: "AL2",
+		AircraftNNum:     aircraftDetails[2].NNum,
+		AircraftCallsign: aircraftDetails[2].Callsign,
 	},
 }
 
