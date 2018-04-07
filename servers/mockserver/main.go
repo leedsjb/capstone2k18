@@ -16,6 +16,8 @@ func main() {
 	mux.HandleFunc("/aircraft", handlers.AircraftHandler)
 	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
 
+	wrappedMux := handlers.NewCORSHandler(mux)
+
 	log.Printf("server is listening at %s...", addr)
-	log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(http.ListenAndServe(addr, wrappedMux))
 }
