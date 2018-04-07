@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"path"
+	"strconv"
 )
 
 // Aircraft ...
@@ -16,7 +19,6 @@ type Aircraft struct {
 	NNum          string `json:"nNum"`
 	OOSReason     string `json:"OOSReason"`
 	OOSRemaining  string `json:"OOSRemaining"`
-	OOSDuration   string `json:"OOSDuration"`
 	Status        string `json:"status"`
 	Type          string `json:"type"`
 	MissionStatus string `json:"missionStatus"`
@@ -35,12 +37,13 @@ type AircraftDetail struct {
 	NNum          string `json:"nNum"`
 	OOSReason     string `json:"OOSReason"`
 	OOSRemaining  string `json:"OOSRemaining"`
+	OOSDuration   string `json:"OOSDuration"`
 	Status        string `json:"status"`
 	Type          string `json:"type"`
 	MissionStatus string `json:"missionStatus"`
 }
 
-var aircraft = []*Aircraft{
+var aircraftDetails = []*AircraftDetail{
 	{
 		ID:            1,
 		Callsign:      "AL5",
@@ -98,6 +101,25 @@ var aircraft = []*Aircraft{
 func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		aircraft := []*Aircraft{}
+		for _, v := range aircraftDetails {
+			a := &Aircraft{
+				ID:            v.ID,
+				Callsign:      v.Callsign,
+				LevelOfCare:   v.LevelOfCare,
+				Class:         v.Class,
+				Lat:           v.Lat,
+				Long:          v.Long,
+				Area:          v.Area,
+				NNum:          v.NNum,
+				OOSReason:     v.OOSReason,
+				OOSRemaining:  v.OOSRemaining,
+				Status:        v.Status,
+				Type:          v.Type,
+				MissionStatus: v.MissionStatus,
+			}
+			aircraft = append(aircraft, a)
+		}
 		respond(w, aircraft)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
@@ -107,9 +129,25 @@ func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 
 // AircraftDetailHandler ...
 func AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error decoding ID: %v", err), http.StatusBadRequest)
+		return
+	}
+	var ad *AircraftDetail
+	for _, v := range aircraftDetails {
+		if v.ID == id {
+			ad = v
+			break
+		}
+	}
+	if ad == nil {
+		http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
+		return
+	}
 	switch r.Method {
 	case "GET":
-		return
+		respond(w, ad)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
