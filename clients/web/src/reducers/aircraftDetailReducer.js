@@ -1,8 +1,8 @@
 import {
-    FETCH_AIRCRAFT_PENDING,
-    FETCH_AIRCRAFT_SUCEESS,
-    FETCH_AIRCRAFT_ERROR
-} from "../actions/aircraft/types";
+    FETCH_AIRCRAFTDETAIL_PENDING,
+    FETCH_AIRCRAFTDETAIL_SUCCESS,
+    FETCH_AIRCRAFTDETAIL_ERROR
+} from "../actions/missions/types";
 
 const intitialState = {
     pending: false,
@@ -10,14 +10,14 @@ const intitialState = {
     data: []
 };
 
-const aircraftReducer = (state = initialState, action) => {
+const aircraftDetailReducer = (state = intitialState, action) => {
     switch (action.type) {
-        case FETCH_AIRCRAFT_PENDING:
+        case FETCH_AIRCRAFTDETAIL_PENDING:
             return {
                 ...state,
                 pending: true
             };
-        case FETCH_AIRCRAFT_SUCEESS:
+        case FETCH_AIRCRAFTDETAIL_SUCCESS:
             return {
                 ...state,
                 pending: false,
@@ -28,4 +28,4 @@ const aircraftReducer = (state = initialState, action) => {
     }
 };
 
-export default aircraftReducer;
+export default aircraftDetailReducer;

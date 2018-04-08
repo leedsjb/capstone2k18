@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { FETCH_MISSIONS_PENDING, FETCH_MISSIONS_SUCCESS } from "./types";
+import {
+    FETCH_MISSIONS_PENDING,
+    FETCH_MISSIONS_SUCCESS,
+    FETCH_MISSIONS_ERROR
+} from "./types";
 
 export function fetchMissions() {
     return async dispatch => {

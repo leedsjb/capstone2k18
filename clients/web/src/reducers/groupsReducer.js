@@ -1,8 +1,8 @@
 import {
-    FETCH_AIRCRAFT_PENDING,
-    FETCH_AIRCRAFT_SUCEESS,
-    FETCH_AIRCRAFT_ERROR
-} from "../actions/aircraft/types";
+    FETCH_GROUPS_PENDING,
+    FETCH_GROUPS_SUCCESS,
+    FETCH_GROUPS_ERROR
+} from "../actions/groups/types";
 
 const intitialState = {
     pending: false,
@@ -10,14 +10,14 @@ const intitialState = {
     data: []
 };
 
-const aircraftReducer = (state = initialState, action) => {
+const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
-        case FETCH_AIRCRAFT_PENDING:
+        case FETCH_GROUPS_PENDING:
             return {
                 ...state,
                 pending: true
             };
-        case FETCH_AIRCRAFT_SUCEESS:
+        case FETCH_GROUPS_SUCCESS:
             return {
                 ...state,
                 pending: false,
@@ -28,4 +28,4 @@ const aircraftReducer = (state = initialState, action) => {
     }
 };
 
-export default aircraftReducer;
+export default groupsReducer;
