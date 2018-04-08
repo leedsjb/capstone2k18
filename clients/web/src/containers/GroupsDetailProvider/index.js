@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
-import { map } from "rxjs/operators";
 
 class GroupsDetailProvider extends Component {
     componentDidMount() {
