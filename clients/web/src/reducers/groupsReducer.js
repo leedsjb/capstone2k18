@@ -4,7 +4,7 @@ import {
     FETCH_GROUPS_ERROR
 } from "../actions/groups/types";
 
-const intitialState = {
+const initialState = {
     pending: false,
     error: null,
     data: []

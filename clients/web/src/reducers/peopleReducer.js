@@ -10,7 +10,7 @@ const initialState = {
     data: []
 };
 
-const peopleReducer = (state = intialState, action) => {
+const peopleReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_PEOPLE_PENDING:
             return {

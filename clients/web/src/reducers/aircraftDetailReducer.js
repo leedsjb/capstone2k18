@@ -2,7 +2,7 @@ import {
     FETCH_AIRCRAFTDETAIL_PENDING,
     FETCH_AIRCRAFTDETAIL_SUCCESS,
     FETCH_AIRCRAFTDETAIL_ERROR
-} from "../actions/missions/types";
+} from "../actions/aircraftDetail/types";
 
 const intitialState = {
     pending: false,
