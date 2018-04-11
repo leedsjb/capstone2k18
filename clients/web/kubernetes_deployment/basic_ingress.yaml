@@ -1,0 +1,39 @@
+%YAML 1.2
+
+# Filename: basic_ingress.yaml
+# Created: April 10, 2018
+# Modified: 
+# Author: J. Benjamin Leeds
+# License: None
+
+# Use this manifest to create an Ingress service on a Google Container Enginer Kubernetes Cluster
+# The service is a Google Compute Engine HTTP(S) Load Balancer
+# Reference: https://cloud.google.com/compute/docs/load-balancing/http/
+
+# HTTP requests use port 80, HTTPS requests use port 443
+
+# define TLS secret
+apiVersion: v1
+data:
+  tls.crt: base64 encoded cert
+  tls.key: base64 encoded key
+kind: Secret
+metadata:
+  name: testsecret
+  namespace: default
+type: Opaque
+
+# define load balancer
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: basic-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: web-static-ip
+spec:
+   tls:
+  - secretName: testsecret
+  backend:
+    serviceName: web
+    servicePort: 80
+
