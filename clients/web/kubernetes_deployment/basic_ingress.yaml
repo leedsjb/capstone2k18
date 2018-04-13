@@ -1,4 +1,4 @@
-%YAML 1.2
+# %YAML 1.2
 
 # Filename: basic_ingress.yaml
 # Created: April 10, 2018
@@ -13,27 +13,70 @@
 # HTTP requests use port 80, HTTPS requests use port 443
 
 # define TLS secret
-apiVersion: v1
-data:
-  tls.crt: base64 encoded cert
-  tls.key: base64 encoded key
-kind: Secret
-metadata:
-  name: testsecret
-  namespace: default
-type: Opaque
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     run: alnw-deployment
+#   name: alnw-deployment
+#   namespace: default
+#   resourceVersion: "610"
+#   selfLink: /api/v1/namespaces/default/services/alnw-deployment
+# spec:
+#   clusterIP: 10.55.246.57
+#   externalTrafficPolicy: Cluster
+#   ports:
+#   - nodePort: 32494
+#     port: 80
+#     protocol: TCP
+#     targetPort: 80
+#   selector:
+#     run: alnw-deployment
+#   sessionAffinity: None
+#   type: LoadBalancer
+#   tls:
+#   - secretName: test-ingress-secret
+#   backend:
+#     serviceName: kubernetes
+#     servicePort: 80
 
-# define load balancer
+# status:
+#   loadBalancer:
+#     ingress:
+#     - ip: 35.185.212.85
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: basic-ingress
+  name: alnw-deployment
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: web-static-ip
+    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-   tls:
-  - secretName: testsecret
+  tls:
+  - secretName: test-ingress-secret                   
   backend:
-    serviceName: web
-    servicePort: 80
+    serviceName: alnw-deployment     
+    servicePort: 80  
+# spec:
+#   clusterIP: 10.55.246.57
+#   externalTrafficPolicy: Cluster
+#   ports:
+#   - nodePort: 32494
+#     port: 80
+#     protocol: TCP
+#     targetPort: 80
+#   selector:
+#     run: alnw-deployment
+#   sessionAffinity: None
+#   type: LoadBalancer
+#   tls:
+#   - secretName: test-ingress-secret
+#   backend:
+#     serviceName: kubernetes
+#     servicePort: 80
 
+# status:
+#   loadBalancer:
+#     ingress:
+#     - ip: 35.185.212.85
