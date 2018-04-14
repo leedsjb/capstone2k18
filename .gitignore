@@ -17,10 +17,10 @@
 /clients/web/build
 
 # sensitive data
-.pem
-.crt
-.csr
-.key
+*.pem
+*.crt
+*.csr
+*.key
 
 # misc
 .DS_Store
@@ -33,3 +33,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+k8s-gcr-auth-ro.json
