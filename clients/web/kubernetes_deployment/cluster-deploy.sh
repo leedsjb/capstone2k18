@@ -1,5 +1,11 @@
 #!/bin/bash
-# Create a cluster in gcloud and deploy an application on it
+
+# Filename: cluster-deploy.sh
+# Created: 
+# Modified: April 14, 2018
+# Author: Tiffany Chen & J. Benjamin Leeds
+# License: None
+# Purpose: Create a cluster in gcloud and deploy an application on it
 
 usage="Creates a cluster in gcloud and deploys an application on it from a given image source. 
 
@@ -42,8 +48,13 @@ kubectl run $deploymentName --image=$imageSource --port 80
 # see pod created by deployment
 kubectl get pods
 
-
+# in order to access a container running in a pod
+# create two services (1: deployed image itself, 2: LoadBalancer)
 kubectl expose deployment $deploymentName --type=LoadBalancer --port 80 --target-port 80
 
 #check
 kubectl get service
+
+# Note: there is no need to specify a resource type as a separate argument when passing arguments
+# in resource/name form (e.g. 'kubectl get resource/<resource_name>' instead of
+#                             'kubectl get resource resource/<resource_name>'
