@@ -1,13 +1,20 @@
+# Filename: .gitgnore
+# Created: April 10, 2018
+# Modified: April 14, 2018
+# Author: J. Benjamin Leeds
+# License: None
+
+# This is the project level .gitignore located in the root of the repository
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/clients/web/node_modules
 
 # testing
 /coverage
 
 # production
-/build
+/clients/web/build
 
 # sensitive data
 .pem
