@@ -16,7 +16,8 @@ const Tab = sys(
         }
     },
     {
-        textDecoration: "none"
+        textDecoration: "none",
+        display: "inline-block"
     },
     props => ({
         borderColor: props.active ? "blue" : "transparent"

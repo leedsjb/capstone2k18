@@ -24,27 +24,6 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 <Link to="/missions">
                                     <Logo />
                                 </Link>
-                                <Flex ml={4}>
-                                    <NavBarItem
-                                        title="Missions"
-                                        path="/missions"
-                                        glyph="medicalCross"
-                                    />
-                                    <Box ml={3}>
-                                        <NavBarItem
-                                            title="Aircraft"
-                                            path="/aircraft"
-                                            glyph="airplaneFlight"
-                                        />
-                                    </Box>
-                                    <Box ml={3}>
-                                        <NavBarItem
-                                            title="People"
-                                            path="/people"
-                                            glyph="accountGroup"
-                                        />
-                                    </Box>
-                                </Flex>
                             </Flex>
                             <Flex alignItems="center">
                                 <Icon glyph="grid" size={16} />

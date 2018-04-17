@@ -20,6 +20,7 @@ const TextInput = sys(
         color: "inherit",
         bg: "transparent"
     },
+    "space",
     props => ({
         fontFamily: "inherit",
         display: "inline-block",
