@@ -14,6 +14,7 @@ func main() {
 	mux.HandleFunc("/aircraft", handlers.AircraftHandler)
 	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
 	mux.HandleFunc("/people", handlers.PeopleHandler)
+	mux.HandleFunc("/people/me", handlers.PeopleMeHandler)
 	mux.HandleFunc("/people/", handlers.PersonDetailHandler)
 	mux.HandleFunc("/groups", handlers.GroupsHandler)
 	mux.HandleFunc("/groups/", handlers.GroupDetailHandler)

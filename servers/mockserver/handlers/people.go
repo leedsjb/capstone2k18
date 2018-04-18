@@ -88,6 +88,16 @@ var personDetails = []*PersonDetail{
 		Mobile:       "(206) 280 7212",
 		SpecialQuals: "",
 	},
+	{
+		ID:           7,
+		FName:        "David",
+		LName:        "Gallagher",
+		Position:     "Analyst",
+		Email:        "david.gallagher@airliftnw.org",
+		UWNetID:      "dgallagher",
+		Mobile:       "(202) 555 0110",
+		SpecialQuals: "",
+	},
 }
 
 // PeopleHandler ...
