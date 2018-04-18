@@ -1,7 +1,6 @@
 import {
     FETCH_AIRCRAFT_PENDING,
-    FETCH_AIRCRAFT_SUCCESS,
-    FETCH_AIRCRAFT_ERROR
+    FETCH_AIRCRAFT_SUCCESS
 } from "../actions/aircraft/types";
 
 const initialState = {

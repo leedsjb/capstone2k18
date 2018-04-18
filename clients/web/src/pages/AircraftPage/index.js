@@ -6,8 +6,6 @@ import FlexFullHeight from "../../components/FlexFullHeight";
 import SearchBox from "../../components/SearchBox";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
-import Tab from "../../components/Tab";
-import Tabs from "../../components/Tabs";
 import Box from "../../components/Box";
 import NavBar from "../../components/NavBar";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
@@ -27,12 +25,6 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        const content = {
-            availTab: "Available Aircrafts",
-            missionTab: "Aircrafts Currently on a Mission",
-            oosTab: "Aircrafts Currently Out of Service"
-        };
-
         return (
             <div>
                 <NavBarItem title="Aircraft" path="/aircraft" />
@@ -68,7 +60,7 @@ class AircraftPage extends Component {
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
                     renderDetailView={() => {
-                        <div />;
+                        return <div />;
                     }}
                     renderMapView={() => {}}
                 />

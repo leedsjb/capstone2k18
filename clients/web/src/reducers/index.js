@@ -3,8 +3,6 @@ import { routerReducer } from "react-router-redux";
 import { reducer as formReducer } from "redux-form";
 
 import signInReducer from "./signInReducer";
-import missionsReducer from "./missionsReducer";
-import missionDetailReducer from "./missionDetailReducer";
 import aircraftReducer from "./aircraftReducer";
 import aircraftDetailReducer from "./aircraftDetailReducer";
 import peopleReducer from "./peopleReducer";
@@ -18,8 +16,6 @@ export default function createReducer(injectedReducers) {
         router: routerReducer,
         form: formReducer,
         signIn: signInReducer,
-        missions: missionsReducer,
-        missionDetail: missionDetailReducer,
         aircraft: aircraftReducer,
         aircraftDetail: aircraftDetailReducer,
         people: peopleReducer,

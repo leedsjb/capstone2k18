@@ -1,9 +1,6 @@
 import React from "react";
-import { Flex } from "grid-styled";
 import { NavLink } from "react-router-dom";
 
-import Box from "../Box";
-import Icon from "../Icon";
 import Link from "../Link";
 import Tab from "../../components/Tab";
 

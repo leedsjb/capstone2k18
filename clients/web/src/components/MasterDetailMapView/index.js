@@ -6,7 +6,7 @@ import ScrollView from "../ScrollView";
 import MasterDetailView from "../MasterDetailView";
 import MasterView from "../MasterView";
 import DetailView from "../DetailView";
-import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
+import ReactMapboxGl from "react-mapbox-gl";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX

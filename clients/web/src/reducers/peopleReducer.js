@@ -1,7 +1,6 @@
 import {
     FETCH_PEOPLE_PENDING,
-    FETCH_PEOPLE_SUCCESS,
-    FETCH_PEOPLE_ERROR
+    FETCH_PEOPLE_SUCCESS
 } from "../actions/people/types";
 
 const initialState = {

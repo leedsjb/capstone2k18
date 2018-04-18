@@ -7,6 +7,6 @@ export const signIn = values => {
         console.log(values);
         // This shouldn't be missions, but this is just
         // a demonstration
-        dispatch(push("/missions"));
+        dispatch(push("/aircraft"));
     };
 };

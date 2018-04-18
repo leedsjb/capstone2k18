@@ -7,8 +7,6 @@ import { withTheme } from "styled-components";
 import FlexFullHeight from "../FlexFullHeight";
 
 import SignInPage from "../../pages/SignInPage";
-import MissionsPage from "../../pages/MissionsPage";
-import MissionDetailPage from "../../pages/MissionDetailPage";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import PeoplePage from "../../pages/PeoplePage";
@@ -30,10 +28,9 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
                             <Route
-                                path="/missions/:id"
-                                component={MissionsPage}
+                                path="/aircraft/:id"
+                                component={AircraftPage}
                             />
-                            <Route path="/missions" component={MissionsPage} />
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
@@ -43,11 +40,6 @@ const App = ({ theme: { breakpoints } }) => {
                         <Switch>
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
-                            <Route
-                                path="/missions/:id"
-                                component={MissionDetailPage}
-                            />
-                            <Route path="/missions" component={MissionsPage} />
                             <Route
                                 path="/aircraft/:id"
                                 component={AircraftDetailPage}

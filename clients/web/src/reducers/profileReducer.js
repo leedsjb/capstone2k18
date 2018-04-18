@@ -1,7 +1,6 @@
 import {
     FETCH_PROFILE_PENDING,
-    FETCH_PROFILE_SUCCESS,
-    FETCH_PROFILE_ERROR
+    FETCH_PROFILE_SUCCESS
 } from "../actions/profile/types";
 
 const initialState = {

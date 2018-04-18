@@ -1,7 +1,6 @@
 import React from "react";
 import Downshift from "downshift";
 
-import Relative from "../Relative";
 import Absolute from "../Absolute";
 
 const DropdownSelect = ({ items, onChange }) => {

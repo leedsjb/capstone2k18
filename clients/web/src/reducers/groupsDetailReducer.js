@@ -1,7 +1,6 @@
 import {
     FETCH_GROUPSDETAIL_PENDING,
-    FETCH_GROUPSDETAIL_SUCCESS,
-    FETCH_GROUPSDETAIL_ERROR
+    FETCH_GROUPSDETAIL_SUCCESS
 } from "../actions/groupsDetail/types";
 
 const initialState = {

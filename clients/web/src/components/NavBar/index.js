@@ -7,7 +7,6 @@ import { withTheme } from "styled-components";
 import Box from "../Box";
 import Icon from "../Icon";
 import ProfileAvatar from "../ProfileAvatar";
-import NavBarItem from "../NavBarItem";
 import Logo from "../Logo";
 
 const NavBar = ({ theme: { breakpoints } }) => {
@@ -21,7 +20,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                             alignItems="center"
                         >
                             <Flex alignItems="center">
-                                <Link to="/missions">
+                                <Link to="/aircraft">
                                     <Logo />
                                 </Link>
                             </Flex>

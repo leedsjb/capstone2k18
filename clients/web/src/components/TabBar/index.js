@@ -13,11 +13,6 @@ const TabBar = ({ theme: { breakpoints } }) => {
                 return (
                     <Flex>
                         <TabBarItem
-                            title="Missions"
-                            path="/missions"
-                            glyph="medicalCross"
-                        />
-                        <TabBarItem
                             title="Aircraft"
                             glyph="airplaneFlight"
                             path="/aircraft"

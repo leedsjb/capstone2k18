@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { fetchPeople } from "../../actions/people/actions";
-import missionsReducer from "../../reducers/missionsReducer";
 
 class PeopleProvider extends Component {
     componentDidMount() {
