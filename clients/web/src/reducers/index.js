@@ -11,6 +11,7 @@ import peopleReducer from "./peopleReducer";
 import peopleDetailReducer from "./peopleDetailReducer";
 import groupsReducer from "./groupsReducer";
 import groupsDetailReducer from "./groupsDetailReducer";
+import profileReducer from "./profileReducer";
 
 export default function createReducer(injectedReducers) {
     return combineReducers({
@@ -25,6 +26,7 @@ export default function createReducer(injectedReducers) {
         peopleDetail: peopleDetailReducer,
         groups: groupsReducer,
         groupsDetail: groupsDetailReducer,
+        profileReducer: profileReducer,
         ...injectedReducers
     });
 }
