@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// Mission ...
 type Mission struct {
 	Type            string `json:"type"`
 	Status          string `json:"status"`
@@ -15,6 +16,7 @@ type Mission struct {
 	FlightNum       string `json:"flightNum"`
 }
 
+// MissionDetail ...
 type MissionDetail struct {
 	Type            string `json:"type"`
 	Status          string `json:"status"`
@@ -25,48 +27,50 @@ type MissionDetail struct {
 	Requestor       string `json:"requestor"`
 }
 
+// OOS ...
 type OOS struct {
-	reason    string `json:"reason"`
-	remaining string `json:"remaining"`
+	Reason    string `json:"reason"`
+	Remaining string `json:"remaining"`
 }
 
+// OOSDetail ...
 type OOSDetail struct {
-	reason    string `json:"reason"`
-	remaining string `json:"remaining"`
-	duration  string `json:"duration"`
+	Reason    string `json:"reason"`
+	Remaining string `json:"remaining"`
+	Duration  string `json:"duration"`
 }
 
 // Aircraft ...
 type Aircraft struct {
-	ID          int     `json:"id"`
-	Status      string  `json:"status"`
-	Type        string  `json:"type"`
-	Callsign    string  `json:"callsign"`
-	LevelOfCare string  `json:"levelOfCare"`
-	Class       string  `json:"class"`
-	Lat         string  `json:"lat"`
-	Long        string  `json:"long"`
-	Area        string  `json:"area"`
-	NNum        string  `json:"nNum"`
-	Mission     Mission `json:"mission"`
-	OOS         OOS     `json:"OOS"`
+	ID          int      `json:"id"`
+	Status      string   `json:"status"`
+	Type        string   `json:"type"`
+	Callsign    string   `json:"callsign"`
+	LevelOfCare string   `json:"levelOfCare"`
+	Class       string   `json:"class"`
+	Lat         string   `json:"lat"`
+	Long        string   `json:"long"`
+	Area        string   `json:"area"`
+	NNum        string   `json:"nNum"`
+	Mission     *Mission `json:"mission"`
+	OOS         *OOS     `json:"OOS"`
 }
 
 // AircraftDetail ...
 type AircraftDetail struct {
-	ID          int           `json:"id"`
-	Status      string        `json:"status"`
-	Type        string        `json:"type"`
-	Callsign    string        `json:"callsign"`
-	Crew        GroupDetail   `json:"crew"`
-	LevelOfCare string        `json:"levelOfCare"`
-	Class       string        `json:"class"`
-	Lat         string        `json:"lat"`
-	Long        string        `json:"long"`
-	Area        string        `json:"area"`
-	NNum        string        `json:"nNum"`
-	Mission     MissionDetail `json:"mission"`
-	OOS         OOSDetail     `json:"OOS"`
+	ID          int            `json:"id"`
+	Status      string         `json:"status"`
+	Type        string         `json:"type"`
+	Callsign    string         `json:"callsign"`
+	Crew        *GroupDetail   `json:"crew"`
+	LevelOfCare string         `json:"levelOfCare"`
+	Class       string         `json:"class"`
+	Lat         string         `json:"lat"`
+	Long        string         `json:"long"`
+	Area        string         `json:"area"`
+	NNum        string         `json:"nNum"`
+	Mission     *MissionDetail `json:"mission"`
+	OOS         *OOSDetail     `json:"OOS"`
 }
 
 var aircraftDetails = []*AircraftDetail{
@@ -78,15 +82,15 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[2],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.543265",
-		Long:        "-122.309759",
+		Lat:         "47.545218",
+		Long:        "-122.315673",
 		Area:        "Inceptos vestibulum",
 		NNum:        "N948AL",
-		Mission:     {},
-		OOS: {
-			reason:    "Unscheduled maintenance",
-			remaining: "29 hours",
-			duration:  "7 hours",
+		Mission:     nil,
+		OOS: &OOSDetail{
+			Reason:    "Unscheduled maintenance",
+			Remaining: "29 hours",
+			Duration:  "7 hours",
 		},
 	},
 	{
@@ -97,12 +101,12 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[1],
 		LevelOfCare: "pediatric",
 		Class:       "fixed",
-		Lat:         "47.543265",
-		Long:        "-122.309759",
+		Lat:         "47.542964",
+		Long:        "-122.309860",
 		Area:        "Ullamcorper fusce",
 		NNum:        "N937AL",
-		Mission:     {},
-		OOS:         {},
+		Mission:     nil,
+		OOS:         nil,
 	},
 	{
 		ID:          3,
@@ -112,11 +116,11 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[0],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.543265",
-		Long:        "-122.309759",
+		Lat:         "47.528478",
+		Long:        "-122.291697",
 		Area:        "Sem quam Commodo",
 		NNum:        "N951AL",
-		Mission: {
+		Mission: &MissionDetail{
 			Type:            "RW-SCENE",
 			Status:          "ongoing",
 			Vision:          "IFR",
@@ -125,7 +129,7 @@ var aircraftDetails = []*AircraftDetail{
 			RadioReport:     "18-0013, 65, 90, male, GSW to chest. Has chest tube., Yes, 4, Paced externally - bring pacer box, Upper GI Bleed, Less than 5cm - launch without AOC Notification",
 			Requestor:       "First Last",
 		},
-		OOS: {},
+		OOS: nil,
 	},
 }
 
@@ -146,20 +150,25 @@ func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 				Long:        v.Long,
 				Area:        v.Area,
 				NNum:        v.NNum,
-				Mission: {
+			}
+			if v.Mission != nil {
+				a.Mission = &Mission{
 					Type:            v.Mission.Type,
 					Status:          v.Mission.Status,
 					Vision:          v.Mission.Vision,
 					NextWaypointETE: v.Mission.NextWaypointETE,
 					FlightNum:       v.Mission.FlightNum,
-				},
-				OOS: {
-					reason:    v.OOS.reason,
-					remaining: v.OOS.remaining,
-				},
+				}
+			}
+			if v.OOS != nil {
+				a.OOS = &OOS{
+					Reason:    v.OOS.Reason,
+					Remaining: v.OOS.Remaining,
+				}
 			}
 			aircraft = append(aircraft, a)
 		}
+
 		respond(w, aircraft)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
