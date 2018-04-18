@@ -11,8 +11,6 @@ func main() {
 	addr := ":4000"
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/missions", handlers.MissionsHandler)
-	mux.HandleFunc("/missions/", handlers.MissionDetailHandler)
 	mux.HandleFunc("/aircraft", handlers.AircraftHandler)
 	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
 	mux.HandleFunc("/people", handlers.PeopleHandler)

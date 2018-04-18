@@ -61,6 +61,25 @@ var groupDetails = []*GroupDetail{
 			},
 		},
 	},
+	{
+		ID:            3,
+		Name:          "AL5",
+		PeoplePreview: fmt.Sprintf("%v and %v", personDetails[4].FName, personDetails[5].FName),
+		People: []*Person{
+			{
+				ID:       personDetails[4].ID,
+				FName:    personDetails[4].FName,
+				LName:    personDetails[4].LName,
+				Position: personDetails[4].Position,
+			},
+			{
+				ID:       personDetails[5].ID,
+				FName:    personDetails[5].FName,
+				LName:    personDetails[5].LName,
+				Position: personDetails[5].Position,
+			},
+		},
+	},
 }
 
 // GroupsHandler ...

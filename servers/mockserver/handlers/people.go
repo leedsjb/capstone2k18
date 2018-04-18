@@ -68,6 +68,26 @@ var personDetails = []*PersonDetail{
 		Mobile:       "(456) 789 0123",
 		SpecialQuals: "",
 	},
+	{
+		ID:           5,
+		FName:        "Christine",
+		LName:        "Engle",
+		Position:     "Pilot",
+		Email:        "chrisengle@airliftnw.org",
+		UWNetID:      "chrisengle",
+		Mobile:       "(425) 598 6442",
+		SpecialQuals: "",
+	},
+	{
+		ID:           6,
+		FName:        "Atif",
+		LName:        "Mack",
+		Position:     "Flight Nurse",
+		Email:        "atifmack@uw.edu",
+		UWNetID:      "atifmack",
+		Mobile:       "(206) 280 7212",
+		SpecialQuals: "",
+	},
 }
 
 // PeopleHandler ...
