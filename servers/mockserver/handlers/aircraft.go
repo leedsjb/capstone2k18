@@ -133,40 +133,57 @@ var aircraftDetails = []*AircraftDetail{
 	},
 }
 
+// GetAircraftSummary ...
+func GetAircraftSummary(v *AircraftDetail) *Aircraft {
+	a := &Aircraft{
+		ID:          v.ID,
+		Status:      v.Status,
+		Type:        v.Type,
+		Callsign:    v.Callsign,
+		LevelOfCare: v.LevelOfCare,
+		Class:       v.Class,
+		Lat:         v.Lat,
+		Long:        v.Long,
+		Area:        v.Area,
+		NNum:        v.NNum,
+	}
+	if v.Mission != nil {
+		a.Mission = &Mission{
+			Type:            v.Mission.Type,
+			Status:          v.Mission.Status,
+			Vision:          v.Mission.Vision,
+			NextWaypointETE: v.Mission.NextWaypointETE,
+			FlightNum:       v.Mission.FlightNum,
+		}
+	}
+	if v.OOS != nil {
+		a.OOS = &OOS{
+			Reason:    v.OOS.Reason,
+			Remaining: v.OOS.Remaining,
+		}
+	}
+	return a
+}
+
 // AircraftHandler ...
 func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		query := r.URL.Query()
+		statusFilter := query.Get("status")
+
 		aircraft := []*Aircraft{}
-		for _, v := range aircraftDetails {
-			a := &Aircraft{
-				ID:          v.ID,
-				Status:      v.Status,
-				Type:        v.Type,
-				Callsign:    v.Callsign,
-				LevelOfCare: v.LevelOfCare,
-				Class:       v.Class,
-				Lat:         v.Lat,
-				Long:        v.Long,
-				Area:        v.Area,
-				NNum:        v.NNum,
-			}
-			if v.Mission != nil {
-				a.Mission = &Mission{
-					Type:            v.Mission.Type,
-					Status:          v.Mission.Status,
-					Vision:          v.Mission.Vision,
-					NextWaypointETE: v.Mission.NextWaypointETE,
-					FlightNum:       v.Mission.FlightNum,
+
+		if len(statusFilter) > 0 {
+			for _, v := range aircraftDetails {
+				if v.Status == statusFilter {
+					aircraft = append(aircraft, GetAircraftSummary(v))
 				}
 			}
-			if v.OOS != nil {
-				a.OOS = &OOS{
-					Reason:    v.OOS.Reason,
-					Remaining: v.OOS.Remaining,
-				}
+		} else {
+			for _, v := range aircraftDetails {
+				aircraft = append(aircraft, GetAircraftSummary(v))
 			}
-			aircraft = append(aircraft, a)
 		}
 
 		respond(w, aircraft)
