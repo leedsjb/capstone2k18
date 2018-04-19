@@ -12,17 +12,23 @@ import MasterDetailMapView from "../../components/MasterDetailMapView";
 import DropdownSelect from "../../components/DropdownSelect";
 import NavBarItem from "../../components/NavBarItem";
 
-const dropdownItems = ["Any status", "On Mission", "OOS"];
+import AircraftProvider from "../../containers/AircraftProvider";
 
-function dropdownOnChange(selectedItem) {
-    console.log("Selected item", selectedItem);
-}
+const statusFilters = ["Any status", "On Mission", "OOS"];
 
 class AircraftPage extends Component {
     constructor(props) {
         super(props);
-        this.state = { active: "availTab" };
+        this.state = {
+            status: ""
+        };
     }
+
+    setStatus = status => {
+        this.setState({
+            status
+        });
+    };
 
     renderMasterView = () => {
         return (
@@ -32,17 +38,21 @@ class AircraftPage extends Component {
 
                 <Flex>
                     <DropdownSelect
-                        items={dropdownItems}
-                        onChange={dropdownOnChange}
-                    />
-                    <DropdownSelect
-                        items={dropdownItems}
-                        onChange={dropdownOnChange}
+                        items={statusFilters}
+                        onChange={this.setStatus}
                     />
                 </Flex>
                 <Box px={3}>
                     <SearchBox />
                 </Box>
+
+                <AircraftProvider
+                    status={this.state.status}
+                    render={test => {
+                        console.log(test);
+                        return <div />;
+                    }}
+                />
             </div>
         );
     };

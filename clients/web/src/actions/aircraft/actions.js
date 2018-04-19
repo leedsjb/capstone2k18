@@ -6,14 +6,21 @@ import {
     FETCH_AIRCRAFT_ERROR
 } from "./types";
 
-export function fetchAircaft() {
+export function fetchAircraft(status) {
     return async dispatch => {
         try {
             dispatch({
                 type: FETCH_AIRCRAFT_PENDING
             });
 
-            const { data } = await axios.get("http://localhost:4000/aircraft");
+            let url = "http://localhost:4000/aircraft";
+
+            if (status) {
+                url = `${url}?status=${status}`;
+            }
+
+            console.log(url);
+            const { data } = await axios.get(url);
 
             dispatch({
                 type: FETCH_AIRCRAFT_SUCCESS,
