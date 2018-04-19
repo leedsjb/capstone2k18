@@ -5,7 +5,7 @@ import { fetchProfile } from "../../actions/profile/actions";
 
 class ProfileProvider extends Component {
     componentDidMount() {
-        this.props.fetchProfile(this.props.id);
+        this.props.fetchProfile();
     }
 
     render() {

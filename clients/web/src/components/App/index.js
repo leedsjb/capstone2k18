@@ -12,6 +12,7 @@ import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 import HomePage from "../../pages/HomePage";
+import ProfilePage from "../../pages/ProfilePage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -34,6 +35,7 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
+                            <Route path="/profile" component={ProfilePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     ) : (
@@ -46,6 +48,7 @@ const App = ({ theme: { breakpoints } }) => {
                             />
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people" component={PeoplePage} />
+                            <Route path="/profile" component={ProfilePage} />
                             <Route component={NotFoundPage} />
                         </Switch>
                     )

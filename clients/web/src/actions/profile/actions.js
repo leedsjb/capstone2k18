@@ -6,16 +6,14 @@ import {
     FETCH_PROFILE_ERROR
 } from "./types";
 
-export function fetchProfile(id) {
+export function fetchProfile() {
     return async dispatch => {
         try {
             dispatch({
                 type: FETCH_PROFILE_PENDING
             });
 
-            const { data } = await axios.get(
-                `http://localhost:4000/profile/$id`
-            );
+            const { data } = await axios.get("http://localhost:4000/people/me");
 
             dispatch({
                 type: FETCH_PROFILE_SUCCESS,

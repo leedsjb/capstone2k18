@@ -22,7 +22,7 @@ export default function createReducer(injectedReducers) {
         peopleDetail: peopleDetailReducer,
         groups: groupsReducer,
         groupsDetail: groupsDetailReducer,
-        profileReducer: profileReducer,
+        profile: profileReducer,
         ...injectedReducers
     });
 }
