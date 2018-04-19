@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Switch, Route } from "react-router";
+import { Switch, Route, Redirect } from "react-router";
 import Media from "react-media";
 import { withTheme } from "styled-components";
 
@@ -13,6 +13,7 @@ import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 import HomePage from "../../pages/HomePage";
 import ProfilePage from "../../pages/ProfilePage";
+import ResourcesPage from "../../pages/ResourcesPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -36,6 +37,7 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
                             <Route path="/profile" component={ProfilePage} />
+                            <Redirect from="/resources" to="/aircraft" />
                             <Route component={NotFoundPage} />
                         </Switch>
                     ) : (
@@ -49,6 +51,10 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people" component={PeoplePage} />
                             <Route path="/profile" component={ProfilePage} />
+                            <Route
+                                path="/resources"
+                                component={ResourcesPage}
+                            />
                             <Route component={NotFoundPage} />
                         </Switch>
                     )
