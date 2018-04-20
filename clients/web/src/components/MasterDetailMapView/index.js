@@ -39,6 +39,7 @@ const MasterDetailMapView = ({
                                 width: "100%",
                                 height: "100%"
                             }}
+                            center={[6.5665, 53.2194]}
                         >
                             {renderMapView()}
                         </Map>
