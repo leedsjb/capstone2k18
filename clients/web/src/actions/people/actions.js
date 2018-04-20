@@ -1,10 +1,6 @@
 import axios from "axios";
 
-import {
-    FETCH_PEOPLE_PENDING,
-    FETCH_PEOPLE_SUCCESS,
-    FETCH_PEOPLE_ERROR
-} from "./types";
+import { FETCH_PEOPLE_PENDING, FETCH_PEOPLE_SUCCESS } from "./types";
 
 export function fetchPeople() {
     return async dispatch => {

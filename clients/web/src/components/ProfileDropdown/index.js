@@ -5,14 +5,10 @@ import { Link } from "react-router-dom";
 import ProfileAvatar from "../ProfileAvatar";
 import Absolute from "../Absolute";
 import Relative from "../Relative";
-import Icon from "../Icon";
-import Image from "../Image";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
-function onChange(selectedItem) {
-    console.log("Selected item", selectedItem);
-}
+function onChange(selectedItem) {}
 
 const ProfileDropdown = () => {
     return (
@@ -36,7 +32,10 @@ const ProfileDropdown = () => {
                             return (
                                 <div>
                                     <Relative>
-                                        <ProfileAvatar onClick={toggleMenu} />
+                                        <ProfileAvatar
+                                            fName="Dave"
+                                            onClick={toggleMenu}
+                                        />
                                         {isOpen ? (
                                             <Absolute
                                                 bg="white"

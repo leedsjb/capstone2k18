@@ -10,10 +10,8 @@ import Box from "../../components/Box";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFullHeight from "../../components/FlexFullHeight";
-import SearchBox from "../../components/SearchBox";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
-import NavBarItem from "../../components/NavBarItem";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
 

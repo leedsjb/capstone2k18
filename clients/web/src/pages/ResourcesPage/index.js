@@ -23,7 +23,6 @@ const ResourcesPage = () => {
                     <div>Resources</div>
                     <ResourcesProvider
                         render={resources => {
-                            console.log(resources);
                             return <div />;
                         }}
                     />

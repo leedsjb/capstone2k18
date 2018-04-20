@@ -26,7 +26,7 @@ class TitleBar extends Component {
         return (
             <Flex alignItems="center">
                 <Icon glyph="grid" size={16} />
-                <ProfileAvatar />
+                <ProfileAvatar fName="Dave" />
             </Flex>
         );
     };

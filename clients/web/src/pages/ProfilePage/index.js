@@ -26,13 +26,16 @@ const ProfilePage = () => {
                 <Container>
                     <ProfileProvider
                         render={({ profile: { pending, data } }) => {
-                            if (pending) {
+                            if (pending || Array.isArray(data)) {
                                 return <div>Loading...</div>;
                             }
 
                             return (
                                 <div>
-                                    <ProfileAvatar />
+                                    <ProfileAvatar
+                                        fName={data.fName}
+                                        size={96}
+                                    />
                                     <div>{`${data.fName} ${data.lName}`}</div>
                                     <div>{data.position}</div>
                                     <ButtonIcon />

@@ -8,24 +8,7 @@ import Image from "../Image";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
-const resourcesItems = [
-    {
-        name: "Ninth Brain",
-        link: "https://google.com"
-    },
-    {
-        name: "AirliftNW",
-        link: "http://airliftnw.org/"
-    },
-    {
-        name: "PIAP",
-        link: "https://twitter.com"
-    }
-];
-
-function onChange(selectedItem) {
-    console.log("Selected item", selectedItem);
-}
+function onChange(selectedItem) {}
 
 const ResourcesDropdown = () => {
     return (

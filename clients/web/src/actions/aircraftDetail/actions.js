@@ -2,8 +2,7 @@ import axios from "axios";
 
 import {
     FETCH_AIRCRAFTDETAIL_PENDING,
-    FETCH_AIRCRAFTDETAIL_SUCCESS,
-    FETCH_AIRCRAFTDETAILS_ERROR
+    FETCH_AIRCRAFTDETAIL_SUCCESS
 } from "./types";
 
 export function fetchAircraftDetail(id) {

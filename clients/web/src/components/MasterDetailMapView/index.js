@@ -19,7 +19,6 @@ const MasterDetailMapView = ({
     mapCenter,
     showDetail
 }) => {
-    console.log("COORD", mapCenter());
     return (
         <MasterDetailView>
             <MasterView>{renderMasterView()}</MasterView>
