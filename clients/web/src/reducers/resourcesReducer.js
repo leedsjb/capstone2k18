@@ -1,7 +1,7 @@
 import {
-    FETCH_PEOPLE_PENDING,
-    FETCH_PEOPLE_SUCCESS
-} from "../actions/people/types";
+    FETCH_RESOURCES_PENDING,
+    FETCH_RESOURCES_SUCCESS
+} from "../actions/resources/types";
 
 const initialState = {
     pending: false,
@@ -9,14 +9,14 @@ const initialState = {
     data: []
 };
 
-const peopleReducer = (state = initialState, action) => {
+const resourcesReducer = (state = initialState, action) => {
     switch (action.type) {
-        case FETCH_PEOPLE_PENDING:
+        case FETCH_RESOURCES_PENDING:
             return {
                 ...state,
                 pending: true
             };
-        case FETCH_PEOPLE_SUCCESS:
+        case FETCH_RESOURCES_SUCCESS:
             return {
                 ...state,
                 pending: false,
@@ -27,4 +27,4 @@ const peopleReducer = (state = initialState, action) => {
     }
 };
 
-export default peopleReducer;
+export default resourcesReducer;

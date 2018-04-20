@@ -7,6 +7,8 @@ import TabBar from "../../components/TabBar";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import ScrollView from "../../components/ScrollView";
 
+import ResourcesProvider from "../../containers/ResourcesProvider";
+
 const ResourcesPage = () => {
     return (
         <FlexFullHeight flexDirection="column">
@@ -19,6 +21,12 @@ const ResourcesPage = () => {
             <ScrollView>
                 <Container>
                     <div>Resources</div>
+                    <ResourcesProvider
+                        render={resources => {
+                            console.log(resources);
+                            return <div />;
+                        }}
+                    />
                 </Container>
             </ScrollView>
 

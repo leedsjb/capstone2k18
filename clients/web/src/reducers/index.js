@@ -10,6 +10,7 @@ import peopleDetailReducer from "./peopleDetailReducer";
 import groupsReducer from "./groupsReducer";
 import groupsDetailReducer from "./groupsDetailReducer";
 import profileReducer from "./profileReducer";
+import resourcesReducer from "./resourcesReducer";
 
 export default function createReducer(injectedReducers) {
     return combineReducers({
@@ -23,6 +24,7 @@ export default function createReducer(injectedReducers) {
         groups: groupsReducer,
         groupsDetail: groupsDetailReducer,
         profile: profileReducer,
+        resources: resourcesReducer,
         ...injectedReducers
     });
 }
