@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
+import { Flex } from "grid-styled";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import Heading from "../../components/Heading";
 import Text from "../../components/Text";
 import Container from "../../components/Container";
+import Box from "../../components/Box";
+import Logo from "../../components/Logo";
 
 import SignInForm from "../../containers/SignInForm";
 
@@ -19,6 +23,15 @@ class SignInPage extends Component {
                 <Helmet>
                     <title>Sign in</title>
                 </Helmet>
+
+                <Box p={3}>
+                    <Flex justifyContent="space-between">
+                        <Link to="/">
+                            <Logo />
+                        </Link>
+                        <Link to="/signin">Sign in</Link>
+                    </Flex>
+                </Box>
 
                 <Container>
                     <Heading>AirliftNW Elevate</Heading>

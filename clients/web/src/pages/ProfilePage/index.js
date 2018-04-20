@@ -7,6 +7,8 @@ import Container from "../../components/Container";
 import TabBar from "../../components/TabBar";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import ScrollView from "../../components/ScrollView";
+import ProfileAvatar from "../../components/ProfileAvatar";
+import ButtonIcon from "../../components/ButtonIcon";
 
 import ProfileProvider from "../../containers/ProfileProvider";
 
@@ -30,8 +32,12 @@ const ProfilePage = () => {
 
                             return (
                                 <div>
+                                    <ProfileAvatar />
                                     <div>{`${data.fName} ${data.lName}`}</div>
                                     <div>{data.position}</div>
+                                    <ButtonIcon />
+                                    <ButtonIcon />
+                                    <ButtonIcon />
                                 </div>
                             );
                         }}
