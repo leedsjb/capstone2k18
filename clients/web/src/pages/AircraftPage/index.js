@@ -87,7 +87,9 @@ class AircraftPage extends Component {
     };
 
     renderDetailView = () => {
-        return <div>{this.renderAircraftDetail(aircraftDetail)}</div>;
+        return (
+            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
+        );
     };
 
     render() {
