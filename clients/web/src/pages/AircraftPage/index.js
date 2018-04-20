@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import FlexFullHeight from "../../components/FlexFullHeight";
 import SearchBox from "../../components/SearchBox";
@@ -16,8 +17,8 @@ import AircraftListItem from "../../components/AircraftListItem";
 import Divider from "../../components/Divider";
 import AircraftDetailListItem from "../../components/AircraftDetailListItem";
 
-import AircraftProvider from "../../containers/AircraftProvider";
-import AircraftDetailProvider from "../../containers/AircraftDetailProvider";
+import { fetchAircraft } from "../../actions/aircraft/actions";
+import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
 const statusFilters = ["Any status", "On Mission", "OOS"];
 
@@ -29,11 +30,14 @@ class AircraftPage extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidMount() {
+        this.props.fetchAircraft();
         if (this.props.match.params.id) {
-            this.renderDetailView;
+            this.props.fetchAircraftDetail(this.props.match.params.id);
         }
     }
+
+    componentWillReceiveProps(nextProps) {}
 
     renderAircraft(aircraft) {
         if (!aircraft.pending) {
@@ -48,6 +52,7 @@ class AircraftPage extends Component {
     }
 
     renderAircraftDetail(aircraftDetail) {
+        console.log(aircraftDetail);
         if (!aircraftDetail.pending) {
             return (
                 <AircraftDetailListItem
@@ -61,50 +66,28 @@ class AircraftPage extends Component {
     renderMasterView = () => {
         return (
             <div>
-                <AircraftProvider
-                    render={({ fetchAircraft, aircraft }) => {
-                        return (
-                            <div>
-                                <Box px={3} py={2}>
-                                    <Flex
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                    >
-                                        <DropdownSelect
-                                            items={statusFilters}
-                                            onChange={status => {
-                                                if (status === "Any status") {
-                                                    status = "";
-                                                }
-                                                fetchAircraft(status);
-                                            }}
-                                        />
-                                        SEARCH
-                                    </Flex>
-                                </Box>
+                <Box px={3} py={2}>
+                    <Flex alignItems="center" justifyContent="space-between">
+                        <DropdownSelect
+                            items={statusFilters}
+                            onChange={status => {
+                                if (status === "Any status") {
+                                    status = "";
+                                }
+                            }}
+                        />
+                        SEARCH
+                    </Flex>
+                </Box>
 
-                                <Divider />
-                                {this.renderAircraft(aircraft)}
-                            </div>
-                        );
-                    }}
-                />
+                <Divider />
+                {this.renderAircraft(this.props.aircraft)}
             </div>
         );
     };
 
     renderDetailView = () => {
-        return (
-            <AircraftDetailProvider
-                id={this.props.match.params.id}
-                render={({ aircraftDetail }) => {
-                    console.log(aircraftDetail);
-                    return (
-                        <div>{this.renderAircraftDetail(aircraftDetail)}</div>
-                    );
-                }}
-            />
-        );
+        return <div>{this.renderAircraftDetail(aircraftDetail)}</div>;
     };
 
     render() {
@@ -128,4 +111,16 @@ class AircraftPage extends Component {
     }
 }
 
-export default AircraftPage;
+function mapStateToProps(state) {
+    return {
+        aircraft: state.aircraft,
+        aircraftDetail: state.aircraftDetail
+    };
+}
+
+const mapDispatchToProps = {
+    fetchAircraft,
+    fetchAircraftDetail
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);
