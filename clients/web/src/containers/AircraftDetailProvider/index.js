@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { fetchAircaftDetail } from "../../actions/aircraftDetail/actions";
+import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
 class AircraftDetailProvider extends Component {
     componentDidMount() {
-        this.props.fetchAircaftDetail(this.props.id);
+        this.props.fetchAircraftDetail(this.props.id);
     }
 
     render() {
@@ -20,7 +20,7 @@ const mapStateToProps = ({ aircraftDetail }) => {
 };
 
 const mapDispatchToProps = {
-    fetchAircaftDetail
+    fetchAircraftDetail
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
