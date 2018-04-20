@@ -48,8 +48,8 @@ type Aircraft struct {
 	Callsign    string   `json:"callsign"`
 	LevelOfCare string   `json:"levelOfCare"`
 	Class       string   `json:"class"`
-	Lat         string   `json:"lat"`
-	Long        string   `json:"long"`
+	Lat         float32  `json:"lat"`
+	Long        float32  `json:"long"`
 	Area        string   `json:"area"`
 	NNum        string   `json:"nNum"`
 	Mission     *Mission `json:"mission"`
@@ -65,8 +65,8 @@ type AircraftDetail struct {
 	Crew        *GroupDetail   `json:"crew"`
 	LevelOfCare string         `json:"levelOfCare"`
 	Class       string         `json:"class"`
-	Lat         string         `json:"lat"`
-	Long        string         `json:"long"`
+	Lat         float32        `json:"lat"`
+	Long        float32        `json:"long"`
 	Area        string         `json:"area"`
 	NNum        string         `json:"nNum"`
 	Mission     *MissionDetail `json:"mission"`
@@ -82,8 +82,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[2],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.545218",
-		Long:        "-122.315673",
+		Lat:         47.545218,
+		Long:        -122.315673,
 		Area:        "Inceptos vestibulum",
 		NNum:        "N948AL",
 		Mission:     nil,
@@ -101,8 +101,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[1],
 		LevelOfCare: "pediatric",
 		Class:       "fixed",
-		Lat:         "47.542964",
-		Long:        "-122.309860",
+		Lat:         47.542964,
+		Long:        -122.309860,
 		Area:        "Ullamcorper fusce",
 		NNum:        "N937AL",
 		Mission:     nil,
@@ -116,8 +116,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[0],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.528478",
-		Long:        "-122.291697",
+		Lat:         47.528478,
+		Long:        -122.291697,
 		Area:        "Sem quam Commodo",
 		NNum:        "N951AL",
 		Mission: &MissionDetail{

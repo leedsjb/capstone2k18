@@ -16,8 +16,10 @@ const MasterDetailMapView = ({
     renderMasterView,
     renderDetailView,
     renderMapView,
+    mapCenter,
     showDetail
 }) => {
+    console.log("COORD", mapCenter());
     return (
         <MasterDetailView>
             <MasterView>{renderMasterView()}</MasterView>
@@ -42,7 +44,7 @@ const MasterDetailMapView = ({
                                 width: "100%",
                                 height: "100%"
                             }}
-                            center={[6.5665, 53.2194]}
+                            center={mapCenter()}
                         >
                             {renderMapView()}
                         </Map>

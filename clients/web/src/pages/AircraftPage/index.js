@@ -113,6 +113,18 @@ class AircraftPage extends Component {
                     renderDetailView={this.renderDetailView}
                     renderMapView={() => {}}
                     showDetail={this.props.match.params.id}
+                    mapCenter={() => {
+                        if (
+                            !this.props.aircraftDetail.pending &&
+                            !Array.isArray(this.props.aircraftDetail.data)
+                        ) {
+                            return [
+                                this.props.aircraftDetail.data.long,
+                                this.props.aircraftDetail.data.lat
+                            ];
+                        }
+                        return [-122.4821475, 47.6129432];
+                    }}
                 />
                 <TabBar />
             </FlexFullHeight>
