@@ -22,6 +22,16 @@ const TabBar = ({ theme: { breakpoints } }) => {
                             glyph="accountGroup"
                             path="/people"
                         />
+                        <TabBarItem
+                            title="Resources"
+                            glyph="accountGroup"
+                            path="/resources"
+                        />
+                        <TabBarItem
+                            title="Profile"
+                            glyph="accountGroup"
+                            path="/profile"
+                        />
                     </Flex>
                 );
             }}

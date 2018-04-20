@@ -1,8 +1,8 @@
 import React from "react";
-import Box from "../Box";
+import StyledBox from "./StyledBox";
 
 const MasterListItem = ({ children }) => {
-    return <Box>{children}</Box>;
+    return <StyledBox p={3}>{children}</StyledBox>;
 };
 
 export default MasterListItem;

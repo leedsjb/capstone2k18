@@ -43,9 +43,12 @@ class AircraftPage extends Component {
                                 <Flex>
                                     <DropdownSelect
                                         items={statusFilters}
-                                        onChange={status =>
-                                            fetchAircraft(status)
-                                        }
+                                        onChange={status => {
+                                            if (status === "Any status") {
+                                                status = "";
+                                            }
+                                            fetchAircraft(status);
+                                        }}
                                     />
                                 </Flex>
                                 <Box px={3}>
