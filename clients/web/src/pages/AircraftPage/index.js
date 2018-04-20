@@ -37,7 +37,14 @@ class AircraftPage extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {}
+    componentWillReceiveProps(nextProps) {
+        if (
+            nextProps.match.params.id &&
+            !(nextProps.match.params.id === this.props.match.params.id)
+        ) {
+            this.props.fetchAircraftDetail(nextProps.match.params.id);
+        }
+    }
 
     renderAircraft(aircraft) {
         if (!aircraft.pending) {
@@ -52,7 +59,6 @@ class AircraftPage extends Component {
     }
 
     renderAircraftDetail(aircraftDetail) {
-        console.log(aircraftDetail);
         if (!aircraftDetail.pending) {
             return (
                 <AircraftDetailListItem
