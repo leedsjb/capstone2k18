@@ -15,6 +15,8 @@ import ButtonIcon from "../../components/ButtonIcon";
 import NavBar from "../../components/NavBar";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import MasterListItem from "../../components/MasterListItem";
+import Box from "../../components/Box";
+import PeopleListItem from "../../components/PeopleListItem";
 import Tab from "../../components/Tab";
 import Divider from "../../components/Divider";
 import Icon from "../../components/Icon";
@@ -73,9 +75,7 @@ class PeoplePage extends Component {
             return this.props.people.data.map(person => {
                 return (
                     <Link to={`/people/${person.id}`} key={person.id}>
-                        <MasterListItem>
-                            <div>{person.fName}</div>
-                        </MasterListItem>
+                        <PeopleListItem person={person} />
                     </Link>
                 );
             });
@@ -163,20 +163,27 @@ class PeoplePage extends Component {
             let person = this.props.peopleDetail.data;
 
             content = (
-                <Flex flexDirection="column">
-                    <ProfileAvatar fName={person.fName} size={72} />
+                <Flex flexDirection="column" alignItems="center">
+                    <Box mt={4}>
+                        <ProfileAvatar fName={person.fName} size={72} />
+                    </Box>
                     <Heading
                         children={`${person.fName} ${person.lName}`}
                         is="h2"
+                        fontSize={4}
+                        mt={3}
                     />
                     <Heading
                         children={`${person.position}`}
                         is="h3"
                         fontWeight="normal"
+                        fontSize={2}
                     />
-                    <Flex>
+                    <Flex mt={3}>
                         <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <ButtonIcon glyph="phone">Call</ButtonIcon>
+                        <Box mx={3}>
+                            <ButtonIcon glyph="phone">Call</ButtonIcon>
+                        </Box>
                         <ButtonIcon glyph="email">Mail</ButtonIcon>
                     </Flex>
                 </Flex>
