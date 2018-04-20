@@ -3,7 +3,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/models/users"
+	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
 )
 
 //SessionState contains information about the current session

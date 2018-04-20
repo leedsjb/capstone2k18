@@ -1,5 +1,6 @@
 package main
 
+// TODO determine if order of Go imports is significant
 import (
 	"encoding/json"
 	"fmt"
@@ -11,22 +12,28 @@ import (
 	"sync"
 	"time"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/indexes"
+	"github.com/leedsjb/capstone2k18/servers/gateway/indexes"
 	"github.com/streadway/amqp"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/models/users"
+	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/sessions"
+	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
 
 	"github.com/go-redis/redis"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/handlers"
+	"github.com/leedsjb/capstone2k18/servers/gateway/handlers"
 )
 
-const maxConnRetries = 5
-const qName = "messageQ"
+const (
+	maxConnRetries = 5
+	qName          = "messageQ"
+	apiRoot        = "/v1/"
+	apiUsers       = apiRoot + "users"
+	apiSessions    = apiRoot + "sessions"
+	webSocket      = apiRoot + "ws"
+)
 
 //connectToMQ attempts to connect to RabbitMQ
 //https://github.com/info344-a17/conn-retry
@@ -108,17 +115,26 @@ func NewServiceProxy(addrs []string, signingKey string, store sessions.Store) *h
 
 func main() {
 	//Read the following environment variables:
+
+	// get the present working directory
+	pwd := os.Getenv("PWD")
+
 	//ADDR: the server port
 	addr := os.Getenv("ADDR")
 	if len(addr) == 0 {
 		addr = ":443"
 	}
+
 	//TLSKEY and TLSCERT: paths to TLS key and cert
+	// TLS Key and Cert facilitate secure communication between apiserver and the Google Cloud
+	// Platform HTTPS Load Balancer. Certificate can be self-signed. Keys are managed by GCP KMS.
+	// See https://cloud.google.com/kms/
 	tlsKeyPath := os.Getenv("TLSKEY")
 	tlsCertPath := os.Getenv("TLSCERT")
 	if tlsKeyPath == "" || tlsCertPath == "" {
-		fmt.Println("Please provide both a TLS key and cert")
-		os.Exit(1)
+		fmt.Println("Attempting to use default TLSKEY and TLSCERT paths")
+		tlsKeyPath = pwd + "/tls/privkey.pem"
+		tlsCertPath = pwd + "/tls/fullchain.pem"
 	}
 	//SESSIONKEY: a string to use when signing and validating SessionIDs
 	sessionKey := os.Getenv("SESSIONKEY")
@@ -193,26 +209,26 @@ func main() {
 
 	//Add microservice handlers
 	///v1/summary
-	mux.Handle("/v1/summary", NewServiceProxy(splitSummarySvcAddrs, sessionKey, sessionStore))
+	mux.Handle(apiRoot+"summary", NewServiceProxy(splitSummarySvcAddrs, sessionKey, sessionStore))
 	///v1/channels
-	mux.Handle("/v1/channels", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
-	mux.Handle("/v1/channels/", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
+	mux.Handle(apiRoot+"channels", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
+	mux.Handle(apiRoot+"channels/", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
 	///v1/messages
-	mux.Handle("/v1/messages", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
-	mux.Handle("/v1/messages/", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
+	mux.Handle(apiRoot+"messages", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
+	mux.Handle(apiRoot+"messages/", NewServiceProxy(splitMessagesSvcAddrs, sessionKey, sessionStore))
 
 	//Add regular handlers
 	///v1/users: UsersHandler
-	mux.HandleFunc("/v1/users", handlerCtx.UsersHandler)
+	mux.HandleFunc("apiUsers", handlerCtx.UsersHandler)
 	///v1/users/me: UsersMeHandler
-	mux.HandleFunc("/v1/users/me", handlerCtx.UsersMeHandler)
+	mux.HandleFunc(apiUsers+"me", handlerCtx.UsersMeHandler)
 	///v1/sessions: SessionsHandler
-	mux.HandleFunc("/v1/sessions", handlerCtx.SessionsHandler)
+	mux.HandleFunc(apiSessions, handlerCtx.SessionsHandler)
 	///v1/sessions/mine: SessionsMineHandler
-	mux.HandleFunc("/v1/sessions/mine", handlerCtx.SessionsMineHandler)
+	mux.HandleFunc(apiSessions+"/mine", handlerCtx.SessionsMineHandler)
 
 	//Create a new notifier
-	mux.Handle("/v1/ws", handlerCtx.NewWebSocketsHandler(notifier))
+	mux.Handle(webSocket, handlerCtx.NewWebSocketsHandler(notifier))
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.

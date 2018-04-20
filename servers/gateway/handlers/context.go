@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/indexes"
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/models/users"
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/sessions"
+	"github.com/leedsjb/capstone2k18/servers/gateway/indexes"
+	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
+	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
 )
 
 //HandlerContext provides handlers with extra information
