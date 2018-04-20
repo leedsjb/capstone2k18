@@ -2,6 +2,7 @@ import React from "react";
 import Downshift from "downshift";
 
 import Absolute from "../Absolute";
+import ButtonDropdown from "../ButtonDropdown";
 
 const DropdownSelect = ({ items, onChange }) => {
     return (
@@ -21,7 +22,9 @@ const DropdownSelect = ({ items, onChange }) => {
                 highlightedIndex
             }) => (
                 <div>
-                    <button onClick={toggleMenu}>{selectedItem}</button>
+                    <ButtonDropdown onClick={toggleMenu}>
+                        {selectedItem}
+                    </ButtonDropdown>
                     {isOpen ? (
                         <Absolute bg="white">
                             {items.map(item => (

@@ -26,7 +26,10 @@ const Button = sys(
         textDecoration: "none",
         appearance: "none",
         "&:hover": {
-            boxShadow: `inset 0 0 0 999px ${themeGet("colors.darken.0")(props)}`
+            boxShadow: `inset 0 0 0 999px ${themeGet("colors.darken.0")(
+                props
+            )}`,
+            cursor: "pointer"
         },
         "&:focus": {
             outline: 0,

@@ -10,14 +10,15 @@ const Tab = sys(
         mr: 3,
         py: 2,
         color: "inherit",
+        flex: 1,
         borderBottom: 2,
+        textAlign: "center",
         hover: {
             color: "blue"
         }
     },
     {
-        textDecoration: "none",
-        display: "inline-block"
+        textDecoration: "none"
     },
     props => ({
         borderColor: props.active ? "blue" : "transparent"
