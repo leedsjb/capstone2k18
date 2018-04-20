@@ -11,71 +11,18 @@ import (
 	"sync"
 	"time"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/indexes"
-	"github.com/streadway/amqp"
+	"github.com/leedsjb/capstone2k18/servers/gateway/indexes"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/models/users"
+	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/sessions"
+	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
 
 	"github.com/go-redis/redis"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/handlers"
+	"github.com/leedsjb/capstone2k18/servers/gateway/handlers"
 )
-
-const maxConnRetries = 5
-const qName = "messageQ"
-
-//connectToMQ attempts to connect to RabbitMQ
-//https://github.com/info344-a17/conn-retry
-func connectToMQ(addr string) (*amqp.Connection, error) {
-	mqURL := "amqp://" + addr
-	var conn *amqp.Connection
-	var err error
-	for i := 1; i <= maxConnRetries; i++ {
-		conn, err = amqp.Dial(mqURL)
-		if err == nil {
-			return conn, nil
-		}
-		log.Printf("Error connecting to MQ server at %s: %s", mqURL, err)
-		log.Printf("Will attempt another connection in %d seconds", i*2)
-		time.Sleep(time.Duration(i*2) * time.Second)
-	}
-	return nil, err
-}
-
-//listenToMQ listens for new rabbitMQ `events` and ensures they
-//are broadcasted to the clients
-//https://github.com/info344-a17/conn-retry
-func listenToMQ(addr string, notifier *handlers.Notifier) {
-	conn, err := connectToMQ(addr)
-	if err != nil {
-		log.Fatalf("Error connecting to MQ server: %s", err)
-	}
-	defer conn.Close()
-
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("Error opening channel: %v", err)
-	}
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare(qName, false, false, false, false, nil)
-	if err != nil {
-		log.Fatalf("Error declaring queue: %v", err)
-	}
-
-	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
-	if err != nil {
-		log.Fatalf("Error listening to queue: %v", err)
-	}
-
-	for message := range messages {
-		notifier.Notify(message.Body)
-	}
-}
 
 //NewServiceProxy creates a reverse proxy for a microservice
 func NewServiceProxy(addrs []string, signingKey string, store sessions.Store) *httputil.ReverseProxy {
@@ -132,12 +79,15 @@ func main() {
 		fmt.Println("Please the address of your redis session store server")
 		os.Exit(1)
 	}
+	// TODO: Instead of DBADDR, how to connect to MySQL
 	//DBADDR: the address of your database server
-	dbAddr := os.Getenv("DBADDR")
-	if dbAddr == "" {
-		fmt.Println("Please provide the address of your database server")
-		os.Exit(1)
-	}
+		dbAddr := os.Getenv("DBADDR")
+		if dbAddr == "" {
+			fmt.Println("Please provide the address of your database server")
+			os.Exit(1)
+		}
+
+	// TODO: Listen to Pub/Sub where we (subscriber) are listening to published msgs 
 	//may contain a comma-delimited list of network addresses where
 	//messaging microservice instances are listening
 	messagesSvcAddrs := os.Getenv("MESSAGESSVCADDR")
@@ -145,6 +95,8 @@ func main() {
 		fmt.Println("Please provide a list of messaging microservice addresses")
 		os.Exit(1)
 	}
+
+	// TODO: load balance message addresses
 	splitMessagesSvcAddrs := strings.Split(messagesSvcAddrs, ",")
 	//may contain a comma-delimited list of network addresses where
 	//page summary microservice instances are listening
@@ -159,6 +111,7 @@ func main() {
 	//sessions.NewRedisStore() function.
 	sessionStore := sessions.NewRedisStore(redis.NewClient(&redis.Options{Addr: redisAddr}), time.Duration(300)*time.Second)
 
+	// TODO: not MongoDB -> how to connect to MySQL
 	//Use the DBADDR to dial MongoDB server
 	sess, err := mgo.Dial(dbAddr)
 	if err != nil {
@@ -179,14 +132,6 @@ func main() {
 		fmt.Printf("Error loading trie: %v", err)
 		os.Exit(1)
 	}
-
-	mqAddr := os.Getenv("RABBITADDR")
-	if len(mqAddr) == 0 {
-		fmt.Printf("Please provide a RabbitMQ port")
-		os.Exit(1)
-	}
-	notifier := handlers.NewNotifier()
-	go listenToMQ(mqAddr, notifier)
 
 	//Create a new mux
 	mux := http.NewServeMux()
@@ -210,6 +155,8 @@ func main() {
 	mux.HandleFunc("/v1/sessions", handlerCtx.SessionsHandler)
 	///v1/sessions/mine: SessionsMineHandler
 	mux.HandleFunc("/v1/sessions/mine", handlerCtx.SessionsMineHandler)
+
+	notifier := handlers.NewNotifier()
 
 	//Create a new notifier
 	mux.Handle("/v1/ws", handlerCtx.NewWebSocketsHandler(notifier))

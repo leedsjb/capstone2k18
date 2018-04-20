@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/sessions"
+	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
 
 	"github.com/gorilla/websocket"
 )

@@ -9,9 +9,9 @@ import (
 
 	"gopkg.in/mgo.v2/bson"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/sessions"
+	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/models/users"
+	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
 )
 
 //UsersHandler handles requests for the "users" resource, and allows clients

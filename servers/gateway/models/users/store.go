@@ -3,7 +3,7 @@ package users
 import (
 	"errors"
 
-	"github.com/info344-a17/challenges-vincentmvdm/servers/gateway/indexes"
+	"github.com/leedsjb/capstone2k18/servers/gateway/indexes"
 
 	"gopkg.in/mgo.v2/bson"
 )
