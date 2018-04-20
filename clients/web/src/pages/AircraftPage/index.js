@@ -12,6 +12,7 @@ import MasterDetailMapView from "../../components/MasterDetailMapView";
 import DropdownSelect from "../../components/DropdownSelect";
 import NavBarItem from "../../components/NavBarItem";
 import AircraftListItem from "../../components/AircraftListItem";
+import Divider from "../../components/Divider";
 
 import AircraftProvider from "../../containers/AircraftProvider";
 
@@ -20,6 +21,9 @@ const statusFilters = ["Any status", "On Mission", "OOS"];
 class AircraftPage extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isSearching: false
+        };
     }
 
     renderAircraft(aircraft) {
@@ -33,24 +37,29 @@ class AircraftPage extends Component {
     renderMasterView = () => {
         return (
             <div>
-                <NavBarItem title="Aircraft" path="/aircraft" />
-                <NavBarItem title="People" path="/people" />
-
                 <AircraftProvider
                     render={({ fetchAircraft, aircraft }) => {
                         return (
                             <div>
-                                <Flex>
-                                    <DropdownSelect
-                                        items={statusFilters}
-                                        onChange={status =>
-                                            fetchAircraft(status)
-                                        }
-                                    />
-                                </Flex>
-                                <Box px={3}>
-                                    <SearchBox />
+                                <Box px={3} py={2}>
+                                    <Flex
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                    >
+                                        <DropdownSelect
+                                            items={statusFilters}
+                                            onChange={status => {
+                                                if (status === "Any status") {
+                                                    status = "";
+                                                }
+                                                fetchAircraft(status);
+                                            }}
+                                        />
+                                        SEARCH
+                                    </Flex>
                                 </Box>
+
+                                <Divider />
                                 {this.renderAircraft(aircraft)}
                             </div>
                         );

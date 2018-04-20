@@ -18,11 +18,13 @@ const NavBarItem = ({ title, path }) => {
                 const { pathname } = location;
 
                 return (
-                    <Link is={NavLink} to={path}>
-                        <Tab active={matchPath(pathname, path) ? true : false}>
-                            {title}
-                        </Tab>
-                    </Link>
+                    <Tab
+                        active={matchPath(pathname, path) ? true : false}
+                        is={NavLink}
+                        to={path}
+                    >
+                        {title}
+                    </Tab>
                 );
             }}
         />

@@ -19,6 +19,7 @@ func main() {
 	mux.HandleFunc("/people/me", handlers.PeopleMeHandler)
 	mux.HandleFunc("/groups", handlers.GroupsHandler)
 	mux.HandleFunc("/groups/", handlers.GroupDetailHandler)
+	mux.HandleFunc("/resources/", handlers.ResourcesHandler)
 
 	wrappedMux := handlers.NewCORSHandler(mux)
 
