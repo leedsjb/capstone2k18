@@ -36,6 +36,16 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
+                            <Route
+                                path="/groups/:groupId/:id"
+                                component={PeoplePage}
+                            />
+                            <Route
+                                path="/groups/:groupId"
+                                component={PeoplePage}
+                            />
+                            <Route path="/groups" component={PeoplePage} />
+                            <Route path="/people" component={PeoplePage} />
                             <Route path="/profile" component={ProfilePage} />
                             <Redirect from="/resources" to="/aircraft" />
                             <Route component={NotFoundPage} />
