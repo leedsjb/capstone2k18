@@ -26,8 +26,7 @@ class AircraftPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSearching: false,
-            isDetailed: false
+            isSearching: false
         };
     }
 
@@ -35,20 +34,15 @@ class AircraftPage extends Component {
         this.props.fetchAircraft();
         if (this.props.match.params.id) {
             this.props.fetchAircraftDetail(this.props.match.params.id);
-            this.setState({ isDetailed: true });
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!nextProps.match.params.id) {
-            this.setState({ isDetailed: false });
-        } else if (
+        if (
+            nextProps.match.params.id &&
             !(nextProps.match.params.id === this.props.match.params.id)
         ) {
             this.props.fetchAircraftDetail(nextProps.match.params.id);
-            if (!this.state.isDetailed) {
-                this.setState({ isDetailed: true });
-            }
         }
     }
 
@@ -118,7 +112,7 @@ class AircraftPage extends Component {
                     renderMasterView={this.renderMasterView}
                     renderDetailView={this.renderDetailView}
                     renderMapView={() => {}}
-                    showDetail={this.state.isDetailed}
+                    showDetail={this.props.match.params.id}
                 />
                 <TabBar />
             </FlexFullHeight>

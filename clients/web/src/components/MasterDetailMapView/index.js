@@ -18,7 +18,6 @@ const MasterDetailMapView = ({
     renderMapView,
     showDetail
 }) => {
-    console.log(showDetail);
     return (
         <MasterDetailView>
             <MasterView>{renderMasterView()}</MasterView>
