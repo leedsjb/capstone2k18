@@ -1,21 +1,21 @@
 import React, { Component } from "react";
-import { Helmet } from "react-helmet";
-import { Flex } from "grid-styled";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { Flex } from "grid-styled";
+import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 
+import AircraftListItem from "../../components/AircraftListItem";
+import AircraftDetailListItem from "../../components/AircraftDetailListItem";
+import Box from "../../components/Box";
+import Divider from "../../components/Divider";
+import DropdownSelect from "../../components/DropdownSelect";
 import FlexFullHeight from "../../components/FlexFullHeight";
 import SearchBox from "../../components/SearchBox";
-import TitleBar from "../../components/TitleBar";
-import TabBar from "../../components/TabBar";
-import Box from "../../components/Box";
-import NavBar from "../../components/NavBar";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
-import DropdownSelect from "../../components/DropdownSelect";
+import NavBar from "../../components/NavBar";
 import NavBarItem from "../../components/NavBarItem";
-import AircraftListItem from "../../components/AircraftListItem";
-import Divider from "../../components/Divider";
-import AircraftDetailListItem from "../../components/AircraftDetailListItem";
+import TabBar from "../../components/TabBar";
+import TitleBar from "../../components/TitleBar";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -26,7 +26,8 @@ class AircraftPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSearching: false
+            isSearching: false,
+            isDetailed: false
         };
     }
 
@@ -34,15 +35,20 @@ class AircraftPage extends Component {
         this.props.fetchAircraft();
         if (this.props.match.params.id) {
             this.props.fetchAircraftDetail(this.props.match.params.id);
+            this.setState({ isDetailed: true });
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            nextProps.match.params.id &&
+        if (!nextProps.match.params.id) {
+            this.setState({ isDetailed: false });
+        } else if (
             !(nextProps.match.params.id === this.props.match.params.id)
         ) {
             this.props.fetchAircraftDetail(nextProps.match.params.id);
+            if (!this.state.isDetailed) {
+                this.setState({ isDetailed: true });
+            }
         }
     }
 
@@ -112,6 +118,7 @@ class AircraftPage extends Component {
                     renderMasterView={this.renderMasterView}
                     renderDetailView={this.renderDetailView}
                     renderMapView={() => {}}
+                    showDetail={this.state.isDetailed}
                 />
                 <TabBar />
             </FlexFullHeight>

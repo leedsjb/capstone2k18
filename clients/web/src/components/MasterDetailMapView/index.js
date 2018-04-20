@@ -15,8 +15,10 @@ const Map = ReactMapboxGl({
 const MasterDetailMapView = ({
     renderMasterView,
     renderDetailView,
-    renderMapView
+    renderMapView,
+    showDetail
 }) => {
+    console.log(showDetail);
     return (
         <MasterDetailView>
             <MasterView>{renderMasterView()}</MasterView>
@@ -25,12 +27,14 @@ const MasterDetailMapView = ({
                     style={{ height: "100%", width: "100%" }}
                     flexDirection={[null, null, "column", "row"]}
                 >
-                    <ScrollView
-                        maxWidth={[null, null, null, 320]}
-                        height={[null, null, "50%", "100%"]}
-                    >
-                        <Box p={3}>{renderDetailView()}</Box>
-                    </ScrollView>
+                    {showDetail ? (
+                        <ScrollView
+                            maxWidth={[null, null, null, 320]}
+                            height={[null, null, "50%", "100%"]}
+                        >
+                            <Box p={3}>{renderDetailView()}</Box>
+                        </ScrollView>
+                    ) : null}
 
                     <Flex flex={1}>
                         <Map
