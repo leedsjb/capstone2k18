@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import { withTheme } from "styled-components";
 
 import Box from "../Box";
-import Icon from "../Icon";
-import ProfileAvatar from "../ProfileAvatar";
 import Logo from "../Logo";
+import ProfileDropdown from "../ProfileDropdown";
+import ResourcesDropdown from "../ResourcesDropdown";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
@@ -25,8 +25,8 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 </Link>
                             </Flex>
                             <Flex alignItems="center">
-                                <Icon glyph="grid" size={16} />
-                                <ProfileAvatar />
+                                <ProfileDropdown />
+                                <ResourcesDropdown />
                             </Flex>
                         </Flex>
                     </Box>
