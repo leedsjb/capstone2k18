@@ -9,11 +9,12 @@ import AircraftDetailListItem from "../../components/AircraftDetailListItem";
 import Box from "../../components/Box";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
+import SearchBox from "../../components/SearchBox";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -71,7 +72,8 @@ class AircraftPage extends Component {
         return (
             <div>
                 <Box px={3} py={2}>
-                    <Flex alignItems="center" justifyContent="space-between">
+                    <SearchBox />
+                    <Flex alignItems="center" mt={2}>
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
@@ -80,7 +82,16 @@ class AircraftPage extends Component {
                                 }
                             }}
                         />
-                        SEARCH
+                        <Box ml={2}>
+                            <DropdownSelect
+                                items={statusFilters}
+                                onChange={status => {
+                                    if (status === "Any status") {
+                                        status = "";
+                                    }
+                                }}
+                            />
+                        </Box>
                     </Flex>
                 </Box>
 
@@ -98,7 +109,7 @@ class AircraftPage extends Component {
 
     render() {
         return (
-            <FlexFullHeight flexDirection="column">
+            <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
@@ -125,7 +136,7 @@ class AircraftPage extends Component {
                     }}
                 />
                 <TabBar />
-            </FlexFullHeight>
+            </FlexFillVH>
         );
     }
 }

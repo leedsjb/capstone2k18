@@ -4,7 +4,7 @@ import { Flex } from "grid-styled";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import MasterDetailView from "../../components/MasterDetailView";
@@ -20,6 +20,8 @@ import PeopleListItem from "../../components/PeopleListItem";
 import Tab from "../../components/Tab";
 import Divider from "../../components/Divider";
 import Icon from "../../components/Icon";
+import GroupsListItem from "../../components/GroupsListItem";
+import Span from "../../components/Span";
 
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
@@ -87,10 +89,7 @@ class PeoplePage extends Component {
             return this.props.groups.data.map(group => {
                 return (
                     <Link to={`/groups/${group.id}`} key={group.id}>
-                        <MasterListItem>
-                            <div>{group.name}</div>
-                            <div>{group.peoplePreview}</div>
-                        </MasterListItem>
+                        <GroupsListItem group={group} />
                     </Link>
                 );
             });
@@ -136,12 +135,20 @@ class PeoplePage extends Component {
                 </Tab>
             </Flex>
         ) : (
-            <div>
+            <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                py={2}
+                px={3}
+            >
                 <Link to="/groups">
                     <Icon glyph="chevronLeft" size={16} />
                 </Link>
-                {this.props.groupsDetail.data.name}
-            </div>
+                <Span fontWeight="bold">
+                    {this.props.groupsDetail.data.name}
+                </Span>
+                <Box size={16} />
+            </Flex>
         );
 
         return (
@@ -195,7 +202,7 @@ class PeoplePage extends Component {
 
     render() {
         return (
-            <FlexFullHeight flexDirection="column">
+            <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
@@ -208,7 +215,7 @@ class PeoplePage extends Component {
                     {this.renderDetailView()}
                 </MasterDetailView>
                 <TabBar />
-            </FlexFullHeight>
+            </FlexFillVH>
         );
     }
 }

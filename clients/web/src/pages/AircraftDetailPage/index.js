@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
@@ -11,7 +11,7 @@ import Text from "../../components/Text";
 
 const AircraftDetailPage = () => {
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
@@ -27,7 +27,7 @@ const AircraftDetailPage = () => {
                 </Accordion>
             </ScrollView>
             <TabBar />
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 

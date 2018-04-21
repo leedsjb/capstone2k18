@@ -4,7 +4,7 @@ import { Switch, Route, Redirect } from "react-router";
 import Media from "react-media";
 import { withTheme } from "styled-components";
 
-import FlexFullHeight from "../FlexFullHeight";
+import FlexFillVH from "../FlexFillVH";
 
 import SignInPage from "../../pages/SignInPage";
 import AircraftPage from "../../pages/AircraftPage";
@@ -17,7 +17,7 @@ import ResourcesPage from "../../pages/ResourcesPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet
                 titleTemplate="%s - AirliftNW Elevate"
                 defaultTitle="AirliftNW Elevate"
@@ -70,7 +70,7 @@ const App = ({ theme: { breakpoints } }) => {
                     )
                 }
             </Media>
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 

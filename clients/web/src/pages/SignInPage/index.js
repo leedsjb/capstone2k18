@@ -19,7 +19,7 @@ class SignInPage extends Component {
         const { signIn } = this.props;
 
         return (
-            <div>
+            <Flex flexDirection="column" flex={1}>
                 <Helmet>
                     <title>Sign in</title>
                 </Helmet>
@@ -33,12 +33,14 @@ class SignInPage extends Component {
                     </Flex>
                 </Box>
 
-                <Container>
-                    <Heading>AirliftNW Elevate</Heading>
-                    <Text>Sign in with your AMC account</Text>
-                    <SignInForm onSubmit={signIn} />
-                </Container>
-            </div>
+                <Flex flexDirection="column" flex={1} justifyContent="center">
+                    <Container>
+                        <Heading>AirliftNW Elevate</Heading>
+                        <Text>Sign in with your AMC account</Text>
+                        <SignInForm onSubmit={signIn} />
+                    </Container>
+                </Flex>
+            </Flex>
         );
     }
 }

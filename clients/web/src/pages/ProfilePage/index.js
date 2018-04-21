@@ -5,7 +5,7 @@ import TitleBar from "../../components/TitleBar";
 import NavBar from "../../components/NavBar";
 import Container from "../../components/Container";
 import TabBar from "../../components/TabBar";
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import ButtonIcon from "../../components/ButtonIcon";
@@ -14,7 +14,7 @@ import ProfileProvider from "../../containers/ProfileProvider";
 
 const ProfilePage = () => {
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet>
                 <title>Profile</title>
             </Helmet>
@@ -49,7 +49,7 @@ const ProfilePage = () => {
             </ScrollView>
 
             <TabBar />
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 
