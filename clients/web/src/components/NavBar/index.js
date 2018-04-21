@@ -40,8 +40,8 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 </Box>
                             </Flex>
                             <Flex alignItems="center">
-                                <ProfileDropdown />
                                 <ResourcesDropdown />
+                                <ProfileDropdown />
                             </Flex>
                         </Flex>
                     </Box>
