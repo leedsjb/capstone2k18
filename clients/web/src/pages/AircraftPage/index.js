@@ -3,22 +3,33 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { Layer, Feature, Popup } from "react-mapbox-gl";
+import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
 import AircraftDetailListItem from "../../components/AircraftDetailListItem";
 import Box from "../../components/Box";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
+import Text from "../../components/Text";
+import SearchBox from "../../components/SearchBox";
+import Heading from "../../components/Heading";
+import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
+import airplane from "../../images/airplane.svg";
+
 const statusFilters = ["Any status", "On Mission", "OOS"];
+
+const image = new Image(32, 32);
+image.src = airplane;
 
 class AircraftPage extends Component {
     constructor(props) {
@@ -45,14 +56,26 @@ class AircraftPage extends Component {
     }
 
     renderAircraft(aircraft) {
-        if (!aircraft.pending) {
+        if (!aircraft.pending && aircraft.data.length > 0) {
             return aircraft.data.map(a => {
                 return (
-                    <Link to={`/aircraft/${a.id}`}>
-                        <AircraftListItem aircraft={a} key={a.id} />
+                    <Link to={`/aircraft/${a.id}`} key={a.id}>
+                        <AircraftListItem
+                            aircraft={a}
+                            active={this.props.match.params.id == a.id}
+                        />
                     </Link>
                 );
             });
+        } else if (!aircraft.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No aircraft
+                    </Heading>
+                    <Text textAlign="center">Empty state text</Text>
+                </Box>
+            );
         }
     }
 
@@ -71,16 +94,17 @@ class AircraftPage extends Component {
         return (
             <div>
                 <Box px={3} py={2}>
-                    <Flex alignItems="center" justifyContent="space-between">
+                    <SearchBox />
+                    <Flex alignItems="center" mt={2}>
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
                                 if (status === "Any status") {
-                                    status = "";
+                                    status = null;
                                 }
+                                this.props.fetchAircraft(status);
                             }}
                         />
-                        SEARCH
                     </Flex>
                 </Box>
 
@@ -92,13 +116,16 @@ class AircraftPage extends Component {
 
     renderDetailView = () => {
         return (
-            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
+            <div>
+                <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
+                {this.renderAircraftDetail(this.props.aircraftDetail)}
+            </div>
         );
     };
 
     render() {
         return (
-            <FlexFullHeight flexDirection="column">
+            <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
@@ -109,7 +136,67 @@ class AircraftPage extends Component {
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
                     renderDetailView={this.renderDetailView}
-                    renderMapView={() => {}}
+                    renderMapView={() => {
+                        if (
+                            !this.props.aircraft.pending &&
+                            this.props.aircraft.data.length > 0
+                        ) {
+                            return (
+                                <div>
+                                    {this.props.aircraft.data.map(aircraft => {
+                                        const images = [
+                                            aircraft.callsign,
+                                            image
+                                        ];
+
+                                        return (
+                                            <Layer
+                                                type="symbol"
+                                                layout={{
+                                                    "icon-image": "airplane"
+                                                }}
+                                                key={aircraft.id}
+                                            >
+                                                <Feature
+                                                    coordinates={[
+                                                        aircraft.long,
+                                                        aircraft.lat
+                                                    ]}
+                                                />
+                                            </Layer>
+                                        );
+                                    })}
+                                    {this.props.aircraft.data.map(aircraft => {
+                                        return (
+                                            <Popup
+                                                coordinates={[
+                                                    aircraft.long,
+                                                    aircraft.lat
+                                                ]}
+                                                key={aircraft.id}
+                                                offset={{
+                                                    bottom: [0, -24]
+                                                }}
+                                                style={{ cursor: "pointer" }}
+                                                onClick={() =>
+                                                    this.props.push(
+                                                        `/aircraft/${
+                                                            aircraft.id
+                                                        }`
+                                                    )
+                                                }
+                                            >
+                                                <Span fontWeight="bold">
+                                                    {aircraft.callsign}
+                                                </Span>
+                                            </Popup>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        }
+                        return <div />;
+                    }}
                     showDetail={this.props.match.params.id}
                     mapCenter={() => {
                         if (
@@ -125,7 +212,7 @@ class AircraftPage extends Component {
                     }}
                 />
                 <TabBar />
-            </FlexFullHeight>
+            </FlexFillVH>
         );
     }
 }
@@ -139,7 +226,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     fetchAircraft,
-    fetchAircraftDetail
+    fetchAircraftDetail,
+    push
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);

@@ -6,9 +6,9 @@ import Box from "../Box";
 import MasterListItem from "../MasterListItem";
 import Span from "../Span";
 
-const AircraftListItem = ({ aircraft }) => {
+const AircraftListItem = ({ aircraft, active }) => {
     return (
-        <MasterListItem>
+        <MasterListItem active={active}>
             <Box>
                 <Flex alignItems="center">
                     <Box mr={2}>

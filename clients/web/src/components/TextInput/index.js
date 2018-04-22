@@ -9,7 +9,6 @@ const TextInput = sys(
         type: "text",
         fontSize: "inherit",
         lineHeight: "inherit",
-        px: 1,
         py: 2,
         m: 0,
         width: 1,
