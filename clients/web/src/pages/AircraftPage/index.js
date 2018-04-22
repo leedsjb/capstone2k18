@@ -116,7 +116,10 @@ class AircraftPage extends Component {
 
     renderDetailView = () => {
         return (
-            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
+            <div>
+                <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
+                {this.renderAircraftDetail(this.props.aircraftDetail)}
+            </div>
         );
     };
 
