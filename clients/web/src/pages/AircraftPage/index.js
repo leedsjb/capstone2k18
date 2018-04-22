@@ -54,7 +54,7 @@ class AircraftPage extends Component {
     }
 
     renderAircraft(aircraft) {
-        if (!aircraft.pending) {
+        if (!aircraft.pending && aircraft.data.length > 0) {
             return aircraft.data.map(a => {
                 return (
                     <Link to={`/aircraft/${a.id}`} key={a.id}>
@@ -85,21 +85,11 @@ class AircraftPage extends Component {
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
-                                if (status === "Any status") {
-                                    status = "";
+                                if (status !== "Any status") {
+                                    this.props.fetchAircraft(status);
                                 }
                             }}
                         />
-                        <Box ml={2}>
-                            <DropdownSelect
-                                items={statusFilters}
-                                onChange={status => {
-                                    if (status === "Any status") {
-                                        status = "";
-                                    }
-                                }}
-                            />
-                        </Box>
                     </Flex>
                 </Box>
 
@@ -145,10 +135,8 @@ class AircraftPage extends Component {
                                             <Layer
                                                 type="symbol"
                                                 layout={{
-                                                    "icon-image":
-                                                        aircraft.callsign
+                                                    "icon-image": "airplane"
                                                 }}
-                                                images={images}
                                                 key={aircraft.id}
                                             >
                                                 <Feature
@@ -189,7 +177,7 @@ class AircraftPage extends Component {
                                 </div>
                             );
                         }
-                        return;
+                        return <div />;
                     }}
                     showDetail={this.props.match.params.id}
                     mapCenter={() => {

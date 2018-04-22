@@ -38,7 +38,7 @@ const MasterDetailMapView = ({
 
                     <Flex flex={1}>
                         <Map
-                            style="mapbox://styles/mapbox/streets-v9"
+                            style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
                             containerStyle={{
                                 width: "100%",
                                 height: "100%"
