@@ -16,7 +16,9 @@ import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
+import Text from "../../components/Text";
 import SearchBox from "../../components/SearchBox";
+import Heading from "../../components/Heading";
 import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
@@ -58,10 +60,22 @@ class AircraftPage extends Component {
             return aircraft.data.map(a => {
                 return (
                     <Link to={`/aircraft/${a.id}`} key={a.id}>
-                        <AircraftListItem aircraft={a} />
+                        <AircraftListItem
+                            aircraft={a}
+                            active={this.props.match.params.id == a.id}
+                        />
                     </Link>
                 );
             });
+        } else if (!aircraft.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No aircraft
+                    </Heading>
+                    <Text textAlign="center">Empty state text</Text>
+                </Box>
+            );
         }
     }
 
@@ -85,9 +99,10 @@ class AircraftPage extends Component {
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
-                                if (status !== "Any status") {
-                                    this.props.fetchAircraft(status);
+                                if (status === "Any status") {
+                                    status = null;
                                 }
+                                this.props.fetchAircraft(status);
                             }}
                         />
                     </Flex>
