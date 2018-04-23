@@ -51,7 +51,9 @@ class SearchBox extends Component {
                                     { query: event.target.value },
                                     () => {
                                         if (this.props.handleChange) {
-                                            this.props.handleChange();
+                                            this.props.handleChange(
+                                                this.state.query
+                                            );
                                         }
                                     }
                                 )

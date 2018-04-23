@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { FETCH_AIRCRAFT_PENDING, FETCH_AIRCRAFT_SUCCESS } from "./types";
 
-export function fetchAircraft(status) {
+export function fetchAircraft(term, status) {
     return async dispatch => {
         try {
             dispatch({
@@ -11,7 +11,9 @@ export function fetchAircraft(status) {
 
             let url = "http://localhost:4000/aircraft";
 
-            if (status) {
+            if (term) {
+                url = `${url}?q=${term}`;
+            } else if (status) {
                 url = `${url}?status=${status}`;
             }
 

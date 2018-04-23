@@ -5,7 +5,7 @@ import { fetchAircraft } from "../../actions/aircraft/actions";
 
 class AircraftProvider extends Component {
     componentDidMount() {
-        this.props.fetchAircraft(this.props.status);
+        this.props.fetchAircraft(null, this.props.status);
     }
 
     render() {
