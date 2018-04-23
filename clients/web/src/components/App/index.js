@@ -30,7 +30,15 @@ const App = ({ theme: { breakpoints } }) => {
                         <Switch>
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
-                            <Redirect from="/aircraft/map/:id" to="/aircraft" />
+
+                            <Route
+                                path="/aircraft/map/:id"
+                                render={({ match }) => (
+                                    <Redirect
+                                        to={`/aircraft/${match.params.id}`}
+                                    />
+                                )}
+                            />
                             <Redirect from="/aircraft/map" to="/aircraft" />
                             <Route
                                 path="/aircraft/:id"
