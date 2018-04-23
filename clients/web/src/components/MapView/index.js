@@ -24,7 +24,7 @@ class MapView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            aircraft: null
+            map: null
         };
     }
 
@@ -32,9 +32,16 @@ class MapView extends Component {
         this.props.fetchAircraft();
     }
 
-    getAircraft = (aircraft, e) => {
-        this.setState({ aircraft: aircraft });
-    };
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            (!prevProps.id || !this.props.id) &&
+            this.props.id !== prevProps.id &&
+            this.state.map
+        ) {
+            this.state.map.resize();
+            this.state.map.setCenter(this.mapCenter());
+        }
+    }
 
     mapCenter = () => {
         if (
@@ -104,6 +111,7 @@ class MapView extends Component {
         return (
             <Flex flex={1}>
                 <Map
+                    onStyleLoad={map => this.setState({ map })}
                     style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
                     containerStyle={{
                         width: "100%",
