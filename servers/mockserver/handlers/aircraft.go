@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"path"
 	"strconv"
+	"strings"
+
+	"github.com/leedsjb/capstone2k18/servers/mockserver/indexes"
 )
 
 // Mission ...
@@ -133,6 +136,40 @@ var aircraftDetails = []*AircraftDetail{
 	},
 }
 
+// IndexAircraft ...
+func IndexAircraft(trie *indexes.Trie, aircraft *Aircraft) error {
+	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
+		return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	}
+
+	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraft.ID); err != nil {
+		return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	}
+
+	return nil
+}
+
+// LoadAircraftTrie ...
+func LoadAircraftTrie(trie *indexes.Trie) error {
+	for _, v := range aircraftDetails {
+		if err := IndexAircraft(trie, GetAircraftSummary(v)); err != nil {
+			return fmt.Errorf("Error loading trie: %v", err)
+		}
+	}
+	return nil
+}
+
+// GetTrieAircraft ...
+func GetTrieAircraft(aircraftIDS []int) []*Aircraft {
+	results := []*Aircraft{}
+
+	for _, aircraftID := range aircraftIDS {
+		results = append(results, GetAircraftSummary(aircraftDetails[aircraftID-1]))
+	}
+
+	return results
+}
+
 // GetAircraftSummary ...
 func GetAircraftSummary(v *AircraftDetail) *Aircraft {
 	a := &Aircraft{
@@ -166,7 +203,7 @@ func GetAircraftSummary(v *AircraftDetail) *Aircraft {
 }
 
 // AircraftHandler ...
-func AircraftHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		query := r.URL.Query()
@@ -174,7 +211,9 @@ func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 		term := query.Get("q")
 
 		if len(term) > 0 {
-
+			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			aircraft := GetTrieAircraft(aircraftIDS)
+			respond(w, aircraft)
 		} else {
 			statusFilter := query.Get("status")
 
