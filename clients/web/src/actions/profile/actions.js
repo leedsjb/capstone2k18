@@ -1,10 +1,6 @@
 import axios from "axios";
 
-import {
-    FETCH_PROFILE_PENDING,
-    FETCH_PROFILE_SUCCESS,
-    FETCH_PROFILE_ERROR
-} from "./types";
+import { FETCH_PROFILE_PENDING, FETCH_PROFILE_SUCCESS } from "./types";
 
 export function fetchProfile() {
     return async dispatch => {

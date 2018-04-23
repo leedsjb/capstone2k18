@@ -7,7 +7,6 @@ const Tab = sys(
         is: "a",
         fontSize: 1,
         fontWeight: "bold",
-        mr: 3,
         py: 2,
         color: "inherit",
         flex: 1,
@@ -15,7 +14,8 @@ const Tab = sys(
         textAlign: "center",
         hover: {
             color: "blue"
-        }
+        },
+        display: "block"
     },
     {
         textDecoration: "none"

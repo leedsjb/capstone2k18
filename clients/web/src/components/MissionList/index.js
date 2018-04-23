@@ -8,7 +8,6 @@ import Badge from "../Badge";
 
 const MissionList = ({ data }) => {
     let content;
-    console.log(data);
 
     if (data.length === 0) {
         content = <Facebook />;

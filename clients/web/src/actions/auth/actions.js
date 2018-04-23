@@ -4,7 +4,6 @@ import { push } from "react-router-redux";
 // to actions, reducers and pieces of state
 export const signIn = values => {
     return (dispatch, getState) => {
-        console.log(values);
         // This shouldn't be missions, but this is just
         // a demonstration
         dispatch(push("/aircraft"));

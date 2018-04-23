@@ -21,7 +21,7 @@ const HomePage = () => {
                     <Link to="/">
                         <Logo />
                     </Link>
-                    <Link to="/aircraft">Sign in</Link>
+                    <Link to="/signin">Sign in</Link>
                 </Flex>
             </Box>
             <Container py={5}>

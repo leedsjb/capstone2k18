@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import TitleBar from "../../components/TitleBar";
 import TabBar from "../../components/TabBar";
 import ScrollView from "../../components/ScrollView";
@@ -9,13 +9,17 @@ import Accordion from "../../components/Accordion";
 import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
-const AircraftDetailPage = () => {
+const AircraftDetailPage = ({ match }) => {
+    let backPath =
+        new URLSearchParams(window.location.search).get("source") === "map"
+            ? `/aircraft/map/${match.params.id}`
+            : "/aircraft";
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
-            <TitleBar back backPath="/aircraft" />
+            <TitleBar back backPath={backPath} />
             <ScrollView>
                 <Accordion>
                     <AccordionSection title="Crew">
@@ -27,7 +31,7 @@ const AircraftDetailPage = () => {
                 </Accordion>
             </ScrollView>
             <TabBar />
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 

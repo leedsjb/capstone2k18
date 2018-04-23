@@ -14,7 +14,7 @@ export function fetchGroupsDetail(id) {
             });
 
             const { data } = await axios.get(
-                `http://localhost:4000/groups/$id`
+                `http://localhost:4000/groups/${id}`
             );
 
             dispatch({

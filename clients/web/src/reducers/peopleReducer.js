@@ -5,7 +5,7 @@ import {
 
 const initialState = {
     pending: false,
-    erro: null,
+    error: null,
     data: []
 };
 
