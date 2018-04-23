@@ -66,36 +66,36 @@ func main() {
 
 	// TODO: DO SOMETHING WITH ROWS
 	i := 0
-	for rows.Next() { thing
+	for rows.Next() { 
+		var mission_id string
+		var aircraft_id string
+		var agency_id string
+		var mission_date string
+		var aircraft_id2 string
+		var aircraft_callsign string
+		var model_id string
 		var aircraft_lat string
 		var aircraft_long string
-		var model_title string
-		var model_desc string
-		var aircraft_category string
-		var aircraft_callsign string
-		var mission_date string
+		var agency_id2 string
 		var agency_name string
 		var agency_area_code string
 		var agency_phone string
-		var address_street string
-		var address_city string
-		var address_state string
-		var address_zip string
+		var address_id string
 		err := rows.Scan(
+			&mission_id,
+			&aircraft_id,
+			&agency_id,
+			&mission_date,
+			&aircraft_id2,
+			&aircraft_callsign,
+			&model_id,
 			&aircraft_lat,
 			&aircraft_long,
-			&model_title,
-			&model_desc,
-			&aircraft_category,
-			&aircraft_callsign,
-			&mission_date,
+			&agency_id2,
 			&agency_name,
 			&agency_area_code,
 			&agency_phone,
-			&address_street,
-			&address_city,
-			&address_state,
-			&address_zip,
+			&address_id,
 		)
 		if err != nil {
 			fmt.Printf("Error parsing MySQL rows: %v", err)
@@ -104,20 +104,22 @@ func main() {
 		fmt.Printf(
 			"========================================================\nFLIGHT %d\naircraft_lat: %s\naircraft_long: %s\nmodel_title: %s\nmodel_desc: %s\naircraft_category: %s\naircraft_callsign: %s\nmission_date: %s\nagency_name: %s\nagency_area_code: %s\nagency_phone:%s\naddress_street: %s\naddress_city: %s\naddress_state: %s\naddress_zip: %s\n",
 			i, 
-			aircraft_lat,
-			aircraft_long, model_title, model_desc,
-			aircraft_category,
-			aircraft_callsign,
+			mission_id,
+			aircraft_id,
+			agency_id,
 			mission_date,
+			aircraft_id2,
+			aircraft_callsign,
+			model_id,
+			aircraft_lat,
+			aircraft_long,
+			agency_id2,
 			agency_name,
 			agency_area_code,
 			agency_phone,
-			address_street,
-			address_city,
-			address_state,
-			address_zip,
+			address_id,
 		)
-		i = i + 1
+		i++
 	}
 
 	// Create a new mux for the web server.
