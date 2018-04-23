@@ -9,6 +9,7 @@ import FlexFillVH from "../FlexFillVH";
 import SignInPage from "../../pages/SignInPage";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
+import AircraftMapPage from "../../pages/AircraftMapPage";
 import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 import HomePage from "../../pages/HomePage";
@@ -54,6 +55,15 @@ const App = ({ theme: { breakpoints } }) => {
                         <Switch>
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
+                            <Route
+                                path="/aircraft/map/:id"
+                                component={AircraftMapPage}
+                            />
+                            <Route
+                                path="/aircraft/map"
+                                component={AircraftMapPage}
+                            />
+
                             <Route
                                 path="/aircraft/:id"
                                 component={AircraftDetailPage}

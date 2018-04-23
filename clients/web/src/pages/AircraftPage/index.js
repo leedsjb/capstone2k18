@@ -12,13 +12,13 @@ import Box from "../../components/Box";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
+import Heading from "../../components/Heading";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
 import SearchBox from "../../components/SearchBox";
-import Heading from "../../components/Heading";
 import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
@@ -49,7 +49,7 @@ class AircraftPage extends Component {
     componentWillReceiveProps(nextProps) {
         if (
             nextProps.match.params.id &&
-            !(nextProps.match.params.id === this.props.match.params.id)
+            nextProps.match.params.id !== this.props.match.params.id
         ) {
             this.props.fetchAircraftDetail(nextProps.match.params.id);
         }
@@ -129,87 +129,16 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-
-                <TitleBar title="Aircraft" />
+                <TitleBar
+                    title="Aircraft"
+                    showMap={true}
+                    link="/aircraft/map"
+                />
                 <NavBar />
-
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
                     renderDetailView={this.renderDetailView}
-                    renderMapView={() => {
-                        if (
-                            !this.props.aircraft.pending &&
-                            this.props.aircraft.data.length > 0
-                        ) {
-                            return (
-                                <div>
-                                    {this.props.aircraft.data.map(aircraft => {
-                                        const images = [
-                                            aircraft.callsign,
-                                            image
-                                        ];
-
-                                        return (
-                                            <Layer
-                                                type="symbol"
-                                                layout={{
-                                                    "icon-image": "airplane"
-                                                }}
-                                                key={aircraft.id}
-                                            >
-                                                <Feature
-                                                    coordinates={[
-                                                        aircraft.long,
-                                                        aircraft.lat
-                                                    ]}
-                                                />
-                                            </Layer>
-                                        );
-                                    })}
-                                    {this.props.aircraft.data.map(aircraft => {
-                                        return (
-                                            <Popup
-                                                coordinates={[
-                                                    aircraft.long,
-                                                    aircraft.lat
-                                                ]}
-                                                key={aircraft.id}
-                                                offset={{
-                                                    bottom: [0, -24]
-                                                }}
-                                                style={{ cursor: "pointer" }}
-                                                onClick={() =>
-                                                    this.props.push(
-                                                        `/aircraft/${
-                                                            aircraft.id
-                                                        }`
-                                                    )
-                                                }
-                                            >
-                                                <Span fontWeight="bold">
-                                                    {aircraft.callsign}
-                                                </Span>
-                                            </Popup>
-                                        );
-                                    })}
-                                </div>
-                            );
-                        }
-                        return <div />;
-                    }}
                     showDetail={this.props.match.params.id}
-                    mapCenter={() => {
-                        if (
-                            !this.props.aircraftDetail.pending &&
-                            !Array.isArray(this.props.aircraftDetail.data)
-                        ) {
-                            return [
-                                this.props.aircraftDetail.data.long,
-                                this.props.aircraftDetail.data.lat
-                            ];
-                        }
-                        return [-122.4821475, 47.6129432];
-                    }}
                 />
                 <TabBar />
             </FlexFillVH>

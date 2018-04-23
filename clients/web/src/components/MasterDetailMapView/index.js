@@ -1,12 +1,13 @@
 import React from "react";
 import { Flex } from "grid-styled";
+import ReactMapboxGl from "react-mapbox-gl";
 
 import Box from "../Box";
-import ScrollView from "../ScrollView";
-import MasterDetailView from "../MasterDetailView";
-import MasterView from "../MasterView";
 import DetailView from "../DetailView";
-import ReactMapboxGl from "react-mapbox-gl";
+import MapView from "../MapView";
+import MasterView from "../MasterView";
+import MasterDetailView from "../MasterDetailView";
+import ScrollView from "../ScrollView";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -15,8 +16,6 @@ const Map = ReactMapboxGl({
 const MasterDetailMapView = ({
     renderMasterView,
     renderDetailView,
-    renderMapView,
-    mapCenter,
     showDetail
 }) => {
     return (
@@ -36,18 +35,7 @@ const MasterDetailMapView = ({
                         </ScrollView>
                     ) : null}
 
-                    <Flex flex={1}>
-                        <Map
-                            style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
-                            containerStyle={{
-                                width: "100%",
-                                height: "100%"
-                            }}
-                            center={mapCenter()}
-                        >
-                            {renderMapView()}
-                        </Map>
-                    </Flex>
+                    <MapView />
                 </Flex>
             </DetailView>
         </MasterDetailView>
