@@ -9,12 +9,11 @@ import Accordion from "../../components/Accordion";
 import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
-const AircraftDetailPage = () => {
+const AircraftDetailPage = ({ match }) => {
     let backPath =
         new URLSearchParams(window.location.search).get("source") === "map"
-            ? "/aircraft/map"
+            ? `/aircraft/map/${match.params.id}`
             : "/aircraft";
-    console.log(backPath);
     return (
         <FlexFillVH flexDirection="column">
             <Helmet>
