@@ -8,7 +8,6 @@ import Relative from "../Relative";
 import Absolute from "../Absolute";
 import FlexFillHeight from "../FlexFillHeight";
 import Box from "../Box";
-import LeftPart from "./LeftPart";
 import Clickable from "../Clickable";
 
 class SearchBox extends Component {
