@@ -30,7 +30,6 @@ const App = ({ theme: { breakpoints } }) => {
                         <Switch>
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
-
                             <Route
                                 path="/aircraft/map/:id"
                                 render={({ match }) => (

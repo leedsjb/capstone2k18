@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
+import Media from "react-media";
 import { push } from "react-router-redux";
 import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
+import { withTheme } from "styled-components";
 
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";
@@ -82,23 +84,59 @@ class MapView extends Component {
                     })}
                     {this.props.aircraft.data.map(aircraft => {
                         return (
-                            <Popup
-                                coordinates={[aircraft.long, aircraft.lat]}
-                                key={aircraft.id}
-                                offset={{
-                                    bottom: [0, -24]
-                                }}
-                                style={{ cursor: "pointer" }}
-                                onClick={() =>
-                                    this.props.push(
-                                        `/aircraft/map/${aircraft.id}`
+                            <Media
+                                query={`(min-width: ${
+                                    this.props.theme.breakpoints[1]
+                                }`}
+                            >
+                                {matches =>
+                                    matches ? (
+                                        <Popup
+                                            coordinates={[
+                                                aircraft.long,
+                                                aircraft.lat
+                                            ]}
+                                            key={aircraft.id}
+                                            offset={{
+                                                bottom: [0, -24]
+                                            }}
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() =>
+                                                this.props.push(
+                                                    `/aircraft/${aircraft.id}`
+                                                )
+                                            }
+                                        >
+                                            <Span fontWeight="bold">
+                                                {aircraft.callsign}
+                                            </Span>
+                                        </Popup>
+                                    ) : (
+                                        <Popup
+                                            coordinates={[
+                                                aircraft.long,
+                                                aircraft.lat
+                                            ]}
+                                            key={aircraft.id}
+                                            offset={{
+                                                bottom: [0, -24]
+                                            }}
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() =>
+                                                this.props.push(
+                                                    `/aircraft/map/${
+                                                        aircraft.id
+                                                    }`
+                                                )
+                                            }
+                                        >
+                                            <Span fontWeight="bold">
+                                                {aircraft.callsign}
+                                            </Span>
+                                        </Popup>
                                     )
                                 }
-                            >
-                                <Span fontWeight="bold">
-                                    {aircraft.callsign}
-                                </Span>
-                            </Popup>
+                            </Media>
                         );
                     })}
                 </div>
@@ -139,4 +177,4 @@ const mapDispatchToProps = {
     push
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapView);
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MapView));
