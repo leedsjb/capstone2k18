@@ -30,6 +30,8 @@ const App = ({ theme: { breakpoints } }) => {
                         <Switch>
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
+                            <Redirect from="/aircraft/map/:id" to="/aircraft" />
+                            <Redirect from="/aircraft/map" to="/aircraft" />
                             <Route
                                 path="/aircraft/:id"
                                 component={AircraftPage}
