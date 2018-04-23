@@ -1,24 +1,16 @@
 package handlers
 
-import (
-	"github.com/leedsjb/capstone2k18/servers/gateway/indexes"
-	"github.com/leedsjb/capstone2k18/servers/gateway/models/users"
-	"github.com/leedsjb/capstone2k18/servers/gateway/sessions"
-)
+import "github.com/leedsjb/capstone2k18/servers/mockserver/indexes"
 
 //HandlerContext provides handlers with extra information
 type HandlerContext struct {
-	SigningKey   string
-	SessionStore *sessions.RedisStore
-	UserStore    *users.MongoStore
-	Trie         *indexes.Trie
+	AircraftTrie *indexes.Trie
 }
 
 //NewHandlerContext creates a new HandlerContext
-func NewHandlerContext(signingKey string, sessionStore *sessions.RedisStore,
-	userStore *users.MongoStore, trie *indexes.Trie) *HandlerContext {
-	if signingKey == "" || sessionStore == nil || userStore == nil || trie == nil {
-		panic("Missing either a signing key, session store, user store or trie")
+func NewHandlerContext(aircraftTrie *indexes.Trie) *HandlerContext {
+	if aircraftTrie == nil {
+		panic("Missing aircraft trie")
 	}
-	return &HandlerContext{signingKey, sessionStore, userStore, trie}
+	return &HandlerContext{aircraftTrie}
 }

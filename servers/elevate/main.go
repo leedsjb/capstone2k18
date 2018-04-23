@@ -66,7 +66,7 @@ func main() {
 
 	// TODO: DO SOMETHING WITH ROWS
 	i := 0
-	for rows.Next() {
+	for rows.Next() { thing
 		var aircraft_lat string
 		var aircraft_long string
 		var model_title string
