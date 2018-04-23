@@ -44,20 +44,13 @@ class MobileMapView extends Component {
                 return air.id == this.props.aircraftID;
             });
 
-            return (
-                <Link to={`/aircraft/${selected.id}`} key={selected.id}>
-                    <AircraftListItem aircraft={selected} mobile={true} />
-                </Link>
-            );
-        } else if (!aircraft.pending) {
-            return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No aircraft
-                    </Heading>
-                    <Text textAlign="center">Empty state text</Text>
-                </Box>
-            );
+            if (selected) {
+                return (
+                    <Link to={`/aircraft/${selected.id}`} key={selected.id}>
+                        <AircraftListItem aircraft={selected} mobile={true} />
+                    </Link>
+                );
+            }
         }
     }
 
@@ -67,7 +60,7 @@ class MobileMapView extends Component {
                 <MasterView>
                     <Flex
                         style={{ height: "100%", width: "100%" }}
-                        flexDirection={[null, null, "column", "row"]}
+                        flexDirection="column"
                         flexWrap="wrap"
                     >
                         <MapView />
