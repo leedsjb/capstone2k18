@@ -1,23 +1,87 @@
-import React from "react";
+import React, { Component } from "react";
 import { Flex } from "grid-styled";
+import { withTheme } from "styled-components";
 
 import TextInput from "../TextInput";
 import Icon from "../Icon";
 import Relative from "../Relative";
 import Absolute from "../Absolute";
-import FlexFillHeight from "../../components/FlexFillHeight";
+import FlexFillHeight from "../FlexFillHeight";
+import Box from "../Box";
+import LeftPart from "./LeftPart";
+import Clickable from "../Clickable";
 
-const SearchBox = () => {
-    return (
-        <Relative>
-            <TextInput placeholder="Search" pl={4} pr={3} borderRadius={32} />
-            <Absolute top={0} bottom={0}>
-                <FlexFillHeight alignItems="center" ml={2}>
-                    <Icon glyph="search" size={16} />
-                </FlexFillHeight>
-            </Absolute>
-        </Relative>
-    );
-};
+class SearchBox extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isFocused: false,
+            query: ""
+        };
+    }
 
-export default SearchBox;
+    handleFocus = () => {
+        this.setState({
+            isFocused: true
+        });
+    };
+
+    handleBlur = () => {
+        this.setState({
+            isFocused: false
+        });
+    };
+
+    render() {
+        return (
+            <div>
+                <Box
+                    borderRadius={32}
+                    border={`1px solid ${this.props.theme.colors.wireframe}`}
+                >
+                    <Flex alignItems="center">
+                        <Box px={2}>
+                            <Icon glyph="search" size={16} />
+                        </Box>
+                        <TextInput
+                            placeholder="Search"
+                            onFocus={this.handleFocus}
+                            onBlur={this.handleBlur}
+                            onChange={event =>
+                                this.setState(
+                                    { query: event.target.value },
+                                    () => {
+                                        if (this.props.handleChange) {
+                                            this.props.handleChange();
+                                        }
+                                    }
+                                )
+                            }
+                            value={this.state.query}
+                        />
+                        <div>
+                            <Box px={2}>
+                                {this.state.isFocused ||
+                                this.state.query.length > 0 ? (
+                                    <Clickable
+                                        onClick={() => {
+                                            this.setState({ query: "" }, () => {
+                                                if (this.props.handleClear) {
+                                                    this.props.handleClear();
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        <Icon glyph="closeCircle" size={16} />
+                                    </Clickable>
+                                ) : null}
+                            </Box>
+                        </div>
+                    </Flex>
+                </Box>
+            </div>
+        );
+    }
+}
+
+export default withTheme(SearchBox);

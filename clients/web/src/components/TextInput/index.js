@@ -13,9 +13,6 @@ const TextInput = sys(
         m: 0,
         width: 1,
         border: 0,
-        borderColor: "gray",
-        boxShadow: 1,
-        borderRadius: 2,
         color: "inherit",
         bg: "transparent"
     },
