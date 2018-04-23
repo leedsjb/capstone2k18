@@ -170,23 +170,30 @@ func AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		query := r.URL.Query()
-		statusFilter := query.Get("status")
 
-		aircraft := []*Aircraft{}
+		term := query.Get("q")
 
-		if len(statusFilter) > 0 {
-			for _, v := range aircraftDetails {
-				if v.Status == statusFilter {
+		if len(term) > 0 {
+
+		} else {
+			statusFilter := query.Get("status")
+
+			aircraft := []*Aircraft{}
+
+			if len(statusFilter) > 0 {
+				for _, v := range aircraftDetails {
+					if v.Status == statusFilter {
+						aircraft = append(aircraft, GetAircraftSummary(v))
+					}
+				}
+			} else {
+				for _, v := range aircraftDetails {
 					aircraft = append(aircraft, GetAircraftSummary(v))
 				}
 			}
-		} else {
-			for _, v := range aircraftDetails {
-				aircraft = append(aircraft, GetAircraftSummary(v))
-			}
-		}
 
-		respond(w, aircraft)
+			respond(w, aircraft)
+		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
