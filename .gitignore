@@ -22,6 +22,9 @@
 *.csr
 *.key
 
+# IDE Specific
+.vscode
+
 # misc
 .DS_Store
 .env
