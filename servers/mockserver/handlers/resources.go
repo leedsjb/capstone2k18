@@ -6,21 +6,24 @@ import (
 
 // Resource ...
 type Resource struct {
-	Link  string `json:"link"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
+	ID        int    `json:"id"`
+	Link      string `json:"link"`
+	Name      string `json:"name"`
+	ImageLink string `json:"imageLink"`
 }
 
 var resources = []*Resource{
 	{
-		Link:  "www.google.com",
-		Name:  "Google",
-		Image: "http://www.stickpng.com/assets/images/580b57fcd9996e24bc43c51f.png",
+		ID:        1,
+		Link:      "www.google.com",
+		Name:      "Google",
+		ImageLink: "http://www.stickpng.com/assets/images/580b57fcd9996e24bc43c51f.png",
 	},
 	{
-		Link:  "www.facebook.com",
-		Name:  "Facebook",
-		Image: "http://pngimg.com/uploads/facebook_logos/facebook_logos_PNG19751.png",
+		ID:        2,
+		Link:      "www.facebook.com",
+		Name:      "Facebook",
+		ImageLink: "http://pngimg.com/uploads/facebook_logos/facebook_logos_PNG19751.png",
 	},
 }
 

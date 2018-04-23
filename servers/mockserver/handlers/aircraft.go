@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"path"
 	"strconv"
+	"strings"
+
+	"github.com/leedsjb/capstone2k18/servers/mockserver/indexes"
 )
 
 // Mission ...
@@ -48,8 +51,8 @@ type Aircraft struct {
 	Callsign    string   `json:"callsign"`
 	LevelOfCare string   `json:"levelOfCare"`
 	Class       string   `json:"class"`
-	Lat         string   `json:"lat"`
-	Long        string   `json:"long"`
+	Lat         float32  `json:"lat"`
+	Long        float32  `json:"long"`
 	Area        string   `json:"area"`
 	NNum        string   `json:"nNum"`
 	Mission     *Mission `json:"mission"`
@@ -65,8 +68,8 @@ type AircraftDetail struct {
 	Crew        *GroupDetail   `json:"crew"`
 	LevelOfCare string         `json:"levelOfCare"`
 	Class       string         `json:"class"`
-	Lat         string         `json:"lat"`
-	Long        string         `json:"long"`
+	Lat         float32        `json:"lat"`
+	Long        float32        `json:"long"`
 	Area        string         `json:"area"`
 	NNum        string         `json:"nNum"`
 	Mission     *MissionDetail `json:"mission"`
@@ -82,8 +85,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[2],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.545218",
-		Long:        "-122.315673",
+		Lat:         47.545218,
+		Long:        -122.315673,
 		Area:        "Inceptos vestibulum",
 		NNum:        "N948AL",
 		Mission:     nil,
@@ -101,8 +104,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[1],
 		LevelOfCare: "pediatric",
 		Class:       "fixed",
-		Lat:         "47.542964",
-		Long:        "-122.309860",
+		Lat:         47.542964,
+		Long:        -122.309860,
 		Area:        "Ullamcorper fusce",
 		NNum:        "N937AL",
 		Mission:     nil,
@@ -116,8 +119,8 @@ var aircraftDetails = []*AircraftDetail{
 		Crew:        groupDetails[0],
 		LevelOfCare: "neonatal",
 		Class:       "rotary",
-		Lat:         "47.528478",
-		Long:        "-122.291697",
+		Lat:         47.528478,
+		Long:        -122.291697,
 		Area:        "Sem quam Commodo",
 		NNum:        "N951AL",
 		Mission: &MissionDetail{
@@ -131,6 +134,40 @@ var aircraftDetails = []*AircraftDetail{
 		},
 		OOS: nil,
 	},
+}
+
+// IndexAircraft ...
+func IndexAircraft(trie *indexes.Trie, aircraft *Aircraft) error {
+	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
+		return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	}
+
+	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraft.ID); err != nil {
+		return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	}
+
+	return nil
+}
+
+// LoadAircraftTrie ...
+func LoadAircraftTrie(trie *indexes.Trie) error {
+	for _, v := range aircraftDetails {
+		if err := IndexAircraft(trie, GetAircraftSummary(v)); err != nil {
+			return fmt.Errorf("Error loading trie: %v", err)
+		}
+	}
+	return nil
+}
+
+// GetTrieAircraft ...
+func GetTrieAircraft(aircraftIDS []int) []*Aircraft {
+	results := []*Aircraft{}
+
+	for _, aircraftID := range aircraftIDS {
+		results = append(results, GetAircraftSummary(aircraftDetails[aircraftID-1]))
+	}
+
+	return results
 }
 
 // GetAircraftSummary ...
@@ -166,27 +203,36 @@ func GetAircraftSummary(v *AircraftDetail) *Aircraft {
 }
 
 // AircraftHandler ...
-func AircraftHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		query := r.URL.Query()
-		statusFilter := query.Get("status")
 
-		aircraft := []*Aircraft{}
+		term := query.Get("q")
 
-		if len(statusFilter) > 0 {
-			for _, v := range aircraftDetails {
-				if v.Status == statusFilter {
+		if len(term) > 0 {
+			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			aircraft := GetTrieAircraft(aircraftIDS)
+			respond(w, aircraft)
+		} else {
+			statusFilter := query.Get("status")
+
+			aircraft := []*Aircraft{}
+
+			if len(statusFilter) > 0 {
+				for _, v := range aircraftDetails {
+					if v.Status == statusFilter {
+						aircraft = append(aircraft, GetAircraftSummary(v))
+					}
+				}
+			} else {
+				for _, v := range aircraftDetails {
 					aircraft = append(aircraft, GetAircraftSummary(v))
 				}
 			}
-		} else {
-			for _, v := range aircraftDetails {
-				aircraft = append(aircraft, GetAircraftSummary(v))
-			}
-		}
 
-		respond(w, aircraft)
+			respond(w, aircraft)
+		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
