@@ -65,7 +65,6 @@ const App = ({ theme: { breakpoints } }) => {
                                 path="/aircraft/map"
                                 component={AircraftMapPage}
                             />
-
                             <Route
                                 path="/aircraft/:id"
                                 component={AircraftDetailPage}

@@ -10,12 +10,17 @@ import AccordionSection from "../../components/AccordionSection";
 import Text from "../../components/Text";
 
 const AircraftDetailPage = () => {
+    let backPath =
+        new URLSearchParams(window.location.search).get("source") === "map"
+            ? "/aircraft/map"
+            : "/aircraft";
+    console.log(backPath);
     return (
         <FlexFillVH flexDirection="column">
             <Helmet>
                 <title>Missions</title>
             </Helmet>
-            <TitleBar back backPath="/aircraft" />
+            <TitleBar back backPath={backPath} />
             <ScrollView>
                 <Accordion>
                     <AccordionSection title="Crew">

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
-import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
 import { push } from "react-router-redux";
+import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
 
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";

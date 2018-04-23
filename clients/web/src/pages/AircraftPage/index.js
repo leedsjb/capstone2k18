@@ -41,17 +41,14 @@ class AircraftPage extends Component {
 
     componentDidMount() {
         this.props.fetchAircraft();
-        if (this.props.match.params.id) {
-            this.props.fetchAircraftDetail(this.props.match.params.id);
+        if (this.props.id) {
+            this.props.fetchAircraftDetail(this.props.id);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            nextProps.match.params.id &&
-            nextProps.match.params.id !== this.props.match.params.id
-        ) {
-            this.props.fetchAircraftDetail(nextProps.match.params.id);
+        if (nextProps.id && nextProps.id !== this.props.id) {
+            this.props.fetchAircraftDetail(nextProps.id);
         }
     }
 
@@ -62,7 +59,7 @@ class AircraftPage extends Component {
                     <Link to={`/aircraft/${a.id}`} key={a.id}>
                         <AircraftListItem
                             aircraft={a}
-                            active={this.props.match.params.id == a.id}
+                            active={this.props.id == a.id}
                         />
                     </Link>
                 );
@@ -138,7 +135,7 @@ class AircraftPage extends Component {
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
                     renderDetailView={this.renderDetailView}
-                    showDetail={this.props.match.params.id}
+                    showDetail={this.props.id}
                 />
                 <TabBar />
             </FlexFillVH>
@@ -146,10 +143,11 @@ class AircraftPage extends Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         aircraft: state.aircraft,
-        aircraftDetail: state.aircraftDetail
+        aircraftDetail: state.aircraftDetail,
+        id: ownProps.match.params.id
     };
 }
 

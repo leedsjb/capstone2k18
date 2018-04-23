@@ -17,7 +17,7 @@ class AircraftMapPage extends Component {
                 </Helmet>
                 <TitleBar title="Aircraft" showMap={true} link="/aircraft" />
                 <NavBar />
-                <MobileMapView id={this.props.id} />
+                <MobileMapView aircraftID={this.props.aircraftID} />
                 <TabBar />
             </FlexFillVH>
         );
@@ -25,9 +25,8 @@ class AircraftMapPage extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state", ownProps);
     return {
-        id: ownProps.match.params.id
+        aircraftID: ownProps.match.params.id
     };
 }
 

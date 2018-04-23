@@ -22,7 +22,7 @@ class MobileMapView extends Component {
     }
 
     componentDidMount() {
-        if (this.props.id) {
+        if (this.props.aircraftID) {
             this.props
                 .fetchAircraft()
                 .then(this.renderAircraft(this.props.aircraft));
@@ -30,7 +30,10 @@ class MobileMapView extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.aircraftID && nextProps.aircraftID !== this.props.id) {
+        if (
+            nextProps.aircraftID &&
+            nextProps.aircraftID !== this.props.aircraftID
+        ) {
             this.renderAircraft(this.props.aircraft);
         }
     }
@@ -38,14 +41,19 @@ class MobileMapView extends Component {
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
             let selected = aircraft.data.find(air => {
-                return air.id == this.props.id;
+                return air.id == this.props.aircraftID;
             });
 
-            return (
-                <Link to={`/aircraft/${selected.id}`} key={selected.id}>
-                    <AircraftListItem aircraft={selected} mobile={true} />
-                </Link>
-            );
+            if (selected) {
+                return (
+                    <Link
+                        to={`/aircraft/${selected.id}?source=map`}
+                        key={selected.id}
+                    >
+                        <AircraftListItem aircraft={selected} mobile />
+                    </Link>
+                );
+            }
         }
     }
 
@@ -59,7 +67,7 @@ class MobileMapView extends Component {
                         flexWrap="wrap"
                     >
                         <MapView />
-                        {this.props.id
+                        {this.props.aircraftID
                             ? this.renderAircraft(this.props.aircraft)
                             : null}
                     </Flex>

@@ -36,31 +36,22 @@ class PeoplePage extends Component {
         this.props.fetchPeople();
         this.props.fetchGroups();
 
-        if (this.props.match.params.id) {
-            this.props.fetchPeopleDetail(this.props.match.params.id);
+        if (this.props.id) {
+            this.props.fetchPeopleDetail(this.props.id);
         }
 
-        if (this.props.match.params.groupId) {
-            this.props.fetchGroupsDetail(this.props.match.params.groupId);
+        if (this.props.groupID) {
+            this.props.fetchGroupsDetail(this.props.groupID);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            nextProps.match.params.id &&
-            !(nextProps.match.params.id === this.props.match.params.id)
-        ) {
-            this.props.fetchPeopleDetail(nextProps.match.params.id);
+        if (nextProps.id && !(nextProps.id === this.props.id)) {
+            this.props.fetchPeopleDetail(nextProps.id);
         }
 
-        if (
-            nextProps.match.params.groupId &&
-            !(
-                nextProps.match.params.groupId ===
-                this.props.match.params.groupId
-            )
-        ) {
-            this.props.fetchGroupsDetail(nextProps.match.params.groupId);
+        if (nextProps.groupId && nextProps.groupId !== this.props.groupId) {
+            this.props.fetchGroupsDetail(nextProps.groupId);
         }
     }
 
@@ -220,13 +211,15 @@ class PeoplePage extends Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         people: state.people,
         peopleDetail: state.peopleDetail,
         groups: state.groups,
         groupsDetail: state.groupsDetail,
-        location: state.router.location
+        location: state.router.location,
+        id: ownProps.match.params.id,
+        groupID: ownProps.match.params.groupID
     };
 }
 
