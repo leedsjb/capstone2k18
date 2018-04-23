@@ -35,7 +35,7 @@ const MasterDetailMapView = ({
                         </ScrollView>
                     ) : null}
 
-                    <MapView />
+                    <MapView id={showDetail} />
                 </Flex>
             </DetailView>
         </MasterDetailView>
