@@ -8,7 +8,7 @@ import (
 	// go sql driver
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/leedsjb/capstone2k18/servers/gateway/handlers"
+	// "github.com/leedsjb/capstone2k18/servers/gateway/handlers"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/mysql"
 )
@@ -37,20 +37,23 @@ func main() {
 		fmt.Println("Attempting to use default TLSKEY and TLSCERT paths")
 		tlsKeyPath = pwd + "/tls/privkey.pem"
 		tlsCertPath = pwd + "/tls/fullchain.pem"
+		fmt.Println(tlsKeyPath)
+		fmt.Println(tlsCertPath)
 	}
 
-	//DBADDR: the address of your database server
-	dbAddr := os.Getenv("DBADDR")
-	if dbAddr == "" {
-		fmt.Println("Please provide the address of your database server")
-		os.Exit(1)
-	}
+	// //DBADDR: the address of your database server
+	// dbAddr := os.Getenv("DBADDR")
+	// if dbAddr == "" {
+	// 	fmt.Println("Please provide the address of your database server")
+	// 	os.Exit(1)
+	// }
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
 	sqlUser := os.Getenv("SQLUSER")
 	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
-	sqlTblName := os.Getenv("SQLTABLENAME")
+	// sqlTblName := os.Getenv("SQLTABLENAME")
+	first25Missions := os.Getenv("SQLMISSIONS")
 
 	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
 	cfg.DBName = sqlDbName
@@ -61,7 +64,8 @@ func main() {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM " + sqlTblName)
+	rows, err := db.Query(first25Missions)
+	// rows, err := db.Query("SELECT * FROM " + sqlTblName)
 	if err != nil {
 		fmt.Printf("Error querying MySQL: %v", err)
 		os.Exit(1)
@@ -70,46 +74,57 @@ func main() {
 	// TODO: DO SOMETHING WITH ROWS
 	i := 0
 	for rows.Next() {
+		var aircraft_lat string
+		var aircraft_long string
+		var model_title string
+		var model_desc string
+		var aircraft_category string
+		var aircraft_callsign string
+		var mission_date string
+		var agency_name string
+		var agency_area_code string
+		var agency_phone string
+		var address_street string
+		var address_city string
+		var address_state string
+		var address_zip string
+		err := rows.Scan(
+			&aircraft_lat,
+			&aircraft_long,
+			&model_title,
+			&model_desc,
+			&aircraft_category,
+			&aircraft_callsign,
+			&mission_date,
+			&agency_name,
+			&agency_area_code,
+			&agency_phone,
+			&address_street,
+			&address_city,
+			&address_state,
+			&address_zip,
+		)
+		if err != nil {
+			fmt.Printf("Error parsing MySQL rows: %v", err)
+			os.Exit(1)
+		}
+		fmt.Printf(
+			"========================================================\nFLIGHT %d\naircraft_lat: %s\naircraft_long: %s\nmodel_title: %s\nmodel_desc: %s\naircraft_category: %s\naircraft_callsign: %s\nmission_date: %s\nagency_name: %s\nagency_area_code: %s\nagency_phone:%s\naddress_street: %s\naddress_city: %s\naddress_state: %s\naddress_zip: %s\n",
+			i, 
+			aircraft_lat,
+			aircraft_long, model_title, model_desc,
+			aircraft_category,
+			aircraft_callsign,
+			mission_date,
+			agency_name,
+			agency_area_code,
+			agency_phone,
+			address_street,
+			address_city,
+			address_state,
+			address_zip,
+		)
 		i = i + 1
-		fmt.Println(i)
-		// var aircraft_lat int
-		// var aircraft_long string
-		// var model_title string
-		// var model_desc string
-		// var aircraft_category string
-		// var aircraft_callsign string
-		// var mission_date string
-		// var agency_name string
-		// var agency_area_code string
-		// var agency_phone string
-		// var adderss_street string
-		// var address_city string
-		// var address_state string
-		// var address_zip string
-		// err := rows.Scan(
-		// 	&aircraft_lat,
-		// 	&aircraft_long,
-		// 	&model_title,
-		// 	&model_desc,
-		// 	&aircraft_category,
-		// 	&aircraft_callsign,
-		// 	&mission_date,
-		// 	&agency_name,
-		// 	&agency_area_code,
-		// 	&address_state,
-		// 	&address_zip,
-		// 	&address_city,
-		// 	&address_state,
-		// 	&address_zip
-		// )
-		// if err != nil {
-		// 	fmt.Printf("Error parsing MySQL rows: %v", err)
-		// 	os.Exit(1)
-		// }
-		// fmt.Println(uid)
-		// fmt.Println(username)
-		// fmt.Println(department)
-		// fmt.Println(created)
 	}
 
 	// Create a new mux for the web server.
@@ -117,7 +132,7 @@ func main() {
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.
-	wrappedMux := handlers.NewCORSHandler(mux)
+	// wrappedMux := handlers.NewCORSHandler(mux)
 
 	// Tell the mux to call your handlers
 
@@ -126,5 +141,5 @@ func main() {
 	// the root handler. Use log.Fatal() to report any errors
 	// that occur when trying to start the web server.
 	log.Printf("server is listening at %s...", addr)
-	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
+	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, mux))
 }
