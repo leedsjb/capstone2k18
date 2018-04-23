@@ -1,0 +1,42 @@
+# Filename: .gitgnore
+# Created: April 10, 2018
+# Modified: April 14, 2018
+# Author: J. Benjamin Leeds
+# License: None
+
+# This is the project level .gitignore located in the root of the repository
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/clients/web/node_modules
+/servers/mockserver/node_modules
+
+# testing
+/coverage
+
+# production
+/clients/web/build
+
+# sensitive data
+*.pem
+*.crt
+*.csr
+*.key
+
+# IDE Specific
+.vscode
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/servers/mockserver/yarn-error.log
+
+k8s-gcr-auth-ro.json
