@@ -50,7 +50,7 @@ class MobileMapView extends Component {
                         to={`/aircraft/${selected.id}?source=map`}
                         key={selected.id}
                     >
-                        <AircraftListItem aircraft={selected} mobile />
+                        <AircraftListItem aircraft={selected} />
                     </Link>
                 );
             }
