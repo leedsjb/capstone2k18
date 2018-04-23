@@ -8,7 +8,8 @@ const Box = sys(
     "size",
     "borders",
     "maxWidth",
-    "height"
+    "height",
+    "borderRadius"
 );
 
 Box.displayName = "Box";
