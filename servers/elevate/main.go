@@ -41,13 +41,6 @@ func main() {
 		fmt.Println(tlsCertPath)
 	}
 
-	// //DBADDR: the address of your database server
-	// dbAddr := os.Getenv("DBADDR")
-	// if dbAddr == "" {
-	// 	fmt.Println("Please provide the address of your database server")
-	// 	os.Exit(1)
-	// }
-
 	sqlInstance := os.Getenv("SQLINSTANCE")
 	sqlUser := os.Getenv("SQLUSER")
 	sqlPass := os.Getenv("SQLPASS")
