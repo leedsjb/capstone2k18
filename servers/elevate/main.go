@@ -102,7 +102,7 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf(
-			"========================================================\nFLIGHT %d\naircraft_lat: %s\naircraft_long: %s\nmodel_title: %s\nmodel_desc: %s\naircraft_category: %s\naircraft_callsign: %s\nmission_date: %s\nagency_name: %s\nagency_area_code: %s\nagency_phone:%s\naddress_street: %s\naddress_city: %s\naddress_state: %s\naddress_zip: %s\n",
+			"========================================================\nFLIGHT %d\nmission_id: %s\naircraft_id: %s\nagency_id: %s\nmission_date: %s\naircraft_id2: %s\naircraft_callsign: %s\nmodel_id: %s\naircraft_lat: %s\naircraft_long: %s\nagency_id2:%s\nagency_name: %s\nagency_area_code: %s\nagency_phone: %s\naddress_id: %s\n",
 			i, 
 			mission_id,
 			aircraft_id,
