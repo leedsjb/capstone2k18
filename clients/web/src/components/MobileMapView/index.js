@@ -22,7 +22,7 @@ class MobileMapView extends Component {
     }
 
     componentDidMount() {
-        if (this.props.aircraftID) {
+        if (this.props.id) {
             this.props
                 .fetchAircraft()
                 .then(this.renderAircraft(this.props.aircraft));
@@ -30,10 +30,7 @@ class MobileMapView extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            nextProps.aircraftID &&
-            nextProps.aircraftID !== this.props.aircraftID
-        ) {
+        if (nextProps.aircraftID && nextProps.aircraftID !== this.props.id) {
             this.renderAircraft(this.props.aircraft);
         }
     }
@@ -41,16 +38,14 @@ class MobileMapView extends Component {
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
             let selected = aircraft.data.find(air => {
-                return air.id == this.props.aircraftID;
+                return air.id == this.props.id;
             });
 
-            if (selected) {
-                return (
-                    <Link to={`/aircraft/${selected.id}`} key={selected.id}>
-                        <AircraftListItem aircraft={selected} mobile={true} />
-                    </Link>
-                );
-            }
+            return (
+                <Link to={`/aircraft/${selected.id}`} key={selected.id}>
+                    <AircraftListItem aircraft={selected} mobile={true} />
+                </Link>
+            );
         }
     }
 
@@ -64,7 +59,7 @@ class MobileMapView extends Component {
                         flexWrap="wrap"
                     >
                         <MapView />
-                        {this.props.aircraftID
+                        {this.props.id
                             ? this.renderAircraft(this.props.aircraft)
                             : null}
                     </Flex>
@@ -74,7 +69,7 @@ class MobileMapView extends Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         aircraft: state.aircraft
     };
