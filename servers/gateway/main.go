@@ -139,6 +139,10 @@ func main() {
 	// TODO: not MongoDB -> how to connect to MySQL
 	//Use the DBADDR to dial MongoDB server
 	sess, err := mgo.Dial(dbAddr)
+	if err != nil {
+		fmt.Printf("Error dialing MongoDB: %v", err)
+		os.Exit(1)
+	}
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
 	sqlUser := os.Getenv("SQLUSER")
