@@ -1,14 +1,15 @@
 /*
 load_fake_missions_script.sql
 Created: Saturday April 21, 2018
-Modified: Monday April 23, 2018
+Modified: Tuesday April 24, 2018
 Authors: J. Benjamin Leeds, Sabrina Niklaus, Caitlin Schaefer, and Julian Boss
 License: None
 
 This script loads a MySql v5.7 database hosted in Google Cloud SQL with 5000 rows of fake mission
 data for Airlift Northwest Operations. The script uses stored procedures for the bulk of its
-operations. Fake data is stored in a csv in Google Cloud Storage and is loaded into a 1NF table
-via the Google Cloud Console GUI in Step 2.
+operations. Fake data is stored in a CSV in Google Cloud Storage and loaded into a 1NF table
+via the Google Cloud Console GUI in Step 2. These data are then copied into an RDBMS schema for
+future CRUD operations. 
 */
 
 -- Step 0: Database Setup
@@ -443,27 +444,56 @@ END;
 CALL uspPopulateMission();
 
 -- Benjamin's Case Statement:
+DROP PROCEDURE IF EXISTS `uspLastMission`;
 CREATE PROCEDURE uspLastMission(
     IN aircraft_callsign NVARCHAR(100)
 )
 BEGIN
-    SELECT mission_date
-    FROM tblMISSION
-    ORDER BY mission_date ASC
-    LIMIT 1
-
-    CASE mission_date
-    WHEN NOW() - mission_date < 1
-    THEN 'last mission more than 1 hour old'
-    WHEN NOW() - mission_date < 5
-    THEN `last mission less than 5 hours ago`
+    DECLARE recent_mission_date DATE;
+ 
+    SET recent_mission_date = (
+        SELECT mission_date
+        FROM tblMISSION
+        JOIN tblAIRCRAFT ON tblMISSION.aircraft_id = tblAIRCRAFT.aircraft_id
+        WHERE aircraft_callsign = aircraft_callsign
+        ORDER BY mission_date DESC
+        LIMIT 1
+    );
+ 
+    SET @delta = DATEDIFF(NOW(), recent_mission_date);
+   
+    CASE 
+        WHEN @delta > 360 THEN "last mission was more than 1 year ago"
+        WHEN @delta > 90 THEN "last mission was more than 90 days ago"
+        WHEN @delta > 30 THEN "last mission was more than 30 days ago"
+        WHEN @delta > 10 THEN "last mission was more than 10 days ago"
+        WHEN @delta > 3 THEN "last mission was more than 3 days ago"
+        ELSE "mission 3 days ago or less"
+    END;
 END
+
+-- Test uspLastMission case statement with "AL1" aircraft
+CALL uspLastMission("AL1");
 
 -- Caitlin's Case Statement
-CASE (SELECT tblADDRESS.address_state, tblAGENCY.agency_name FROM tblADDRESS
-   INNER JOIN tblAGENCY 
-       ON tblAGENCY.address_ID = tblADDRESS.address_ID)
-	WHEN ‘Washington’ THEN ‘In State’
-	WHEN ‘Oregon’ OR ‘Montana’ OR ‘Alaska’ OR ‘Idaho’ THEN ‘In Range
-	ELSE ‘Out of Range’
+SELECT tblADDRESS.address_state, tblAGENCY.agency_name,
+CASE tblADDRESS.address_state
+	WHEN 'Washington' THEN 'In State'
+	WHEN 'Oregon' OR 'Montana' OR 'Alaska' OR 'Idaho' THEN 'In Range'
+	ELSE 'Out of Range'
+END AS 'Agency In Region?'
+
+FROM tblADDRESS
+INNER JOIN tblAGENCY 
+ON tblAGENCY.address_ID = tblADDRESS.address_ID
+
+-- Sabrina's Case Statement
+SELECT mission_id,
+CASE
+    WHEN Month(mission_date) BETWEEN 3 AND 5 THEN 'SPRING'
+    WHEN Month(mission_date) BETWEEN 6 AND 8 THEN 'SUMMER'
+    WHEN Month(mission_date) BETWEEN 9 AND 11 THEN 'FALL'
+    ELSE 'WINTER'
 END
+AS mission_season
+FROM tblMISSION;
