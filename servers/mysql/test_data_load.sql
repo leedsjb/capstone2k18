@@ -1,4 +1,14 @@
+/*
+test_data_load.sql
+Created: Wednesday Apil 25, 2018
+Modified:
+Authors: J. Benjamin Leeds
+License: None
 
+This script loads the necessary data into Google Cloud MySQL to begin receiving data additions
+and updates from Flight Vector on-premise via Google Cloud Pub/Sub.
+
+*/
 
 
 DROP TABLE IF EXISTS tblAIRCRAFT_STATUS;
@@ -7,7 +17,6 @@ CREATE TABLE tblAIRCRAFT_STATUS(
     aircraftStatusName NVARCHAR(100) NOT NULL,
     aircraftStatusDescription NVARCHAR(100)
 );
-
 INSERT INTO tblAIRCRAFT_STATUS(aircraftStatusName, aircraftStatusDescription)
 VALUES
     ("VFR ONLY - Aircraft Issue", "Aircraft can only fly in Visual Meterological Conditions"),
@@ -24,3 +33,55 @@ VALUES
     ("VFR Only - Pilot Issue", "Flight crew not presently qualified for Instrument Flight Rules"),
     ("MEL - Unable to fly into known icing", "Aircraft Minimum Equipment List prevents Flight Into
     Known Icing (FIKI)");
+
+DROP TABLE IF EXISTS tblAIRCRAFT_TYPE;
+CREATE TABLE tblAIRCRAFT_TYPE(
+    aircraftTypeID INTEGER AUTO_INCREMENT PRIMARY KEY, 
+    aircraftTypeName NVARCHAR(100) NOT NULL
+);
+INSERT INTO tblAIRCRAFT_TYPE(aircraftTypeName)
+VALUES
+    ("Helicopter - twin"), ("Fixed-wing - turboprop"), ("Fixed-wing - turbofan")
+
+DROP TABLE IF EXISTS tblAC_LEVEL_OF_CARE;
+CREATE TABLE tblAC_LEVEL_OF_CARE(
+    levelOfCareID INTEGER AUTO_INCREMENT PRIMARY KEY,
+    levelOfCareName NVARCHAR(100) NOT NULL
+)
+INSERT INTO tblAC_LEVEL_OF_CARE(levelOfCareName)
+VALUES 
+    ("Neonatal"), ("Pediatric RN Onboard"), ("Alaska Pediatric");
+
+DROP TABLE IF EXISTS tblROLE;
+CREATE TABLE tblROLE(
+    roleID INTEGER AUTO_INCREMENT PRIMARY KEY,
+    roleName NVARCHAR(100) NOT NULL,
+    roleDescription NVARCHAR(100)
+)
+INSERT INTO tblROLE(roleName)
+VALUES 
+    ("Pilot PIC"), ("Adult RN"), ("Pediatric RN");
+
+DROP TABLE IF EXISTS tblAIRCRAFT;
+CREATE TABLE tblAIRCRAFT(
+    acID INTEGER AUTO_INCREMENT PRIMARY KEY, 
+    acCallSign NVARCHAR(100) NOT NULL, 
+    acNNumber NVARCHAR(100) NOT NULL,
+    acType INTEGER FOREIGN KEY REFERENCES tblAIRCRAFT_TYPE(aircraftTypeID),
+
+)
+
+
+-- Create Personnel Tables
+
+-- Personnel Group: Groups of personnel used primarily for messaging / organizational purposes
+DROP TABLE IF EXISTS tblPERSONNEL_GROUP;
+CREATE TABLE tblPERSONNEL_GROUP(
+    personnelGroupID INTEGER AUTO_INCREMENT PRIMARY KEY, 
+    personnelGroupName NVARCHAR(100) NOT NULL, 
+    personnelGroupDesc NVARCHAR(100)
+)
+INSERT INTO tblPERSONNEL_GROUP(personnelGroupName)
+VALUES(
+    ("Mobile ECMO Team"), ("PAIP"), ("SEA Turbo"), ("SEA Turbo Pilots"), ("SEA Turbo RNs")
+);
