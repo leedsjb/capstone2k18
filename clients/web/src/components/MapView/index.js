@@ -95,6 +95,7 @@ class MapView extends Component {
                                 query={`(min-width: ${
                                     this.props.theme.breakpoints[1]
                                 }`}
+                                key={aircraft.id}
                             >
                                 {matches =>
                                     matches ? (
