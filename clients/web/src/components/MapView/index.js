@@ -26,6 +26,7 @@ class MapView extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            center: [-122.4821475, 47.6129432],
             map: null
         };
     }
@@ -40,6 +41,12 @@ class MapView extends Component {
             this.props.id !== prevProps.id &&
             this.state.map
         ) {
+            this.setState({
+                center: [
+                    this.props.aircraftDetail.data.long,
+                    this.props.aircraftDetail.data.lat
+                ]
+            });
             this.state.map.resize();
             this.state.map.setCenter(this.mapCenter());
         }
@@ -55,7 +62,7 @@ class MapView extends Component {
                 this.props.aircraftDetail.data.lat
             ];
         }
-        return [-122.4821475, 47.6129432];
+        return this.state.center;
     };
 
     renderMapView = () => {
