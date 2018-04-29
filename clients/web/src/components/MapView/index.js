@@ -41,18 +41,14 @@ class MapView extends Component {
             this.props.id !== prevProps.id &&
             this.state.map
         ) {
-            this.setState(
-                {
-                    center: [
-                        this.props.aircraftDetail.data.long,
-                        this.props.aircraftDetail.data.lat
-                    ]
-                },
-                () => {
-                    this.state.map.setCenter(this.mapCenter());
-                }
-            );
+            this.setState({
+                center: [
+                    this.props.aircraftDetail.data.long,
+                    this.props.aircraftDetail.data.lat
+                ]
+            });
             this.state.map.resize();
+            this.state.map.setCenter(this.mapCenter());
         }
     }
 
