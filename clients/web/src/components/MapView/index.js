@@ -32,22 +32,31 @@ class MapView extends Component {
 
     componentDidMount() {
         this.props.fetchAircraft();
+        if (this.props.id) {
+            this.props.fetchAircraftDetail(this.props.id);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.id && nextProps.id !== this.props.id) {
+            this.props.fetchAircraftDetail(nextProps.id);
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (
             (!prevProps.id || !this.props.id) &&
             this.props.id !== prevProps.id &&
-            this.state.map
+            this.state.map &&
+            !this.props.aircraftDetail.pending &&
+            !Array.isArray(this.props.aircraftDetail.data)
         ) {
-            if (this.props.aircraftDetail) {
-                this.setState({
-                    center: [
-                        this.props.aircraftDetail.data.long,
-                        this.props.aircraftDetail.data.lat
-                    ]
-                });
-            }
+            this.setState({
+                center: [
+                    this.props.aircraftDetail.data.long,
+                    this.props.aircraftDetail.data.lat
+                ]
+            });
 
             this.state.map.resize();
             this.state.map.setCenter(this.mapCenter());
