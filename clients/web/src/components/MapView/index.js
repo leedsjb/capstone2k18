@@ -6,8 +6,7 @@ import { push } from "react-router-redux";
 import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
-import MasterView from "../MasterView";
-import MasterDetailView from "../MasterDetailView";
+import Box from "../../components/Box";
 import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
@@ -41,12 +40,15 @@ class MapView extends Component {
             this.props.id !== prevProps.id &&
             this.state.map
         ) {
-            this.setState({
-                center: [
-                    this.props.aircraftDetail.data.long,
-                    this.props.aircraftDetail.data.lat
-                ]
-            });
+            if (this.props.aircraftDetail) {
+                this.setState({
+                    center: [
+                        this.props.aircraftDetail.data.long,
+                        this.props.aircraftDetail.data.lat
+                    ]
+                });
+            }
+
             this.state.map.resize();
             this.state.map.setCenter(this.mapCenter());
         }
@@ -74,19 +76,42 @@ class MapView extends Component {
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
                         const images = [aircraft.callsign, image];
-
                         return (
-                            <Layer
-                                type="symbol"
-                                layout={{
-                                    "icon-image": "airplane"
-                                }}
-                                key={aircraft.id}
-                            >
-                                <Feature
-                                    coordinates={[aircraft.long, aircraft.lat]}
-                                />
-                            </Layer>
+                            <Box key={aircraft.id}>
+                                <Layer
+                                    type="symbol"
+                                    layout={{
+                                        "icon-image": "airplane",
+                                        "icon-allow-overlap": true
+                                    }}
+                                >
+                                    <Feature
+                                        coordinates={[
+                                            aircraft.long,
+                                            aircraft.lat
+                                        ]}
+                                    />
+                                </Layer>
+                                {this.props.id ? (
+                                    <Layer
+                                        type="symbol"
+                                        layout={{
+                                            "icon-image": "circle-15",
+                                            "text-field": "Squaxin Ballfields",
+                                            "text-anchor": "top",
+                                            "text-offset": [0, 0.5],
+                                            "text-transform": "uppercase"
+                                        }}
+                                    >
+                                        <Feature
+                                            coordinates={[
+                                                -122.28567,
+                                                47.552965
+                                            ]}
+                                        />
+                                    </Layer>
+                                ) : null}
+                            </Box>
                         );
                     })}
                     {this.props.aircraft.data.map(aircraft => {
