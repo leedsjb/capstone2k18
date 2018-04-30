@@ -57,7 +57,7 @@ class MobileMapView extends Component {
                         flexDirection="column"
                         flexWrap="wrap"
                     >
-                        <MapView id={this.props.aircraftID} />
+                        <MapView />
                         {this.props.aircraftID
                             ? this.renderAircraft(this.props.aircraft)
                             : null}
