@@ -52,7 +52,7 @@ class InsetMapView extends Component {
                         Math.max(this.props.aircraftDetail.data.lat, 47.552965)
                     ]
                 ],
-                { padding: { top: 20, bottom: 20, left: 10, right: 20 } }
+                { padding: { top: 20, bottom: 20, left: 15, right: 15 } }
             );
         }
     }
@@ -130,6 +130,7 @@ class InsetMapView extends Component {
                     margin: "0 auto"
                 }}
                 center={this.mapCenter()}
+                animationOptions={{ animate: false }}
             >
                 {this.renderMapView()}
             </Map>
