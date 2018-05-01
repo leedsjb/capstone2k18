@@ -1,0 +1,381 @@
+/* 
+Missions
+Topic ID: NM1
+Topic Name: mission_create
+Description: New mission created
+*/
+{
+    "missionID": "1",                       // Table: Missions.ID
+    "TCNum": "18-0013",                     // Table: TC.ID
+    "asset": "N123AL",
+    "requestorID": "1",                     // Ex. Snoqualmie Pass Ski Area
+    "receiverID": "1",                      // Ex. Harborview Medical Center
+    "priority": "Emergency",
+    "callType": "callTypeID",
+    "patient": {
+        "shortReport": "head bleed",
+        "intubated": "true",
+        "drips": "4",
+        "age": "42",
+        "weight": "50",
+        "gender": "M",
+        "cardiac": "false",
+        "GIBleed": "false",
+        "OB": "false",
+    },
+    "crewMemberID": [
+            "personID1",
+            "personID2",
+            "personID3",
+            "personID4"
+    ],
+    "waypoints": [
+        {
+            "ID": "1",
+            "ETE": "00:05",             // time to next point
+            "ETT": "00:05",             // cumulative mission time
+            "active": "true"            // denotes active waypoint
+                                        // Table: Missions.CurrentLeg
+        },
+        {
+            "ID": "2",
+            "ETE": "00:17",
+            "ETT": "00:22",
+            "active": "false"           // Table: Missions.CurrentLeg
+        },
+        {
+            "ID": "3",
+            "ETE": "00:12",
+            "ETT": "00:34",
+            "active": "false"           // Table: Missions.CurrentLeg
+        }
+    ],
+}
+
+/* 
+Mission Waypoint Update
+Topic ID: MU1
+Topic Name: mission_waypoints_update
+Description: Changes to waypoint after mission creation (waypoints, ETE, ETT, active leg)
+*/
+{
+    "missionID": "18-0013",                 // Table: Missions.ID
+    "waypoints": [
+        {
+            "ID": "1",
+            "ETE": "00:05",
+            "ETT": "00:05",
+            "active": "false"               // Table: Missions.CurrentLeg
+        },
+        {
+            "ID": "2",
+            "ETE": "00:21",
+            "ETT": "00:26",
+            "active": "true"                // Table: Missions.CurrentLeg
+        },
+        {
+            "ID": "3",
+            "ETE": "00:12",
+            "ETT": "00:38",
+            "active": "false"               // Table: Missions.CurrentLeg
+        }
+    ],
+}
+
+/* 
+Mission Crew Update
+Topic ID: MU2
+Topic Name: mission_crew_update
+Description: Changes to crew after mission creation
+*/
+{
+    "missionID": "1",                       // Table: Missions.ID
+    "crewMemberID": [
+            "personID1",
+            "personID2",
+            "personID4",
+            "personID7"
+    ]
+}
+
+/* 
+Waypoint Created
+Topic ID: WP1
+Topic Name: waypoint_create
+Description: New waypoint added to Flight Vector db by dispatcher
+Waypoint types: agency, hospital, airport, landing zone
+*/
+{
+    "ID": "1",                                      // Table: Waypoint.ID
+    "notes": "FBO McCormicks, Ground tx: AMR",
+    "name": "Yakima Valley Memorial Hospital",      // Table: Waypoint.Name
+    "type": "hospital",                             // Table: Waypoint.Type
+    "address1": "2811 Tieton Drive",
+    "address2": "",
+    "country": "United States",                     // Depends: AIRPORT.Country
+    "state": "WA",                                  // Depends: AIRPORT.StateID 
+    "county": "Yakima",                             // Depends: AIRPORT.County
+    "city": "Yakima",                               // Depends: AIRPORT.City (maybe AIRPORT.CityID)
+    "zip": "98902",                                 // Depends: AIRPORT.ZipID
+    "lat": "48.433637",                             // Table: Waypoint.Latitude
+    "long": "-123.406884",                          // Table: Waypoint.Longitude
+    "GPSWaypoint": "227",
+    "AirportIdentifier": "KBFI",                    // Table: AIRPORT.Ident
+    "phone": [                                      // Depends: AIRPORT.Phone
+        "2068901234",
+        "(123) 123 4567 x123"
+    ],
+    "shortCode": "YV",
+    "padTime": "00:06",                             // Dependent on type of waypoint
+                                                    // Ex. Bases.PadTimeMinutes
+    "radioChannels": [
+        "121.900 VHF",
+        "132.600 VHF",
+        "232.700 UHF"
+    ],
+    "NOTAMS": ""
+}
+
+/* 
+Waypoint Updated
+Topic ID: WP2
+Topic Name: waypoint_update
+Description: Waypoint updated in waypoint catalog
+Waypoint types: airport, hospital, landing zone, base
+*/
+{
+    "ID": "1",
+    "notes": "FBO McCormicks, Ground tx: AMR",
+    "name": "Yakima Valley Memorial Hospital",
+    "type": "hospital",
+    "address1": "2811 Tieton Drive",
+    "address2": "",
+    "country": "United States",
+    "state": "WA",
+    "county": "Yakima",
+    "city": "Yakima",
+    "zip": "98902",
+    "lat": "48.433637",
+    "long": "-123.406884",
+    "GPSWaypoint": "227",
+    "AirportIdentifier": "KBFI",
+    "phone": [
+        "2068901234",
+        "(123) 123 4567 x123"
+    ],
+    "shortCode": "YV",
+    "padTime": "00:06",
+    "radioChannels": [
+        "121.900 VHF",
+        "132.600 VHF",
+        "232.700 UHF"
+    ],
+    "NOTAMS": "Runway 13R OTS"
+}
+
+/* 
+Waypoint Deleted
+Topic ID: WP3
+Topic Name: waypoint_delete
+Description: Waypoint deleted from waypoint catalog
+Waypoint types: airport, hospital, landing zone, base
+*/
+{
+    "ID": "1"
+}
+
+/* 
+Aircraft Created
+Topic ID: AC1
+Topic Name: aircraft_create
+Description: New aircraft added
+FV Table: Vendor
+*/
+{
+    "ID": "1",                          // Table: Assets.ID
+    "nNum": "N123AL",
+    "satPhone": "123-123-123-123",
+    "cellPhone": "(123) 123-1234",
+    "base": "baseID",                   // Table: Bases
+    "callsign": "AL2",
+    "maxPatientWeight": "350",
+    "padTimeDay": "12",
+    "padTimeNight": "14",
+    "vendor": "vendorID",               // Table: Vendor
+    "status": "",                       // Table: Asset?
+    "specialEquipment": "",
+    "color": "blue",
+    "lastKnownLocation": "waypointID",
+    "model": "Learjet 31A",
+    "callTypes": [
+        "callTypeID1",
+        "callTypeID2",
+        "callTypeID3",
+        "callTypeID4"
+    ]
+}
+
+/* 
+Aircraft Properties Update
+Topic ID: AC2
+Topic Name: ac_properties_update
+Description: Aircraft persistent properties updated
+FV Table:
+*/
+{
+    "ID": "1",
+    "satPhone": "123-123-123-123",
+    "cellPhone": "(123) 123-1234",
+    "base": "baseID",
+    "callsign": "AL2",
+    "maxPatientWeight": "350",
+    "padTimeDay": "16",
+    "padTimeNight": "14",
+    "vendor": "vendorID",
+    "specialEquipment": ""
+}
+
+/* 
+Aircraft Crew Update
+Topic ID: AC3
+Topic Name: ac_crew_update
+Description: Aircraft crew reassigned
+FV Table:
+*/
+{
+    "PIC": "personID1",
+    "adultRN": "personID2",
+    "pediatricRN": "personID3"
+}
+
+/* 
+Aircraft Scheduled Service
+Topic ID: AC4
+Topic Name: ac_service_schedule
+Description: Aircraft service scheduled
+FV Table
+*/
+{
+    "oosReason": "oosId",                                    // Table: OutOfServiceReasons
+    "startTime": "2007-05-08 12:35:29.1234567 -07:00",
+    "endTime": "2007-05-010 16:23:17.1234567 -07:00",        // "fulfilled at"
+    "status": "VFR Only - Pilot Issue"
+}
+
+/* 
+Aircraft Postion Update
+Topic ID: AC5
+Topic Name: ac_position_update
+Description: Aircraft position updated
+FV Table:
+*/
+{
+    "posLat": "48.432468",
+    "posLong": "-123.401357",
+    "posFriendlyName": "Bremerton"
+}
+
+/* 
+User Create
+Topic ID: USR1
+Topic Name: user_create
+Description: Create new user
+FV Table: Users, UserGroup 
+*/
+{
+    "ID": "1",                                  // Table: Users.ID2
+    "userName": "johnsmith",
+    "firstName": "John",                        // Table: Users.FirstName
+    "middleName": "Jacob",                      // Table: Users.MiddleName
+    "lastName": "Smith",                        // Table: Users.LastName
+    "initials": "JJS",                          // Table: Users.Initials
+    "email": "johnsmith@airliftnw.org",         // Table: Users.Email
+    "UWNetID": "johnsmith",                     // *Not in FV but needed for auth*
+    "groupID": "1",                             // *User.GroupID refers to FV User permissions, we want Pager Groups*
+                                                // Potentially from PagableGroups or GroupOfUsers?
+    "role": "Adult RN",                         // *Need to know Pilot, Flight RN, AOC, Ground Support*, shown as "Type" in FV UI
+    "cellPhone": "(123) 123 1234",                   
+    "qualificationID": "2"                      // Ex. Pilot PIC, Medical
+}
+
+/* 
+User Update
+Topic ID: USR2
+Topic Name: user_update
+Description: Update existing user
+FV Table: Users, UserGroup 
+*/
+{
+    "ID": "1",                                  // Table: Users.ID2
+    "userName": "johnsmith",
+    "firstName": "John",                        // Table: Users.FirstName
+    "middleName": "Jacob",                      // Table: Users.MiddleName
+    "lastName": "Smith",                        // Table: Users.LastName
+    "initials": "JJS",                          // Table: Users.Initials
+    "email": "johnsmith@airliftnw.org",         // Table: Users.Email
+    "UWNetID": "johnsmith",                     // *Not in FV but needed for auth*
+    "groupID": "1",                             // *User.GroupID refers to FV User permissions, we want Pager Groups*
+                                                // Potentially from PagableGroups or GroupOfUsers?
+    "role": "Adult RN",                         // *Need to know Pilot, Flight RN, AOC, Ground Support*, shown as "Type" in FV UI
+    "cellPhone": "(123) 123 1234",                   
+    "qualificationID": "2"                      // Ex. Pilot PIC, Medical
+}
+
+/* 
+User Delete
+Topic ID: USR3
+Topic Name: user_delete
+Description: Delete existing user
+FV Table: Users
+*/
+{
+    "ID": "1"                                   // Table: Users.Deleted (T/F, stored as bit in FV)
+}
+
+/*
+Group Create
+Topic ID: GR1
+Topic Name: group_create
+Description: Create a new group
+FV Table: UserGroup/GroupOfUsers/PagableGroups? *not a typo, is spelled "PagableGroups" in FV
+*/
+{
+    "ID": 1,
+    "name": "Group1",
+    "members": [
+        "UserID1",
+        "UserID2",
+        "UserID3",
+        "UserID4"
+    ]
+}
+
+/*
+Group Update
+Topic ID: GR2
+Topic Name: group_update
+Description: Add or delete member, change group name
+FV Table: UserGroup/GroupOfUsers/PagableGroups?
+*/
+{
+    "ID": 1,
+    "name": "GroupOne",
+    "members": [
+        "UserID1",
+        "UserID2",
+        "UserID3",
+        "UserID4",
+        "UserID5"
+    ]
+}
+
+/*
+Group Delete
+Topic ID: GR3
+Topic Name: group_delete
+Description: Delete existing group
+FV Table: UserGroup/GroupOfUsers/PagableGroups?
+*/
+{
+    "ID": 1
+}
