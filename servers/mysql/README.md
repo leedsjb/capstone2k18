@@ -32,3 +32,22 @@ To upload CSV to Google Cloud Storage for import into Google Cloud SQL:
 https://cloud.google.com/storage/docs/uploading-objects
 
 gsutil cp RAW_aircraft_mission_agency_data.csv gs://info445-import-test/
+
+Local vs. User Variables:
+    Use local variables wherever possible. They are restricted to the block where they are declared.
+    Otherwise, @variable variables (local variables) can be used which are avialable anywhere in a 
+    client session. 
+
+Datatype Standards:
+
+Use NVARCHAR for all textual data unless data type will never require non-ASCII characters.
+Step sizes:
+    10 - short categorical values
+    25 - 
+    50 - longer strings such as address lines
+    100 - 
+    250 - 
+    500 - freeform notes fields
+
+True/False Values:
+    Use BOOLEAN which is a synonym for its underlying datatype: TINYINT(1)
