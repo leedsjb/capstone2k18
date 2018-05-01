@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,14 +12,28 @@ import (
 
 	"golang.org/x/net/context"
 
-	// "github.com/leedsjb/capstone2k18/servers/gateway/handlers"
+	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/mysql"
 
 	"cloud.google.com/go/pubsub"
 )
 
-// var subscription *pubsub.Subscription
+//NotificationsHandler handles requests for the /notifications resource
+type NotificationsHandler struct {
+	notifier *handlers.Notifier
+}
+
+//NewNotificationsHandler constructs a new NotificationsHandler
+func NewNotificationsHandler(notifier *handlers.Notifier) *NotificationsHandler {
+	return &NotificationsHandler{notifier}
+}
+
+//ServeHTTP handles HTTP requests for the NotificationsHandler
+func (nh *NotificationsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	msg := fmt.Sprintf("Notification pushed from the server at %s", time.Now().Format("15:04:05"))
+	nh.notifier.Notify([]byte(msg))
+}
 
 //main is the main entry point for the server
 func main() {
@@ -182,6 +197,8 @@ func main() {
 		"test_group_delete_sub",
 	}
 
+	notifier := handlers.NewNotifier()
+
 	// create topics and subscriptions if don't yet exist
 	for i, testTopicName := range testTopicNames {
 		topic := psClient.Topic(testTopicName)
@@ -209,7 +226,7 @@ func main() {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
-		go subscribe(subscription)
+		go subscribe(subscription, notifier)
 	}
 
 	// [HTTPS]
@@ -222,13 +239,15 @@ func main() {
 	// wrappedMux := handlers.NewCORSHandler(mux)
 
 	// Tell the mux to call your handlers
+	wsh := handlers.NewWebSocketsHandler(notifier)
+	mux.Handle("/v1/ws", wsh)
 
 	// Start a web server listening on the address you read from
 	// the environment variable, using the mux you created as
 	// the root handler. Use log.Fatal() to report any errors
 	// that occur when trying to start the web server.
 	log.Printf("server is listening at %s...", addr)
-	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, mux))
+	log.Fatal(http.ListenAndServe(addr, mux))
 }
 
 func mustGetenv(k string) string {
@@ -240,11 +259,11 @@ func mustGetenv(k string) string {
 }
 
 type testStruct struct {
-	Message string `json:"msg"`
+	Message string `json:"Message"`
 }
 
 // listen for and process pubsub events
-func subscribe(subscription *pubsub.Subscription) {
+func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier) {
 	ctx := context.Background()
 	err := subscription.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		var data testStruct
@@ -254,13 +273,10 @@ func subscribe(subscription *pubsub.Subscription) {
 			msg.Ack()
 			return
 		}
-		log.Printf("contents of decoded json: %#v\r\n", data)
 
 		// TODO: process msg contents
 		// TODO: send msg contents to websockets
 		// TODO: save msg contents to CloudSQL using StoredProcedures
-
-		log.Printf("Message data: %v\n", data)
 
 		// [sample processing message]
 		// log.Printf("[ID %d] Processing. . .", id)
@@ -274,9 +290,11 @@ func subscribe(subscription *pubsub.Subscription) {
 		// countMu.Lock()
 		// count++
 		// countMu.Unlock()
+		
+		notifier.Notify([]byte(data.Message))
 
 		msg.Ack()
-		log.Printf("Msg Acknowledged: (%v)\n", data)
+		log.Printf("Message Acknowledged: (%v)\n", data)
 	})
 	if err != nil {
 		log.Fatalf("Could not receive subscription: %v", err)
