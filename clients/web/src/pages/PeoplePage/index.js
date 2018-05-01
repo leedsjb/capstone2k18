@@ -1,27 +1,28 @@
 import React, { Component } from "react";
-import { Helmet } from "react-helmet";
-import { Flex } from "grid-styled";
 import { connect } from "react-redux";
+import { Flex } from "grid-styled";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
-import FlexFillVH from "../../components/FlexFillVH";
-import TitleBar from "../../components/TitleBar";
-import TabBar from "../../components/TabBar";
-import MasterDetailView from "../../components/MasterDetailView";
-import MasterView from "../../components/MasterView";
-import DetailView from "../../components/DetailView";
-import Heading from "../../components/Heading";
-import ButtonIcon from "../../components/ButtonIcon";
-import NavBar from "../../components/NavBar";
-import ProfileAvatar from "../../components/ProfileAvatar";
-import MasterListItem from "../../components/MasterListItem";
 import Box from "../../components/Box";
-import PeopleListItem from "../../components/PeopleListItem";
-import Tab from "../../components/Tab";
+import ButtonIcon from "../../components/ButtonIcon";
+import DetailView from "../../components/DetailView";
 import Divider from "../../components/Divider";
-import Icon from "../../components/Icon";
+import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
+import Heading from "../../components/Heading";
+import Icon from "../../components/Icon";
+import MasterView from "../../components/MasterView";
+import MasterDetailView from "../../components/MasterDetailView";
+import MasterListItem from "../../components/MasterListItem";
+import NavBar from "../../components/NavBar";
+import PeopleListItem from "../../components/PeopleListItem";
+import ProfileAvatar from "../../components/ProfileAvatar";
 import Span from "../../components/Span";
+import Tab from "../../components/Tab";
+import TabBar from "../../components/TabBar";
+import Text from "../../components/Text";
+import TitleBar from "../../components/TitleBar";
 
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
@@ -72,6 +73,17 @@ class PeoplePage extends Component {
                     </Link>
                 );
             });
+        } else if (!this.props.people.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No People
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.people.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -84,6 +96,17 @@ class PeoplePage extends Component {
                     </Link>
                 );
             });
+        } else if (!this.props.groups.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Groups
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groups.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -103,6 +126,17 @@ class PeoplePage extends Component {
                     </Link>
                 );
             });
+        } else if (!this.props.groupsDetail.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Group Details
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groupsDetail.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -152,7 +186,7 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        let content;
+        let content = "Loading...";
 
         if (
             !this.props.peopleDetail.pending &&
