@@ -216,6 +216,7 @@ func main() {
 
 		// create subscription if doesn't exist
 		subscription := psClient.Subscription(testSubNames[i])
+
 		exists, err = subscription.Exists(ctx)
 		if err != nil {
 			log.Fatalf("Error checking for subscription: %v", err)
@@ -225,8 +226,16 @@ func main() {
 			pubsub.SubscriptionConfig{Topic: topic}); err != nil {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
+		} else {
+			endpoint := "https://localhost:8000/v1/" + testSubNames[i]
+			_, err := psClient.Subscription(testSubNames[i]).Update(ctx, pubsub.SubscriptionConfigToUpdate{
+				PushConfig: &pubsub.PushConfig{Endpoint: endpoint},
+			})
+			if err != nil {
+				log.Fatalf("Failed to update subscription to push: %v", err)
+			}
 		}
-		go subscribe(subscription, notifier)
+		// go subscribe(subscription, notifier)
 	}
 
 	// [HTTPS]
@@ -241,6 +250,24 @@ func main() {
 	// Tell the mux to call your handlers
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.Handle("/v1/ws", wsh)
+
+	mux.HandleFunc("/v1/test_mission_create", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_mission_waypoints_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_mission_crew_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_waypoint_create", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_waypoint_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_waypoint_delete", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_aircraft_create", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_ac_properties_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_ac_crew_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_ac_service_schedule", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_ac_position_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_user_create", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_user_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_user_delete", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_group_create", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_group_update", handlers.PushHandler)
+	mux.HandleFunc("/v1/test_group_delete", handlers.PushHandler)
 
 	// Start a web server listening on the address you read from
 	// the environment variable, using the mux you created as
