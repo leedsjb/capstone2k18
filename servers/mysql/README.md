@@ -33,10 +33,21 @@ https://cloud.google.com/storage/docs/uploading-objects
 
 gsutil cp RAW_aircraft_mission_agency_data.csv gs://info445-import-test/
 
+MySQL Style and Configuration Guidelines
+More details: http://www.sqlstyle.guide/
+---------------------------------------------------
+
 Local vs. User Variables:
     Use local variables wherever possible. They are restricted to the block where they are declared.
     Otherwise, @variable variables (local variables) can be used which are avialable anywhere in a 
     client session. 
+
+Naming Conventions
+
+Attribute Names:
+* 30 characters maximum
+* all lowercase
+* underscore word separators
 
 Datatype Standards:
 
@@ -49,5 +60,24 @@ Step sizes:
     250 - 
     500 - freeform notes fields
 
+Store all dates in ISO-8601 compliant format. https://en.wikipedia.org/wiki/ISO_8601
+
 True/False Values:
     Use BOOLEAN which is a synonym for its underlying datatype: TINYINT(1)
+
+
+Google Cloud MySQL Time Zone:
+
+The local time zone can be set for the MySQL instance using the `default_time_zone`
+database flag key. Setting the value of the key to -07:00 sets the database to 
+Pacific Daylight Time. Note, this does not account for the 1-hour daylight savings time change to -08:00. 
+
+References:
+# system_time_zone: inherited from machine server is running on
+https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_system_time_zone
+
+# default-time-zone: overrides system_time_zone to DBA set time zone
+https://dev.mysql.com/doc/refman/5.7/en/server-options.html#option_mysqld_default-time-zone
+
+# time_zone: current time zone for each client that connects
+https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_time_zone
