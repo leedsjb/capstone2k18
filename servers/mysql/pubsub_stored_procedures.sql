@@ -57,7 +57,7 @@ BEGIN
     VALUES mission_id, tc_number, aircraft_id, requestor_id, receiver_id, priority, call_type_id;
 
     INSERT INTO tblPATIENT(
-        mission_id, patient_gender, patient_short_report, patient_intubated, patient_drips, 
+        mission_id, patient_gender, patien0t_short_report, patient_intubated, patient_drips, 
         patient_age, patient_weight, patient_cardiac, patient_gi_bleed, patient_OB
     )
     VALUES
@@ -119,3 +119,54 @@ Incoming JSON Object for this Stored Procedure:
         }
     ],
 }
+
+*/
+
+/* 
+    uspGetAircraftDetails
+    Retrieve the details for user specified aircraft for delivery to web client.
+*/
+
+DROP PROCEDURE IF EXISTS `uspGetAircraftDetails`;
+CREATE PROCEDURE uspGetAircraftDetails(
+    IN aircraftID INTEGER
+)
+BEGIN
+
+    SELECT * FROM tblAIRCRAFT
+
+END;
+
+CALL uspGetAircraftDetails(3);
+
+
+-- For testing, delete for prod:
+----------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `uspGetAircraft`;
+CREATE PROCEDURE uspGetAircraft()
+BEGIN
+    
+    SELECT * FROM tblAIRCRAFT;
+    INNER JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT(ac_type_id) = tblAIRCRAFT_TYPE(aircraft_type_id) -- model a.k.a type
+END;
+
+UPDATE tblAIRCRAFT
+SET 
+
+CALL uspGetAircraft;
+
+DROP PROCEDURE IF EXISTS `uspGetRecentMissions`;
+CREATE PROCEDURE uspGetRecentMissions(
+    IN numMissions INTEGER
+)
+BEGIN
+    SELECT mission_id, mission_date, aircraft_callsign, aircraft_lat, aircraft_long, agency_name
+    FROM tblMISSION
+    JOIN tblAIRCRAFT ON tblMISSION.aircraft_id = tblAIRCRAFT.aircraft_id
+    JOIN tblAGENCY ON tblMISSION.agency_id = tblAGENCY.agency_id
+    ORDER BY mission_date DESC
+    LIMIT numMissions;
+END;
+
+CALL uspGetRecentMissions(10);

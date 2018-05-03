@@ -36,12 +36,18 @@ VALUES
 
 DROP TABLE IF EXISTS tblAIRCRAFT_TYPE;
 CREATE TABLE tblAIRCRAFT_TYPE(
-    aircraftTypeID INTEGER AUTO_INCREMENT PRIMARY KEY, 
-    aircraftTypeName NVARCHAR(100) NOT NULL
+    aircraft_type_id INTEGER AUTO_INCREMENT PRIMARY KEY, 
+    aircraft_type_title NVARCHAR(50) NOT NULL,
+    aircraft_type_desc NVARCHAR(250),
+    aircraft_type_category NVARCHAR(25) NOT NULL,
+    aircraft_type_manufacturer NVARCHAR(50) NOT NULL
 );
-INSERT INTO tblAIRCRAFT_TYPE(aircraftTypeName)
+INSERT INTO tblAIRCRAFT_TYPE(
+    aircraft_type_manufacturer, aircraft_type_title, aircraft_type_category
+)
 VALUES
-    ("Helicopter - twin"), ("Fixed-wing - turboprop"), ("Fixed-wing - turbofan")
+    ("Diamond", "DA42-NG", "Fixed-wing"), ("Diamond", "DA40", "Fixed-wing"), 
+    ("Bell", "206", "Rotorcraft");
 
 DROP TABLE IF EXISTS tblAC_LEVEL_OF_CARE;
 CREATE TABLE tblAC_LEVEL_OF_CARE(
