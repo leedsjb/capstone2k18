@@ -258,25 +258,52 @@ func mustGetenv(k string) string {
 	return v
 }
 
+type pubSubMessage struct {
+	Message struct {
+		Attributes map[string]string
+		Data       []byte
+		ID         string `json:"message_id"`
+	}
+	Subscription string
+}
+
 type testStruct struct {
-	Message string `json:"Message"`
+	Key string `json:"key"`
+	ID string `json:"ID"`
+	Hello string `json:"hello"`
+	World string `json:"world"`
 }
 
 // listen for and process pubsub events
 func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier) {
 	ctx := context.Background()
-	err := subscription.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		var data testStruct
-		if err := json.Unmarshal(msg.Data, &data); err != nil {
-			log.Printf("PROBLEM contents of decoded json: %#v", data)
-			log.Printf("Could not decode message data: %#v", msg)
-			msg.Ack()
+	err := subscription.Receive(ctx, func(ctx context.Context, pulledMsg *pubsub.Message) {
+		// if subscription is topicName
+		// var msg messages.TopicNameStruct
+
+		var msg testStruct
+		log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+		if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+			log.Printf("PROBLEM contents of decoded json: %#v", msg)
+			log.Printf("Could not decode message data: %#v", pulledMsg)
+			pulledMsg.Ack()
 			return
 		}
 
 		// TODO: process msg contents
+		log.Printf("This subscription is: %v", subscription.ID())
+
 		// TODO: send msg contents to websockets
+		msg.Key = subscription.ID()
+		send, err := json.Marshal(msg)
+		if err != nil {
+			log.Printf("PROBLEM marshaling json: %v", err)
+			pulledMsg.Ack()
+			return
+		}
+		notifier.Notify(send)
 		// TODO: save msg contents to CloudSQL using StoredProcedures
+
 
 		// [sample processing message]
 		// log.Printf("[ID %d] Processing. . .", id)
@@ -290,11 +317,9 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier) {
 		// countMu.Lock()
 		// count++
 		// countMu.Unlock()
-		
-		notifier.Notify([]byte(data.Message))
 
-		msg.Ack()
-		log.Printf("Message Acknowledged: (%v)\n", data)
+		pulledMsg.Ack()
+		log.Printf("Message Acknowledged: (%v)\n", msg)
 	})
 	if err != nil {
 		log.Fatalf("Could not receive subscription: %v", err)
