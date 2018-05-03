@@ -146,6 +146,47 @@ func main() {
 		i++
 	}
 
+	// sproc := os.Getenv("SPROC")
+	arbnum := 10
+	sprocRows, err := db.Query("CALL uspGetRecentMissions(" + string(arbnum) + ")")
+	if err != nil {
+		fmt.Printf("Error sproc-ing MySQL: %v", err)
+		os.Exit(1)
+	}
+	j := 1
+	for sprocRows.Next() { 
+		var mission_id string
+		var mission_date string
+		var aircraft_callsign string
+		var aircraft_lat string
+		var aircraft_long string
+		var agency_name string
+		err := sprocRows.Scan(
+			&mission_id,
+			&mission_date,
+			&aircraft_callsign,
+			&aircraft_lat,
+			&aircraft_long,
+			&agency_name,
+		)
+		if err != nil {
+			fmt.Printf("Error scanning sproc rows: %v", err)
+			os.Exit(1)
+		}
+		fmt.Printf(
+			"========================================================\nAIRCRAFT %d\nmission_id: %s\nmission_date: %s\naircraft_callsign: %s\naircraft_lat: %s\naircraft_long: %s\nagency_name: %s\n",
+			j, 
+			mission_id,
+			mission_date,
+			aircraft_callsign,
+			aircraft_lat,
+			aircraft_long,
+			agency_name,
+		)
+		j++
+	}
+		
+
 	// [PUB/SUB]
 
 	// TODO: temp workaround, maybe better soln?
