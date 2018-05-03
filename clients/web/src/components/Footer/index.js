@@ -1,18 +1,45 @@
 import React from "react";
+import { Flex } from "grid-styled";
 
-import Text from "../Text";
-import Container from "../Container";
 import Box from "../Box";
+import Container from "../Container";
+import Image from "../Image";
+import Span from "../Span";
+
+import placeholder from "../../images/placeholder-image.jpg";
 
 const Footer = () => {
     return (
-        <Box py={5}>
-            <Container>
-                <Text my={0}>
-                    Donec id elit non mi porta gravida at eget metus
-                </Text>
-            </Container>
-        </Box>
+        <div>
+            <Box bg="wireframe" py={5}>
+                <Container width={[1, 1 / 2, 1 / 2, 1 / 3]}>
+                    <Span display="block" lineHeight={2} textAlign="center">
+                        A University of Washington Information School Capstone
+                        Project in collaboration with Airlift Northwest, a
+                        University of Washington Medicine entity.
+                    </Span>
+                </Container>
+            </Box>
+            <Box px={5} py={4}>
+                <Flex
+                    flexDirection={["column", "row"]}
+                    justifyContent="space-between"
+                >
+                    <Box width={1 / 2}>
+                        <Span lineHeight={2}>© 2018 Elevate</Span>
+                    </Box>
+                    <Flex justifyContent="space-between">
+                        <Span lineHeight={2} mr={4}>
+                            Contact us
+                        </Span>
+                        <Span lineHeight={2} mr={4}>
+                            Privacy
+                        </Span>
+                        <Span lineHeight={2}>Terms</Span>
+                    </Flex>
+                </Flex>
+            </Box>
+        </div>
     );
 };
 
