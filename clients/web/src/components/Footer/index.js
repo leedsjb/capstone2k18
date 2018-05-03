@@ -25,9 +25,11 @@ const Footer = () => {
                     flexDirection={["column", "row"]}
                     justifyContent="space-between"
                 >
-                    <Box width={1 / 2}>
-                        <Span lineHeight={2}>© 2018 Elevate</Span>
-                    </Box>
+                    <Flex justifyContent="center" mb={2}>
+                        <Box>
+                            <Span lineHeight={2}>© 2018 Elevate</Span>
+                        </Box>
+                    </Flex>
                     <Flex justifyContent="space-between">
                         <Span lineHeight={2} mr={4}>
                             Contact us

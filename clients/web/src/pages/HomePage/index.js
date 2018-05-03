@@ -20,20 +20,22 @@ import placeholder from "../../images/placeholder-image.jpg";
 const HomePage = () => {
     return (
         <div>
-            <Box p={3} px={5}>
-                <Flex justifyContent="space-between">
-                    <Link to="/">
-                        <Logo />
-                    </Link>
-                    <Button>
-                        <Link to="/signin">Sign in</Link>
-                    </Button>
-                </Flex>
+            <Box p={2}>
+                <Container mt={5}>
+                    <Flex justifyContent="space-between">
+                        <Link to="/">
+                            <Logo />
+                        </Link>
+                        <Button>
+                            <Link to="/signin">Sign in</Link>
+                        </Button>
+                    </Flex>
+                </Container>
             </Box>
 
-            <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
-                <Box mr={[0, 0, 5]} width={[1, 1, 2 / 3]}>
-                    <Container px={5} py={5}>
+            <Container m={5}>
+                <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                    <Box mr={[0, 0, 5]} width={[1, 1, 2 / 3]}>
                         <Heading is="h1" mt={0}>
                             Critical Communication for Airborne Medical Missions
                         </Heading>
@@ -45,42 +47,39 @@ const HomePage = () => {
                             medical treatment.
                         </Measure>
                         <Button mt={3}>Get Started</Button>
-                    </Container>
-                </Box>
-                <Box mr={[0, 0, 5]} my={5} width={[1, 1, 1 / 3]}>
-                    <Image src={placeholder} width={1} />
-                </Box>
-            </Flex>
+                    </Box>
+                    <Box mr={[0, 0, 5]} my={5} width={[1, 1, 1 / 3]}>
+                        <Image src={placeholder} width={1} />
+                    </Box>
+                </Flex>
+            </Container>
 
             <Box bg="wireframe">
-                <Container px={5} py={5}>
-                    <Box>
-                        <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
-                            <Box mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                            </Box>
-                            <Box>
-                                <Heading is="h2" fontSize={4} pt={4}>
-                                    Because every second counts
-                                </Heading>
-                                <Measure mt={2}>
-                                    Elevate bridges the communication gap
-                                    between the dispatch center on the ground
-                                    and flight crews in the air by displaying
-                                    patient, aircraft, and aircrew status. This
-                                    ensures that aircraft and aircrews quickly
-                                    arrive at the right location with the
-                                    information needed to immediately administer
-                                    life-saving patient care.
-                                </Measure>
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                        <Box mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                        </Box>
+                        <Box>
+                            <Heading is="h2" fontSize={4} pt={4}>
+                                Because every second counts
+                            </Heading>
+                            <Measure mt={2}>
+                                Elevate bridges the communication gap between
+                                the dispatch center on the ground and flight
+                                crews in the air by displaying patient,
+                                aircraft, and aircrew status. This ensures that
+                                aircraft and aircrews quickly arrive at the
+                                right location with the information needed to
+                                immediately administer life-saving patient care.
+                            </Measure>
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
             <Box>
-                <Container px={5} py={5}>
+                <Container p={5}>
                     <Heading is="h2" fontSize={4} mb={4} mt={2}>
                         Elevating health care technology
                     </Heading>
@@ -125,181 +124,170 @@ const HomePage = () => {
             </Box>
 
             <Box bg="wireframe">
-                <Container px={5} py={5}>
-                    <Box>
-                        <Flex
-                            flexWrap={["wrap", "wrap", "nowrap"]}
-                            flexDirection={[
-                                "column-reverse",
-                                "column-reverse",
-                                "row"
-                            ]}
-                        >
-                            <Box mr={[0, 0, 5]}>
-                                <Heading is="h2" fontSize={4} pt={5}>
-                                    Track missions
-                                </Heading>
-                                <Measure mt={2}>
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
-                                </Measure>
-                            </Box>
-                            <Box width={1}>
-                                <Image src={placeholder} width={1} />
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Flex
+                        flexWrap={["wrap", "wrap", "nowrap"]}
+                        flexDirection={[
+                            "column-reverse",
+                            "column-reverse",
+                            "row"
+                        ]}
+                    >
+                        <Box mr={[0, 0, 5]}>
+                            <Heading is="h2" fontSize={4} pt={5}>
+                                Track missions
+                            </Heading>
+                            <Measure mt={2}>
+                                Duis mollis, est non commodo luctus, nisis erat
+                                porttitor ligula, eget lacinia odio sem nec
+                                elit. Nulla vitae elit libero, a pharetra augue.
+                                Vistibulum id lignula port fellis euismod
+                                semper.
+                            </Measure>
+                        </Box>
+                        <Box width={1}>
+                            <Image src={placeholder} width={1} />
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
             <Box>
-                <Container px={5} py={5}>
-                    <Box>
-                        <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
-                            <Box mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                            </Box>
-                            <Box>
-                                <Heading is="h2" fontSize={4} pt={5}>
-                                    Get notified
-                                </Heading>
-                                <Measure mt={2}>
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
-                                </Measure>
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                        <Box mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                        </Box>
+                        <Box>
+                            <Heading is="h2" fontSize={4} pt={5}>
+                                Get notified
+                            </Heading>
+                            <Measure mt={2}>
+                                Duis mollis, est non commodo luctus, nisis erat
+                                porttitor ligula, eget lacinia odio sem nec
+                                elit. Nulla vitae elit libero, a pharetra augue.
+                                Vistibulum id lignula port fellis euismod
+                                semper.
+                            </Measure>
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
             <Box bg="wireframe">
-                <Container px={5} py={5}>
-                    <Box>
-                        <Flex
-                            flexWrap={["wrap", "wrap", "nowrap"]}
-                            flexDirection={[
-                                "column-reverse",
-                                "column-reverse",
-                                "row"
-                            ]}
-                        >
-                            <Box mr={[0, 0, 5]}>
-                                <Heading is="h2" fontSize={4} pt={5}>
-                                    Find the right person
-                                </Heading>
-                                <Measure mt={2}>
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
-                                </Measure>
-                            </Box>
-                            <Box width={1}>
-                                <Image src={placeholder} width={1} />
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Flex
+                        flexWrap={["wrap", "wrap", "nowrap"]}
+                        flexDirection={[
+                            "column-reverse",
+                            "column-reverse",
+                            "row"
+                        ]}
+                    >
+                        <Box mr={[0, 0, 5]}>
+                            <Heading is="h2" fontSize={4} pt={5}>
+                                Find the right person
+                            </Heading>
+                            <Measure mt={2}>
+                                Duis mollis, est non commodo luctus, nisis erat
+                                porttitor ligula, eget lacinia odio sem nec
+                                elit. Nulla vitae elit libero, a pharetra augue.
+                                Vistibulum id lignula port fellis euismod
+                                semper.
+                            </Measure>
+                        </Box>
+                        <Box width={1}>
+                            <Image src={placeholder} width={1} />
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
             <Box>
-                <Container px={5} py={5}>
-                    <Box>
-                        <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
-                            <Box mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                            </Box>
-                            <Box>
-                                <Heading is="h2" fontSize={4} pt={4}>
-                                    In partnership with Airlift Northwest
-                                </Heading>
-                                <Measure mt={2}>
-                                    Curabitus blandit tempus porttitor. Donec
-                                    ullamcorper nulla non metus auctor
-                                    fringilla. Nullam quis risus get urna nollis
-                                    ornare vel eu leo. Maecenas fancibus mollis
-                                    interdum.
-                                </Measure>
-                                <Button>Get to know Airlift</Button>
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                        <Box mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                        </Box>
+                        <Box>
+                            <Heading is="h2" fontSize={4} pt={4}>
+                                In partnership with Airlift Northwest
+                            </Heading>
+                            <Measure mt={2}>
+                                Curabitus blandit tempus porttitor. Donec
+                                ullamcorper nulla non metus auctor fringilla.
+                                Nullam quis risus get urna nollis ornare vel eu
+                                leo. Maecenas fancibus mollis interdum.
+                            </Measure>
+                            <Button>Get to know Airlift</Button>
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
             <Box bg="wireframe">
-                <Container px={5} py={5}>
-                    <Box>
-                        <Heading is="h2" fontSize={4} pt={2} mb={3}>
-                            We elevate
-                        </Heading>
-                        <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
-                            <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                                <Heading
-                                    is="h5"
-                                    fontSize={2}
-                                    textAlign="center"
-                                    my={2}
-                                >
-                                    Benjamin Leeds
-                                </Heading>
-                                <Span display="block" textAlign="center">
-                                    TPM and Developer
-                                </Span>
-                            </Box>
-                            <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                                <Heading
-                                    is="h5"
-                                    fontSize={2}
-                                    textAlign="center"
-                                    my={2}
-                                >
-                                    Jessica Basa
-                                </Heading>
-                                <Span display="block" textAlign="center">
-                                    Developer
-                                </Span>
-                            </Box>
-                            <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
-                                <Heading
-                                    is="h5"
-                                    fontSize={2}
-                                    textAlign="center"
-                                    my={2}
-                                >
-                                    Tiffany Chen
-                                </Heading>
-                                <Span display="block" textAlign="center">
-                                    Designer and Developer
-                                </Span>
-                            </Box>
-                            <Box mb={3}>
-                                <Image src={placeholder} width={1} />
-                                <Heading
-                                    is="h5"
-                                    fontSize={2}
-                                    textAlign="center"
-                                    my={2}
-                                >
-                                    Vincent van der Meulen
-                                </Heading>
-                                <Span display="block" textAlign="center">
-                                    Designer and Developer
-                                </Span>
-                            </Box>
-                        </Flex>
-                    </Box>
+                <Container p={5}>
+                    <Heading is="h2" fontSize={4} pt={2} mb={3}>
+                        We elevate
+                    </Heading>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                        <Box mb={3} mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                            <Heading
+                                is="h5"
+                                fontSize={2}
+                                textAlign="center"
+                                my={2}
+                            >
+                                Benjamin Leeds
+                            </Heading>
+                            <Span display="block" textAlign="center">
+                                TPM and Developer
+                            </Span>
+                        </Box>
+                        <Box mb={3} mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                            <Heading
+                                is="h5"
+                                fontSize={2}
+                                textAlign="center"
+                                my={2}
+                            >
+                                Jessica Basa
+                            </Heading>
+                            <Span display="block" textAlign="center">
+                                Developer
+                            </Span>
+                        </Box>
+                        <Box mb={3} mr={[0, 0, 5]}>
+                            <Image src={placeholder} width={1} />
+                            <Heading
+                                is="h5"
+                                fontSize={2}
+                                textAlign="center"
+                                my={2}
+                            >
+                                Tiffany Chen
+                            </Heading>
+                            <Span display="block" textAlign="center">
+                                Designer and Developer
+                            </Span>
+                        </Box>
+                        <Box mb={3}>
+                            <Image src={placeholder} width={1} />
+                            <Heading
+                                is="h5"
+                                fontSize={2}
+                                textAlign="center"
+                                my={2}
+                            >
+                                Vincent van der Meulen
+                            </Heading>
+                            <Span display="block" textAlign="center">
+                                Designer and Developer
+                            </Span>
+                        </Box>
+                    </Flex>
                 </Container>
             </Box>
 
@@ -307,25 +295,32 @@ const HomePage = () => {
                 <Container width={1 / 2}>
                     <Image src={placeholder} width={1} />
                 </Container>
+                <Flex justifyContent="center">
+                    <Box>
+                        <Container p={5}>
+                            <Heading
+                                is="h2"
+                                fontSize={4}
+                                textAlign="center"
+                                mb={2}
+                            >
+                                Ready for takeoff?
+                            </Heading>
+                            <Span fontWeight="normal">
+                                Elevate is available to Airlift Northwest
+                                employees
+                            </Span>
+                            <Flex justifyContent="center" mt={3}>
+                                <Button>Get Started</Button>
+                                <ButtonOutline ml={2}>
+                                    Contact Airlift
+                                </ButtonOutline>
+                            </Flex>
+                        </Container>
+                    </Box>
+                </Flex>
             </Box>
-            <Flex flex="0 1 100%" flexWrap="wrap" justifyContent="center">
-                <Box>
-                    <Container px={5} py={5}>
-                        <Heading is="h2" fontSize={4} textAlign="center" mb={2}>
-                            Ready for takeoff?
-                        </Heading>
-                        <Span fontWeight="normal">
-                            Elevate is available to Airlift Northwest employees
-                        </Span>
-                        <Box mt={3}>
-                            <Button>Get Started</Button>
-                            <ButtonOutline ml={2}>
-                                Contact Airlift
-                            </ButtonOutline>
-                        </Box>
-                    </Container>
-                </Box>
-            </Flex>
+
             <Divider />
             <Footer />
         </div>
