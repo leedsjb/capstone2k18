@@ -23,13 +23,10 @@ import partner from "../../images/partner.png";
 import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
 import second from "../../images/second.png";
-<<<<<<< HEAD
 import tiffany from "../../images/tiffany.png";
 import vincent from "../../images/vincent.png";
-=======
 import notification from "../../images/notification.svg";
 import trackMissions from "../../images/trackMissions.png";
->>>>>>> ec9b6fe59becb97b1f1dc4ac97e070fc9a887664
 
 const HomePage = () => {
     return (
@@ -221,16 +218,8 @@ const HomePage = () => {
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
-<<<<<<< HEAD
-                                    > Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
-=======
                                     Find and contact the person or group you’re
                                     looking for in seconds.
->>>>>>> ec9b6fe59becb97b1f1dc4ac97e070fc9a887664
                                 </Measure>
                             </Box>
                             <Box width={1}>
