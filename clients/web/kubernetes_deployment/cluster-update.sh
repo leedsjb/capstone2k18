@@ -16,4 +16,3 @@ deploymentName=$1
 
 # kubectl set image [deployment-name] [container-name]=[image-name]:[image-tag]
 kubectl set image alnw-deployment alnw-deployment=us.gcr.io/airliftnw-uw/webclient:latest 
-
