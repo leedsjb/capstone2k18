@@ -7,6 +7,13 @@
 # License: None
 # Purpose: Script to update the image running on a cluster
 
+# Preconditions: 
+#   must have kubectl context set for the cluster you wish to update
+#   Use: kubectl config current-context to verify and 
+#   gcloud container clusters get-credentials elevate-cluster
+
 deploymentName=$1
 
-kubectl set image alnw-deployment webclient=nginx:1.9.1 # syntax: [container-name]=[image-name]
+# kubectl set image [deployment-name] [container-name]=[image-name]:[image-tag]
+kubectl set image alnw-deployment alnw-deployment=us.gcr.io/airliftnw-uw/webclient:latest 
+
