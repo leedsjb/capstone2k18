@@ -21,6 +21,7 @@ import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
 import logo from "../../images/logo.svg";
 import second from "../../images/second.png";
+import notification from "../../images/notification.svg";
 
 const HomePage = () => {
     return (
@@ -80,12 +81,7 @@ const HomePage = () => {
                                 <Image src={second} width={1} />
                             </Box>
                             <Box>
-                                <Heading
-                                    is="h2"
-                                    fontSize={4}
-                                    pt={4}
-                                    color="white"
-                                >
+                                <Heading is="h2" fontSize={4} color="white">
                                     Because every second counts
                                 </Heading>
                                 <Measure mt={2} color="white">
@@ -193,10 +189,10 @@ const HomePage = () => {
                         alignItems="center"
                     >
                         <Box maxWidth={488}>
-                            <Image src={placeholder} width={1} />
+                            <Image src={notification} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={4} pt={5}>
+                            <Heading is="h2" fontSize={4}>
                                 Get notified
                             </Heading>
                             <Measure mt={2}>
@@ -224,12 +220,7 @@ const HomePage = () => {
                             alignItems="center"
                         >
                             <Box mr={[0, 0, 5]}>
-                                <Heading
-                                    is="h2"
-                                    fontSize={4}
-                                    pt={5}
-                                    color="white"
-                                >
+                                <Heading is="h2" fontSize={4} color="white">
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
@@ -259,7 +250,7 @@ const HomePage = () => {
                                 <Image src={placeholder} width={1} />
                             </Box>
                             <Box>
-                                <Heading is="h2" fontSize={4} pt={4}>
+                                <Heading is="h2" fontSize={4}>
                                     In partnership with Airlift Northwest
                                 </Heading>
                                 <Measure mt={2}>
