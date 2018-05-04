@@ -14,6 +14,7 @@ import Logo from "../../components/Logo";
 import Measure from "../../components/Measure";
 import RedBox from "../../components/RedBox";
 import Span from "../../components/Span";
+import Icon from "../../components/Icon";
 import Text from "../../components/Text";
 
 import placeholder from "../../images/placeholder-image.jpg";
@@ -110,7 +111,7 @@ const HomePage = () => {
                     </Heading>
                     <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
                         <Box mr={4}>
-                            <Image src={placeholder} width={1 / 6} />
+                            <Icon glyph="devices" size={48} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 Use anywhere
                             </Heading>
@@ -122,7 +123,7 @@ const HomePage = () => {
                         </Box>
 
                         <Box mr={4}>
-                            <Image src={placeholder} width={1 / 6} />
+                            <Icon glyph="checkShield" size={48} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 HIPAA Compliant
                             </Heading>
@@ -134,7 +135,7 @@ const HomePage = () => {
                         </Box>
 
                         <Box>
-                            <Image src={placeholder} width={1 / 6} />
+                            <Icon glyph="wifiCheck" size={48} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 Works offline
                             </Heading>
@@ -232,7 +233,7 @@ const HomePage = () => {
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
-                                    > Duis mollis, est non commodo luctus, nisis
+                                    Duis mollis, est non commodo luctus, nisis
                                     erat porttitor ligula, eget lacinia odio sem
                                     nec elit. Nulla vitae elit libero, a
                                     pharetra augue. Vistibulum id lignula port

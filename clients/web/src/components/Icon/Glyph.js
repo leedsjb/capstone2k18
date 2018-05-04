@@ -234,6 +234,100 @@ const Glyph = ({ glyph }) => {
                     />
                 </g>
             );
+        case "wifiCheck":
+            return (
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                    <g stroke="#000000" strokeLinejoin="round">
+                        <g>
+                            <g transform="translate(13, 13)">
+                                <polyline
+                                    strokeLinecap="round"
+                                    points="8 4 5 7 3 5"
+                                />
+                                <circle cx="5.5" cy="5.5" r="5" />
+                            </g>
+                            <g strokeLinecap="round">
+                                <path d="M3.175,7.629 C6.666,4.137 12.33,4.131 15.827,7.629" />
+                                <path d="M18.358,4.203 C13.468,-0.686 5.54,-0.693 0.642,4.203" />
+                                <path d="M5.704,11.054 C7.8,8.959 11.198,8.955 13.297,11.054" />
+                                <path d="M15.827,7.629 C12.336,4.137 6.671,4.131 3.175,7.629" />
+                                <path d="M13.297,11.054 C11.2,8.959 7.804,8.955 5.704,11.054" />
+                                <circle cx="9.5" cy="15.744" r="1.79" />
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            );
+        case "checkShield":
+            return (
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                    <g transform="translate(-2, 0)">
+                        <g
+                            transform="translate(2, 0)"
+                            stroke="#000000"
+                            strokeLinejoin="round"
+                        >
+                            <g>
+                                <g>
+                                    <polyline
+                                        strokeLinecap="round"
+                                        points="15.501 7 8.001 14 5.501 11.5"
+                                    />
+                                    <path d="M0.5,0.5 L19.5,0.5 L19.5,7.764 C19.5,14.367 15.841,20.425 10,23.5 C4.156,20.425 0.5,14.367 0.5,7.764 L0.5,0.5 Z" />
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            );
+        case "devices":
+            return (
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                    <g>
+                        <g
+                            transform="translate(3, 5)"
+                            stroke="#000000"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M5.5,0.5 L16,0.5 C16.829,0.5 17.5,1.211 17.5,2.088 L17.5,7.5" />
+                            <path d="M12.5,12.5 L2,12.5 C1.172,12.5 0.5,11.789 0.5,10.912 L0.5,6.5" />
+                            <path d="M5.5,14.5 L12.5,14.5" />
+                            <path d="M9,12.5 L9,14.5" />
+                            <path d="M0.5,9.5 L12.5,9.5" />
+                        </g>
+                        <path
+                            d="M6.5,8.5 C6.5,9.05 6.05,9.5 5.5,9.5 L1.5,9.5 C0.95,9.5 0.5,9.05 0.5,8.5 L0.5,1.5 C0.5,0.95 0.95,0.5 1.5,0.5 L5.5,0.5 C6.05,0.5 6.5,0.95 6.5,1.5 L6.5,8.5 Z"
+                            stroke="#000000"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M23.5,22.5 C23.5,23.05 23.05,23.5 22.5,23.5 L18.5,23.5 C17.95,23.5 17.5,23.05 17.5,22.5 L17.5,15.5 C17.5,14.95 17.95,14.5 18.5,14.5 L22.5,14.5 C23.05,14.5 23.5,14.95 23.5,15.5 L23.5,22.5 Z"
+                            stroke="#000000"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M17.5,21.5 L23.5,21.5"
+                            stroke="#000000"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <polygon
+                            fill="#000000"
+                            fillRule="nonzero"
+                            points="4 7 3 7 3 8 4 8"
+                        />
+                        <path
+                            d="M17.5,16.5 L23.5,16.5"
+                            stroke="#000000"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </g>
+                </g>
+            );
         default:
             return null;
     }
