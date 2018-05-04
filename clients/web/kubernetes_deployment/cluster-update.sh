@@ -9,4 +9,4 @@
 
 deploymentName=$1
 
-kubectl set image alnw-deployment webclient=nginx:1.9.1 # syntax: [container-name]=[image-name]
+kubectl set image alnw-deployment webclient=us.gcr.io/airliftnw-uw/webclient # syntax: [container-name]=[image-name]
