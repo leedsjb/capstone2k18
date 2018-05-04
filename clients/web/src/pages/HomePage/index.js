@@ -112,9 +112,8 @@ const HomePage = () => {
                                 Use anywhere
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit.
+                                Elevate is available on any device with a web
+                                browser.
                             </Measure>
                         </Box>
 
@@ -124,9 +123,8 @@ const HomePage = () => {
                                 HIPAA Compliant
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit amet.
+                                We comply with HIPAA and do not store or show
+                                any PHI information.
                             </Measure>
                         </Box>
 
@@ -136,9 +134,9 @@ const HomePage = () => {
                                 Works offline
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit amet.
+                                If you lose your internet connnection, the most
+                                recently updated information will still be
+                                available to you.
                             </Measure>
                         </Box>
                     </Flex>
@@ -167,11 +165,9 @@ const HomePage = () => {
                                     Track missions
                                 </Heading>
                                 <Measure mt={2} color="white">
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
+                                    Know what is going on at all times and
+                                    follow missions on a map as they are
+                                    happening.
                                 </Measure>
                             </Box>
                             <Box maxWidth={488}>
@@ -196,11 +192,8 @@ const HomePage = () => {
                                 Get notified
                             </Heading>
                             <Measure mt={2}>
-                                Duis mollis, est non commodo luctus, nisis erat
-                                porttitor ligula, eget lacinia odio sem nec
-                                elit. Nulla vitae elit libero, a pharetra augue.
-                                Vistibulum id lignula port fellis euismod
-                                semper.
+                                Receive a text notification as soon as you are
+                                assigned to a new mission.
                             </Measure>
                         </Box>
                     </Flex>
@@ -224,11 +217,8 @@ const HomePage = () => {
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
+                                    Find and contact the person or group you’re
+                                    looking for in seconds.
                                 </Measure>
                             </Box>
                             <Box width={1}>
@@ -254,11 +244,9 @@ const HomePage = () => {
                                     In partnership with Airlift Northwest
                                 </Heading>
                                 <Measure mt={2}>
-                                    Curabitus blandit tempus porttitor. Donec
-                                    ullamcorper nulla non metus auctor
-                                    fringilla. Nullam quis risus get urna nollis
-                                    ornare vel eu leo. Maecenas fancibus mollis
-                                    interdum.
+                                    Elevate was built together with Airlift
+                                    Norhwest, the preeminent medical transport
+                                    service in the Pacific Northwest.
                                 </Measure>
                                 <Button>Get to know Airlift</Button>
                             </Box>
