@@ -265,6 +265,7 @@ const HomePage = () => {
                         <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
                             <Box mb={3} mr={[0, 0, 5]}>
                                 <Image
+                                    backgroundSize="cover"
                                     borderRadius="50%"
                                     src={benjamin}
                                     width={1}
@@ -283,6 +284,7 @@ const HomePage = () => {
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
                                 <Image
+                                    backgroundSize="cover"
                                     borderRadius="50%"
                                     src={jessica}
                                     width={1}
@@ -301,6 +303,7 @@ const HomePage = () => {
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
                                 <Image
+                                    backgroundSize="cover"
                                     borderRadius="50%"
                                     src={tiffany}
                                     width={1}
@@ -319,6 +322,7 @@ const HomePage = () => {
                             </Box>
                             <Box mb={3}>
                                 <Image
+                                    backgroundSize="cover"
                                     borderRadius="50%"
                                     src={vincent}
                                     width={1}

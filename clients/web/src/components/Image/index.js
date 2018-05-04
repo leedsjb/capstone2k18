@@ -11,6 +11,7 @@ const Image = sys(
         maxWidth: "100%",
         height: "auto"
     },
+    "backgroundSize",
     "borderRadius",
     "space",
     "width",
