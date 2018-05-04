@@ -23,21 +23,22 @@ import partner from "../../images/partner.png";
 import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
 import second from "../../images/second.png";
+<<<<<<< HEAD
 import tiffany from "../../images/tiffany.png";
 import vincent from "../../images/vincent.png";
+=======
+import notification from "../../images/notification.svg";
+import trackMissions from "../../images/trackMissions.png";
+>>>>>>> ec9b6fe59becb97b1f1dc4ac97e070fc9a887664
 
 const HomePage = () => {
     return (
         <div>
             <Box bg="#F7F9FC">
                 <Container>
-                    <Flex
-                        justifyContent="space-between"
-                        alignItems="center"
-                        pt={3}
-                    >
+                    <Flex justifyContent="space-between" pt={3}>
                         <Link to="/">
-                            <Image src={logo} alt="AirliftNW Elevate" w={183} />
+                            <Image src={logo} alt="AirliftNW Elevate" w={160} />
                         </Link>
                         <div>
                             <Button>
@@ -84,12 +85,7 @@ const HomePage = () => {
                                 <Image src={second} width={1} />
                             </Box>
                             <Box>
-                                <Heading
-                                    is="h2"
-                                    fontSize={4}
-                                    pt={4}
-                                    color="white"
-                                >
+                                <Heading is="h2" fontSize={4} color="white">
                                     Because every second counts
                                 </Heading>
                                 <Measure mt={2} color="white">
@@ -120,9 +116,8 @@ const HomePage = () => {
                                 Use anywhere
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit.
+                                Elevate is available on any device with a web
+                                browser.
                             </Measure>
                         </Box>
 
@@ -132,9 +127,8 @@ const HomePage = () => {
                                 HIPAA Compliant
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit amet.
+                                We comply with HIPAA and do not store or show
+                                any PHI information.
                             </Measure>
                         </Box>
 
@@ -144,9 +138,9 @@ const HomePage = () => {
                                 Works offline
                             </Heading>
                             <Measure mt={2}>
-                                Fusce dapibus, tellus ac cursus commodo, tortor
-                                mauris condimentum nibh, ut fermentum massa
-                                justo sit amet.
+                                If you lose your internet connnection, the most
+                                recently updated information will still be
+                                available to you.
                             </Measure>
                         </Box>
                     </Flex>
@@ -175,15 +169,13 @@ const HomePage = () => {
                                     Track missions
                                 </Heading>
                                 <Measure mt={2} color="white">
-                                    Duis mollis, est non commodo luctus, nisis
-                                    erat porttitor ligula, eget lacinia odio sem
-                                    nec elit. Nulla vitae elit libero, a
-                                    pharetra augue. Vistibulum id lignula port
-                                    fellis euismod semper.
+                                    Know what is going on at all times and
+                                    follow missions on a map as they are
+                                    happening.
                                 </Measure>
                             </Box>
                             <Box maxWidth={488}>
-                                <Image src={placeholder} width={1} />
+                                <Image src={trackMissions} width={1} />
                             </Box>
                         </Flex>
                     </Box>
@@ -197,18 +189,15 @@ const HomePage = () => {
                         alignItems="center"
                     >
                         <Box maxWidth={488}>
-                            <Image src={placeholder} width={1} />
+                            <Image src={notification} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={4} pt={5}>
+                            <Heading is="h2" fontSize={4}>
                                 Get notified
                             </Heading>
                             <Measure mt={2}>
-                                Duis mollis, est non commodo luctus, nisis erat
-                                porttitor ligula, eget lacinia odio sem nec
-                                elit. Nulla vitae elit libero, a pharetra augue.
-                                Vistibulum id lignula port fellis euismod
-                                semper.
+                                Receive a text notification as soon as you are
+                                assigned to a new mission.
                             </Measure>
                         </Box>
                     </Flex>
@@ -228,20 +217,20 @@ const HomePage = () => {
                             alignItems="center"
                         >
                             <Box mr={[0, 0, 5]}>
-                                <Heading
-                                    is="h2"
-                                    fontSize={4}
-                                    pt={5}
-                                    color="white"
-                                >
+                                <Heading is="h2" fontSize={4} color="white">
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
+<<<<<<< HEAD
                                     > Duis mollis, est non commodo luctus, nisis
                                     erat porttitor ligula, eget lacinia odio sem
                                     nec elit. Nulla vitae elit libero, a
                                     pharetra augue. Vistibulum id lignula port
                                     fellis euismod semper.
+=======
+                                    Find and contact the person or group you’re
+                                    looking for in seconds.
+>>>>>>> ec9b6fe59becb97b1f1dc4ac97e070fc9a887664
                                 </Measure>
                             </Box>
                             <Box width={1}>
@@ -263,15 +252,13 @@ const HomePage = () => {
                                 <Image src={partner} width={1} />
                             </Box>
                             <Box>
-                                <Heading is="h2" fontSize={4} pt={4}>
+                                <Heading is="h2" fontSize={4}>
                                     In partnership with Airlift Northwest
                                 </Heading>
                                 <Measure mt={2}>
-                                    Curabitus blandit tempus porttitor. Donec
-                                    ullamcorper nulla non metus auctor
-                                    fringilla. Nullam quis risus get urna nollis
-                                    ornare vel eu leo. Maecenas fancibus mollis
-                                    interdum.
+                                    Elevate was built together with Airlift
+                                    Norhwest, the preeminent medical transport
+                                    service in the Pacific Northwest.
                                 </Measure>
                                 <Button>Get to know Airlift</Button>
                             </Box>
