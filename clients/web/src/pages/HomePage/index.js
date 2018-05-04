@@ -6,7 +6,6 @@ import Box from "../../components/Box";
 import Button from "../../components/Button";
 import ButtonOutline from "../../components/ButtonOutline";
 import Container from "../../components/Container";
-import Divider from "../../components/Divider";
 import Footer from "../../components/Footer";
 import Heading from "../../components/Heading";
 import Image from "../../components/Image";
@@ -16,9 +15,10 @@ import RedBox from "../../components/RedBox";
 import Span from "../../components/Span";
 import Text from "../../components/Text";
 
+import heli from "../../images/heli.png";
+import logo from "../../images/logo.svg";
 import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
-import logo from "../../images/logo.svg";
 import second from "../../images/second.png";
 
 const HomePage = () => {
@@ -343,9 +343,9 @@ const HomePage = () => {
                 </Container>
             </RedBox>
 
-            <Box mt={5}>
+            <Box bg="#F7F9FC" pt={5}>
                 <Container width={1 / 2}>
-                    <Image src={placeholder} width={1} />
+                    <Image src={heli} width={1} />
                 </Container>
                 <Flex justifyContent="center">
                     <Box>
@@ -364,16 +364,12 @@ const HomePage = () => {
                             </Span>
                             <Flex justifyContent="center" mt={3}>
                                 <Button>Get Started</Button>
-                                <ButtonOutline ml={2}>
-                                    Contact Airlift
-                                </ButtonOutline>
+                                <Button ml={2}>Contact Airlift</Button>
                             </Flex>
                         </Container>
                     </Box>
                 </Flex>
             </Box>
-
-            <Divider />
             <Footer />
         </div>
     );
