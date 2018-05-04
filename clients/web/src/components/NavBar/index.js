@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 import { withTheme } from "styled-components";
 
 import Box from "../Box";
-import Icon from "../Icon";
-import ProfileAvatar from "../ProfileAvatar";
-import NavBarItem from "../NavBarItem";
 import Logo from "../Logo";
+import ProfileDropdown from "../ProfileDropdown";
+import ResourcesDropdown from "../ResourcesDropdown";
+import NavBarItem from "../NavBarItem";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
@@ -21,34 +21,27 @@ const NavBar = ({ theme: { breakpoints } }) => {
                             alignItems="center"
                         >
                             <Flex alignItems="center">
-                                <Link to="/missions">
+                                <Link to="/aircraft">
                                     <Logo />
                                 </Link>
-                                <Flex ml={4}>
+                                <Box ml={4}>
                                     <NavBarItem
-                                        title="Missions"
-                                        path="/missions"
-                                        glyph="medicalCross"
+                                        title="Aircraft"
+                                        path="/aircraft"
+                                        glyph="airplaneFlight"
                                     />
-                                    <Box ml={3}>
-                                        <NavBarItem
-                                            title="Aircraft"
-                                            path="/aircraft"
-                                            glyph="airplaneFlight"
-                                        />
-                                    </Box>
-                                    <Box ml={3}>
-                                        <NavBarItem
-                                            title="People"
-                                            path="/people"
-                                            glyph="accountGroup"
-                                        />
-                                    </Box>
-                                </Flex>
+                                </Box>
+                                <Box ml={3}>
+                                    <NavBarItem
+                                        title="People"
+                                        path="/people"
+                                        glyph="accountGroup"
+                                    />
+                                </Box>
                             </Flex>
                             <Flex alignItems="center">
-                                <Icon glyph="grid" size={16} />
-                                <ProfileAvatar />
+                                <ResourcesDropdown />
+                                <ProfileDropdown />
                             </Flex>
                         </Flex>
                     </Box>

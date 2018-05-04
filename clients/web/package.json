@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "axios": "^0.18.0",
+        "downshift": "^1.31.7",
         "grid-styled": "^3.2.0",
         "history": "^4.7.2",
         "mapbox-gl": "^0.44.1",

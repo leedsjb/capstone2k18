@@ -9,17 +9,14 @@ const TextInput = sys(
         type: "text",
         fontSize: "inherit",
         lineHeight: "inherit",
-        px: 1,
         py: 2,
         m: 0,
         width: 1,
         border: 0,
-        borderColor: "gray",
-        boxShadow: 1,
-        borderRadius: 2,
         color: "inherit",
         bg: "transparent"
     },
+    "space",
     props => ({
         fontFamily: "inherit",
         display: "inline-block",

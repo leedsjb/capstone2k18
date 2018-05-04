@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
-import FlexFullHeight from "../../components/FlexFullHeight";
+import FlexFillVH from "../../components/FlexFillVH";
 import Toolbar from "../../components/Toolbar";
 import SearchBox from "../../components/SearchBox";
 import TitleBar from "../../components/TitleBar";
@@ -10,7 +10,7 @@ import ScrollView from "../../components/ScrollView";
 
 const GroupDetailPage = () => {
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet>
                 <title />
             </Helmet>
@@ -22,7 +22,7 @@ const GroupDetailPage = () => {
                 Aircraft page
             </ScrollView>
             <TabBar />
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 

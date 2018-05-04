@@ -17,4 +17,8 @@ injectGlobal`
         color: inherit;
         text-decoration: none;
     }
+
+    .mapboxgl-popup-content {
+        padding: 4px 12px;
+    }
 `;

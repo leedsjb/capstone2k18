@@ -8,7 +8,8 @@ const Container = sys(
         is: Box,
         px: 3,
         mx: "auto",
-        maxWidth: 1024
+        maxWidth: 1024,
+        w: 1
     },
     "maxWidth"
 );

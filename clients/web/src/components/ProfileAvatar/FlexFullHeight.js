@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Flex } from "grid-styled";
 
-const FlexFullHeight = styled(Flex)`
+const FlexFillVH = styled(Flex)`
     height: 100%;
 `;
 
-export default FlexFullHeight;
+export default FlexFillVH;
