@@ -13,14 +13,18 @@ import Logo from "../../components/Logo";
 import Measure from "../../components/Measure";
 import RedBox from "../../components/RedBox";
 import Span from "../../components/Span";
-import Icon from "../../components/Icon";
 import Text from "../../components/Text";
 
+import benjamin from "../../images/benjamin.png";
 import heli from "../../images/heli.png";
 import logo from "../../images/logo.svg";
+import jessica from "../../images/jessica.png";
+import partner from "../../images/partner.png";
 import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
 import second from "../../images/second.png";
+import tiffany from "../../images/tiffany.png";
+import vincent from "../../images/vincent.png";
 
 const HomePage = () => {
     return (
@@ -111,7 +115,7 @@ const HomePage = () => {
                     </Heading>
                     <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
                         <Box mr={4}>
-                            <Icon glyph="devices" size={48} />
+                            <Image src={placeholder} width={1 / 6} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 Use anywhere
                             </Heading>
@@ -123,7 +127,7 @@ const HomePage = () => {
                         </Box>
 
                         <Box mr={4}>
-                            <Icon glyph="checkShield" size={48} />
+                            <Image src={placeholder} width={1 / 6} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 HIPAA Compliant
                             </Heading>
@@ -135,7 +139,7 @@ const HomePage = () => {
                         </Box>
 
                         <Box>
-                            <Icon glyph="wifiCheck" size={48} />
+                            <Image src={placeholder} width={1 / 6} />
                             <Heading is="h4" fontSize={3} mt={2}>
                                 Works offline
                             </Heading>
@@ -233,7 +237,7 @@ const HomePage = () => {
                                     Find the right person
                                 </Heading>
                                 <Measure mt={2} color="white">
-                                    Duis mollis, est non commodo luctus, nisis
+                                    > Duis mollis, est non commodo luctus, nisis
                                     erat porttitor ligula, eget lacinia odio sem
                                     nec elit. Nulla vitae elit libero, a
                                     pharetra augue. Vistibulum id lignula port
@@ -256,7 +260,7 @@ const HomePage = () => {
                             alignItems="center"
                         >
                             <Box mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
+                                <Image src={partner} width={1} />
                             </Box>
                             <Box>
                                 <Heading is="h2" fontSize={4} pt={4}>
@@ -284,7 +288,11 @@ const HomePage = () => {
                         </Heading>
                         <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
                             <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
+                                <Image
+                                    borderRadius="50%"
+                                    src={benjamin}
+                                    width={1}
+                                />
                                 <Heading
                                     is="h5"
                                     fontSize={2}
@@ -298,7 +306,11 @@ const HomePage = () => {
                                 </Span>
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
+                                <Image
+                                    borderRadius="50%"
+                                    src={jessica}
+                                    width={1}
+                                />
                                 <Heading
                                     is="h5"
                                     fontSize={2}
@@ -312,7 +324,11 @@ const HomePage = () => {
                                 </Span>
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
-                                <Image src={placeholder} width={1} />
+                                <Image
+                                    borderRadius="50%"
+                                    src={tiffany}
+                                    width={1}
+                                />
                                 <Heading
                                     is="h5"
                                     fontSize={2}
@@ -326,7 +342,11 @@ const HomePage = () => {
                                 </Span>
                             </Box>
                             <Box mb={3}>
-                                <Image src={placeholder} width={1} />
+                                <Image
+                                    borderRadius="50%"
+                                    src={vincent}
+                                    width={1}
+                                />
                                 <Heading
                                     is="h5"
                                     fontSize={2}
@@ -365,7 +385,9 @@ const HomePage = () => {
                             </Span>
                             <Flex justifyContent="center" mt={3}>
                                 <Button>Get Started</Button>
-                                <Button ml={2}>Contact Airlift</Button>
+                                <ButtonOutline ml={2}>
+                                    Contact Airlift
+                                </ButtonOutline>
                             </Flex>
                         </Container>
                     </Box>
