@@ -5,9 +5,10 @@ import { themeGet } from "styled-system";
 import Button from "../Button";
 
 const ButtonOutline = styled(Button)([], props => ({
+    background: "#F7F9FC",
     boxShadow: `inset 0 0 0 2px`,
     "&:hover": {
-        color: "white",
+        color: "#C20B29",
         backgroundColor: themeGet("colors.blue")(props)
     },
     "&:focus": {
@@ -25,7 +26,7 @@ const ButtonOutline = styled(Button)([], props => ({
 ButtonOutline.displayName = "ButtonOutline";
 
 ButtonOutline.defaultProps = {
-    color: "blue",
+    color: "#dc0c2f",
     bg: "transparent"
 };
 

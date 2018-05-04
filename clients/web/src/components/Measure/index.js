@@ -5,7 +5,8 @@ import sys from "system-components";
 const Measure = sys(
     {
         is: "p",
-        maxWidth: "30em"
+        maxWidth: "30em",
+        color: "#515766"
     },
     "maxWidth",
     "space",

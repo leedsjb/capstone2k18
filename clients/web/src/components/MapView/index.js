@@ -6,8 +6,7 @@ import { push } from "react-router-redux";
 import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
-import MasterView from "../MasterView";
-import MasterDetailView from "../MasterDetailView";
+import Box from "../../components/Box";
 import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
@@ -26,12 +25,22 @@ class MapView extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            center: [-122.4821475, 47.6129432],
             map: null
         };
     }
 
     componentDidMount() {
         this.props.fetchAircraft();
+        if (this.props.id) {
+            this.props.fetchAircraftDetail(this.props.id);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.id && nextProps.id !== this.props.id) {
+            this.props.fetchAircraftDetail(nextProps.id);
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -40,6 +49,18 @@ class MapView extends Component {
             this.props.id !== prevProps.id &&
             this.state.map
         ) {
+            if (
+                !this.props.aircraftDetail.pending &&
+                !Array.isArray(this.props.aircraftDetail.data)
+            ) {
+                this.setState({
+                    center: [
+                        this.props.aircraftDetail.data.long,
+                        this.props.aircraftDetail.data.lat
+                    ]
+                });
+            }
+
             this.state.map.resize();
             this.state.map.setCenter(this.mapCenter());
         }
@@ -55,7 +76,7 @@ class MapView extends Component {
                 this.props.aircraftDetail.data.lat
             ];
         }
-        return [-122.4821475, 47.6129432];
+        return this.state.center;
     };
 
     renderMapView = () => {
@@ -67,19 +88,42 @@ class MapView extends Component {
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
                         const images = [aircraft.callsign, image];
-
                         return (
-                            <Layer
-                                type="symbol"
-                                layout={{
-                                    "icon-image": "airplane"
-                                }}
-                                key={aircraft.id}
-                            >
-                                <Feature
-                                    coordinates={[aircraft.long, aircraft.lat]}
-                                />
-                            </Layer>
+                            <Box key={aircraft.id}>
+                                <Layer
+                                    type="symbol"
+                                    layout={{
+                                        "icon-image": "airplane",
+                                        "icon-allow-overlap": true
+                                    }}
+                                >
+                                    <Feature
+                                        coordinates={[
+                                            aircraft.long,
+                                            aircraft.lat
+                                        ]}
+                                    />
+                                </Layer>
+                                {this.props.id ? (
+                                    <Layer
+                                        type="symbol"
+                                        layout={{
+                                            "icon-image": "circle-15",
+                                            "text-field": "Squaxin Ballfields",
+                                            "text-anchor": "top",
+                                            "text-offset": [0, 0.5],
+                                            "text-transform": "uppercase"
+                                        }}
+                                    >
+                                        <Feature
+                                            coordinates={[
+                                                -122.28567,
+                                                47.552965
+                                            ]}
+                                        />
+                                    </Layer>
+                                ) : null}
+                            </Box>
                         );
                     })}
                     {this.props.aircraft.data.map(aircraft => {
@@ -88,6 +132,7 @@ class MapView extends Component {
                                 query={`(min-width: ${
                                     this.props.theme.breakpoints[1]
                                 }`}
+                                key={aircraft.id}
                             >
                                 {matches =>
                                     matches ? (

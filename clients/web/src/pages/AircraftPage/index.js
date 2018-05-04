@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Layer, Feature, Popup } from "react-mapbox-gl";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
@@ -68,11 +67,13 @@ class AircraftPage extends Component {
             return (
                 <Box mt={4}>
                     <Heading is="h2" textAlign="center" fontSize={4}>
-                        No aircraft
+                        No Aircraft
                     </Heading>
-                    <Text textAlign="center">Empty state text</Text>
+                    <Text textAlign="center">Empty State Text</Text>
                 </Box>
             );
+        } else if (aircraft.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -85,6 +86,7 @@ class AircraftPage extends Component {
                 />
             );
         }
+        return <div>Loading...</div>;
     }
 
     renderMasterView = () => {

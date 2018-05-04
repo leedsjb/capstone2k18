@@ -28,6 +28,7 @@ type MissionDetail struct {
 	FlightNum       string `json:"flightNum"`
 	RadioReport     string `json:"radioReport"`
 	Requestor       string `json:"requestor"`
+	Receiver		string `json:"receiver"`
 }
 
 // OOS ...
@@ -130,7 +131,8 @@ var aircraftDetails = []*AircraftDetail{
 			NextWaypointETE: "x min to...",
 			FlightNum:       "18-0013",
 			RadioReport:     "18-0013, 65, 90, male, GSW to chest. Has chest tube., Yes, 4, Paced externally - bring pacer box, Upper GI Bleed, Less than 5cm - launch without AOC Notification",
-			Requestor:       "First Last",
+			Requestor:       "Lopez Island EMS",
+			Receiver:		 "Harborview Medical Center",
 		},
 		OOS: nil,
 	},

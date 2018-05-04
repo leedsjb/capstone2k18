@@ -4,9 +4,6 @@ import { withTheme } from "styled-components";
 
 import TextInput from "../TextInput";
 import Icon from "../Icon";
-import Relative from "../Relative";
-import Absolute from "../Absolute";
-import FlexFillHeight from "../FlexFillHeight";
 import Box from "../Box";
 import Clickable from "../Clickable";
 
