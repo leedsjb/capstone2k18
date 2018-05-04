@@ -22,19 +22,16 @@ import placeholder from "../../images/placeholder-image.jpg";
 import phone from "../../images/phone.png";
 import second from "../../images/second.png";
 import notification from "../../images/notification.svg";
+import trackMissions from "../../images/trackMissions.png";
 
 const HomePage = () => {
     return (
         <div>
             <Box bg="#F7F9FC">
                 <Container>
-                    <Flex
-                        justifyContent="space-between"
-                        alignItems="center"
-                        pt={3}
-                    >
+                    <Flex justifyContent="space-between" pt={3}>
                         <Link to="/">
-                            <Image src={logo} alt="AirliftNW Elevate" w={183} />
+                            <Image src={logo} alt="AirliftNW Elevate" w={160} />
                         </Link>
                         <div>
                             <Button>
@@ -171,7 +168,7 @@ const HomePage = () => {
                                 </Measure>
                             </Box>
                             <Box maxWidth={488}>
-                                <Image src={placeholder} width={1} />
+                                <Image src={trackMissions} width={1} />
                             </Box>
                         </Flex>
                     </Box>
