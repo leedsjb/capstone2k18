@@ -14,10 +14,12 @@ import Measure from "../../components/Measure";
 import RedBox from "../../components/RedBox";
 import Span from "../../components/Span";
 import Text from "../../components/Text";
+import Icon from "../../components/Icon";
 
 import benjamin from "../../images/benjamin.png";
 import heli from "../../images/heli.png";
 import logo from "../../images/logo.svg";
+import search from "../../images/search.png";
 import jessica from "../../images/jessica.png";
 import partner from "../../images/partner.png";
 import placeholder from "../../images/placeholder-image.jpg";
@@ -33,9 +35,9 @@ const HomePage = () => {
         <div>
             <Box bg="#F7F9FC">
                 <Container>
-                    <Flex justifyContent="space-between" pt={3}>
+                    <Flex justifyContent="space-between" pt={4}>
                         <Link to="/">
-                            <Image src={logo} alt="AirliftNW Elevate" w={160} />
+                            <Image src={logo} alt="AirliftNW Elevate" w={144} />
                         </Link>
                         <div>
                             <Button>
@@ -103,13 +105,13 @@ const HomePage = () => {
 
             <Box>
                 <Container px={5} py={5}>
-                    <Heading is="h2" fontSize={5} mb={4} mt={2}>
+                    <Heading is="h2" fontSize={5} mb={4}>
                         Elevating health care technology
                     </Heading>
-                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]} mt={5}>
                         <Box mr={4}>
-                            <Image src={placeholder} width={1 / 6} />
-                            <Heading is="h4" fontSize={3} mt={2}>
+                            <Icon glyph="devices" size={48} />
+                            <Heading is="h4" fontSize={3} mt={3}>
                                 Use anywhere
                             </Heading>
                             <Measure mt={2}>
@@ -119,8 +121,8 @@ const HomePage = () => {
                         </Box>
 
                         <Box mr={4}>
-                            <Image src={placeholder} width={1 / 6} />
-                            <Heading is="h4" fontSize={3} mt={2}>
+                            <Icon glyph="checkShield" size={48} />
+                            <Heading is="h4" fontSize={3} mt={3}>
                                 HIPAA Compliant
                             </Heading>
                             <Measure mt={2}>
@@ -130,8 +132,8 @@ const HomePage = () => {
                         </Box>
 
                         <Box>
-                            <Image src={placeholder} width={1 / 6} />
-                            <Heading is="h4" fontSize={3} mt={2}>
+                            <Icon glyph="wifiCheck" size={48} />
+                            <Heading is="h4" fontSize={3} mt={3}>
                                 Works offline
                             </Heading>
                             <Measure mt={2}>
@@ -179,7 +181,7 @@ const HomePage = () => {
                 </Container>
             </RedBox>
 
-            <Box bg="#F7F9FC">
+            <Box bg="#F7F9FC" py={5}>
                 <Container>
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
@@ -222,8 +224,8 @@ const HomePage = () => {
                                     looking for in seconds.
                                 </Measure>
                             </Box>
-                            <Box width={1}>
-                                <Image src={placeholder} width={1} />
+                            <Box maxWidth={488}>
+                                <Image src={search} width={1} />
                             </Box>
                         </Flex>
                     </Box>
@@ -259,7 +261,7 @@ const HomePage = () => {
             <RedBox>
                 <Container px={5} py={5}>
                     <Box>
-                        <Heading is="h2" fontSize={4} pt={2} mb={3}>
+                        <Heading is="h2" fontSize={4} mb={5} color="white">
                             We elevate
                         </Heading>
                         <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
@@ -274,11 +276,17 @@ const HomePage = () => {
                                     is="h5"
                                     fontSize={2}
                                     textAlign="center"
-                                    my={2}
+                                    mt={4}
+                                    mb={2}
+                                    color="white"
                                 >
                                     Benjamin Leeds
                                 </Heading>
-                                <Span display="block" textAlign="center">
+                                <Span
+                                    display="block"
+                                    textAlign="center"
+                                    color="white"
+                                >
                                     TPM and Developer
                                 </Span>
                             </Box>
@@ -293,11 +301,17 @@ const HomePage = () => {
                                     is="h5"
                                     fontSize={2}
                                     textAlign="center"
-                                    my={2}
+                                    mt={4}
+                                    mb={2}
+                                    color="white"
                                 >
                                     Jessica Basa
                                 </Heading>
-                                <Span display="block" textAlign="center">
+                                <Span
+                                    display="block"
+                                    textAlign="center"
+                                    color="white"
+                                >
                                     Developer
                                 </Span>
                             </Box>
@@ -312,11 +326,17 @@ const HomePage = () => {
                                     is="h5"
                                     fontSize={2}
                                     textAlign="center"
-                                    my={2}
+                                    mt={4}
+                                    mb={2}
+                                    color="white"
                                 >
                                     Tiffany Chen
                                 </Heading>
-                                <Span display="block" textAlign="center">
+                                <Span
+                                    display="block"
+                                    textAlign="center"
+                                    color="white"
+                                >
                                     Designer and Developer
                                 </Span>
                             </Box>
@@ -331,11 +351,17 @@ const HomePage = () => {
                                     is="h5"
                                     fontSize={2}
                                     textAlign="center"
-                                    my={2}
+                                    mt={4}
+                                    mb={2}
+                                    color="white"
                                 >
                                     Vincent van der Meulen
                                 </Heading>
-                                <Span display="block" textAlign="center">
+                                <Span
+                                    display="block"
+                                    textAlign="center"
+                                    color="white"
+                                >
                                     Designer and Developer
                                 </Span>
                             </Box>
