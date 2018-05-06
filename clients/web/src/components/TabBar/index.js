@@ -13,11 +13,6 @@ const TabBar = ({ theme: { breakpoints } }) => {
                 return (
                     <Flex>
                         <TabBarItem
-                            title="Missions"
-                            path="/missions"
-                            glyph="medicalCross"
-                        />
-                        <TabBarItem
                             title="Aircraft"
                             glyph="airplaneFlight"
                             path="/aircraft"
@@ -26,6 +21,16 @@ const TabBar = ({ theme: { breakpoints } }) => {
                             title="People"
                             glyph="accountGroup"
                             path="/people"
+                        />
+                        <TabBarItem
+                            title="Resources"
+                            glyph="accountGroup"
+                            path="/resources"
+                        />
+                        <TabBarItem
+                            title="Profile"
+                            glyph="accountGroup"
+                            path="/profile"
                         />
                     </Flex>
                 );

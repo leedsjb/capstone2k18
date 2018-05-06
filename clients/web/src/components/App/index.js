@@ -1,23 +1,24 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Switch, Route } from "react-router";
+import { Switch, Route, Redirect } from "react-router";
 import Media from "react-media";
 import { withTheme } from "styled-components";
 
-import FlexFullHeight from "../FlexFullHeight";
+import FlexFillVH from "../FlexFillVH";
 
 import SignInPage from "../../pages/SignInPage";
-import MissionsPage from "../../pages/MissionsPage";
-import MissionDetailPage from "../../pages/MissionDetailPage";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
+import AircraftMapPage from "../../pages/AircraftMapPage";
 import PeoplePage from "../../pages/PeoplePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 import HomePage from "../../pages/HomePage";
+import ProfilePage from "../../pages/ProfilePage";
+import ResourcesPage from "../../pages/ResourcesPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
-        <FlexFullHeight flexDirection="column">
+        <FlexFillVH flexDirection="column">
             <Helmet
                 titleTemplate="%s - AirliftNW Elevate"
                 defaultTitle="AirliftNW Elevate"
@@ -30,13 +31,33 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
                             <Route
-                                path="/missions/:id"
-                                component={MissionsPage}
+                                path="/aircraft/map/:id"
+                                render={({ match }) => (
+                                    <Redirect
+                                        to={`/aircraft/${match.params.id}`}
+                                    />
+                                )}
                             />
-                            <Route path="/missions" component={MissionsPage} />
+                            <Redirect from="/aircraft/map" to="/aircraft" />
+                            <Route
+                                path="/aircraft/:id"
+                                component={AircraftPage}
+                            />
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
+                            <Route
+                                path="/groups/:groupId/:id"
+                                component={PeoplePage}
+                            />
+                            <Route
+                                path="/groups/:groupId"
+                                component={PeoplePage}
+                            />
+                            <Route path="/groups" component={PeoplePage} />
+                            <Route path="/people" component={PeoplePage} />
+                            <Route path="/profile" component={ProfilePage} />
+                            <Redirect from="/resources" to="/aircraft" />
                             <Route component={NotFoundPage} />
                         </Switch>
                     ) : (
@@ -44,22 +65,30 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route exact path="/" component={HomePage} />
                             <Route path="/signin" component={SignInPage} />
                             <Route
-                                path="/missions/:id"
-                                component={MissionDetailPage}
+                                path="/aircraft/map/:id"
+                                component={AircraftMapPage}
                             />
-                            <Route path="/missions" component={MissionsPage} />
+                            <Route
+                                path="/aircraft/map"
+                                component={AircraftMapPage}
+                            />
                             <Route
                                 path="/aircraft/:id"
                                 component={AircraftDetailPage}
                             />
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route path="/people" component={PeoplePage} />
+                            <Route path="/profile" component={ProfilePage} />
+                            <Route
+                                path="/resources"
+                                component={ResourcesPage}
+                            />
                             <Route component={NotFoundPage} />
                         </Switch>
                     )
                 }
             </Media>
-        </FlexFullHeight>
+        </FlexFillVH>
     );
 };
 

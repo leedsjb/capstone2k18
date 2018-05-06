@@ -3,14 +3,28 @@ import { routerReducer } from "react-router-redux";
 import { reducer as formReducer } from "redux-form";
 
 import signInReducer from "./signInReducer";
-import missionsReducer from "./missionsReducer";
+import aircraftReducer from "./aircraftReducer";
+import aircraftDetailReducer from "./aircraftDetailReducer";
+import peopleReducer from "./peopleReducer";
+import peopleDetailReducer from "./peopleDetailReducer";
+import groupsReducer from "./groupsReducer";
+import groupsDetailReducer from "./groupsDetailReducer";
+import profileReducer from "./profileReducer";
+import resourcesReducer from "./resourcesReducer";
 
 export default function createReducer(injectedReducers) {
     return combineReducers({
         router: routerReducer,
         form: formReducer,
         signIn: signInReducer,
-        missions: missionsReducer,
+        aircraft: aircraftReducer,
+        aircraftDetail: aircraftDetailReducer,
+        people: peopleReducer,
+        peopleDetail: peopleDetailReducer,
+        groups: groupsReducer,
+        groupsDetail: groupsDetailReducer,
+        profile: profileReducer,
+        resources: resourcesReducer,
         ...injectedReducers
     });
 }

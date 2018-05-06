@@ -1,7 +1,6 @@
 import React from "react";
 import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
 
 import Box from "../../components/Box";
 import Heading from "../../components/Heading";
@@ -22,7 +21,7 @@ const HomePage = () => {
                     <Link to="/">
                         <Logo />
                     </Link>
-                    <Link to="/missions">Sign in</Link>
+                    <Link to="/signin">Sign in</Link>
                 </Flex>
             </Box>
             <Container py={5}>

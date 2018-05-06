@@ -13,6 +13,8 @@ import matchPath from "../../utils/matchPath";
 // TODO: Consider cleaning up this component and
 // revisiting the technique used to detect
 // the active route
+
+// TODO: implement alt path
 const TabBarItem = ({ title, glyph, path }) => {
     return (
         <RouterProvider
