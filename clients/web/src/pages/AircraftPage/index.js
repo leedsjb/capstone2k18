@@ -72,7 +72,7 @@ class AircraftPage extends Component {
                     <Text textAlign="center">Empty State Text</Text>
                 </Box>
             );
-        } else if (aircraft.pending) {
+        } else {
             return <div>Loading...</div>;
         }
     }

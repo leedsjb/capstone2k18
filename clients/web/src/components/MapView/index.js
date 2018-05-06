@@ -105,23 +105,37 @@ class MapView extends Component {
                                     />
                                 </Layer>
                                 {this.props.id ? (
-                                    <Layer
-                                        type="symbol"
-                                        layout={{
-                                            "icon-image": "circle-15",
-                                            "text-field": "Squaxin Ballfields",
-                                            "text-anchor": "top",
-                                            "text-offset": [0, 0.5],
-                                            "text-transform": "uppercase"
-                                        }}
-                                    >
-                                        <Feature
-                                            coordinates={[
-                                                -122.28567,
-                                                47.552965
-                                            ]}
-                                        />
-                                    </Layer>
+                                    <Box>
+                                        <Layer
+                                            type="symbol"
+                                            layout={{
+                                                "icon-image": "circle-15",
+                                                "text-field":
+                                                    "Squaxin Ballfields",
+                                                "text-anchor": "top",
+                                                "text-offset": [0, 0.5],
+                                                "text-transform": "uppercase"
+                                            }}
+                                        >
+                                            <Feature
+                                                coordinates={[
+                                                    -122.28567,
+                                                    47.552965
+                                                ]}
+                                            />
+                                        </Layer>
+                                        <Layer type="line">
+                                            <Feature
+                                                coordinates={[
+                                                    [
+                                                        aircraft.long,
+                                                        aircraft.lat
+                                                    ],
+                                                    [-122.28567, 47.552965]
+                                                ]}
+                                            />
+                                        </Layer>
+                                    </Box>
                                 ) : null}
                             </Box>
                         );
