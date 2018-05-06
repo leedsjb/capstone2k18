@@ -110,8 +110,10 @@ class MapView extends Component {
                                             type="symbol"
                                             layout={{
                                                 "icon-image": "circle-15",
+                                                "icon-allow-overlap": true,
                                                 "text-field":
                                                     "Squaxin Ballfields",
+                                                "text-allow-overlap": true,
                                                 "text-anchor": "top",
                                                 "text-offset": [0, 0.5],
                                                 "text-transform": "uppercase"
@@ -124,6 +126,25 @@ class MapView extends Component {
                                                 ]}
                                             />
                                         </Layer>
+                                        <Layer
+                                            type="symbol"
+                                            layout={{
+                                                "icon-image": "circle-15",
+                                                "icon-allow-overlap": true,
+                                                "text-field": "West Seattle",
+                                                "text-allow-overlap": true,
+                                                "text-anchor": "top",
+                                                "text-offset": [0, 0.5],
+                                                "text-transform": "uppercase"
+                                            }}
+                                        >
+                                            <Feature
+                                                coordinates={[
+                                                    -122.3868,
+                                                    47.5667
+                                                ]}
+                                            />
+                                        </Layer>
                                         <Layer type="line">
                                             <Feature
                                                 coordinates={[
@@ -131,7 +152,8 @@ class MapView extends Component {
                                                         aircraft.long,
                                                         aircraft.lat
                                                     ],
-                                                    [-122.28567, 47.552965]
+                                                    [-122.28567, 47.552965],
+                                                    [-122.3868, 47.5667]
                                                 ]}
                                             />
                                         </Layer>
