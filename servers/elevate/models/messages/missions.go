@@ -1,5 +1,6 @@
 package messages
 
+// [PUB/SUB Messages]
 /* 
 Missions
 Topic ID: NM1
@@ -58,4 +59,31 @@ Description: Changes to crew after mission creation
 type Mission_Crew_Update struct {
 	MissionID		string `json:"missionID"`
     CrewMemberID	[]string `json:"crewMemberID"`
+}
+
+// [Client Messages]
+
+// Mission ...
+type Mission struct {
+	Key		  		string 			 `json:"key"`
+	Type            string 			 `json:"type"`
+	Status          string 			 `json:"status"`
+	Vision          string			 `json:"vision"`
+	NextWaypointETE string			 `json:"nextWaypointETE"`
+	Waypoints		[]*MissionWaypoint `json:"waypoints"`
+	FlightNum       string			 `json:"flightNum"`
+}
+
+// MissionDetail ...
+type MissionDetail struct {
+	Key		  		string `json:"key"`
+	Type            string `json:"type"`
+	Status          string `json:"status"`
+	Vision          string `json:"vision"`
+	NextWaypointETE string `json:"nextWaypointETE"`
+	Waypoints		[]*MissionWaypoint `json:"waypoints"`
+	FlightNum       string `json:"flightNum"`
+	RadioReport     *Patient `json:"radioReport"`
+	Requestor       string `json:"requestor"`
+	Receiver		string `json:"receiver"`
 }

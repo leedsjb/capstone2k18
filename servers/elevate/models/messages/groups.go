@@ -1,5 +1,7 @@
 package messages
 
+// [PUB/SUB Messages]
+
 /*
 Group Create
 Topic ID: GR1
@@ -27,4 +29,23 @@ FV Table: UserGroup/GroupOfUsers/PagableGroups?
 */
 type Group_Delete struct {
     ID		string `json:"ID"`
+}
+
+// [Client Messages]
+
+// Group ...
+type ClientGroup struct {
+	Key		  	  string `json:"key"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	PeoplePreview string `json:"peoplePreview"`
+}
+
+// GroupDetail ...
+type GroupDetail struct {
+	Key		  	  string    `json:"key"`
+	ID            int       `json:"id"`
+	Name          string    `json:"name"`
+	PeoplePreview string    `json:"peoplePreview"`
+	People        []*Person `json:"people"`
 }

@@ -1,0 +1,378 @@
+/* 
+Missions
+Topic ID: NM1
+Topic Name: mission_create
+Description: New mission created
+*/
+{
+    "missionID": "1",                       // ???
+    "TCNum": "18-0013",                     // MissionDetail.TCNum
+    "asset": "N123AL",                      // Aircraft.Callsign
+    "requestorID": "1",                     // MissionDetail.Requestor
+    "receiverID": "1",                      // MissionDetail.Receiver
+    "priority": "Emergency",                // 
+    "callType": "callTypeID",               // Mission.Type, MissionDetail.Type
+    "patient": {                            // MissionDetail.RadioReport (As type Patient)
+        "shortReport": "head bleed",
+        "intubated": "true",
+        "drips": "4",
+        "age": "42",
+        "weight": "50",
+        "gender": "M",
+        "cardiac": "false",
+        "GIBleed": "false",
+        "OB": "false",
+    },
+    "crewMemberID": [                       // stringify -> ClientGroup.PeoplePreview
+            "personID1",                    // AircraftDetail.GroupDetail.PeoplePreview
+            "personID2",                    // AircraftDetail.GroupDetail.People []*Person
+            "personID3",                        // fill []*Person with Person objects with ID
+            "personID4"
+    ],
+    "waypoints": [                          // Mission.Waypoints
+        {                                   // MissionDetail.Waypoints
+            "ID": "1",
+            "ETE": "00:05",             
+            "ETT": "00:05",            
+            "active": "true"            
+        },
+        {
+            "ID": "2",
+            "ETE": "00:17",
+            "ETT": "00:22",
+            "active": "false"           
+        },
+        {
+            "ID": "3",
+            "ETE": "00:12",
+            "ETT": "00:34",
+            "active": "false"         
+        }
+    ],
+}
+
+/* 
+Mission Waypoint Update
+Topic ID: MU1
+Topic Name: mission_waypoints_update
+Description: Changes to waypoint after mission creation (waypoints, ETE, ETT, active leg)
+*/
+{
+    "missionID": "18-0013",                 // Mission.TCNum, MissionDetail.TCNum
+    "waypoints": [                          // Mission.Waypoints, MissionDetail.Waypoints
+        {
+            "ID": "1",
+            "ETE": "00:05",
+            "ETT": "00:05",
+            "active": "false"               
+        },
+        {
+            "ID": "2",
+            "ETE": "00:21",
+            "ETT": "00:26",
+            "active": "true"                
+        },
+        {
+            "ID": "3",
+            "ETE": "00:12",
+            "ETT": "00:38",
+            "active": "false"
+        }
+    ],
+}
+
+/* 
+Mission Crew Update
+Topic ID: MU2
+Topic Name: mission_crew_update
+Description: Changes to crew after mission creation
+*/
+{
+    "missionID": "1",                       // Mission.TCNum, MissionDetail.TCNum
+    "crewMemberID": [                       // stringify -> ClientGroup.PeoplePreview
+            "personID1",                    // AircraftDetail.GroupDetail.PeoplePreview
+            "personID2",                    // AircraftDetail.GroupDetail.People
+            "personID4",                        // fill []*Person with Person objects with ID
+            "personID7"
+    ]
+}
+
+/* 
+Waypoint Created
+Topic ID: WP1
+Topic Name: waypoint_create
+Description: New waypoint added to Flight Vector db by dispatcher
+Waypoint types: agency, hospital, airport, landing zone
+*/
+{
+    "ID": "1",                                      
+    "notes": "FBO McCormicks, Ground tx: AMR",
+    "name": "Yakima Valley Memorial Hospital",     
+    "type": "hospital",                            
+    "address1": "2811 Tieton Drive",
+    "address2": "",
+    "country": "United States",                     
+    "state": "WA",                                  
+    "county": "Yakima",                             
+    "city": "Yakima",                               
+    "zip": "98902",                                 
+    "lat": "48.433637",                             
+    "long": "-123.406884",                         
+    "GPSWaypoint": "227",
+    "AirportIdentifier": "KBFI",                   
+    "phone": [                                     
+        "2068901234",
+        "(123) 123 4567 x123"
+    ],
+    "shortCode": "YV",
+    "padTime": "00:06",                            
+                                                   
+    "radioChannels": [
+        "121.900 VHF",
+        "132.600 VHF",
+        "232.700 UHF"
+    ],
+    "NOTAMS": ""
+}
+
+/* 
+Waypoint Updated
+Topic ID: WP2
+Topic Name: waypoint_update
+Description: Waypoint updated in waypoint catalog
+Waypoint types: airport, hospital, landing zone, base
+*/
+{
+    "ID": "1",                                      // Send to client as waypoint update?
+    "notes": "FBO McCormicks, Ground tx: AMR",      // Client-side parse waypoint ID and update as necessary
+    "name": "Yakima Valley Memorial Hospital",
+    "type": "hospital",
+    "address1": "2811 Tieton Drive",
+    "address2": "",
+    "country": "United States",
+    "state": "WA",
+    "county": "Yakima",
+    "city": "Yakima",
+    "zip": "98902",
+    "lat": "48.433637",
+    "long": "-123.406884",
+    "GPSWaypoint": "227",
+    "AirportIdentifier": "KBFI",
+    "phone": [
+        "2068901234",
+        "(123) 123 4567 x123"
+    ],
+    "shortCode": "YV",
+    "padTime": "00:06",
+    "radioChannels": [
+        "121.900 VHF",
+        "132.600 VHF",
+        "232.700 UHF"
+    ],
+    "NOTAMS": "Runway 13R OTS"
+}
+
+/* 
+Waypoint Deleted
+Topic ID: WP3
+Topic Name: waypoint_delete
+Description: Waypoint deleted from waypoint catalog
+Waypoint types: airport, hospital, landing zone, base
+*/
+{
+    "ID": "1"
+}
+
+/* 
+Aircraft Created
+Topic ID: AC1
+Topic Name: aircraft_create
+Description: New aircraft added
+FV Table: Vendor
+*/
+{
+    "ID": "1",                         
+    "nNum": "N123AL",
+    "satPhone": "123-123-123-123",
+    "cellPhone": "(123) 123-1234",
+    "base": "baseID",                  
+    "callsign": "AL2",
+    "maxPatientWeight": "350",
+    "padTimeDay": "12",
+    "padTimeNight": "14",
+    "vendor": "vendorID",              
+    "status": "",
+    "specialEquipment": "",
+    "color": "blue",
+    "lastKnownLocation": "waypointID",
+    "model": "Learjet 31A",
+    "callTypes": [
+        "callTypeID1",
+        "callTypeID2",
+        "callTypeID3",
+        "callTypeID4"
+    ]
+}
+
+/* 
+Aircraft Properties Update
+Topic ID: AC2
+Topic Name: ac_properties_update
+Description: Aircraft persistent properties updated
+FV Table:
+*/
+{                                           // send as is, remove unnecessary specs
+    "ID": "1",                              // if ac in use, client update info
+    "satPhone": "123-123-123-123",
+    "cellPhone": "(123) 123-1234",
+    "base": "baseID",
+    "callsign": "AL2",
+    "maxPatientWeight": "350",
+    "padTimeDay": "16",
+    "padTimeNight": "14",
+    "vendor": "vendorID",
+    "specialEquipment": ""
+}
+
+/* 
+Aircraft Crew Update
+Topic ID: AC3
+Topic Name: ac_crew_update
+Description: Aircraft crew reassigned
+FV Table:
+*/
+{
+    "PIC": "personID1",                     // *problem* no identifier, how to know which aircraft's crew?
+    "adultRN": "personID2",                 // send as is w/ identifier
+    "pediatricRN": "personID3"
+}
+
+/* 
+Aircraft Scheduled Service
+Topic ID: AC4
+Topic Name: ac_service_schedule
+Description: Aircraft service scheduled
+FV Table
+*/
+{
+    "oosReason": "oosId",                                   // OOS.Reason
+    "startTime": "2007-05-08 12:35:29.1234567 -07:00",      // Calculate now - startTime -> OOS.Duration
+    "endTime": "2007-05-010 16:23:17.1234567 -07:00",       // Calculate now - endTime -> OOS.Remaining
+    "status": "VFR Only - Pilot Issue"                      // Not sure what this maps to
+}
+
+/* 
+Aircraft Postion Update
+Topic ID: AC5
+Topic Name: ac_position_update
+Description: Aircraft position updated
+FV Table:
+*/
+{                                       // add ID
+    "posLat": "48.432468",              // Aircraft.Lat, AircraftDetail.Lat
+    "posLong": "-123.401357",           // Aircraft.Long, AircraftDetail.Long
+    "posFriendlyName": "Bremerton"      // Aircraft.Area, AircraftDetail.Area
+}
+
+/* 
+User Create
+Topic ID: USR1
+Topic Name: user_create
+Description: Create new user
+FV Table: Users, UserGroup 
+*/
+{                                           // don't send to client
+    "ID": "1",                                  
+    "userName": "johnsmith",
+    "firstName": "John",                        
+    "middleName": "Jacob",                      
+    "lastName": "Smith",                        
+    "initials": "JJS",                          
+    "email": "johnsmith@airliftnw.org",         
+    "UWNetID": "johnsmith",                     
+    "groupID": "1",                             
+    "role": "Adult RN",                         
+    "cellPhone": "(123) 123 1234",                   
+    "qualificationID": "2"                      
+}
+
+/* 
+User Update
+Topic ID: USR2
+Topic Name: user_update
+Description: Update existing user
+FV Table: Users, UserGroup 
+*/
+{                                       // send ID and update info to client
+    "ID": "1",                                  
+    "userName": "johnsmith",
+    "firstName": "John",                        
+    "middleName": "Jacob",                      
+    "lastName": "Smith",                        
+    "initials": "JJS",                          
+    "email": "johnsmith@airliftnw.org",         
+    "UWNetID": "johnsmith",                     
+    "groupID": "1",                             
+    "role": "Adult RN",                         
+    "cellPhone": "(123) 123 1234",                   
+    "qualificationID": "2"                      
+}
+
+/* 
+User Delete
+Topic ID: USR3
+Topic Name: user_delete
+Description: Delete existing user
+FV Table: Users
+*/
+{                   // send ID to client 
+    "ID": "1"                            
+}
+
+/*
+Group Create
+Topic ID: GR1
+Topic Name: group_create
+Description: Create a new group
+FV Table: UserGroup/GroupOfUsers/PagableGroups? *not a typo, is spelled "PagableGroups" in FV
+*/
+{                               // don't need to notify client
+    "ID": 1,
+    "name": "Group1",
+    "members": [
+        "UserID1",
+        "UserID2",
+        "UserID3",
+        "UserID4"
+    ]
+}
+
+/*
+Group Update
+Topic ID: GR2
+Topic Name: group_update
+Description: Add or delete member, change group name
+FV Table: UserGroup/GroupOfUsers/PagableGroups?
+*/
+{                           // send ID and updates to client
+    "ID": 1,
+    "name": "GroupOne",
+    "members": [
+        "UserID1",
+        "UserID2",
+        "UserID3",
+        "UserID4",
+        "UserID5"
+    ]
+}
+
+/*
+Group Delete
+Topic ID: GR3
+Topic Name: group_delete
+Description: Delete existing group
+FV Table: UserGroup/GroupOfUsers/PagableGroups?
+*/
+{                       // send ID to client
+    "ID": 1
+}

@@ -1,5 +1,7 @@
 package messages
 
+// [PUB/SUB Messages]
+
 /* 
 User Create
 Topic ID: USR1
@@ -34,4 +36,28 @@ FV Table: Users
 */
 type User_Delete struct {
 	ID		string `json:"ID"`
+}
+
+// [Client Messages]
+
+// Person ...
+type Person struct {
+	Key		 string `json:"key"`
+	ID       int    `json:"id"`
+	FName    string `json:"fName"`
+	LName    string `json:"lName"`
+	Position string `json:"position"`
+}
+
+// PersonDetail ...
+type PersonDetail struct {
+	Key		  	 string `json:"key"`
+	ID           int    `json:"id"`
+	FName        string `json:"fName"`
+	LName        string `json:"lName"`
+	Position     string `json:"position"`
+	Email        string `json:"email"`
+	UWNetID      string `json:"uwNetID"`
+	Mobile       string `json:"mobile"`
+	SpecialQuals string `json:"specialQuals"`
 }

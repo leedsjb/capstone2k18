@@ -1,5 +1,7 @@
 package messages
 
+// [PUB/SUB Messages]
+
 /* 
 Aircraft Created
 Topic ID: AC1
@@ -64,7 +66,7 @@ Topic Name: ac_service_schedule
 Description: Aircraft service scheduled
 */
 type Aircraft_Service_Schedule struct {
-	OosReadon		string `json:"oosReason"`
+	OosReason		string `json:"oosReason"`
 	StartTime		string `json:"startTime"`
     EndTime			string `json:"endTime"`
     Status			string `json:"status"`
@@ -80,4 +82,56 @@ type Aircraft_Pos_Update struct {
 	PosLat				string `json:"posLat"`
 	PosLong				string `json:"posLong"`
     PosFriendlyName		string `json:"posFriendlyName"`
+}
+
+// [Client Messages]
+
+// OOS ...
+type OOS struct {
+	Key		  string `json:"key"`
+	Reason    string `json:"reason"`
+	Remaining string `json:"remaining"`
+}
+
+// OOSDetail ...
+type OOSDetail struct {
+	Key		  string `json:"key"`
+	Reason    string `json:"reason"`
+	Remaining string `json:"remaining"`
+	Duration  string `json:"duration"`
+}
+
+// Aircraft ...
+type Aircraft struct {
+	Key		    string   `json:"key"`
+	ID          int      `json:"id"`
+	Status      string   `json:"status"`
+	Type        string   `json:"type"`
+	Callsign    string   `json:"callsign"`
+	LevelOfCare string   `json:"levelOfCare"`
+	Class       string   `json:"class"`
+	Lat         float32  `json:"lat"`
+	Long        float32  `json:"long"`
+	Area        string   `json:"area"`
+	NNum        string   `json:"nNum"`
+	Mission     *Mission `json:"mission"`
+	OOS         *OOS     `json:"OOS"`
+}
+
+// AircraftDetail ...
+type AircraftDetail struct {
+	Key		    string 		   `json:"key"`
+	ID          int            `json:"id"`
+	Status      string         `json:"status"`
+	Type        string         `json:"type"`
+	Callsign    string         `json:"callsign"`
+	Crew        *GroupDetail   `json:"crew"`
+	LevelOfCare string         `json:"levelOfCare"`
+	Class       string         `json:"class"`
+	Lat         float32        `json:"lat"`
+	Long        float32        `json:"long"`
+	Area        string         `json:"area"`
+	NNum        string         `json:"nNum"`
+	Mission     *MissionDetail `json:"mission"`
+	OOS         *OOSDetail     `json:"OOS"`
 }
