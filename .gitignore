@@ -22,12 +22,6 @@
 *.csr
 *.key
 
-<<<<<<< HEAD
-=======
-# IDE Specific
-.vscode
-
->>>>>>> new/api-server
 # misc
 .DS_Store
 .env
@@ -36,12 +30,9 @@
 .env.test.local
 .env.production.local
 
-<<<<<<< HEAD
 # IDE specific
 .vscode/
 
-=======
->>>>>>> new/api-server
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
