@@ -31,6 +31,7 @@ class MapView extends Component {
     }
 
     componentDidMount() {
+        this.getUserLocation();
         this.props.fetchAircraft();
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
@@ -60,9 +61,60 @@ class MapView extends Component {
                     ]
                 });
             }
-
             this.state.map.resize();
-            this.state.map.setCenter(this.mapCenter());
+            this.state.map.flyTo(this.mapCenter());
+        }
+    }
+
+    getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    if (this.state.map) {
+                        this.state.map.addLayer({
+                            id: "points",
+                            type: "symbol",
+                            source: {
+                                type: "geojson",
+                                data: {
+                                    type: "FeatureCollection",
+                                    features: [
+                                        {
+                                            type: "Feature",
+                                            geometry: {
+                                                type: "Point",
+                                                coordinates: [
+                                                    position.coords.longitude,
+                                                    position.coords.latitude
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            layout: {
+                                "icon-image": "circle-15",
+                                "icon-allow-overlap": true
+                            }
+                        });
+                        if (!this.props.id) {
+                            this.setState({
+                                center: [
+                                    position.coords.longitude,
+                                    position.coords.latitude
+                                ]
+                            });
+                            this.state.map.setCenter([
+                                position.coords.longitude,
+                                position.coords.latitude
+                            ]);
+                            this.state.map.setZoom(11);
+                        }
+                    }
+                },
+                null,
+                { enableHighAccuracy: true }
+            );
         }
     }
 
