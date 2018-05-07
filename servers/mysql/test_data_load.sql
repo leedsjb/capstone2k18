@@ -42,12 +42,15 @@ CREATE TABLE tblAIRCRAFT_TYPE(
     aircraft_type_category NVARCHAR(25) NOT NULL,
     aircraft_type_manufacturer NVARCHAR(50) NOT NULL
 );
+
 INSERT INTO tblAIRCRAFT_TYPE(
     aircraft_type_manufacturer, aircraft_type_title, aircraft_type_category
 )
 VALUES
-    ("Diamond", "DA42-NG", "Fixed-wing"), ("Diamond", "DA40", "Fixed-wing"), 
-    ("Bell", "206", "Rotorcraft");
+    ("Augusta", "A109E", "Rotorcraft"),
+    ("Lear", "31A", "Fixed-wing"), 
+    ("Airbus", "H-135", "Rotorcraft"),
+    ("Pilatus","PC-12","Fixed-wing");
 
 DROP TABLE IF EXISTS tblAC_LEVEL_OF_CARE;
 CREATE TABLE tblAC_LEVEL_OF_CARE(
@@ -68,14 +71,45 @@ INSERT INTO tblROLE(roleName)
 VALUES 
     ("Pilot PIC"), ("Adult RN"), ("Pediatric RN");
 
-DROP TABLE IF EXISTS tblAIRCRAFT;
 CREATE TABLE tblAIRCRAFT(
-    acID INTEGER AUTO_INCREMENT PRIMARY KEY, 
-    acCallSign NVARCHAR(100) NOT NULL, 
-    acNNumber NVARCHAR(100) NOT NULL,
-    acType INTEGER FOREIGN KEY REFERENCES tblAIRCRAFT_TYPE(aircraftTypeID),
+    ac_id INTEGER AUTO_INCREMENT PRIMARY KEY,           -- integer
+    ac_callsign NVARCHAR(100),                          -- AL1, AL2, etc.
+    ac_n_number NVARCHAR(10),                            -- N123AS
+    ac_type_id INTEGER,                                 
+    ac_lat DECIMAL(9,6),
+    ac_long DECIMAL(9,6),
+    ac_loc_display_name NVARCHAR(50),
+    ac_cell_phone BIGINT,
+    ac_sat_phone BIGINT,
+    FOREIGN KEY (ac_type_id) REFERENCES tblAIRCRAFT_TYPE(aircraft_type_id)
+);
 
-)
+SELECT * FROM tblASSIGNED_STATUS
+SELECT * FROM tblAIRCRAFT_TYPE
+
+INSERT INTO tblAIRCRAFT(ac_n_number, ac_callsign, ac_type_id, ac_lat, ac_long, ac_cell_phone, ac_sat_phone)
+VALUES
+("N139AM", "AL6", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "H-135"), 47.658114, 122.298400, 5551234567, 4441234567),
+("N951AL", "AL8", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "A109E"), 47.658114, 122.298400, 5551234568, 4441234568),
+("N952AL", "AL5", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "H-135"), 47.658114, 122.298400, 5551234569, 4441234569),
+("N954AL", "AL2", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "H-135"), 47.658114, 122.298400, 5551234570, 4441234570),
+("N235UW", "AL7", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "H-135"), 47.658114, 122.298400, 5551234571, 4441234571),
+("N212AL", "TURBOSPARE", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "PC-12"), 47.658114, 122.298400, 5551234572, 4441234572),
+("N164AL", "LEARSPARE", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "31A"), 47.658114, 122.298400, 5551234573, 4441234573),
+("N165AL", "JNU F", (SELECT aircraft_type_id FROM tblAIRCRAFT_TYPE WHERE aircraft_type_title = "31A"), 47.658114, 122.298400, 5551234574, 4441234574)  
+
+DROP TABLE IF EXISTS tblMISSION;
+CREATE TABLE tblMISSION(
+    mission_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    aircraft_id INTEGER,
+    requestor INTEGER,
+    receiver INTEGER,
+    mission_date DATE,
+    tc_number VARCHAR(10),
+    FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id),
+    FOREIGN KEY(requestor) REFERENCES tblAGENCY(agency_id),
+    FOREIGN KEY(receiver) REFERENCES tblAGENCY(agency_id)
+);
 
 
 -- Create Personnel Tables
