@@ -18,14 +18,20 @@ func hello(w http.ResponseWriter, r *http.Request) {
 /*
 
 	Generate certs:
-	openssl req -x509 -newkey rsa:2048 -keyout myservice.key -out myservice.cert -days 365 -nodes -subj "/CN=myservice.example.com"
+	openssl req -x509 -newkey rsa:2048 -keyout myservice.key -out myservice.crt -days 365 -nodes -subj "/CN=myservice.example.com"
 
 */
 
 func main() {
 	fmt.Println("crewjam")
 
-	keyPair, err := tls.LoadX509KeyPair("myservice.cert", "myservice.key")
+	// "/etc/letsencrypt/live/crewjam-sale.test.emeloid.co/fullchain.pem"
+	// "/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/privkey.pem"
+
+	keyPair, err := tls.LoadX509KeyPair(
+		"/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/fullchain.pem",
+		"/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/privkey.pem")
+
 	if err != nil {
 		panic(err)
 	}
@@ -34,11 +40,11 @@ func main() {
 		panic(err)
 	}
 
-	idpMetadataURL, err := url.Parse("https://www.testshib.org/metadata/testshib-providers.xml")
+	idpMetadataURL, err := url.Parse("http://www.testshib.org/metadata/testshib-providers.xml") //idp.u.washington.edu
 	if err != nil {
 		panic(err)
 	}
-	rootURL, err := url.Parse("http://localhost:8000")
+	rootURL, err := url.Parse("http://crewjam-saml.test.emeloid.co")
 	if err != nil {
 		panic(err)
 	}
