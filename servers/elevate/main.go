@@ -333,89 +333,90 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			msgType := "mission-create"
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			// clientParse(msg, pulledMsg, subName, msgType, notifier)
 			parseMissionCreate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc here
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
 			msgType := "mission-waypoints-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
-			// parseMissionWaypointsUpdate(msg, pulledMsg, subName, notifier)
+			parseMissionWaypointsUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 		case "test_mission_crew_update_sub":
 			msg := &messages.Mission_Crew_Update{}
 			msgType := "mission-crew-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
-			// parseMissionCrewUpdate(msg, pulledMsg, subName, notifier)
+			parseMissionCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 		case "test_waypoint_create_sub":
 			// msg := &messages.Waypoint{}
-			// don't need to notify client
+			// don't need to notify client. single waypoint has no context in app
 			log.Printf("no current action: %v", subName)
 			// TODO: just call sql sproc
 		case "test_waypoint_update_sub":
-			msg := &messages.Waypoint{}
-			msgType := "waypoint-update"
-			// notify client, client must update if necessary
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Waypoint{}
+			// msgType := "waypoint-update"
+			// don't notify client? mission waypoints update separately,
+			// and don't need the detail of a single waypoint
+			// seems like this would be for sake of storing in db
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_waypoint_delete_sub":
-			msg := &messages.Waypoint_Delete{}
-			msgType := "waypoint-delete"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Waypoint_Delete{}
+			// msgType := "waypoint-delete"
+			// don't notify client? deleted waypoint should also be
+			// reflected in mission_waypoint_update
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_aircraft_create_sub":
-			// msg := &messages.Aircraft_Create{}
-			// don't notify client
-			log.Printf("no current action: %v", subName)
+			msg := &messages.Aircraft_Create{}
+			msgType := "aircraft-create"
+			parseAircraftCreate(msg, pulledMsg, subName, msgType, db, notifier)
 			// call sproc
 		case "test_ac_properties_update_sub":
 			msg := &messages.Aircraft_Props_Update{}
 			msgType := "aircraft-props-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseAircraftPropsUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_ac_crew_update_sub":
 			msg := &messages.Aircraft_Crew_Update{}
 			msgType := "aircraft-crew-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_ac_service_schedule_sub":
 			msg := &messages.Aircraft_Service_Schedule{}
 			msgType := "aircraft-service-schedule"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_ac_position_update_sub":
 			msg := &messages.Aircraft_Pos_Update{}
 			msgType := "aircraft-position-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_user_create_sub":
-			// don't need to notify client
-			// msg := &messages.User{}
-			log.Printf("no current action: %v", subName)
+			msg := &messages.User{}
+			msgType := "user-create"
+			parseUserCreate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_user_update_sub":
 			msg := &messages.User{}
 			msgType := "user-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseUserUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_user_delete_sub":
 			msg := &messages.User_Delete{}
 			msgType := "user-delete"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseUserDelete(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_group_create_sub":
-			// don't need to notify client
-			// msg := &messages.Group{}
-			log.Printf("no current action: %v", subName)
+			msg := &messages.Group{}
+			msgType := "group-create"
+			parseGroupCreate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sqp sproc
 		case "test_group_update_sub":
 			msg := &messages.Group{}
 			msgType := "group-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseGroupUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_group_delete_sub":
 			msg := &messages.Group_Delete{}
 			msgType := "group-delete"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseGroupDelete(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc
 		default:
 			log.Printf("not a valid subscription type")
@@ -675,10 +676,38 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 
 func parseWaypointUpdate(msg *messages.Waypoint,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	// unmarshal json into correct struct
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
 
+	// TODO: parse pubsub message for client
+
+	toClient := &messages.ClientMsg{
+		Type:    msgType,
+		Payload: msg,
+	}
+
+	// TODO: send msg contents to websockets
+	send, err := json.Marshal(toClient)
+	if err != nil {
+		log.Printf("PROBLEM marshaling json: %v", err)
+		pulledMsg.Ack()
+		return
+	}
+	notifier.Notify(send)
 }
 
 func parseWaypointDelete(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftCreate(msg *messages.Aircraft_Create,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
@@ -703,12 +732,22 @@ func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 
 }
 
+func parseUserCreate(msg *messages.User,
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
 func parseUserUpdate(msg *messages.User,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseUserDelete(msg *messages.User_Delete,
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+func parseGroupCreate(msg *messages.Group,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
