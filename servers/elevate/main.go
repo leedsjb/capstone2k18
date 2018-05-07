@@ -366,57 +366,59 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		case "test_aircraft_create_sub":
 			msg := &messages.Aircraft_Create{}
 			msgType := "aircraft-create"
-			parseAircraftCreate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// call sproc
 		case "test_ac_properties_update_sub":
 			msg := &messages.Aircraft_Props_Update{}
 			msgType := "aircraft-props-update"
-			parseAircraftPropsUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
-		case "test_ac_crew_update_sub":
-			msg := &messages.Aircraft_Crew_Update{}
-			msgType := "aircraft-crew-update"
-			parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
-			// TODO: call sql sproc
-		case "test_ac_service_schedule_sub":
-			msg := &messages.Aircraft_Service_Schedule{}
-			msgType := "aircraft-service-schedule"
-			parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
-			// TODO: call sql sproc
-		case "test_ac_position_update_sub":
-			msg := &messages.Aircraft_Pos_Update{}
-			msgType := "aircraft-position-update"
-			parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
-			// TODO: call sql sproc
+
+		// TODO: figure out how to connect these updates to relevant aircraft
+		// case "test_ac_crew_update_sub":
+		// 	msg := &messages.Aircraft_Crew_Update{}
+		// 	msgType := "aircraft-crew-update"
+		// 	parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+		// 	// TODO: call sql sproc
+		// case "test_ac_service_schedule_sub":
+		// 	msg := &messages.Aircraft_Service_Schedule{}
+		// 	msgType := "aircraft-service-schedule"
+		// 	parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
+		// 	// TODO: call sql sproc
+		// case "test_ac_position_update_sub":
+		// 	msg := &messages.Aircraft_Pos_Update{}
+		// 	msgType := "aircraft-position-update"
+		// 	parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+		// 	// TODO: call sql sproc
 		case "test_user_create_sub":
 			msg := &messages.User{}
 			msgType := "user-create"
-			parseUserCreate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		case "test_user_update_sub":
 			msg := &messages.User{}
 			msgType := "user-update"
-			parseUserUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		case "test_user_delete_sub":
 			msg := &messages.User_Delete{}
 			msgType := "user-delete"
-			parseUserDelete(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		case "test_group_create_sub":
 			msg := &messages.Group{}
 			msgType := "group-create"
-			parseGroupCreate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sqp sproc
 		case "test_group_update_sub":
 			msg := &messages.Group{}
 			msgType := "group-update"
-			parseGroupUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		case "test_group_delete_sub":
 			msg := &messages.Group_Delete{}
 			msgType := "group-delete"
-			parseGroupDelete(msg, pulledMsg, subName, msgType, db, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		default:
 			log.Printf("not a valid subscription type")
@@ -446,7 +448,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 		return
 	}
 
-	// // TODO: parse pubsub message for client
+	// parse pubsub message for client
 	// type Mission_Create struct {
 	// 	MissionID			string 				`json:"missionID"`
 	// 	TCNum				string   			`json:"TCNum"`
@@ -547,7 +549,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 		Payload: payload,
 	}
 
-	// TODO: send msg contents to websockets
+	// send msg contents to websockets
 	send, err := json.Marshal(toClient)
 	if err != nil {
 		log.Printf("PROBLEM marshaling json: %v", err)
@@ -568,7 +570,7 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		return
 	}
 
-	// TODO: parse pubsub message for client
+	// parse pubsub message for client
 	// type Mission_Waypoint_Update struct {
 	// 	MissionID		string 		`json:"missionID"`
 	// 	Waypoints		[]*Waypoint `json:"waypoints"`
@@ -608,7 +610,7 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		Payload: payload,
 	}
 
-	// TODO: send msg contents to websockets
+	// send msg contents to websockets
 	send, err := json.Marshal(toClient)
 	if err != nil {
 		log.Printf("PROBLEM marshaling json: %v", err)
@@ -629,7 +631,7 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 		return
 	}
 
-	// TODO: parse pubsub message for client
+	// parse pubsub message for client
 	// type Mission_Crew_Update struct {
 	// 	MissionID    string   `json:"missionID"`
 	// 	CrewMemberID []string `json:"crewMemberID"`
@@ -664,7 +666,7 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 		Payload: payload,
 	}
 
-	// TODO: send msg contents to websockets
+	// send msg contents to websockets
 	send, err := json.Marshal(toClient)
 	if err != nil {
 		log.Printf("PROBLEM marshaling json: %v", err)
@@ -674,90 +676,52 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	notifier.Notify(send)
 }
 
-func parseWaypointUpdate(msg *messages.Waypoint,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-	// unmarshal json into correct struct
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
-	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-		log.Printf("PROBLEM contents of decoded json: %#v", msg)
-		log.Printf("Could not decode message data: %#v", pulledMsg)
-		pulledMsg.Ack()
-		return
-	}
+// func parseWaypointUpdate(msg *messages.Waypoint,
+// 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+// 	// unmarshal json into correct struct
+// 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+// 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+// 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+// 		log.Printf("Could not decode message data: %#v", pulledMsg)
+// 		pulledMsg.Ack()
+// 		return
+// 	}
 
-	// TODO: parse pubsub message for client
+// 	// parse pubsub message for client
+// 	toClient := &messages.ClientMsg{
+// 		Type:    msgType,
+// 		Payload: msg,
+// 	}
 
-	toClient := &messages.ClientMsg{
-		Type:    msgType,
-		Payload: msg,
-	}
+// 	// send msg contents to websockets
+// 	send, err := json.Marshal(toClient)
+// 	if err != nil {
+// 		log.Printf("PROBLEM marshaling json: %v", err)
+// 		pulledMsg.Ack()
+// 		return
+// 	}
+// 	notifier.Notify(send)
+// }
 
-	// TODO: send msg contents to websockets
-	send, err := json.Marshal(toClient)
-	if err != nil {
-		log.Printf("PROBLEM marshaling json: %v", err)
-		pulledMsg.Ack()
-		return
-	}
-	notifier.Notify(send)
-}
+// func parseWaypointDelete(msg *messages.Waypoint_Delete,
+// 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
-func parseWaypointDelete(msg *messages.Waypoint_Delete,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+// }
 
-}
-
-func parseAircraftCreate(msg *messages.Aircraft_Create,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
+// TODO: figure out how to connect these updates to relevant aircraft
 func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
+// TODO: figure out how to connect these updates to relevant aircraft
 func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
+// TODO: figure out how to connect these updates to relevant aircraft
 func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseUserCreate(msg *messages.User,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseUserUpdate(msg *messages.User,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseUserDelete(msg *messages.User_Delete,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseGroupCreate(msg *messages.Group,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseGroupUpdate(msg *messages.Group,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-func parseGroupDelete(msg *messages.Group_Delete,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
