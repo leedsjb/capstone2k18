@@ -2,12 +2,13 @@ package main
 
 import (
 	"database/sql"
-	"time"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
+	"time"
 	// go sql driver
 	_ "github.com/go-sql-driver/mysql"
 
@@ -71,8 +72,8 @@ func main() {
 	sqlUser := os.Getenv("SQLUSER")
 	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
-	// sqlTblName := os.Getenv("SQLTABLENAME")
-	first25Missions := os.Getenv("SQLMISSIONS")
+	// // sqlTblName := os.Getenv("SQLTABLENAME")
+	// first25Missions := os.Getenv("SQLMISSIONS")
 
 	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
 	cfg.DBName = sqlDbName
@@ -83,114 +84,113 @@ func main() {
 	}
 	defer db.Close()
 
-	rows, err := db.Query(first25Missions)
-	// rows, err := db.Query("SELECT * FROM " + sqlTblName)
-	if err != nil {
-		fmt.Printf("Error querying MySQL: %v", err)
-		os.Exit(1)
-	}
+	// rows, err := db.Query(first25Missions)
+	// // rows, err := db.Query("SELECT * FROM " + sqlTblName)
+	// if err != nil {
+	// 	fmt.Printf("Error querying MySQL: %v", err)
+	// 	os.Exit(1)
+	// }
 
-	// TODO: DO SOMETHING WITH ROWS
-	i := 0
-	for rows.Next() { 
-		var mission_id string
-		var aircraft_id string
-		var agency_id string
-		var mission_date string
-		var aircraft_id2 string
-		var aircraft_callsign string
-		var model_id string
-		var aircraft_lat string
-		var aircraft_long string
-		var ac_type_id string
-		var agency_id2 string
-		var agency_name string
-		var agency_area_code string
-		var agency_phone string
-		var address_id string
-		err := rows.Scan(
-			&mission_id,
-			&aircraft_id,
-			&agency_id,
-			&mission_date,
-			&aircraft_id2,
-			&aircraft_callsign,
-			&model_id,
-			&aircraft_lat,
-			&aircraft_long,
-			&ac_type_id,
-			&agency_id2,
-			&agency_name,
-			&agency_area_code,
-			&agency_phone,
-			&address_id,
-		)
-		if err != nil {
-			fmt.Printf("Error parsing MySQL rows: %v", err)
-			os.Exit(1)
-		}
-		fmt.Printf(
-			"========================================================\nFLIGHT %d\nmission_id: %s\naircraft_id: %s\nagency_id: %s\nmission_date: %s\naircraft_id2: %s\naircraft_callsign: %s\nmodel_id: %s\naircraft_lat: %s\naircraft_long: %s\nac_type_id: %s\nagency_id2:%s\nagency_name: %s\nagency_area_code: %s\nagency_phone: %s\naddress_id: %s\n",
-			i, 
-			mission_id,
-			aircraft_id,
-			agency_id,
-			mission_date,
-			aircraft_id2,
-			aircraft_callsign,
-			model_id,
-			aircraft_lat,
-			aircraft_long,
-			ac_type_id,
-			agency_id2,
-			agency_name,
-			agency_area_code,
-			agency_phone,
-			address_id,
-		)
-		i++
-	}
+	// // TODO: DO SOMETHING WITH ROWS
+	// i := 0
+	// for rows.Next() {
+	// 	var mission_id string
+	// 	var aircraft_id string
+	// 	var agency_id string
+	// 	var mission_date string
+	// 	var aircraft_id2 string
+	// 	var aircraft_callsign string
+	// 	var model_id string
+	// 	var aircraft_lat string
+	// 	var aircraft_long string
+	// 	var ac_type_id string
+	// 	var agency_id2 string
+	// 	var agency_name string
+	// 	var agency_area_code string
+	// 	var agency_phone string
+	// 	var address_id string
+	// 	err := rows.Scan(
+	// 		&mission_id,
+	// 		&aircraft_id,
+	// 		&agency_id,
+	// 		&mission_date,
+	// 		&aircraft_id2,
+	// 		&aircraft_callsign,
+	// 		&model_id,
+	// 		&aircraft_lat,
+	// 		&aircraft_long,
+	// 		&ac_type_id,
+	// 		&agency_id2,
+	// 		&agency_name,
+	// 		&agency_area_code,
+	// 		&agency_phone,
+	// 		&address_id,
+	// 	)
+	// 	if err != nil {
+	// 		fmt.Printf("Error parsing MySQL rows: %v", err)
+	// 		os.Exit(1)
+	// 	}
+	// 	fmt.Printf(
+	// 		"========================================================\nFLIGHT %d\nmission_id: %s\naircraft_id: %s\nagency_id: %s\nmission_date: %s\naircraft_id2: %s\naircraft_callsign: %s\nmodel_id: %s\naircraft_lat: %s\naircraft_long: %s\nac_type_id: %s\nagency_id2:%s\nagency_name: %s\nagency_area_code: %s\nagency_phone: %s\naddress_id: %s\n",
+	// 		i,
+	// 		mission_id,
+	// 		aircraft_id,
+	// 		agency_id,
+	// 		mission_date,
+	// 		aircraft_id2,
+	// 		aircraft_callsign,
+	// 		model_id,
+	// 		aircraft_lat,
+	// 		aircraft_long,
+	// 		ac_type_id,
+	// 		agency_id2,
+	// 		agency_name,
+	// 		agency_area_code,
+	// 		agency_phone,
+	// 		address_id,
+	// 	)
+	// 	i++
+	// }
 
-	// sproc := os.Getenv("SPROC")
-	arbnum := "10"
-	sprocRows, err := db.Query("CALL uspGetRecentMissions(" + arbnum + ")")
-	if err != nil {
-		fmt.Printf("Error sproc-ing MySQL: %v", err)
-		os.Exit(1)
-	}
-	j := 1
-	for sprocRows.Next() { 
-		var mission_id string
-		var mission_date string
-		var aircraft_callsign string
-		var aircraft_lat string
-		var aircraft_long string
-		var agency_name string
-		err := sprocRows.Scan(
-			&mission_id,
-			&mission_date,
-			&aircraft_callsign,
-			&aircraft_lat,
-			&aircraft_long,
-			&agency_name,
-		)
-		if err != nil {
-			fmt.Printf("Error scanning sproc rows: %v", err)
-			os.Exit(1)
-		}
-		fmt.Printf(
-			"========================================================\nAIRCRAFT %d\nmission_id: %s\nmission_date: %s\naircraft_callsign: %s\naircraft_lat: %s\naircraft_long: %s\nagency_name: %s\n",
-			j, 
-			mission_id,
-			mission_date,
-			aircraft_callsign,
-			aircraft_lat,
-			aircraft_long,
-			agency_name,
-		)
-		j++
-	}
-		
+	// // sproc := os.Getenv("SPROC")
+	// arbnum := "10"
+	// sprocRows, err := db.Query("CALL uspGetRecentMissions(" + arbnum + ")")
+	// if err != nil {
+	// 	fmt.Printf("Error sproc-ing MySQL: %v", err)
+	// 	os.Exit(1)
+	// }
+	// j := 1
+	// for sprocRows.Next() {
+	// 	var mission_id string
+	// 	var mission_date string
+	// 	var aircraft_callsign string
+	// 	var aircraft_lat string
+	// 	var aircraft_long string
+	// 	var agency_name string
+	// 	err := sprocRows.Scan(
+	// 		&mission_id,
+	// 		&mission_date,
+	// 		&aircraft_callsign,
+	// 		&aircraft_lat,
+	// 		&aircraft_long,
+	// 		&agency_name,
+	// 	)
+	// 	if err != nil {
+	// 		fmt.Printf("Error scanning sproc rows: %v", err)
+	// 		os.Exit(1)
+	// 	}
+	// 	fmt.Printf(
+	// 		"========================================================\nAIRCRAFT %d\nmission_id: %s\nmission_date: %s\naircraft_callsign: %s\naircraft_lat: %s\naircraft_long: %s\nagency_name: %s\n",
+	// 		j,
+	// 		mission_id,
+	// 		mission_date,
+	// 		aircraft_callsign,
+	// 		aircraft_lat,
+	// 		aircraft_long,
+	// 		agency_name,
+	// 	)
+	// 	j++
+	// }
 
 	// [PUB/SUB]
 
@@ -268,7 +268,7 @@ func main() {
 		}
 		if !exists {
 			if _, err := psClient.CreateSubscription(ctx, testSubNames[i],
-			pubsub.SubscriptionConfig{Topic: topic}); err != nil {
+				pubsub.SubscriptionConfig{Topic: topic}); err != nil {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
@@ -314,8 +314,8 @@ type pubSubMessage struct {
 }
 
 type testStruct struct {
-	Key string `json:"key"`
-	ID string `json:"ID"`
+	Key   string `json:"key"`
+	ID    string `json:"ID"`
 	Hello string `json:"hello"`
 	World string `json:"world"`
 }
@@ -330,79 +330,96 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		switch subName {
 		case "test_mission_create_sub":
 			msg := &messages.Mission_Create{}
+			msgType := "mission-create"
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			parseMissionCreate(msg, pulledMsg, subName, notifier)
+			// clientParse(msg, pulledMsg, subName, msgType, notifier)
+			parseMissionCreate(msg, pulledMsg, subName, msgType, db, notifier)
 			// TODO: call sql sproc here
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
-			parseMissionWaypointsUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "mission-waypoints-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// parseMissionWaypointsUpdate(msg, pulledMsg, subName, notifier)
 		case "test_mission_crew_update_sub":
 			msg := &messages.Mission_Crew_Update{}
-			parseMissionCrewUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "mission-crew-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// parseMissionCrewUpdate(msg, pulledMsg, subName, notifier)
 		case "test_waypoint_create_sub":
 			// msg := &messages.Waypoint{}
 			// don't need to notify client
-			// just call sql sproc
+			log.Printf("no current action: %v", subName)
+			// TODO: just call sql sproc
 		case "test_waypoint_update_sub":
 			msg := &messages.Waypoint{}
+			msgType := "waypoint-update"
 			// notify client, client must update if necessary
-			parseWaypointUpdate(msg, pulledMsg, subName, notifier)
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
 			// TODO: call sql sproc
 		case "test_waypoint_delete_sub":
 			msg := &messages.Waypoint_Delete{}
-			parseWaypointDelete(msg, pulledMsg, subName, notifier)
+			msgType := "waypoint-delete"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_aircraft_create_sub":
 			// msg := &messages.Aircraft_Create{}
 			// don't notify client
+			log.Printf("no current action: %v", subName)
 			// call sproc
 		case "test_ac_properties_update_sub":
 			msg := &messages.Aircraft_Props_Update{}
-			parseAircraftPropsUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "aircraft-props-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_ac_crew_update_sub":
 			msg := &messages.Aircraft_Crew_Update{}
-			parseAircraftCrewUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "aircraft-crew-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_ac_service_schedule_sub":
 			msg := &messages.Aircraft_Service_Schedule{}
-			parseAircraftServiceSchedule(msg, pulledMsg, subName, notifier)
+			msgType := "aircraft-service-schedule"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_ac_position_update_sub":
 			msg := &messages.Aircraft_Pos_Update{}
-			parseAircraftPositionUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "aircraft-position-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_user_create_sub":
 			// don't need to notify client
 			// msg := &messages.User{}
+			log.Printf("no current action: %v", subName)
+			// TODO: call sql sproc
 		case "test_user_update_sub":
 			msg := &messages.User{}
-			parseUserUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "user-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_user_delete_sub":
 			msg := &messages.User_Delete{}
-			parseUserDelete(msg, pulledMsg, subName, notifier)
+			msgType := "user-delete"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_group_create_sub":
 			// don't need to notify client
 			// msg := &messages.Group{}
+			log.Printf("no current action: %v", subName)
+			// TODO: call sqp sproc
 		case "test_group_update_sub":
 			msg := &messages.Group{}
-			parseGroupUpdate(msg, pulledMsg, subName, notifier)
+			msgType := "group-update"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		case "test_group_delete_sub":
 			msg := &messages.Group_Delete{}
-			parseGroupDelete(msg, pulledMsg, subName, notifier)
+			msgType := "group-delete"
+			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// TODO: call sql sproc
 		default:
 			log.Printf("not a valid subscription type")
 		}
-
-		// TODO: process msg contents
-		log.Printf("This subscription is: %v", subscription.ID())
-
-		// TODO: save msg contents to CloudSQL using StoredProcedures
-
-
-		// [sample processing message]
-		// log.Printf("[ID %d] Processing. . .", id)
-		// if err := update(id); err != nil {
-		// 	log.Printf("[ID %d] could not update: %v", id, err)
-		// 	msg.Nack()
-		// 	return
-		// }
 
 		// track number of messages processed
 		// countMu.Lock()
@@ -410,7 +427,7 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		// countMu.Unlock()
 
 		pulledMsg.Ack()
-		// log.Printf("Message Acknowledged: (%v)\n", msg)
+		log.Printf("Message Acknowledged")
 	})
 	if err != nil {
 		log.Fatalf("Could not receive subscription: %v", err)
@@ -418,121 +435,116 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 }
 
 func parseMissionCreate(msg *messages.Mission_Create,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-		// unmarshal json into correct struct
-		log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
-		if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-			log.Printf("PROBLEM contents of decoded json: %#v", msg)
-			log.Printf("Could not decode message data: %#v", pulledMsg)
-			pulledMsg.Ack()
-			return
-		}
-
-		// // TODO: parse pubsub message for client
-		// type Mission_Create struct {
-		// 	MissionID			string 				`json:"missionID"`
-		// 	TCNum				string   			`json:"TCNum"`
-		// 	Asset				string   			`json:"asset"`
-		// 	RequestorID			string   			`json:"requestorID"`
-		// 	ReceiverID			string 			 	`json:"receiverID"`
-		// 	Priority			string 			 	`json:"priority"`
-		// 	// CallType			string 	 			`json:"callType"`
-		// 	Patient				*Patient 			`json:"patient"`
-		// 	CrewMemberID		[]string 			`json:"crewMemberID"`
-		// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
-		// }
-
-		// mission := &messages.Mission{
-		// 	Key:				"new-mission",
-		// 	Type:				msg.CallType,
-		// 	Status:				"",				// AircraftCreated, Aircraft Service Scheduled
-		// 	Vision:				"",				// Aircraft Service Scheduled -> should this come from there??
-		// 	NextWaypointETE: 	"",				// TODO: time.now() - msg.Waypoints[0].ETE
-		// 	Waypoints:			msg.Waypoints,
-		// 	FlightNum:			msg.TCNum,
-		// }
-		// missionDetail := &messages.MissionDetail{
-		// 	Key:				"new-mission-detail",
-		// 	Type:				msg.CallType,
-		// 	Status:				"",
-		// 	Vision:				"",
-		// }
-
-		// // to make go stop complaining
-		// log.Printf("mission: %v", mission)
-		// log.Printf("missionDetail: %v", missionDetail)
-
-	}
-
-func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update, 
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseWaypointUpdate(msg *messages.Waypoint, 
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseWaypointDelete(msg *messages.Waypoint_Delete,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseUserUpdate(msg *messages.User,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseUserDelete(msg *messages.User_Delete, 
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-func parseGroupUpdate(msg *messages.Group,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}	
-
-func parseGroupDelete(msg *messages.Group_Delete,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-
-	}
-
-
-// // parse data for delivery to client
-func clientParse(msg interface{}, pulledMsg *pubsub.Message,subName string, msgType string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
 		return
+	}
+
+	// // TODO: parse pubsub message for client
+	// type Mission_Create struct {
+	// 	MissionID			string 				`json:"missionID"`
+	// 	TCNum				string   			`json:"TCNum"`
+	// 	Asset				string   			`json:"asset"`
+	// 	RequestorID			string   			`json:"requestorID"`
+	// 	ReceiverID			string 			 	`json:"receiverID"`
+	// 	Priority			string 			 	`json:"priority"`
+	// 	CallType			string 	 			`json:"callType"`
+	// 	Patient				*Patient 			`json:"patient"`
+	// 	CrewMemberID		[]string 			`json:"crewMemberID"`
+	// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
+	// }
+
+	requestor := ""
+	receiver := ""
+	crewMembers := ""
+	var waypoints []*messages.ClientMissionWaypoint
+	// is raw MissionID what we want, or is it mapped?
+
+	if msg.RequestorID != "" {
+		reqRow, err := db.Query("SELECT requestor FROM Requestors WHERE requestorID=" + msg.RequestorID)
+		if err != nil {
+			fmt.Printf("Error querying MySQL for requestor: %v", err)
+		}
+		err = reqRow.Scan(&requestor)
+		if err != nil {
+			fmt.Printf("Error scanning requestor row: %v", err)
+			os.Exit(1)
+		}
+		msg.RequestorID = requestor
+	}
+	if msg.ReceiverID != "" {
+		recRow, err := db.Query("SELECT receiver FROM Receivers WHERE receivedID=" + msg.ReceiverID)
+		if err != nil {
+			fmt.Printf("Error querying MySQL for receiver: %v", err)
+		}
+		var receiver string
+		err = recRow.Scan(&receiver)
+		if err != nil {
+			fmt.Printf("Error scanning receiver row: %v", err)
+			os.Exit(1)
+		}
+		msg.ReceiverID = receiver
+	}
+	if len(msg.CrewMemberID) > 0 {
+		for _, memberID := range msg.CrewMemberID {
+			memRow, err := db.Query("SELECT member FROM Members WHERE memberID=" + memberID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for member: %v", err)
+			}
+			var member string
+			err = memRow.Scan(&member)
+			if err != nil {
+				fmt.Printf("Error scanning member row: %v", err)
+				os.Exit(1)
+			}
+			crewMembers += member + ","
+		}
+		crewMembers = strings.TrimSuffix(crewMembers, ",")
+	}
+	if len(msg.Waypoints) > 0 {
+		for _, waypoint := range msg.Waypoints {
+			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for waypoint: %v", err)
+			}
+			var wayPtName string
+			err = wayPtRow.Scan(&wayPtName)
+			if err != nil {
+				fmt.Printf("Error scanning waypoint row: %v", err)
+				os.Exit(1)
+			}
+			tempWayPt := &messages.ClientMissionWaypoint{
+				Name:   wayPtName,
+				ETE:    waypoint.ETE,
+				ETT:    waypoint.ETT,
+				Active: waypoint.Active,
+			}
+			waypoints = append(waypoints, tempWayPt)
+		}
+		crewMembers = strings.TrimSuffix(crewMembers, ",")
+	}
+
+	payload := &messages.Client_Mission_Create{
+		MissionID:   msg.MissionID,
+		TCNum:       msg.TCNum,
+		Asset:       msg.Asset,
+		Requestor:   requestor,
+		Receiver:    receiver,
+		Priority:    msg.Priority,
+		CallType:    msg.CallType,
+		Patient:     msg.Patient,
+		CrewMembers: crewMembers,
+		Waypoints:   waypoints,
+	}
+
+	toClient := &messages.ClientMsg{
+		Type:    msgType,
+		Payload: payload,
 	}
 
 	// TODO: send msg contents to websockets
@@ -543,6 +555,94 @@ func clientParse(msg interface{}, pulledMsg *pubsub.Message,subName string, msgT
 		return
 	}
 	notifier.Notify(send)
+}
 
-	log.Printf("Message type is: %v", msg)
+func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseWaypointUpdate(msg *messages.Waypoint,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseWaypointDelete(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseUserUpdate(msg *messages.User,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseUserDelete(msg *messages.User_Delete,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseGroupUpdate(msg *messages.Group,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+func parseGroupDelete(msg *messages.Group_Delete,
+	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+
+}
+
+// parse data for delivery to client
+func clientParse(msg interface{}, pulledMsg *pubsub.Message, subName string, msgType string, notifier *handlers.Notifier) {
+	log.Printf("This subscription is: %v", subName)
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse pubsub message into client struct
+	toClient := &messages.ClientMsg{
+		Type:    msgType,
+		Payload: msg,
+	}
+
+	// TODO: send msg contents to websockets
+	send, err := json.Marshal(toClient)
+	if err != nil {
+		log.Printf("PROBLEM marshaling json: %v", err)
+		pulledMsg.Ack()
+		return
+	}
+	notifier.Notify(send)
 }
