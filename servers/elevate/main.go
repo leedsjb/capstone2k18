@@ -330,10 +330,9 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		switch subName {
 		case "test_mission_create_sub":
 			msg := &messages.Mission_Create{}
-			parseMissionCreate(msg, pulledMsg, subName, notifier)
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			// clientParse(msg, pulledMsg, subName, notifier)
+			parseMissionCreate(msg, pulledMsg, subName, notifier)
 			// TODO: call sql sproc here
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
@@ -349,7 +348,7 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			msg := &messages.Waypoint{}
 			// notify client, client must update if necessary
 			parseWaypointUpdate(msg, pulledMsg, subName, notifier)
-			// call sql sproc
+			// TODO: call sql sproc
 		case "test_waypoint_delete_sub":
 			msg := &messages.Waypoint_Delete{}
 			parseWaypointDelete(msg, pulledMsg, subName, notifier)
@@ -442,25 +441,27 @@ func parseMissionCreate(msg *messages.Mission_Create,
 		// 	CrewMemberID		[]string 			`json:"crewMemberID"`
 		// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
 		// }
-		mission := &messages.Mission{
-			Key:				"mission",
-			Type:				msg.CallType,
-			Status:				"",				// AircraftCreated, Aircraft Service Scheduled
-			Vision:				"",				// Aircraft Service Scheduled -> should this come from there??
-			NextWaypointETE: 	"",				// TODO: time.now() - msg.Waypoints[0].ETE
-			Waypoints:			msg.Waypoints,
-			FlightNum:			msg.TCNum,
-		}
-		missionDetail := &messages.MissionDetail{
-			Key:				"mission-detail",
-			Type:				msg.CallType,
-			Status:				"",
-			Vision:				"",
-		}
 
-		// to make go stop complaining
-		log.Printf("mission: %v", mission)
-		log.Printf("missionDetail: %v", missionDetail)
+		// mission := &messages.Mission{
+		// 	Key:				"new-mission",
+		// 	Type:				msg.CallType,
+		// 	Status:				"",				// AircraftCreated, Aircraft Service Scheduled
+		// 	Vision:				"",				// Aircraft Service Scheduled -> should this come from there??
+		// 	NextWaypointETE: 	"",				// TODO: time.now() - msg.Waypoints[0].ETE
+		// 	Waypoints:			msg.Waypoints,
+		// 	FlightNum:			msg.TCNum,
+		// }
+		// missionDetail := &messages.MissionDetail{
+		// 	Key:				"new-mission-detail",
+		// 	Type:				msg.CallType,
+		// 	Status:				"",
+		// 	Vision:				"",
+		// }
+
+		// // to make go stop complaining
+		// log.Printf("mission: %v", mission)
+		// log.Printf("missionDetail: %v", missionDetail)
+
 	}
 
 func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
@@ -525,28 +526,23 @@ func parseGroupDelete(msg *messages.Group_Delete,
 
 
 // // parse data for delivery to client
-// func clientParse(msg interface{}, pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
-// 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
-// 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-// 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
-// 		log.Printf("Could not decode message data: %#v", pulledMsg)
-// 		pulledMsg.Ack()
-// 		return
-// 	}
+func clientParse(msg interface{}, pulledMsg *pubsub.Message,subName string, msgType string, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
 
-// 	// TODO: parse pubsub message into client struct
+	// TODO: send msg contents to websockets
+	send, err := json.Marshal(toClient)
+	if err != nil {
+		log.Printf("PROBLEM marshaling json: %v", err)
+		pulledMsg.Ack()
+		return
+	}
+	notifier.Notify(send)
 
-// 	// TODO: send msg contents to websockets
-// 	// add key to specify which type of client struct it is for easy reception on
-// 	// client-side
-// 	msg.Key = subName
-// 	send, err := json.Marshal(msg)
-// 	if err != nil {
-// 		log.Printf("PROBLEM marshaling json: %v", err)
-// 		pulledMsg.Ack()
-// 		return
-// 	}
-// 	notifier.Notify(send)
-
-// 	log.Printf("Message type is: %v", msg)
-// }
+	log.Printf("Message type is: %v", msg)
+}
