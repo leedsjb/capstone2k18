@@ -21,11 +21,16 @@ type Client_Mission_Create struct {
 	Priority    string                   `json:"priority"`
 	CallType    string                   `json:"callType"`
 	Patient     *Patient                 `json:"patient"`
-	CrewMembers string                   `json:"crewMemberID"`
+	CrewMembers string                   `json:"crewMembers"`
 	Waypoints   []*ClientMissionWaypoint `json:"waypoints"`
 }
 
 type Client_Mission_Waypoint_Update struct {
 	MissionID string                   `json:"missionID"`
 	Waypoints []*ClientMissionWaypoint `json:"waypoints"`
+}
+
+type Client_Mission_Crew_Update struct {
+	MissionID   string `json:"missionID"`
+	CrewMembers string `json:"crewMembers"`
 }

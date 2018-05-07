@@ -620,7 +620,58 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	// unmarshal json into correct struct
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
 
+	// TODO: parse pubsub message for client
+	// type Mission_Crew_Update struct {
+	// 	MissionID    string   `json:"missionID"`
+	// 	CrewMemberID []string `json:"crewMemberID"`
+	// }
+
+	crewMembers := ""
+
+	if len(msg.CrewMemberID) > 0 {
+		for _, memberID := range msg.CrewMemberID {
+			memRow, err := db.Query("SELECT member FROM Members WHERE memberID=" + memberID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for member: %v", err)
+			}
+			var member string
+			err = memRow.Scan(&member)
+			if err != nil {
+				fmt.Printf("Error scanning member row: %v", err)
+				os.Exit(1)
+			}
+			crewMembers += member + ","
+		}
+		crewMembers = strings.TrimSuffix(crewMembers, ",")
+	}
+
+	payload := &messages.Client_Mission_Crew_Update{
+		MissionID:   msg.MissionID,
+		CrewMembers: crewMembers,
+	}
+
+	toClient := &messages.ClientMsg{
+		Type:    msgType,
+		Payload: payload,
+	}
+
+	// TODO: send msg contents to websockets
+	send, err := json.Marshal(toClient)
+	if err != nil {
+		log.Printf("PROBLEM marshaling json: %v", err)
+		pulledMsg.Ack()
+		return
+	}
+	notifier.Notify(send)
 }
 
 func parseWaypointUpdate(msg *messages.Waypoint,
