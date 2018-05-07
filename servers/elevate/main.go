@@ -526,7 +526,6 @@ func parseMissionCreate(msg *messages.Mission_Create,
 			}
 			waypoints = append(waypoints, tempWayPt)
 		}
-		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
 
 	payload := &messages.Client_Mission_Create{
