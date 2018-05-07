@@ -558,62 +558,118 @@ func parseMissionCreate(msg *messages.Mission_Create,
 }
 
 func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	// unmarshal json into correct struct
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
 
+	// TODO: parse pubsub message for client
+	// type Mission_Waypoint_Update struct {
+	// 	MissionID		string 		`json:"missionID"`
+	// 	Waypoints		[]*Waypoint `json:"waypoints"`
+	// }
+
+	var waypoints []*messages.ClientMissionWaypoint
+
+	if len(msg.Waypoints) > 0 {
+		for _, waypoint := range msg.Waypoints {
+			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for waypoint: %v", err)
+			}
+			var wayPtName string
+			err = wayPtRow.Scan(&wayPtName)
+			if err != nil {
+				fmt.Printf("Error scanning waypoint row: %v", err)
+				os.Exit(1)
+			}
+			tempWayPt := &messages.ClientMissionWaypoint{
+				Name:   wayPtName,
+				ETE:    waypoint.ETE,
+				ETT:    waypoint.ETT,
+				Active: waypoint.Active,
+			}
+			waypoints = append(waypoints, tempWayPt)
+		}
+	}
+
+	payload := &messages.Client_Mission_Waypoint_Update{
+		MissionID: msg.MissionID,
+		Waypoints: waypoints,
+	}
+
+	toClient := &messages.ClientMsg{
+		Type:    msgType,
+		Payload: payload,
+	}
+
+	// TODO: send msg contents to websockets
+	send, err := json.Marshal(toClient)
+	if err != nil {
+		log.Printf("PROBLEM marshaling json: %v", err)
+		pulledMsg.Ack()
+		return
+	}
+	notifier.Notify(send)
 }
 
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseWaypointUpdate(msg *messages.Waypoint,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseWaypointDelete(msg *messages.Waypoint_Delete,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseUserUpdate(msg *messages.User,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseUserDelete(msg *messages.User_Delete,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseGroupUpdate(msg *messages.Group,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
 func parseGroupDelete(msg *messages.Group_Delete,
-	pulledMsg *pubsub.Message, subName string, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
