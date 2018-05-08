@@ -2,7 +2,7 @@ package messages
 
 // [PUB/SUB Messages]
 
-/* 
+/*
 User Create
 Topic ID: USR1
 Topic Name: user_create
@@ -14,20 +14,21 @@ Topic Name: user_update
 Description: Update existing user
 */
 type User struct {
-	ID					string `json:"ID"`
-    UserName			string `json:"userName"`
-    FirstName			string `json:"firstName"`
-    MiddleName			string `json:"middleName"`
-    LastName			string `json:"lastName"`
-    Initials			string `json:"initials"`
-    Email				string `json:"email"`
-    UWNetID				string `json:"UWNetID"`
-    GroupID				string `json:"groupID"`
-    Role				string `json:"role"`
-    CellPhone			string `json:"cellPhone"`
-    QualificationID		string `json:"qualificationID"`     
+	ID              string `json:"ID"`
+	UserName        string `json:"userName"`
+	FirstName       string `json:"firstName"`
+	MiddleName      string `json:"middleName"`
+	LastName        string `json:"lastName"`
+	Initials        string `json:"initials"`
+	Email           string `json:"email"`
+	UWNetID         string `json:"UWNetID"`
+	GroupID         string `json:"groupID"`
+	Role            string `json:"role"`
+	CellPhone       string `json:"cellPhone"`
+	QualificationID string `json:"qualificationID"`
 }
-/* 
+
+/*
 User Delete
 Topic ID: USR3
 Topic Name: user_delete
@@ -35,14 +36,13 @@ Description: Delete existing user
 FV Table: Users
 */
 type User_Delete struct {
-	ID		string `json:"ID"`
+	ID string `json:"ID"`
 }
 
 // [Client Messages]
 
 // Person ...
 type Person struct {
-	Key		 string `json:"key"`
 	ID       int    `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
@@ -51,7 +51,6 @@ type Person struct {
 
 // PersonDetail ...
 type PersonDetail struct {
-	Key		  	 string `json:"key"`
 	ID           int    `json:"id"`
 	FName        string `json:"fName"`
 	LName        string `json:"lName"`

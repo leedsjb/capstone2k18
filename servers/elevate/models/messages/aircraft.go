@@ -88,14 +88,12 @@ type Aircraft_Pos_Update struct {
 
 // OOS ...
 type OOS struct {
-	Key       string `json:"key"`
 	Reason    string `json:"reason"`
 	Remaining string `json:"remaining"`
 }
 
 // OOSDetail ...
 type OOSDetail struct {
-	Key       string `json:"key"`
 	Reason    string `json:"reason"`
 	Remaining string `json:"remaining"`
 	Duration  string `json:"duration"`
@@ -103,7 +101,6 @@ type OOSDetail struct {
 
 // Aircraft ...
 type Aircraft struct {
-	Key         string   `json:"key"`
 	ID          int      `json:"id"`
 	Status      string   `json:"status"`
 	Type        string   `json:"type"`
@@ -120,12 +117,11 @@ type Aircraft struct {
 
 // AircraftDetail ...
 type AircraftDetail struct {
-	Key         string         `json:"key"`
 	ID          int            `json:"id"`
 	Status      string         `json:"status"`
 	Type        string         `json:"type"`
 	Callsign    string         `json:"callsign"`
-	Crew        *GroupDetail   `json:"crew"`
+	Crew        string         `json:"crew"`
 	LevelOfCare string         `json:"levelOfCare"`
 	Class       string         `json:"class"`
 	Lat         float32        `json:"lat"`

@@ -34,6 +34,7 @@ type Mission_Create struct {
 	ReceiverID   string             `json:"receiverID"`
 	Priority     string             `json:"priority"`
 	CallType     string             `json:"callType"`
+	Vision       string             `json:"vision"`
 	Patient      *Patient           `json:"patient"`
 	CrewMemberID []string           `json:"crewMemberID"`
 	Waypoints    []*MissionWaypoint `json:"waypoints"`
@@ -65,7 +66,6 @@ type Mission_Crew_Update struct {
 
 // Mission ...
 type Mission struct {
-	Key             string             `json:"key"`
 	Type            string             `json:"type"`
 	Status          string             `json:"status"`
 	Vision          string             `json:"vision"`
@@ -76,7 +76,6 @@ type Mission struct {
 
 // MissionDetail ...
 type MissionDetail struct {
-	Key             string             `json:"key"`
 	Type            string             `json:"type"`
 	Status          string             `json:"status"`
 	Vision          string             `json:"vision"`

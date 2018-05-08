@@ -15,9 +15,9 @@ Description: Add or delete member, change group name
 FV Table: UserGroup/GroupOfUsers/PagableGroups?
 */
 type Group struct {
-	ID			string   `json:"ID"`
-    Name		string   `json:"Name"`
-    Members		[]string `json:"members"`
+	ID      string   `json:"ID"`
+	Name    string   `json:"Name"`
+	Members []string `json:"members"`
 }
 
 /*
@@ -28,14 +28,13 @@ Description: Delete existing group
 FV Table: UserGroup/GroupOfUsers/PagableGroups?
 */
 type Group_Delete struct {
-    ID		string `json:"ID"`
+	ID string `json:"ID"`
 }
 
 // [Client Messages]
 
 // Group ...
 type ClientGroup struct {
-	Key		  	  string `json:"key"`
 	ID            int    `json:"id"`
 	Name          string `json:"name"`
 	PeoplePreview string `json:"peoplePreview"`
@@ -43,7 +42,6 @@ type ClientGroup struct {
 
 // GroupDetail ...
 type GroupDetail struct {
-	Key		  	  string    `json:"key"`
 	ID            int       `json:"id"`
 	Name          string    `json:"name"`
 	PeoplePreview string    `json:"peoplePreview"`

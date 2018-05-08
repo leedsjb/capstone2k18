@@ -366,23 +366,24 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			// msgType := "aircraft-props-update"
 			// TODO: call sql sproc
 
-		// TODO: figure out how to connect these updates to relevant aircraft
+		// [PENDING]: Wait for Brian to add ID to these actions
+		case "test_ac_crew_update_sub":
+			msg := &messages.Aircraft_Crew_Update{}
+			msgType := "aircraft-crew-update"
+			parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			// TODO: call sql sproc
+		case "test_ac_service_schedule_sub":
+			msg := &messages.Aircraft_Service_Schedule{}
+			msgType := "aircraft-service-schedule"
+			parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
+			// TODO: call sql sproc
+		case "test_ac_position_update_sub":
+			msg := &messages.Aircraft_Pos_Update{}
+			msgType := "aircraft-position-update"
+			parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			// TODO: call sql sproc
+		//[END PENDING]
 
-		// case "test_ac_crew_update_sub":
-		// 	msg := &messages.Aircraft_Crew_Update{}
-		// 	msgType := "aircraft-crew-update"
-		// 	parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
-		// 	// TODO: call sql sproc
-		// case "test_ac_service_schedule_sub":
-		// 	msg := &messages.Aircraft_Service_Schedule{}
-		// 	msgType := "aircraft-service-schedule"
-		// 	parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
-		// 	// TODO: call sql sproc
-		// case "test_ac_position_update_sub":
-		// 	msg := &messages.Aircraft_Pos_Update{}
-		// 	msgType := "aircraft-position-update"
-		// 	parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
-		// 	// TODO: call sql sproc
 		case "test_user_create_sub":
 			// msg := &messages.User{}
 			// msgType := "user-create"
@@ -430,6 +431,7 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 	}
 }
 
+// assume Mission_Create topic comes with all information
 func parseMissionCreate(msg *messages.Mission_Create,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
@@ -442,23 +444,13 @@ func parseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	// parse pubsub message for client
-	// type Mission_Create struct {
-	// 	MissionID			string 				`json:"missionID"`
-	// 	TCNum				string   			`json:"TCNum"`
-	// 	Asset				string   			`json:"asset"`
-	// 	RequestorID			string   			`json:"requestorID"`
-	// 	ReceiverID			string 			 	`json:"receiverID"`
-	// 	Priority			string 			 	`json:"priority"`
-	// 	CallType			string 	 			`json:"callType"`
-	// 	Patient				*Patient 			`json:"patient"`
-	// 	CrewMemberID		[]string 			`json:"crewMemberID"`
-	// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
-	// }
 
 	requestor := ""
 	receiver := ""
 	crewMembers := ""
-	var waypoints []*messages.ClientMissionWaypoint
+	var waypoints []*messages.MissionWaypoint
+	nextWaypointETE := ""
+	status := "pending" // assume new mission is pending
 	// is raw MissionID what we want, or is it mapped?
 
 	if msg.RequestorID != "" {
@@ -503,7 +495,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
 	if len(msg.Waypoints) > 0 {
-		for _, waypoint := range msg.Waypoints {
+		for i, waypoint := range msg.Waypoints {
 			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
@@ -520,36 +512,61 @@ func parseMissionCreate(msg *messages.Mission_Create,
 				ETT:    waypoint.ETT,
 				Active: waypoint.Active,
 			}
-			waypoints = append(waypoints, tempWayPt)
+			if strings.ToLower(tempWayPt.Active) == "true" {
+				nextWaypointETE = tempWayPt.ETE
+				status = "ongoing" // if any waypoints active, mission must be active
+			}
 		}
 	}
 
-	payload := &messages.Client_Mission_Create{
-		MissionID:   msg.MissionID,
-		TCNum:       msg.TCNum,
-		Asset:       msg.Asset,
-		Requestor:   requestor,
-		Receiver:    receiver,
-		Priority:    msg.Priority,
-		CallType:    msg.CallType,
-		Patient:     msg.Patient,
-		CrewMembers: crewMembers,
-		Waypoints:   waypoints,
+	// type Mission_Create struct {
+	// 	MissionID			string 				`json:"missionID"`
+	// 	TCNum				string   			`json:"TCNum"`
+	// 	Asset				string   			`json:"asset"`
+	// 	RequestorID			string   			`json:"requestorID"`
+	// 	ReceiverID			string 			 	`json:"receiverID"`
+	// 	Priority			string 			 	`json:"priority"`
+	// 	CallType			string 	 			`json:"callType"`
+	// 	Patient				*Patient 			`json:"patient"`
+	// 	CrewMemberID		[]string 			`json:"crewMemberID"`
+	// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
+	// }
+
+	mission := &messages.Mission{
+		Type:            msg.CallType,
+		Vision:          msg.Vision,
+		NextWaypointETE: nextWaypointETE,
+		Waypoints:       waypoints,
+		FlightNum:       msg.TCNum,
 	}
 
-	toClient := &messages.ClientMsg{
-		Type:    msgType,
-		Payload: payload,
+	aircraft := &messages.Aircraft{
+		Status:   "on a mission", // assume aircraft assigned to mission is on that mission
+		Callsign: msg.Asset,
+		Mission:  mission,
 	}
 
-	// send msg contents to websockets
-	send, err := json.Marshal(toClient)
-	if err != nil {
-		log.Printf("PROBLEM marshaling json: %v", err)
-		pulledMsg.Ack()
-		return
+	missionDetail := &messages.MissionDetail{
+		Type:            msg.CallType,
+		Status:          status,
+		Vision:          msg.Vision,
+		NextWaypointETE: nextWaypointETE,
+		Waypoints:       waypoints,
+		FlightNum:       msg.TCNum,
+		RadioReport:     msg.Patient,
+		Requestor:       requestor,
+		Receiver:        receiver,
 	}
-	notifier.Notify(send)
+
+	aircraftDetail := &messages.AircraftDetail{
+		Status:   "on a mission",
+		Callsign: msg.Asset,
+		Crew:     crewMembers,
+		Mission:  missionDetail,
+	}
+
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
 func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
