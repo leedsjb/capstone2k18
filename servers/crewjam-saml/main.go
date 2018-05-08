@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/crewjam/saml/samlsp"
 )
@@ -23,18 +24,42 @@ func hello(w http.ResponseWriter, r *http.Request) {
 */
 
 func main() {
-	fmt.Println("crewjam")
 
-	// "/etc/letsencrypt/live/crewjam-sale.test.emeloid.co/fullchain.pem"
-	// "/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/privkey.pem"
+	PWD := os.Getenv("PWD")
 
-	keyPair, err := tls.LoadX509KeyPair(
-		"/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/fullchain.pem",
-		"/etc/letsencrypt/live/crewjam-saml.test.emeloid.co/privkey.pem")
+	ENV := os.Getenv("environment")
 
+	if ENV == "" {
+		panic("error: set environment environment variable")
+	}
+
+	var tlscert string
+	var tlskey string
+	var host string
+	var port string
+
+	if ENV == "local-dev" { // local dev
+		tlscert = PWD + "/tls/fullchain1.pem"
+		tlskey = PWD + "/tls/privkey1.pem"
+		host = ""
+		port = "4430"
+	} else if ENV == "local-docker-dev" {
+		tlscert = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/fullchain1.pem"
+		tlskey = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/privkey1.pem"
+		host = ""
+		port = "443"
+	} else if ENV == "do" { // digital ocean
+		tlscert = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/fullchain.pem"
+		tlskey = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/privkey.pem"
+		host = ""
+		port = "443"
+	}
+
+	keyPair, err := tls.LoadX509KeyPair(tlscert, tlskey)
 	if err != nil {
 		panic(err)
 	}
+
 	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
 	if err != nil {
 		panic(err)
@@ -44,7 +69,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rootURL, err := url.Parse("http://crewjam-saml.test.emeloid.co")
+	rootURL, err := url.Parse("https://crewjam-saml.test.elevate.emeloid.co")
 	if err != nil {
 		panic(err)
 	}
@@ -59,5 +84,14 @@ func main() {
 	app := http.HandlerFunc(hello)                    // define function to call for requests to http endpoint
 	http.Handle("/hello", samlSP.RequireAccount(app)) // direct requests to /hello to app
 	http.Handle("/saml/", samlSP)                     // direct requests to the /saml/ route to samlSP
-	http.ListenAndServe(":8000", nil)                 // 2nd arg: handler, nil -> default serve mux
+	// http.ListenAndServe(":80", nil)                   // 2nd arg: handler, nil -> default serve mux
+
+	addr := host + ":" + port
+	fmt.Println("current set addr is : " + addr)
+	lstlsErr := http.ListenAndServeTLS(addr, tlscert, tlskey, nil)
+	if lstlsErr != nil {
+		panic(lstlsErr)
+	}
+
+	fmt.Println("crewjam listening on port 443")
 }
