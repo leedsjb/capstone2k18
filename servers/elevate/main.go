@@ -345,36 +345,29 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			parseMissionCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 		case "test_waypoint_create_sub":
 			// msg := &messages.Waypoint{}
-			// don't need to notify client. single waypoint has no context in app
 			log.Printf("no current action: %v", subName)
 			// TODO: just call sql sproc
 		case "test_waypoint_update_sub":
 			// msg := &messages.Waypoint{}
 			// msgType := "waypoint-update"
-			// don't notify client? mission waypoints update separately,
-			// and don't need the detail of a single waypoint
-			// seems like this would be for sake of storing in db
 			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_waypoint_delete_sub":
 			// msg := &messages.Waypoint_Delete{}
 			// msgType := "waypoint-delete"
-			// don't notify client? deleted waypoint should also be
-			// reflected in mission_waypoint_update
 			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_aircraft_create_sub":
-			msg := &messages.Aircraft_Create{}
-			msgType := "aircraft-create"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
-			// call sproc
+			// msg := &messages.Aircraft_Create{}
+			// msgType := "aircraft-create"
+			// TODO: call sql sproc
 		case "test_ac_properties_update_sub":
-			msg := &messages.Aircraft_Props_Update{}
-			msgType := "aircraft-props-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Aircraft_Props_Update{}
+			// msgType := "aircraft-props-update"
 			// TODO: call sql sproc
 
 		// TODO: figure out how to connect these updates to relevant aircraft
+
 		// case "test_ac_crew_update_sub":
 		// 	msg := &messages.Aircraft_Crew_Update{}
 		// 	msgType := "aircraft-crew-update"
@@ -391,34 +384,34 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		// 	parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
 		// 	// TODO: call sql sproc
 		case "test_user_create_sub":
-			msg := &messages.User{}
-			msgType := "user-create"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.User{}
+			// msgType := "user-create"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_user_update_sub":
-			msg := &messages.User{}
-			msgType := "user-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.User{}
+			// msgType := "user-update"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_user_delete_sub":
-			msg := &messages.User_Delete{}
-			msgType := "user-delete"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.User_Delete{}
+			// msgType := "user-delete"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_group_create_sub":
-			msg := &messages.Group{}
-			msgType := "group-create"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Group{}
+			// msgType := "group-create"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sqp sproc
 		case "test_group_update_sub":
-			msg := &messages.Group{}
-			msgType := "group-update"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Group{}
+			// msgType := "group-update"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		case "test_group_delete_sub":
-			msg := &messages.Group_Delete{}
-			msgType := "group-delete"
-			clientParse(msg, pulledMsg, subName, msgType, notifier)
+			// msg := &messages.Group_Delete{}
+			// msgType := "group-delete"
+			log.Printf("no current action: %v", subName)
 			// TODO: call sql sproc
 		default:
 			log.Printf("not a valid subscription type")
