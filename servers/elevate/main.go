@@ -333,16 +333,16 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			msgType := "mission-create"
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			parseMissionCreate(msg, pulledMsg, subName, msgType, db, notifier)
+			parseMissionCreate(msg, pulledMsg, msgType, db, notifier)
 			// TODO: call sql sproc here
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
 			msgType := "mission-waypoints-update"
-			parseMissionWaypointsUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			parseMissionWaypointsUpdate(msg, pulledMsg, msgType, db, notifier)
 		case "test_mission_crew_update_sub":
 			msg := &messages.Mission_Crew_Update{}
 			msgType := "mission-crew-update"
-			parseMissionCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			parseMissionCrewUpdate(msg, pulledMsg, msgType, db, notifier)
 		case "test_waypoint_create_sub":
 			// msg := &messages.Waypoint{}
 			log.Printf("no current action: %v", subName)
@@ -431,7 +431,7 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 }
 
 func parseMissionCreate(msg *messages.Mission_Create,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -553,7 +553,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 }
 
 func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -614,7 +614,7 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 }
 
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -669,59 +669,8 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	notifier.Notify(send)
 }
 
-// func parseWaypointUpdate(msg *messages.Waypoint,
-// 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-// 	// unmarshal json into correct struct
-// 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
-// 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-// 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
-// 		log.Printf("Could not decode message data: %#v", pulledMsg)
-// 		pulledMsg.Ack()
-// 		return
-// 	}
-
-// 	// parse pubsub message for client
-// 	toClient := &messages.ClientMsg{
-// 		Type:    msgType,
-// 		Payload: msg,
-// 	}
-
-// 	// send msg contents to websockets
-// 	send, err := json.Marshal(toClient)
-// 	if err != nil {
-// 		log.Printf("PROBLEM marshaling json: %v", err)
-// 		pulledMsg.Ack()
-// 		return
-// 	}
-// 	notifier.Notify(send)
-// }
-
-// func parseWaypointDelete(msg *messages.Waypoint_Delete,
-// 	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-// }
-
-// TODO: figure out how to connect these updates to relevant aircraft
-func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-// TODO: figure out how to connect these updates to relevant aircraft
-func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-// TODO: figure out how to connect these updates to relevant aircraft
-func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, subName string, msgType string, db *sql.DB, notifier *handlers.Notifier) {
-
-}
-
-// parse data for delivery to client
-func clientParse(msg interface{}, pulledMsg *pubsub.Message, subName string, msgType string, notifier *handlers.Notifier) {
-	log.Printf("This subscription is: %v", subName)
+func parseWaypointUpdate(msg *messages.Waypoint,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -732,14 +681,63 @@ func clientParse(msg interface{}, pulledMsg *pubsub.Message, subName string, msg
 	}
 
 	log.Printf("Message contents: %#v", msg)
+}
 
+func parseWaypointDelete(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+}
+
+// TODO: figure out how to connect these updates to relevant aircraft
+func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// TODO: figure out how to connect these updates to relevant aircraft
+func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// TODO: figure out how to connect these updates to relevant aircraft
+func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parse data for delivery
+func parse(msg interface{}, pulledMsg *pubsub.Message, msgType string) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+}
+
+// send message to client
+func clientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message, notifier *handlers.Notifier) {
 	// TODO: parse pubsub message into client struct
 	toClient := &messages.ClientMsg{
 		Type:    msgType,
 		Payload: msg,
 	}
 
-	// TODO: send msg contents to websockets
+	// send msg contents to websockets
 	send, err := json.Marshal(toClient)
 	if err != nil {
 		log.Printf("PROBLEM marshaling json: %v", err)

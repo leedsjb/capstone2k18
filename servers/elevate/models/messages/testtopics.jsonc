@@ -23,6 +23,7 @@ Description: New mission created
         "GIBleed": "false",
         "OB": "false",
     },
+    "vision": "VFR",
     "crewMemberID": [                       // stringify -> ClientGroup.PeoplePreview
             "personID1",                    // AircraftDetail.GroupDetail.PeoplePreview
             "personID2",                    // AircraftDetail.GroupDetail.People []*Person
