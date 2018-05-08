@@ -581,15 +581,14 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	}
 
 	// parse pubsub message for client
-	// type Mission_Waypoint_Update struct {
-	// 	MissionID		string 		`json:"missionID"`
-	// 	Waypoints		[]*Waypoint `json:"waypoints"`
-	// }
 
 	var waypoints []*messages.ClientMissionWaypoint
+	nextWaypointETE := ""
+	status := "completed" // assume if waypoints are updated and none are active, mission complete
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
+			// TODO: Fix SQL query
 			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
@@ -606,28 +605,103 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 				ETT:    waypoint.ETT,
 				Active: waypoint.Active,
 			}
+			if strings.ToLower(tempWayPt.Active) == "true" {
+				nextWaypointETE = tempWayPt.ETE
+				status = "ongoing" // if any waypoints active, mission must be active
+			}
 			waypoints = append(waypoints, tempWayPt)
 		}
 	}
 
-	payload := &messages.Client_Mission_Waypoint_Update{
-		MissionID: msg.MissionID,
-		Waypoints: waypoints,
-	}
+	// Mission ...
+	// type Mission struct {
+	// 	Type            string             `json:"type"`
+	// 	Status          string             `json:"status"`
+	// 	Vision          string             `json:"vision"`
+	// 	NextWaypointETE string             `json:"nextWaypointETE"`
+	// 	Waypoints       []*MissionWaypoint `json:"waypoints"`
+	// 	FlightNum       string             `json:"flightNum"`
+	// }
 
-	toClient := &messages.ClientMsg{
-		Type:    msgType,
-		Payload: payload,
-	}
+	// // MissionDetail ...
+	// type MissionDetail struct {
+	// 	Type            string             `json:"type"`
+	// 	Status          string             `json:"status"`
+	// 	Vision          string             `json:"vision"`
+	// 	NextWaypointETE string             `json:"nextWaypointETE"`
+	// 	Waypoints       []*MissionWaypoint `json:"waypoints"`
+	// 	FlightNum       string             `json:"flightNum"`
+	// 	RadioReport     *Patient           `json:"radioReport"`
+	// 	Requestor       string             `json:"requestor"`
+	// 	Receiver        string             `json:"receiver"`
+	// }
 
-	// send msg contents to websockets
-	send, err := json.Marshal(toClient)
+	// type Mission_Waypoint_Update struct {
+	// 	MissionID		string 		`json:"missionID"`
+	// 	Waypoints		[]*Waypoint `json:"waypoints"`
+	// }
+
+	// get mission from db using missionID
+	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + msg.MissionID)
 	if err != nil {
-		log.Printf("PROBLEM marshaling json: %v", err)
-		pulledMsg.Ack()
-		return
+		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
 	}
-	notifier.Notify(send)
+	var aircraftCallsign string
+	err = aircraftRow.Scan(&aircraftCallsign)
+	if err != nil {
+		fmt.Printf("Error scanning aircraft row: %v", err)
+		os.Exit(1)
+	}
+
+	mission := &messages.Mission{
+		NextWaypointETE: nextWaypointETE,
+		Waypoints:       waypoints,
+	}
+
+	aircraft := &messages.Aircraft{
+		Status:   "on a mission", // assume aircraft assigned to mission is on that mission
+		Callsign: aircraftCallsign,
+		Mission:  mission,
+	}
+
+	// missionDetail := &messages.MissionDetail{
+	// 	Status:          status,
+	// 	NextWaypointETE: nextWaypointETE,
+	// 	Waypoints:       waypoints,
+	// 	FlightNum:       msg.TCNum,   // TODO: won't have this, fix
+	// 	RadioReport:     msg.Patient,
+	// 	Requestor:       requestor,
+	// 	Receiver:        receiver,
+	// }
+
+	// aircraftDetail := &messages.AircraftDetail{
+	// 	Status:   "on a mission",
+	// 	Callsign: msg.Asset,
+	// 	Crew:     crewMembers,
+	// 	Mission:  missionDetail,
+	// }
+
+	// clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
+	// clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+
+	// payload := &messages.Client_Mission_Waypoint_Update{
+	// 	MissionID: msg.MissionID,
+	// 	Waypoints: waypoints,
+	// }
+
+	// toClient := &messages.ClientMsg{
+	// 	Type:    msgType,
+	// 	Payload: payload,
+	// }
+
+	// // send msg contents to websockets
+	// send, err := json.Marshal(toClient)
+	// if err != nil {
+	// 	log.Printf("PROBLEM marshaling json: %v", err)
+	// 	pulledMsg.Ack()
+	// 	return
+	// }
+	// notifier.Notify(send)
 }
 
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
