@@ -110,8 +110,8 @@ type Aircraft struct {
 	Callsign    string   `json:"callsign"`
 	LevelOfCare string   `json:"levelOfCare"`
 	Class       string   `json:"class"`
-	Lat         float32  `json:"lat"`
-	Long        float32  `json:"long"`
+	Lat         string   `json:"lat"`
+	Long        string   `json:"long"`
 	Area        string   `json:"area"`
 	NNum        string   `json:"nNum"`
 	Mission     *Mission `json:"mission"`
@@ -127,8 +127,8 @@ type AircraftDetail struct {
 	Crew        string         `json:"crew"`
 	LevelOfCare string         `json:"levelOfCare"`
 	Class       string         `json:"class"`
-	Lat         float32        `json:"lat"`
-	Long        float32        `json:"long"`
+	Lat         string         `json:"lat"`
+	Long        string         `json:"long"`
 	Area        string         `json:"area"`
 	NNum        string         `json:"nNum"`
 	Mission     *MissionDetail `json:"mission"`

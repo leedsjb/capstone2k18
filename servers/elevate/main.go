@@ -853,6 +853,33 @@ func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 	// 	PosLong         string `json:"posLong"`
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
+
+	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT WHERE ac_id=" + msg.ID)
+	if err != nil {
+		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
+	}
+	var aircraftCallsign string
+	err = aircraftRow.Scan(&aircraftCallsign)
+	if err != nil {
+		fmt.Printf("Error getting aircraft callsign: %v", err)
+	}
+
+	aircraft := &messages.Aircraft{
+		Callsign: aircraftCallsign,
+		Lat:      msg.PosLat,
+		Long:     msg.PosLong,
+		Area:     msg.PosFriendlyName,
+	}
+
+	aircraftDetail := &messages.AircraftDetail{
+		Callsign: aircraftCallsign,
+		Lat:      msg.PosLat,
+		Long:     msg.PosLong,
+		Area:     msg.PosFriendlyName,
+	}
+
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
 // parseUserCreate handles the creation of a new user in
