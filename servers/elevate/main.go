@@ -624,6 +624,30 @@ func parseWaypointCreate(msg *messages.Waypoint,
 	}
 
 	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write for sql sproc
+	// type Waypoint struct {
+	// 	ID					string 	 `json:"ID"`
+	// 	Notes				string 	 `json:"notes"`
+	// 	Name				string 	 `json:"name"`
+	// 	Type				string 	 `json:"type"`
+	// 	Address1			string 	 `json:"address1"`
+	// 	Address2			string 	 `json:"address2"`
+	// 	Country				string 	 `json:"country"`
+	// 	State				string 	 `json:"state"`
+	// 	County				string 	 `json:"county"`
+	// 	City				string 	 `json:"city"`
+	// 	Zip					string 	 `json:"zip"`
+	// 	Lat					string 	 `json:"lat"`
+	// 	Long				string 	 `json:"long"`
+	// 	GPSWaypoint			string 	 `json:"GPSWaypoint"`
+	// 	AirportIdentifier 	string 	 `json:"AirportIdentifier"`
+	// 	Phone				[]string `json:"phone"`
+	// 	ShortCode			string	 `json:"shortCode"`
+	// 	PadTime				string	 `json:"padTime"`
+	// 	RadioChannels		[]string `json:"radioChannels"`
+	// 	NOTAMS				string   `json:"NOTAMS"`
+	// }
 }
 
 // parseWaypointUpdate handles the modification of persistent waypoints
@@ -641,6 +665,30 @@ func parseWaypointUpdate(msg *messages.Waypoint,
 	}
 
 	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Waypoint struct {
+	// 	ID					string 	 `json:"ID"`
+	// 	Notes				string 	 `json:"notes"`
+	// 	Name				string 	 `json:"name"`
+	// 	Type				string 	 `json:"type"`
+	// 	Address1			string 	 `json:"address1"`
+	// 	Address2			string 	 `json:"address2"`
+	// 	Country				string 	 `json:"country"`
+	// 	State				string 	 `json:"state"`
+	// 	County				string 	 `json:"county"`
+	// 	City				string 	 `json:"city"`
+	// 	Zip					string 	 `json:"zip"`
+	// 	Lat					string 	 `json:"lat"`
+	// 	Long				string 	 `json:"long"`
+	// 	GPSWaypoint			string 	 `json:"GPSWaypoint"`
+	// 	AirportIdentifier 	string 	 `json:"AirportIdentifier"`
+	// 	Phone				[]string `json:"phone"`
+	// 	ShortCode			string	 `json:"shortCode"`
+	// 	PadTime				string	 `json:"padTime"`
+	// 	RadioChannels		[]string `json:"radioChannels"`
+	// 	NOTAMS				string   `json:"NOTAMS"`
+	// }
 }
 
 // parseWaypointDelete handles the deletion of persistent waypoints
@@ -658,16 +706,74 @@ func parseWaypointDelete(msg *messages.Waypoint_Delete,
 	}
 
 	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Waypoint_Delete struct {
+	// 	ID		string `json:"ID"`
+	// }
 }
 
 func parseAircraftCreate(msg *messages.Waypoint_Delete,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Aircraft_Create struct {
+	// 	ID                string   `json:"ID"`
+	// 	NNum              string   `json:"nNum"`
+	// 	SatPhone          string   `json:"satPhone"`
+	// 	CellPhone         string   `json:"cellPhone"`
+	// 	Base              string   `json:"baseID"`
+	// 	Callsign          string   `json:"callsign"`
+	// 	MaxPatientWeight  string   `json:"maxPatientWeight"`
+	// 	PadTimeDay        string   `json:"padTimeDay"`
+	// 	PadTimeNight      string   `json:"padTimeNight"`
+	// 	Vendor            string   `json:"vendor"`
+	// 	Status            string   `json:"status"`
+	// 	SpecialEquipment  string   `json:"specialEquipment"`
+	// 	Color             string   `json:"color"`
+	// 	LastKnownLocation string   `json:"lastKnownLocation"`
+	// 	Model             string   `json:"model"`
+	// 	CallTypes         []string `json:"callTypes"`
+	// }
 
 }
 
 func parseAircraftPropsUpdate(msg *messages.Waypoint_Delete,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Aircraft_Props_Update struct {
+	// 	ID               string `json:"ID"`
+	// 	SatPhone         string `json:"satPhone"`
+	// 	CellPhone        string `json:"cellPhone"`
+	// 	Base             string `json:"base"`
+	// 	Callsign         string `json:"callsign"`
+	// 	MaxPatientWeight string `json:"maxPatientWeight"`
+	// 	PadTimeDay       string `json:"padTimeDay"`
+	// 	PadTimeNight     string `json:"padTimeNight"`
+	// 	Vendor           string `json:"vendor"`
+	// 	SpecialEquipment string `json:"specialEquipment"`
+	// }
 }
 
 // PENDING: Brian add "id" to message
@@ -676,7 +782,24 @@ func parseAircraftPropsUpdate(msg *messages.Waypoint_Delete,
 // does not notify client, writes new info to db
 func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Aircraft_Crew_Update struct {
+	// 	ID          string `json:"ID"`
+	// 	PIC         string `json:"PIC"`
+	// 	AdultRN     string `json:"adultRN"`
+	// 	PediatricRN string `json:"pediatricRN"`
+	// }
 }
 
 // PENDING: Brian add "id" to message
@@ -685,7 +808,25 @@ func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 // does not notify client, writes new info to db
 func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Aircraft_Service_Schedule struct {
+	// 	ID        string `json:"ID"`
+	// 	OosReason string `json:"oosReason"`
+	// 	StartTime string `json:"startTime"`
+	// 	EndTime   string `json:"endTime"`
+	// 	Status    string `json:"status"`
+	// }
 }
 
 // PENDING: Brian add "id" to message
@@ -694,7 +835,24 @@ func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
 // notifies client, writes new info to db
 func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Aircraft_Pos_Update struct {
+	// 	ID              string `json:"ID"`
+	// 	PosLat          string `json:"posLat"`
+	// 	PosLong         string `json:"posLong"`
+	// 	PosFriendlyName string `json:"posFriendlyName"`
+	// }
 }
 
 // parseUserCreate handles the creation of a new user in
@@ -702,7 +860,32 @@ func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseUserCreate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type User struct {
+	// 	ID              string `json:"ID"`
+	// 	UserName        string `json:"userName"`
+	// 	FirstName       string `json:"firstName"`
+	// 	MiddleName      string `json:"middleName"`
+	// 	LastName        string `json:"lastName"`
+	// 	Initials        string `json:"initials"`
+	// 	Email           string `json:"email"`
+	// 	UWNetID         string `json:"UWNetID"`
+	// 	GroupID         string `json:"groupID"`
+	// 	Role            string `json:"role"`
+	// 	CellPhone       string `json:"cellPhone"`
+	// 	QualificationID string `json:"qualificationID"`
+	// }
 }
 
 // parseUserUpdate handles modifications to a user in
@@ -710,7 +893,32 @@ func parseUserCreate(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseUserUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type User struct {
+	// 	ID              string `json:"ID"`
+	// 	UserName        string `json:"userName"`
+	// 	FirstName       string `json:"firstName"`
+	// 	MiddleName      string `json:"middleName"`
+	// 	LastName        string `json:"lastName"`
+	// 	Initials        string `json:"initials"`
+	// 	Email           string `json:"email"`
+	// 	UWNetID         string `json:"UWNetID"`
+	// 	GroupID         string `json:"groupID"`
+	// 	Role            string `json:"role"`
+	// 	CellPhone       string `json:"cellPhone"`
+	// 	QualificationID string `json:"qualificationID"`
+	// }
 }
 
 // parseUserDelete handles the deletion of a user from
@@ -718,7 +926,21 @@ func parseUserUpdate(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseUserDelete(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type User_Delete struct {
+	// 	ID string `json:"ID"`
+	// }
 }
 
 // parseGroupCreate handles the creation of a new group in
@@ -726,7 +948,23 @@ func parseUserDelete(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseGroupCreate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Group struct {
+	// 	ID      string   `json:"ID"`
+	// 	Name    string   `json:"Name"`
+	// 	Members []string `json:"members"`
+	// }
 }
 
 // parseGroupUpdate handles modifications to a group in
@@ -734,7 +972,23 @@ func parseGroupCreate(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseGroupUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Group struct {
+	// 	ID      string   `json:"ID"`
+	// 	Name    string   `json:"Name"`
+	// 	Members []string `json:"members"`
+	// }
 }
 
 // parseGroupDelete handles the deletion of a group from
@@ -742,7 +996,21 @@ func parseGroupUpdate(msg *messages.Aircraft_Pos_Update,
 // does not notify client, writes new info to db
 func parseGroupDelete(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+
+	// TODO: parse and write to sql sproc
+	// type Group_Delete struct {
+	// 	ID string `json:"ID"`
+	// }
 }
 
 // TODO: may not work with strongly typed messages
