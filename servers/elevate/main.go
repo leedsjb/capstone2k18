@@ -495,7 +495,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
 	if len(msg.Waypoints) > 0 {
-		for i, waypoint := range msg.Waypoints {
+		for _, waypoint := range msg.Waypoints {
 			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
@@ -620,24 +620,23 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 
 	// [START format aircraft]
 	// get mission from db using missionID
-	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + msg.MissionID)
+	aircraftCallsign, err := getAircraftCallsign(msg.MissionID, db)
 	if err != nil {
-		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
-	}
-	var aircraftCallsign string
-	err = aircraftRow.Scan(&aircraftCallsign)
-	if err != nil {
-		fmt.Printf("Error scanning aircraft row: %v", err)
-		os.Exit(1)
+		fmt.Printf("Error getting aircraftCallsign: %v", err)
+		// TODO: continue with empty aircraft callsign?
 	}
 
+	aircraftStatus := "on a mission"
+	if status == "completed" {
+		aircraftStatus = "available"
+	} // TODO: adjust to match aircraft status terms
 	mission := &messages.Mission{
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 	}
 
 	aircraft := &messages.Aircraft{
-		Status:   "on a mission", // assume aircraft assigned to mission is on that mission
+		Status:   aircraftStatus, // assume aircraft assigned to mission is on that mission
 		Callsign: aircraftCallsign,
 		Mission:  mission,
 	}
@@ -661,11 +660,6 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		Waypoints:       waypoints,
 		FlightNum:       tcNum,
 	}
-
-	aircraftStatus := "on a mission"
-	if status == "completed" {
-		aircraftStatus = "available"
-	} // TODO: adjust to match aircraft status terms
 
 	aircraftDetail := &messages.AircraftDetail{
 		Status:   aircraftStatus,
@@ -714,24 +708,16 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
 
-	payload := &messages.Client_Mission_Crew_Update{
-		MissionID:   msg.MissionID,
-		CrewMembers: crewMembers,
-	}
-
-	toClient := &messages.ClientMsg{
-		Type:    msgType,
-		Payload: payload,
-	}
-
-	// send msg contents to websockets
-	send, err := json.Marshal(toClient)
+	aircraftCallsign, err := getAircraftCallsign(msg.MissionID, db)
 	if err != nil {
-		log.Printf("PROBLEM marshaling json: %v", err)
-		pulledMsg.Ack()
-		return
+		fmt.Printf("Error getting aircraft callsign: %v", err)
 	}
-	notifier.Notify(send)
+
+	aircraftDetail := &messages.AircraftDetail{
+		Callsign: aircraftCallsign,
+		Crew:     crewMembers,
+	}
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
 func parseWaypointUpdate(msg *messages.Waypoint,
@@ -810,4 +796,18 @@ func clientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message, no
 		return
 	}
 	notifier.Notify(send)
+}
+
+func getAircraftCallsign(missionID string, db *sql.DB) (string, error) {
+	// get mission from db using missionID
+	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + missionID)
+	if err != nil {
+		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
+	}
+	var aircraftCallsign string
+	err = aircraftRow.Scan(&aircraftCallsign)
+	if err != nil {
+		return "", err
+	}
+	return aircraftCallsign, nil
 }
