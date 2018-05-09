@@ -323,7 +323,10 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 	}
 }
 
-// assume Mission_Create topic comes with all information
+// parseMissionCreate handles when a mission is assigned to
+// an aircraft
+// notifies client and writes new info to db
+// assumes Mission_Create topic comes with all information
 func parseMissionCreate(msg *messages.Mission_Create,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
@@ -448,6 +451,10 @@ func parseMissionCreate(msg *messages.Mission_Create,
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
+// parseMissionWaypointsUpdate handles changes to a mission's
+// waypoints, including ETE, ETT, friendly names,
+// and modifications to the route
+// notifies client and writes new info to db
 func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
@@ -551,6 +558,9 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
+// parseMissionCrewUpdate handles when an aircraft has crew adjusted
+// with respect to an assigned mission
+// notifies client, writes new info to db
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	// unmarshal json into correct struct
@@ -599,6 +609,26 @@ func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
+// parseWaypointCreate handles the creation of new persistent waypoints
+// in the Flight Vector DB
+// does not notify client, writes new info to db
+func parseWaypointCreate(msg *messages.Waypoint,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+
+	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
+		log.Printf("PROBLEM contents of decoded json: %#v", msg)
+		log.Printf("Could not decode message data: %#v", pulledMsg)
+		pulledMsg.Ack()
+		return
+	}
+
+	log.Printf("Message contents: %#v", msg)
+}
+
+// parseWaypointUpdate handles the modification of persistent waypoints
+// in the Flight Vector DB
+// does not notify client, writes new info to db
 func parseWaypointUpdate(msg *messages.Waypoint,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
@@ -613,6 +643,9 @@ func parseWaypointUpdate(msg *messages.Waypoint,
 	log.Printf("Message contents: %#v", msg)
 }
 
+// parseWaypointDelete handles the deletion of persistent waypoints
+// from the Flight Vector DB
+// does not notify client, writes new info to db
 func parseWaypointDelete(msg *messages.Waypoint_Delete,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
@@ -627,24 +660,92 @@ func parseWaypointDelete(msg *messages.Waypoint_Delete,
 	log.Printf("Message contents: %#v", msg)
 }
 
-// TODO: figure out how to connect these updates to relevant aircraft
+func parseAircraftCreate(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+func parseAircraftPropsUpdate(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// PENDING: Brian add "id" to message
+// parseAircraftCrewUpdate handles the standard assignment of crews
+// to aircraft as shifts change
+// does not notify client, writes new info to db
 func parseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
-// TODO: figure out how to connect these updates to relevant aircraft
+// PENDING: Brian add "id" to message
+// parseAircraftServiceSchedule handles when aircraft are scheduled
+// to be serviced for maintenance or otherwise
+// does not notify client, writes new info to db
 func parseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
-// TODO: figure out how to connect these updates to relevant aircraft
+// PENDING: Brian add "id" to message
+// parseAircraftPositionUpdate handles anytime the aircraft moves,
+// and is highly relevant to missions
+// notifies client, writes new info to db
 func parseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
 
 }
 
+// parseUserCreate handles the creation of a new user in
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseUserCreate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parseUserUpdate handles modifications to a user in
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseUserUpdate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parseUserDelete handles the deletion of a user from
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseUserDelete(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parseGroupCreate handles the creation of a new group in
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseGroupCreate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parseGroupUpdate handles modifications to a group in
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseGroupUpdate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// parseGroupDelete handles the deletion of a group from
+// the Flight Vector DB
+// does not notify client, writes new info to db
+func parseGroupDelete(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+
+}
+
+// TODO: may not work with strongly typed messages
 // parse data for delivery
 func parse(msg interface{}, pulledMsg *pubsub.Message, msgType string) {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
