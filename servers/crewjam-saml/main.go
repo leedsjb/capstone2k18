@@ -53,6 +53,11 @@ func main() {
 		tlskey = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/privkey.pem"
 		host = ""
 		port = "443"
+	} else if ENV == "kubernetes" {
+		tlscert = "" // TODO: determine location for kubernetes
+		tlskey = ""  // TODO: determine location for kubernetes
+		host = ""
+		port = "80"
 	}
 
 	keyPair, err := tls.LoadX509KeyPair(tlscert, tlskey)
@@ -69,9 +74,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rootURL, err := url.Parse("https://crewjam-saml.test.elevate.emeloid.co")
-	if err != nil {
-		panic(err)
+
+	rootURL := &url.URL{} // ****** correct usage of &?
+
+	if ENV == "kubernetes" {
+		rootURL, err = url.Parse("https://test.elevate.airliftnw.org")
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		rootURL, err = url.Parse("https://crewjam-saml.test.elevate.emeloid.co")
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	samlSP, _ := samlsp.New(samlsp.Options{
@@ -84,14 +99,23 @@ func main() {
 	app := http.HandlerFunc(hello)                    // define function to call for requests to http endpoint
 	http.Handle("/hello", samlSP.RequireAccount(app)) // direct requests to /hello to app
 	http.Handle("/saml/", samlSP)                     // direct requests to the /saml/ route to samlSP
-	// http.ListenAndServe(":80", nil)                   // 2nd arg: handler, nil -> default serve mux
 
 	addr := host + ":" + port
 	fmt.Println("current set addr is : " + addr)
-	lstlsErr := http.ListenAndServeTLS(addr, tlscert, tlskey, nil)
-	if lstlsErr != nil {
-		panic(lstlsErr)
+
+	var listenServeErr error
+
+	if ENV == "kubernetes" {
+		listenServeErr = http.ListenAndServe(addr, nil) // 2nd arg: handler, nil -> default serve mux
+
+		fmt.Println("crewjam listening on port 80")
+	} else {
+		listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, nil)
+		fmt.Println("crewjam listening on port 443")
 	}
 
-	fmt.Println("crewjam listening on port 443")
+	if listenServeErr != nil {
+		panic(listenServeErr)
+	}
+
 }
