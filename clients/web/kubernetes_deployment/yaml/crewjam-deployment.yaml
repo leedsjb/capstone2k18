@@ -1,0 +1,39 @@
+# Filename: crewjam-deployment.yaml
+# Created: Tuesday May 8, 2018
+# Modified: 
+# Author: J. Benjamin Leeds
+# License: None
+# Purpose: Kubernetes Deployment YAML for crewjam SAML Go Web Server
+
+apiVersion: "v1"
+kind: "Deployment"
+metadata:
+  name: "go-saml-web-server-deployment"
+  namespace: "default"
+  labels:
+    app: "go-saml-web-server-app"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: "go-saml-web-server-app"
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: "go-saml-web-server-app"
+      spec:
+        containers: 
+          -name: crewjam-saml-image
+          image: us.gcr.io/airliftnw-uw/crewjam-saml:0.1
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          env:
+          - name: environment 
+            value: "kubernetes"
+
