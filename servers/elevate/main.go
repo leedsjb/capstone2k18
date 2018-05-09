@@ -370,17 +370,17 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 		case "test_ac_crew_update_sub":
 			msg := &messages.Aircraft_Crew_Update{}
 			msgType := "aircraft-crew-update"
-			parseAircraftCrewUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			parseAircraftCrewUpdate(msg, pulledMsg, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_ac_service_schedule_sub":
 			msg := &messages.Aircraft_Service_Schedule{}
 			msgType := "aircraft-service-schedule"
-			parseAircraftServiceSchedule(msg, pulledMsg, subName, msgType, db, notifier)
+			parseAircraftServiceSchedule(msg, pulledMsg, msgType, db, notifier)
 			// TODO: call sql sproc
 		case "test_ac_position_update_sub":
 			msg := &messages.Aircraft_Pos_Update{}
 			msgType := "aircraft-position-update"
-			parseAircraftPositionUpdate(msg, pulledMsg, subName, msgType, db, notifier)
+			parseAircraftPositionUpdate(msg, pulledMsg, msgType, db, notifier)
 			// TODO: call sql sproc
 		//[END PENDING]
 
@@ -448,7 +448,7 @@ func parseMissionCreate(msg *messages.Mission_Create,
 	requestor := ""
 	receiver := ""
 	crewMembers := ""
-	var waypoints []*messages.MissionWaypoint
+	var waypoints []*messages.ClientMissionWaypoint
 	nextWaypointETE := ""
 	status := "pending" // assume new mission is pending
 	// is raw MissionID what we want, or is it mapped?
@@ -613,34 +613,12 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		}
 	}
 
-	// Mission ...
-	// type Mission struct {
-	// 	Type            string             `json:"type"`
-	// 	Status          string             `json:"status"`
-	// 	Vision          string             `json:"vision"`
-	// 	NextWaypointETE string             `json:"nextWaypointETE"`
-	// 	Waypoints       []*MissionWaypoint `json:"waypoints"`
-	// 	FlightNum       string             `json:"flightNum"`
-	// }
-
-	// // MissionDetail ...
-	// type MissionDetail struct {
-	// 	Type            string             `json:"type"`
-	// 	Status          string             `json:"status"`
-	// 	Vision          string             `json:"vision"`
-	// 	NextWaypointETE string             `json:"nextWaypointETE"`
-	// 	Waypoints       []*MissionWaypoint `json:"waypoints"`
-	// 	FlightNum       string             `json:"flightNum"`
-	// 	RadioReport     *Patient           `json:"radioReport"`
-	// 	Requestor       string             `json:"requestor"`
-	// 	Receiver        string             `json:"receiver"`
-	// }
-
 	// type Mission_Waypoint_Update struct {
 	// 	MissionID		string 		`json:"missionID"`
 	// 	Waypoints		[]*Waypoint `json:"waypoints"`
 	// }
 
+	// [START format aircraft]
 	// get mission from db using missionID
 	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + msg.MissionID)
 	if err != nil {
@@ -663,45 +641,41 @@ func parseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		Callsign: aircraftCallsign,
 		Mission:  mission,
 	}
+	// [END format aircraft]
 
-	// missionDetail := &messages.MissionDetail{
-	// 	Status:          status,
-	// 	NextWaypointETE: nextWaypointETE,
-	// 	Waypoints:       waypoints,
-	// 	FlightNum:       msg.TCNum,   // TODO: won't have this, fix
-	// 	RadioReport:     msg.Patient,
-	// 	Requestor:       requestor,
-	// 	Receiver:        receiver,
-	// }
+	// [START format aircraftDetail]
+	missionRow, err := db.Query("SELECT tc_number FROM tblMISSION WHERE mission_id=" + msg.MissionID)
+	if err != nil {
+		fmt.Printf("Error querying MySQL for mission: %v", err)
+	}
+	var tcNum string
+	err = missionRow.Scan(&tcNum)
+	if err != nil {
+		fmt.Printf("Error scanning mission row: %v", err)
+		os.Exit(1)
+	}
 
-	// aircraftDetail := &messages.AircraftDetail{
-	// 	Status:   "on a mission",
-	// 	Callsign: msg.Asset,
-	// 	Crew:     crewMembers,
-	// 	Mission:  missionDetail,
-	// }
+	missionDetail := &messages.MissionDetail{
+		Status:          status,
+		NextWaypointETE: nextWaypointETE,
+		Waypoints:       waypoints,
+		FlightNum:       tcNum,
+	}
 
-	// clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
-	// clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+	aircraftStatus := "on a mission"
+	if status == "completed" {
+		aircraftStatus = "available"
+	} // TODO: adjust to match aircraft status terms
 
-	// payload := &messages.Client_Mission_Waypoint_Update{
-	// 	MissionID: msg.MissionID,
-	// 	Waypoints: waypoints,
-	// }
+	aircraftDetail := &messages.AircraftDetail{
+		Status:   aircraftStatus,
+		Callsign: aircraftCallsign,
+		Mission:  missionDetail,
+	}
+	// [END format aircraftDetail]
 
-	// toClient := &messages.ClientMsg{
-	// 	Type:    msgType,
-	// 	Payload: payload,
-	// }
-
-	// // send msg contents to websockets
-	// send, err := json.Marshal(toClient)
-	// if err != nil {
-	// 	log.Printf("PROBLEM marshaling json: %v", err)
-	// 	pulledMsg.Ack()
-	// 	return
-	// }
-	// notifier.Notify(send)
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }
 
 func parseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
