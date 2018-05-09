@@ -648,6 +648,49 @@ func parseWaypointCreate(msg *messages.Waypoint,
 	// 	RadioChannels		[]string `json:"radioChannels"`
 	// 	NOTAMS				string   `json:"NOTAMS"`
 	// }
+
+	// [START WAYPOINT]
+	/* TODO: replace with real sproc name
+	typeRow, err := db.Query("SELECT waypointtype_id FROM tblWAYPOINT_TYPE WHERE waypointtype_name=" + msg.Type)
+	var typeID string
+	err = typeRow.Scan(&typeID)
+	if err != nil {
+		fmt.Printf("Error scanning type: %v", err)
+		// TODO: insert if new type?
+	}
+	msg.ID
+	msg.Name
+	msg.Lat
+	msg.Long
+	typeID
+
+	_, err := db.Query("CALL insertWaypoint(" + info + ")")
+	if err != nil {
+		fmt.Printf("Error sproc-ing MySQL: %v", err)
+		os.Exit(1)
+	}
+	*/
+	// [END WAYPOINT]
+
+	// [START HOSPITAL]
+	/* TODO: replace with real sproc name
+	msg.Notes
+	msg.PadTime
+	msg.RadioChannels
+
+	waypointRow, err := db.Query("SELECT waypoint_id FROM tblWAYPOINT WHERE waypoint_title=" + msg.Name)
+	var typeID string
+	err = typeRow.Scan(&typeID)
+	if err != nil {
+		fmt.Printf("Error scanning type: %v", err)
+		// TODO: insert if new type?
+	}
+	*/
+	// [END HOSPITAL]
+
+	// [START AIRCRAFT]
+
+	// [END AIRCRAFT]
 }
 
 // parseWaypointUpdate handles the modification of persistent waypoints
