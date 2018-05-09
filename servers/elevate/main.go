@@ -84,114 +84,6 @@ func main() {
 	}
 	defer db.Close()
 
-	// rows, err := db.Query(first25Missions)
-	// // rows, err := db.Query("SELECT * FROM " + sqlTblName)
-	// if err != nil {
-	// 	fmt.Printf("Error querying MySQL: %v", err)
-	// 	os.Exit(1)
-	// }
-
-	// // TODO: DO SOMETHING WITH ROWS
-	// i := 0
-	// for rows.Next() {
-	// 	var mission_id string
-	// 	var aircraft_id string
-	// 	var agency_id string
-	// 	var mission_date string
-	// 	var aircraft_id2 string
-	// 	var aircraft_callsign string
-	// 	var model_id string
-	// 	var aircraft_lat string
-	// 	var aircraft_long string
-	// 	var ac_type_id string
-	// 	var agency_id2 string
-	// 	var agency_name string
-	// 	var agency_area_code string
-	// 	var agency_phone string
-	// 	var address_id string
-	// 	err := rows.Scan(
-	// 		&mission_id,
-	// 		&aircraft_id,
-	// 		&agency_id,
-	// 		&mission_date,
-	// 		&aircraft_id2,
-	// 		&aircraft_callsign,
-	// 		&model_id,
-	// 		&aircraft_lat,
-	// 		&aircraft_long,
-	// 		&ac_type_id,
-	// 		&agency_id2,
-	// 		&agency_name,
-	// 		&agency_area_code,
-	// 		&agency_phone,
-	// 		&address_id,
-	// 	)
-	// 	if err != nil {
-	// 		fmt.Printf("Error parsing MySQL rows: %v", err)
-	// 		os.Exit(1)
-	// 	}
-	// 	fmt.Printf(
-	// 		"========================================================\nFLIGHT %d\nmission_id: %s\naircraft_id: %s\nagency_id: %s\nmission_date: %s\naircraft_id2: %s\naircraft_callsign: %s\nmodel_id: %s\naircraft_lat: %s\naircraft_long: %s\nac_type_id: %s\nagency_id2:%s\nagency_name: %s\nagency_area_code: %s\nagency_phone: %s\naddress_id: %s\n",
-	// 		i,
-	// 		mission_id,
-	// 		aircraft_id,
-	// 		agency_id,
-	// 		mission_date,
-	// 		aircraft_id2,
-	// 		aircraft_callsign,
-	// 		model_id,
-	// 		aircraft_lat,
-	// 		aircraft_long,
-	// 		ac_type_id,
-	// 		agency_id2,
-	// 		agency_name,
-	// 		agency_area_code,
-	// 		agency_phone,
-	// 		address_id,
-	// 	)
-	// 	i++
-	// }
-
-	// // sproc := os.Getenv("SPROC")
-	// arbnum := "10"
-	// sprocRows, err := db.Query("CALL uspGetRecentMissions(" + arbnum + ")")
-	// if err != nil {
-	// 	fmt.Printf("Error sproc-ing MySQL: %v", err)
-	// 	os.Exit(1)
-	// }
-	// j := 1
-	// for sprocRows.Next() {
-	// 	var mission_id string
-	// 	var mission_date string
-	// 	var aircraft_callsign string
-	// 	var aircraft_lat string
-	// 	var aircraft_long string
-	// 	var agency_name string
-	// 	err := sprocRows.Scan(
-	// 		&mission_id,
-	// 		&mission_date,
-	// 		&aircraft_callsign,
-	// 		&aircraft_lat,
-	// 		&aircraft_long,
-	// 		&agency_name,
-	// 	)
-	// 	if err != nil {
-	// 		fmt.Printf("Error scanning sproc rows: %v", err)
-	// 		os.Exit(1)
-	// 	}
-	// 	fmt.Printf(
-	// 		"========================================================\nAIRCRAFT %d\nmission_id: %s\nmission_date: %s\naircraft_callsign: %s\naircraft_lat: %s\naircraft_long: %s\nagency_name: %s\n",
-	// 		j,
-	// 		mission_id,
-	// 		mission_date,
-	// 		aircraft_callsign,
-	// 		aircraft_lat,
-	// 		aircraft_long,
-	// 		agency_name,
-	// 	)
-	// 	j++
-	// }
-
 	// [PUB/SUB]
 
 	// TODO: temp workaround, maybe better soln?
@@ -518,19 +410,6 @@ func parseMissionCreate(msg *messages.Mission_Create,
 			}
 		}
 	}
-
-	// type Mission_Create struct {
-	// 	MissionID			string 				`json:"missionID"`
-	// 	TCNum				string   			`json:"TCNum"`
-	// 	Asset				string   			`json:"asset"`
-	// 	RequestorID			string   			`json:"requestorID"`
-	// 	ReceiverID			string 			 	`json:"receiverID"`
-	// 	Priority			string 			 	`json:"priority"`
-	// 	CallType			string 	 			`json:"callType"`
-	// 	Patient				*Patient 			`json:"patient"`
-	// 	CrewMemberID		[]string 			`json:"crewMemberID"`
-	// 	Waypoints			[]*MissionWaypoint  `json:"waypoints"`
-	// }
 
 	mission := &messages.Mission{
 		Type:            msg.CallType,
