@@ -204,13 +204,6 @@ type pubSubMessage struct {
 	Subscription string
 }
 
-type testStruct struct {
-	Key   string `json:"key"`
-	ID    string `json:"ID"`
-	Hello string `json:"hello"`
-	World string `json:"world"`
-}
-
 // listen for and process pubsub events
 func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, db *sql.DB) {
 	ctx := context.Background()

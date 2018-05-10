@@ -6,10 +6,11 @@ type ClientMsg struct {
 }
 
 type ClientMissionWaypoint struct {
-	Name   string `json:"name"`
-	ETE    string `json:"ETE"`    // time to next point
-	ETT    string `json:"ETT"`    // cumulative mission time
-	Active string `json:"active"` // denotes active waypoint
+	Name        string `json:"name"`
+	ETE         string `json:"ETE"`    // time to next point
+	ETT         string `json:"ETT"`    // cumulative mission time
+	Active      string `json:"active"` // denotes active waypoint
+	FlightRules string `json:"flightRules"`
 }
 
 type Client_Mission_Create struct {

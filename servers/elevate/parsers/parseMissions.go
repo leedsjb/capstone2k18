@@ -92,10 +92,11 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 				os.Exit(1)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name:   wayPtName,
-				ETE:    waypoint.ETE,
-				ETT:    waypoint.ETT,
-				Active: waypoint.Active,
+				Name:        wayPtName,
+				ETE:         waypoint.ETE,
+				ETT:         waypoint.ETT,
+				Active:      waypoint.Active,
+				FlightRules: waypoint.FlightRules,
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
 				nextWaypointETE = tempWayPt.ETE
@@ -176,10 +177,11 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 				os.Exit(1)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name:   wayPtName,
-				ETE:    waypoint.ETE,
-				ETT:    waypoint.ETT,
-				Active: waypoint.Active,
+				Name:        wayPtName,
+				ETE:         waypoint.ETE,
+				ETT:         waypoint.ETT,
+				Active:      waypoint.Active,
+				FlightRules: waypoint.FlightRules,
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
 				nextWaypointETE = tempWayPt.ETE
