@@ -27,13 +27,20 @@ metadata:
         labels:
           app: "go-saml-web-server-app"
       spec:
-        containers: 
-          -name: crewjam-saml-image
-          image: us.gcr.io/airliftnw-uw/crewjam-saml:0.1
-          ports:
-          - containerPort: 80
-            protocol: TCP
-          env:
-          - name: environment 
-            value: "kubernetes"
+        containers: # inside spec -> containers list
+          - name: crewjam-saml-image # list inside containers
+            image: us.gcr.io/airliftnw-uw/crewjam-saml:0.1
+            ports:
+              - containerPort: 80
+                protocol: TCP
+            env:
+              - name: 'environment' 
+                value: "kubernetes"
+            volumeMounts:
+              - name: crewjam-secret-volume
+                mountPath: /etc/letsencrypt/live/test.elevate.airliftnw.org
+        volumes:
+          - name: crewjam-secret-volume
+            secret:
+              secretName: crewjam-test-elevate-airliftnw-org-letsencrypt
 
