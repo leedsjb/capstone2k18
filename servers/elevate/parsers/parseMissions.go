@@ -39,7 +39,7 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	// is raw MissionID what we want, or is it mapped?
 
 	if msg.RequestorID != "" {
-		reqRow, err := db.Query("SELECT requestor FROM Requestors WHERE requestorID=" + msg.RequestorID)
+		reqRow, err := db.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.RequestorID)
 		if err != nil {
 			fmt.Printf("Error querying MySQL for requestor: %v", err)
 		}
@@ -51,7 +51,7 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 		msg.RequestorID = requestor
 	}
 	if msg.ReceiverID != "" {
-		recRow, err := db.Query("SELECT receiver FROM Receivers WHERE receivedID=" + msg.ReceiverID)
+		recRow, err := db.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.ReceiverID)
 		if err != nil {
 			fmt.Printf("Error querying MySQL for receiver: %v", err)
 		}
@@ -65,12 +65,14 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	}
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			memRow, err := db.Query("SELECT member FROM Members WHERE memberID=" + memberID)
+			member := ""
+			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
-			var member string
-			err = memRow.Scan(&member)
+			var fName string
+			var lName string
+			err = memRow.Scan(&fName, &lName)
 			if err != nil {
 				fmt.Printf("Error scanning member row: %v", err)
 				os.Exit(1)
