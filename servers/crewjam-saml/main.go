@@ -54,8 +54,8 @@ func main() {
 		host = ""
 		port = "443"
 	} else if ENV == "kubernetes" {
-		tlscert = "" // TODO: determine location for kubernetes
-		tlskey = ""  // TODO: determine location for kubernetes
+		tlscert = "/etc/letsencrypt/live/test.elevate.airliftnw.org/test.elevate.airliftnw.org-fullchain1.pem"
+		tlskey = "/etc/letsencrypt/live/test.elevate.airliftnw.org/test.elevate.airliftnw.org-privkey1.pem"
 		host = ""
 		port = "80"
 	}
