@@ -35,7 +35,7 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	crewMembers := ""
 	var waypoints []*messages.ClientMissionWaypoint
 	nextWaypointETE := ""
-	status := "pending" // assume new mission is pending
+	aircraftStatus := "on a mission" // assume aircraft assigned to mission is on that mission
 	// is raw MissionID what we want, or is it mapped?
 
 	if msg.RequestorID != "" {
@@ -102,7 +102,6 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
 				nextWaypointETE = tempWayPt.ETE
-				status = "ongoing" // if any waypoints active, mission must be active
 			}
 		}
 	}
@@ -116,14 +115,13 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	aircraft := &messages.Aircraft{
-		Status:   "on a mission", // assume aircraft assigned to mission is on that mission
+		Status:   aircraftStatus,
 		Callsign: msg.Asset,
 		Mission:  mission,
 	}
 
 	missionDetail := &messages.MissionDetail{
 		Type:            msg.CallType,
-		Status:          status,
 		Vision:          msg.Vision,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
@@ -134,7 +132,7 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	aircraftDetail := &messages.AircraftDetail{
-		Status:   "on a mission",
+		Status:   aircraftStatus,
 		Callsign: msg.Asset,
 		Crew:     crewMembers,
 		Mission:  missionDetail,
@@ -163,7 +161,7 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 
 	var waypoints []*messages.ClientMissionWaypoint
 	nextWaypointETE := ""
-	status := "completed" // assume if waypoints are updated and none are active, mission complete
+	aircraftStatus := "available" // assume if waypoints are updated and none are active, mission complete
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
@@ -187,7 +185,7 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
 				nextWaypointETE = tempWayPt.ETE
-				status = "ongoing" // if any waypoints active, mission must be active
+				aircraftStatus = "on a mission" // if any waypoints active, mission must be active
 			}
 			waypoints = append(waypoints, tempWayPt)
 		}
@@ -206,10 +204,6 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 		// TODO: continue with empty aircraft callsign?
 	}
 
-	aircraftStatus := "on a mission"
-	if status == "completed" {
-		aircraftStatus = "available"
-	} // TODO: adjust to match aircraft status terms
 	mission := &messages.Mission{
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
@@ -235,7 +229,6 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	}
 
 	missionDetail := &messages.MissionDetail{
-		Status:          status,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       tcNum,
