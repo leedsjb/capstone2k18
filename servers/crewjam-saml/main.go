@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -24,6 +23,16 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	openssl req -x509 -newkey rsa:2048 -keyout myservice.key -out myservice.crt -days 365 -nodes -subj "/CN=myservice.example.com"
 
 */
+
+func RootPathHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != "GET" {
+		http.Error(w, "must be a get request", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte("Google Cloud HTTPS L7 Load Balancer Health Check"))
+}
 
 func main() {
 
@@ -69,19 +78,19 @@ func main() {
 	log.Printf("tlscert is: %v", tlscert)
 	log.Printf("tlskey is: %v", tlskey)
 
-	files, err := ioutil.ReadDir("/etc/crewjam-secret-volume/")
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, file := range files {
-		fmt.Println(file.Name())
-	}
+	// files, err := ioutil.ReadDir("/etc/crewjam-secret-volume/")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// for _, file := range files {
+	// 	fmt.Println(file.Name())
+	// }
 
-	temp, err := ioutil.ReadFile(tlscert)
-	if err != nil {
-		log.Printf("no read tlscert")
-	}
-	fmt.Print(string(temp))
+	// temp, err := ioutil.ReadFile(tlscert)
+	// if err != nil {
+	// 	log.Printf("no read tlscert")
+	// }
+	// fmt.Print(string(temp))
 
 	keyPair, err := tls.LoadX509KeyPair(tlscert, tlskey)
 	if err != nil {
@@ -121,7 +130,8 @@ func main() {
 		IDPMetadataURL: idpMetadataURL,
 	})
 
-	app := http.HandlerFunc(hello)                    // define function to call for requests to http endpoint
+	app := http.HandlerFunc(hello) // define function to call for requests to http endpoint
+	http.HandleFunc("/", RootPathHandler)
 	http.Handle("/hello", samlSP.RequireAccount(app)) // direct requests to /hello to app
 	http.Handle("/saml/", samlSP)                     // direct requests to the /saml/ route to samlSP
 
