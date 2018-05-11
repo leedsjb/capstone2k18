@@ -26,3 +26,4 @@ version=$1
 GOOS=linux go build
 docker build -t us.gcr.io/airliftnw-uw/go-webclient:$version .
 docker push us.gcr.io/airliftnw-uw/go-webclient:$version
+kubectl rollout status deployment/go-saml-web-server-deployment # show deployment status
