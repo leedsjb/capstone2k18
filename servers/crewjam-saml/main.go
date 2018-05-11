@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -39,35 +41,58 @@ func main() {
 	var port string
 
 	if ENV == "local-dev" { // local dev
+		log.Printf("In: local-dev")
 		tlscert = PWD + "/tls/fullchain1.pem"
 		tlskey = PWD + "/tls/privkey1.pem"
 		host = ""
 		port = "4430"
 	} else if ENV == "local-docker-dev" {
+		log.Printf("In: local-docker-dev")
 		tlscert = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/fullchain1.pem"
 		tlskey = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/privkey1.pem"
 		host = ""
 		port = "443"
 	} else if ENV == "do" { // digital ocean
+		log.Printf("In: do")
 		tlscert = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/fullchain.pem"
 		tlskey = "/etc/letsencrypt/live/crewjam-saml.test.elevate.emeloid.co/privkey.pem"
 		host = ""
 		port = "443"
 	} else if ENV == "kubernetes" {
-		tlscert = "/etc/letsencrypt/live/test.elevate.airliftnw.org/test.elevate.airliftnw.org-fullchain1.pem"
-		tlskey = "/etc/letsencrypt/live/test.elevate.airliftnw.org/test.elevate.airliftnw.org-privkey1.pem"
+		log.Printf("In: kubernetes")
+		tlscert = "/etc/crewjam-secret-volume/test.elevate.airliftnw.org-fullchain1.pem"
+		tlskey = "/etc/crewjam-secret-volume/test.elevate.airliftnw.org-privkey1.pem"
 		host = ""
 		port = "80"
 	}
 
+	log.Printf("tlscert is: %v", tlscert)
+	log.Printf("tlskey is: %v", tlskey)
+
+	files, err := ioutil.ReadDir("/etc/crewjam-secret-volume/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		fmt.Println(file.Name())
+	}
+
+	temp, err := ioutil.ReadFile(tlscert)
+	if err != nil {
+		log.Printf("no read tlscert")
+	}
+	fmt.Print(string(temp))
+
 	keyPair, err := tls.LoadX509KeyPair(tlscert, tlskey)
 	if err != nil {
-		panic(err)
+		log.Printf("Error loading keyPair: %v", err)
+		// panic(err)
 	}
 
 	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
 	if err != nil {
-		panic(err)
+		log.Printf("Error loading keyPair leaf: %v", err)
+		// panic(err)
 	}
 
 	idpMetadataURL, err := url.Parse("http://www.testshib.org/metadata/testshib-providers.xml") //idp.u.washington.edu
@@ -115,7 +140,8 @@ func main() {
 	}
 
 	if listenServeErr != nil {
-		panic(listenServeErr)
+		log.Printf("Unable to listen and serve: %v", listenServeErr)
+		// panic(listenServeErr)
 	}
 
 }
