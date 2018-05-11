@@ -1,14 +1,10 @@
 package indexes
 
-import (
-	"gopkg.in/mgo.v2/bson"
-)
-
 //Index outlines a key/value storage
 type Index interface {
-	AddUser(prefix string, userID bson.ObjectId)
+	AddEntity(prefix string, entityID int)
 
-	GetUsers(prefix string, limit int) []bson.ObjectId
+	GetEntities(prefix string, limit int) []int
 
-	RemoveUser(prefix string, userID bson.ObjectId) bson.ObjectId
+	RemoveEntity(prefix string, entityID int) int
 }

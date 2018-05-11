@@ -13,6 +13,7 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
+	"github.com/leedsjb/capstone2k18/servers/elevate/indexes"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 	"github.com/leedsjb/capstone2k18/servers/elevate/parsers"
 
@@ -168,16 +169,31 @@ func main() {
 
 	// [HTTPS]
 
+	var aircraftTrie = indexes.NewTrie()
+	if err := handlers.LoadAircraftTrie(aircraftTrie); err != nil {
+		log.Fatalf("Error loading aircraft trie")
+	}
+
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie)
+
 	// Create a new mux for the web server.
 	mux := http.NewServeMux()
-
-	//Wrap this new mux with CORS middleware handler and add that
-	//to the main server mux.
-	// wrappedMux := handlers.NewCORSHandler(mux)
 
 	// Tell the mux to call your handlers
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.Handle("/v1/ws", wsh)
+	mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
+	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
+	mux.HandleFunc("/people", handlers.PeopleHandler)
+	mux.HandleFunc("/people/me", handlers.PeopleMeHandler)
+	mux.HandleFunc("/people/", handlers.PersonDetailHandler)
+	mux.HandleFunc("/groups", handlers.GroupsHandler)
+	mux.HandleFunc("/groups/", handlers.GroupDetailHandler)
+	mux.HandleFunc("/resources/", handlers.ResourcesHandler)
+
+	//Wrap this new mux with CORS middleware handler and add that
+	//to the main server mux.
+	wrappedMux := handlers.NewCORSHandler(mux)
 
 	// Start a web server listening on the address you read from
 	// the environment variable, using the mux you created as
