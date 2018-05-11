@@ -166,7 +166,7 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
 			// TODO: Fix SQL query
-			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
+			wayPtRow, err := db.Query("SELECT waypoint_title FROM tblWAYPOINT WHERE waypoint_id=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
 			}
@@ -269,12 +269,14 @@ func ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			memRow, err := db.Query("SELECT member FROM Members WHERE memberID=" + memberID)
+			member := ""
+			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
-			var member string
-			err = memRow.Scan(&member)
+			var fName string
+			var lName string
+			err = memRow.Scan(&fName, &lName)
 			if err != nil {
 				fmt.Printf("Error scanning member row: %v", err)
 				os.Exit(1)
