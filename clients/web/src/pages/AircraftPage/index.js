@@ -22,6 +22,7 @@ import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
+import openSocket from "../../actions/socket/openSocket";
 
 import airplane from "../../images/airplane.svg";
 
@@ -43,6 +44,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
+        this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -161,7 +163,8 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
     fetchAircraft,
     fetchAircraftDetail,
-    push
+    push,
+    openSocket
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);
