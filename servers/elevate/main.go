@@ -1,12 +1,12 @@
 package main
 
 import (
-	"time"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 	// go sql driver
 	_ "github.com/go-sql-driver/mysql"
 
@@ -70,7 +70,7 @@ func main() {
 	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
 	// sqlTblName := os.Getenv("SQLTABLENAME")
-	first25Missions := os.Getenv("SQLMISSIONS")
+	// first25Missions := os.Getenv("SQLMISSIONS")
 
 	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
 	cfg.DBName = sqlDbName
@@ -80,71 +80,6 @@ func main() {
 		os.Exit(1)
 	}
 	defer db.Close()
-
-	rows, err := db.Query(first25Missions)
-	// rows, err := db.Query("SELECT * FROM " + sqlTblName)
-	if err != nil {
-		fmt.Printf("Error querying MySQL: %v", err)
-		os.Exit(1)
-	}
-
-	// TODO: DO SOMETHING WITH ROWS
-	i := 0
-	for rows.Next() { 
-		var mission_id string
-		var aircraft_id string
-		var agency_id string
-		var mission_date string
-		var aircraft_id2 string
-		var aircraft_callsign string
-		var model_id string
-		var aircraft_lat string
-		var aircraft_long string
-		var agency_id2 string
-		var agency_name string
-		var agency_area_code string
-		var agency_phone string
-		var address_id string
-		err := rows.Scan(
-			&mission_id,
-			&aircraft_id,
-			&agency_id,
-			&mission_date,
-			&aircraft_id2,
-			&aircraft_callsign,
-			&model_id,
-			&aircraft_lat,
-			&aircraft_long,
-			&agency_id2,
-			&agency_name,
-			&agency_area_code,
-			&agency_phone,
-			&address_id,
-		)
-		if err != nil {
-			fmt.Printf("Error parsing MySQL rows: %v", err)
-			os.Exit(1)
-		}
-		fmt.Printf(
-			"========================================================\nFLIGHT %d\nmission_id: %s\naircraft_id: %s\nagency_id: %s\nmission_date: %s\naircraft_id2: %s\naircraft_callsign: %s\nmodel_id: %s\naircraft_lat: %s\naircraft_long: %s\nagency_id2:%s\nagency_name: %s\nagency_area_code: %s\nagency_phone: %s\naddress_id: %s\n",
-			i, 
-			mission_id,
-			aircraft_id,
-			agency_id,
-			mission_date,
-			aircraft_id2,
-			aircraft_callsign,
-			model_id,
-			aircraft_lat,
-			aircraft_long,
-			agency_id2,
-			agency_name,
-			agency_area_code,
-			agency_phone,
-			address_id,
-		)
-		i++
-	}
 
 	// [PUB/SUB]
 
@@ -222,7 +157,7 @@ func main() {
 		}
 		if !exists {
 			if _, err := psClient.CreateSubscription(ctx, testSubNames[i],
-			pubsub.SubscriptionConfig{Topic: topic}); err != nil {
+				pubsub.SubscriptionConfig{Topic: topic}); err != nil {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
@@ -259,17 +194,29 @@ func mustGetenv(k string) string {
 }
 
 type testStruct struct {
-	Message string `json:"Message"`
+	Type    string   `json:"type"`
+	Payload *payload `json:"payload"`
+}
+
+type payload struct {
+	Status   string   `json:"status"`
+	Callsign string   `json:"callsign"`
+	Mission  *mission `json:"mission"`
+}
+
+type mission struct {
+	MissionDetails string `json:"missionDetails"`
 }
 
 // listen for and process pubsub events
 func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier) {
 	ctx := context.Background()
 	err := subscription.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		var data testStruct
-		if err := json.Unmarshal(msg.Data, &data); err != nil {
-			log.Printf("PROBLEM contents of decoded json: %#v", data)
-			log.Printf("Could not decode message data: %#v", msg)
+		var toClient testStruct
+		log.Printf("BEFORE UNMARSHALING: %#v", msg.Data)
+		if err := json.Unmarshal(msg.Data, &toClient); err != nil {
+			log.Printf("PROBLEM contents of decoded json: %#v", toClient)
+			log.Printf("Could not decode message data: %#v", msg.Data)
 			msg.Ack()
 			return
 		}
@@ -290,11 +237,17 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier) {
 		// countMu.Lock()
 		// count++
 		// countMu.Unlock()
-		
-		notifier.Notify([]byte(data.Message))
+
+		send, err := json.Marshal(toClient)
+		if err != nil {
+			log.Printf("PROBLEM marshaling json: %v", err)
+			msg.Ack()
+			return
+		}
+		notifier.Notify(send)
 
 		msg.Ack()
-		log.Printf("Message Acknowledged: (%v)\n", data)
+		log.Printf("Message Acknowledged: (%v)\n", send)
 	})
 	if err != nil {
 		log.Fatalf("Could not receive subscription: %v", err)
