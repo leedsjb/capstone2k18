@@ -8,6 +8,8 @@ for deployment on a web server. (us.gcr.io/airliftnw-uw/go-webclient)
 Must be used concurrently with:
     kubectl apply -f <crewjam-deployment.yaml>
 for changes to take effect.
+
+Ensure script is executed from proper directory (Dockerfile must be present).
     
 Example:
     # Builds version 0.17 of 'go-webclient' and pushes to GCR
@@ -26,4 +28,5 @@ version=$1
 GOOS=linux go build
 docker build -t us.gcr.io/airliftnw-uw/go-webclient:$version .
 docker push us.gcr.io/airliftnw-uw/go-webclient:$version
+rm crewjam-saml # remove/cleanup linux executable from directory
 kubectl rollout status deployment/go-saml-web-server-deployment # show deployment status
