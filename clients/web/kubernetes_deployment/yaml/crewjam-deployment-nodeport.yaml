@@ -6,6 +6,7 @@
 # NodePort for elevate HTTP(S) Ingress controlled GCP Load Balancer
 # note: ClusterIP service automatically created by this NodePort service
 # NodePort points to crewjam GoLang web server
+# Create / Update with: kubectl apply -f crewjam-deployment-nodeport.yaml --record
 
 apiVersion: v1
 kind: Service
@@ -16,4 +17,4 @@ spec:
   ports:
     - port: 80
   selector:
-    name: go-saml-web-server-deployment
+    app: go-saml-web-server-app
