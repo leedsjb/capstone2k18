@@ -124,7 +124,7 @@ type AircraftDetail struct {
 	Status      string         `json:"status"`
 	Type        string         `json:"type"`
 	Callsign    string         `json:"callsign"`
-	Crew        string         `json:"crew"`
+	Crew        []*Person      `json:"crew"`
 	LevelOfCare string         `json:"levelOfCare"`
 	Class       string         `json:"class"`
 	Lat         string         `json:"lat"`

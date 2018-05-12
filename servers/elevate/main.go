@@ -174,7 +174,7 @@ func main() {
 		log.Fatalf("Error loading aircraft trie")
 	}
 
-	handlerCtx := handlers.NewHandlerContext(aircraftTrie)
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie, db)
 
 	// Create a new mux for the web server.
 	mux := http.NewServeMux()
@@ -183,13 +183,13 @@ func main() {
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.Handle("/v1/ws", wsh)
 	mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
-	mux.HandleFunc("/aircraft/", handlers.AircraftDetailHandler)
-	mux.HandleFunc("/people", handlers.PeopleHandler)
-	mux.HandleFunc("/people/me", handlers.PeopleMeHandler)
-	mux.HandleFunc("/people/", handlers.PersonDetailHandler)
-	mux.HandleFunc("/groups", handlers.GroupsHandler)
-	mux.HandleFunc("/groups/", handlers.GroupDetailHandler)
-	mux.HandleFunc("/resources/", handlers.ResourcesHandler)
+	mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)
+	mux.HandleFunc("/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
+	mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
+	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
+	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
+	mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.

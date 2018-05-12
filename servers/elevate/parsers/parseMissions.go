@@ -32,9 +32,6 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 
 	requestor := ""
 	receiver := ""
-	crewMembers := ""
-	var waypoints []*messages.ClientMissionWaypoint
-	nextWaypointETE := ""
 	aircraftStatus := "on a mission" // assume aircraft assigned to mission is on that mission
 	// is raw MissionID what we want, or is it mapped?
 
@@ -63,24 +60,50 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 		}
 		msg.ReceiverID = receiver
 	}
+
+	// separate crewIDs to build crew members into related groups
+	people := []*messages.Person{}
+
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			member := ""
+			// retrieve member first and last name
+			var fName string
+			var lName string
 			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
-			var fName string
-			var lName string
 			err = memRow.Scan(&fName, &lName)
 			if err != nil {
 				fmt.Printf("Error scanning member row: %v", err)
 				os.Exit(1)
 			}
-			crewMembers += member + ","
+
+			// retrieve member role
+			roleTitle := ""
+			roleRow, err := db.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for member: %v", err)
+			}
+			err = roleRow.Scan(&roleTitle)
+			if err != nil {
+				fmt.Printf("Error scanning role row: %v", err)
+				os.Exit(1)
+			}
+
+			// fill Person object with crew member info
+			person := &messages.Person{
+				ID:       memberID,
+				FName:    fName,
+				LName:    lName,
+				Position: roleTitle,
+			}
+			people = append(people, person)
 		}
-		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
+
+	var waypoints []*messages.ClientMissionWaypoint
+	nextWaypointETE := ""
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
 			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
@@ -134,7 +157,7 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 	aircraftDetail := &messages.AircraftDetail{
 		Status:   aircraftStatus,
 		Callsign: msg.Asset,
-		Crew:     crewMembers,
+		Crew:     people,
 		Mission:  missionDetail,
 	}
 
@@ -159,7 +182,7 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 
 	// parse pubsub message for client
 
-	var waypoints []*messages.ClientMissionWaypoint
+	waypoints := []*messages.ClientMissionWaypoint{}
 	nextWaypointETE := ""
 	aircraftStatus := "available" // assume if waypoints are updated and none are active, mission complete
 
@@ -265,25 +288,45 @@ func ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	// 	CrewMemberID []string `json:"crewMemberID"`
 	// }
 
-	crewMembers := ""
+	// separate crewIDs to build crew members into related groups
+	people := []*messages.Person{}
 
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			member := ""
+			// retrieve member first and last name
+			var fName string
+			var lName string
 			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
-			var fName string
-			var lName string
 			err = memRow.Scan(&fName, &lName)
 			if err != nil {
 				fmt.Printf("Error scanning member row: %v", err)
 				os.Exit(1)
 			}
-			crewMembers += member + ","
+
+			// retrieve member role
+			roleTitle := ""
+			roleRow, err := db.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
+			if err != nil {
+				fmt.Printf("Error querying MySQL for member: %v", err)
+			}
+			err = roleRow.Scan(&roleTitle)
+			if err != nil {
+				fmt.Printf("Error scanning role row: %v", err)
+				os.Exit(1)
+			}
+
+			// fill Person object with crew member info
+			person := &messages.Person{
+				ID:       memberID,
+				FName:    fName,
+				LName:    lName,
+				Position: roleTitle,
+			}
+			people = append(people, person)
 		}
-		crewMembers = strings.TrimSuffix(crewMembers, ",")
 	}
 
 	aircraftCallsign, err := getAircraftCallsign(msg.MissionID, db)
@@ -293,7 +336,7 @@ func ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 
 	aircraftDetail := &messages.AircraftDetail{
 		Callsign: aircraftCallsign,
-		Crew:     crewMembers,
+		Crew:     people,
 	}
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 }

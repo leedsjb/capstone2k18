@@ -43,7 +43,7 @@ type User_Delete struct {
 
 // Person ...
 type Person struct {
-	ID       int    `json:"id"`
+	ID       string `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
 	Position string `json:"position"`
@@ -51,7 +51,7 @@ type Person struct {
 
 // PersonDetail ...
 type PersonDetail struct {
-	ID           int    `json:"id"`
+	ID           string `json:"id"`
 	FName        string `json:"fName"`
 	LName        string `json:"lName"`
 	Position     string `json:"position"`
