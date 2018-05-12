@@ -5,37 +5,69 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
+
+type groupRow struct {
+	GroupID   string
+	GroupName string
+	FName     string
+	LName     string
+}
+
+type groupDetailRow struct {
+	GroupID     string
+	GroupName   string
+	FName       string
+	LName       string
+	PersonnelID string
+	RoleTitle   string
+}
 
 // GroupsHandler ...
 func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		groups := []*messages.Group{}
-		groupsRow, err := ctx.DB.Query("SELECT * FROM Groups")
+		groups := []*messages.ClientGroup{}
+
+		// type GroupDetail struct {
+		// 	ID            string    `json:"id"`
+		// 	Name          string    `json:"name"`
+		// 	PeoplePreview string    `json:"peoplePreview"`
+		// }
+
+		// SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP
+		// JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id
+		// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
+		// ORDER BY group_name
+
+		groupsRow, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
+
 		if err != nil {
-			fmt.Printf("Error querying MySQL for requestor: %v", err)
+			fmt.Printf("Error querying MySQL for groups: %v", err)
 		}
-		// TODO create variables and fill contents from retrieved rows
+		// create variables and fill contents from retrieved rows
+		currentRow := &groupRow{}
+		currentGroupID := "first"
+		currentGroup := &messages.ClientGroup{}
+		currentName := ""
 		for groupsRow.Next() {
-			err = groupsRow.Scan(&requestor)
+			err = groupsRow.Scan(currentRow)
 			if err != nil {
-				fmt.Printf("Error scanning requestor row: %v", err)
+				fmt.Printf("Error scanning group row: %v", err)
 				os.Exit(1)
 			}
+			if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
+				groups = append(groups, currentGroup)
+			}
+			// TODO: maybe optimize to actually check if these already exist
+			currentGroup.ID = currentRow.GroupID
+			currentGroup.Name = currentRow.GroupName
+			currentName = currentRow.FName + currentRow.LName
+			currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
 		}
 
-		for _, v := range groupDetails {
-			g := &Group{
-				ID:            v.ID,
-				Name:          v.Name,
-				PeoplePreview: v.PeoplePreview,
-			}
-			groups = append(groups, g)
-		}
 		respond(w, groups)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
@@ -44,26 +76,71 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 }
 
 // GroupDetailHandler ...
-func GroupDetailHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(path.Base(r.URL.Path))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Error decoding ID: %v", err), http.StatusBadRequest)
-		return
-	}
-	var gd *messages.GroupDetail
-	for _, v := range groupDetails {
-		if v.ID == id {
-			gd = v
-			break
-		}
-	}
-	if gd == nil {
-		http.Error(w, "No group with that ID", http.StatusBadRequest)
-		return
-	}
+func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		respond(w, gd)
+		// TODO: make sure this isn't potentially exposing anything
+		id := path.Base(r.URL.Path)
+
+		// type GroupDetail struct {
+		// 	ID            string    `json:"id"`
+		// 	Name          string    `json:"name"`
+		// 	PeoplePreview string    `json:"peoplePreview"`
+		// 	People        []*Person `json:"people"`
+		// }
+
+		// type Person struct {
+		// 	ID       string `json:"id"`
+		// 	FName    string `json:"fName"`
+		// 	LName    string `json:"lName"`
+		// 	Position string `json:"position"`
+		// }
+
+		/*
+			SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id, role_title
+			FROM tblPERSONNEL
+			JOIN tblASSIGNED_PERSONNEL_ROLES ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id
+			JOIN tblROLES ON tblPERSONNEL.personnel_id = tbl
+		*/
+
+		// TODO: Insert stored procedure here
+		groupsRow, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id WHERE group_id = " + id + "ORDER BY group_name")
+
+		if err != nil {
+			fmt.Printf("Error querying MySQL for groups: %v", err)
+		}
+
+		// create variables and fill contents from retrieved rows
+		groupDetail := &messages.GroupDetail{}
+		people := []*messages.Person{}
+		// var people []*messages.Person
+
+		currentPerson := &messages.Person{}
+		row := &groupDetailRow{}
+		currentName := ""
+		for groupsRow.Next() {
+			err = groupsRow.Scan(row)
+			if err != nil {
+				fmt.Printf("Error scanning group detail row: %v", err)
+				os.Exit(1)
+			}
+			// TODO: maybe optimize to actually check if these already exist
+			groupDetail.ID = row.GroupID
+			groupDetail.Name = row.GroupName
+			currentName = row.FName + row.LName
+			groupDetail.PeoplePreview = append(groupDetail.PeoplePreview, currentName)
+
+			currentPerson = &messages.Person{
+				ID:       row.PersonnelID,
+				FName:    row.FName,
+				LName:    row.LName,
+				Position: row.RoleTitle,
+			}
+
+			people = append(people, currentPerson)
+		}
+
+		respond(w, groupDetail)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return

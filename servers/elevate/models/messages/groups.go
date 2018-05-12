@@ -35,15 +35,15 @@ type Group_Delete struct {
 
 // Group ...
 type ClientGroup struct {
-	ID            string `json:"id"`
-	Name          string `json:"name"`
-	PeoplePreview string `json:"peoplePreview"`
+	ID            string   `json:"id"`
+	Name          string   `json:"name"`
+	PeoplePreview []string `json:"peoplePreview"`
 }
 
 // GroupDetail ...
 type GroupDetail struct {
 	ID            string    `json:"id"`
 	Name          string    `json:"name"`
-	PeoplePreview string    `json:"peoplePreview"`
+	PeoplePreview []string  `json:"peoplePreview"`
 	People        []*Person `json:"people"`
 }
