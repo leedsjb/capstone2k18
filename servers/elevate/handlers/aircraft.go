@@ -2,71 +2,105 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/indexes"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
-// var aircraftDetails = []*messages.AircraftDetail{
-// 	{
-// 		ID:          1,
-// 		Status:      "OOS",
-// 		Type:        "August A109E Power",
-// 		Callsign:    "AL5",
-// 		Crew:        groupDetails[2],
-// 		LevelOfCare: "neonatal",
-// 		Class:       "rotary",
-// 		Lat:         47.545218,
-// 		Long:        -122.315673,
-// 		Area:        "Inceptos vestibulum",
-// 		NNum:        "N948AL",
-// 		Mission:     nil,
-// 		OOS: &OOSDetail{
-// 			Reason:    "Unscheduled maintenance",
-// 			Remaining: "29 hours",
-// 			Duration:  "7 hours",
-// 		},
-// 	},
-// 	{
-// 		ID:          2,
-// 		Status:      "standby",
-// 		Type:        "Pilatus PC-12",
-// 		Callsign:    "AL3",
-// 		Crew:        groupDetails[1],
-// 		LevelOfCare: "pediatric",
-// 		Class:       "fixed",
-// 		Lat:         47.542964,
-// 		Long:        -122.309860,
-// 		Area:        "Ullamcorper fusce",
-// 		NNum:        "N937AL",
-// 		Mission:     nil,
-// 		OOS:         nil,
-// 	},
-// 	{
-// 		ID:          3,
-// 		Status:      "on a mission",
-// 		Type:        "August A109E Power",
-// 		Callsign:    "AL2",
-// 		Crew:        groupDetails[0],
-// 		LevelOfCare: "neonatal",
-// 		Class:       "rotary",
-// 		Lat:         47.528478,
-// 		Long:        -122.291697,
-// 		Area:        "Sem quam Commodo",
-// 		NNum:        "N951AL",
-// 		Mission: &MissionDetail{
-// 			Type:            "RW-SCENE",
-// 			Status:          "ongoing",
-// 			Vision:          "IFR",
-// 			NextWaypointETE: "x min to...",
-// 			FlightNum:       "18-0013",
-// 			RadioReport:     "18-0013, 65, 90, male, GSW to chest. Has chest tube., Yes, 4, Paced externally - bring pacer box, Upper GI Bleed, Less than 5cm - launch without AOC Notification",
-// 			Requestor:       "First Last",
-// 		},
-// 		OOS: nil,
-// 	},
-// }
+type missionRow struct {
+	Type        string
+	FlightRules string
+	FlightNum   string
+}
+
+type waypointRow struct {
+	Name        string
+	ETE         string
+	ETT         string
+	Active      string
+	FlightRules string
+}
+
+type oosRow struct {
+	Reason  string
+	EndTime time.Time
+}
+
+const (
+	timeFormat = "2006-01-02 15:04 MST"
+)
+
+type aircraftRow struct {
+	ID           string
+	Callsign     string
+	Nnum         string
+	Manufacturer string // i.e. Augusta, Learjet, etc
+	Title        string // i.e. A109E, PC-12, etc
+	Class        string // i.e. Rotorcraft, Fixed-wing
+	Lat          string
+	Long         string
+	LocationName string
+	Status       string // TODO: double check what exactly this status is
+	/* [MISSION]
+	MissionType    string
+	FlightRules    string
+	TCNum      string
+	// [WAYPOINT]
+	WaypointTitle  string
+	WaypointETE    string
+	WaypointETT    string
+	WaypointActive string
+	*/
+	// [OOS]
+	OOSReason  string
+	OOSEndTime string
+}
+
+type aircraftDetailRow struct {
+	ID           string
+	Callsign     string
+	Nnum         string
+	AircraftType string
+	Lat          string
+	Long         string
+	LocationName string
+	// [CREW]
+	PersonnelID string
+	FName       string
+	LName       string
+	Role        string
+	/* [MISSION DETAIL]
+	MissionType string
+	FlightRules string
+	TCNum string
+	// [WAYPOINTS]
+	WaypointTitle string
+	WaypointETE string
+	WaypointETT string
+	WaypointActive string
+	// [RADIO REPORT]
+	ShortReport string
+	Intubated string
+	Drips string
+	Age string
+	Weight string
+	Sex string
+	Cardiac string
+	GIBleed string
+	OB string
+	// [END radio report]
+	Requestor string
+	Receiverstring
+	*/
+	// [OOS Detail]
+	// OOSReason    string
+	// OOSStartTime string
+	// OOSEndTime   string
+}
 
 // IndexAircraft ...
 func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
@@ -103,7 +137,110 @@ func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 // }
 
 // GetAircraftSummary ...
-func GetAircraftSummary(v *messages.AircraftDetail) *messages.Aircraft {
+func (ctx *HandlerContext) GetAircraftSummary(v *messages.AircraftDetail) *messages.Aircraft {
+	aircrafts := []*messages.Aircraft{}
+	// TODO: SQL sproc for getting aircraft info
+	aircraftRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
+	if err != nil {
+		fmt.Printf("Error querying MySQL for groups: %v", err)
+	}
+
+	// create variables and fill contents from retrieved rows
+
+	currentRow := &aircraftRow{}
+	for aircraftRows.Next() {
+		err = aircraftRows.Scan(currentRow)
+		if err != nil {
+			fmt.Printf("Error scanning aircraft row: %v", err)
+			os.Exit(1)
+		}
+
+		// [GENERAL AIRCRAFT INFO]
+		aircraftType := currentRow.Manufacturer + " " + currentRow.Title
+
+		currentAircraft := &messages.Aircraft{
+			ID:       currentRow.ID,
+			Status:   currentRow.Status,
+			Type:     aircraftType,
+			Callsign: currentRow.Callsign,
+			Class:    currentRow.Class,
+			Lat:      currentRow.Lat,
+			Long:     currentRow.Long,
+			Area:     currentRow.LocationName,
+			NNum:     currentRow.Nnum,
+		}
+
+		// [MISSION]
+		mission := &messages.Mission{}
+		// TODO: SQL sproc for finding mission by aircraftID
+		missionRows, err := ctx.DB.Query("SELECT things")
+		if err != nil {
+			fmt.Printf("Error querying MySQL for mission: %v", err)
+		}
+		missionRow := &missionRow{}
+		for missionRows.Next() {
+			err = missionRows.Scan(missionRow)
+			if err != nil {
+				fmt.Printf("Error scanning mission row: %v", err)
+			}
+			mission = &messages.Mission{
+				Type:      missionRow.Type,
+				Vision:    missionRow.FlightRules,
+				FlightNum: missionRow.FlightRules,
+			}
+		}
+
+		// [Waypoint]
+		waypoints := []*messages.ClientMissionWaypoint{}
+		// TODO: SQL sproc for finding waypoints by missionID
+		waypointRows, err := ctx.DB.Query("SELECT things")
+		if err != nil {
+			fmt.Printf("Error querying MySQL for waypoint: %v", err)
+		}
+		waypointRow := &waypointRow{}
+		for waypointRows.Next() {
+			err = waypointRows.Scan(waypointRow)
+			if err != nil {
+				fmt.Printf("Error scanning waypoint row: %v", err)
+			}
+			waypoint := &messages.ClientMissionWaypoint{
+				Name:        waypointRow.Name,
+				ETE:         waypointRow.ETE,
+				ETT:         waypointRow.ETT,
+				Active:      waypointRow.Active,
+				FlightRules: waypointRow.FlightRules,
+			}
+
+			waypoints = append(waypoints, waypoint)
+		}
+		// add waypoints to mission
+		mission.Waypoints = waypoints
+
+		// [OOS]
+		// TODO: SQL sproc for finding OOS status by aircraftID
+		oosRows, err := ctx.DB.Query("SELECT things")
+		if err != nil {
+			fmt.Printf("Error querying MySQL for OOS status: %v", err)
+		}
+		oosRow := &oosRow{}
+		for oosRows.Next() {
+			err = oosRows.Scan(oosRow)
+			if err != nil {
+				fmt.Printf("Error scanning OOS row: %v", err)
+			}
+
+			oosFinishTime := time.Until(oosRow.EndTime)
+			remaining := oosFinishTime.String()
+
+			oos := &messages.OOS{
+				Reason:    oosRow.Reason,
+				Remaining: remaining,
+			}
+		}
+
+		aircrafts = append(aircrafts, currentAircraft)
+	}
+
 	a := &messages.Aircraft{
 		ID:          v.ID,
 		Status:      v.Status,
@@ -133,42 +270,42 @@ func GetAircraftSummary(v *messages.AircraftDetail) *messages.Aircraft {
 	return a
 }
 
-// // AircraftHandler ...
-// func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case "GET":
-// 		query := r.URL.Query()
+// AircraftHandler ...
+func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		query := r.URL.Query()
 
-// 		term := query.Get("q")
+		term := query.Get("q")
 
-// 		if len(term) > 0 {
-// 			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
-// 			aircraft := GetTrieAircraft(aircraftIDS)
-// 			respond(w, aircraft)
-// 		} else {
-// 			statusFilter := query.Get("status")
+		if len(term) > 0 {
+			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			aircraft := GetTrieAircraft(aircraftIDS)
+			respond(w, aircraft)
+		} else {
+			statusFilter := query.Get("status")
 
-// 			aircraft := []*Aircraft{}
+			aircraft := []*messages.Aircraft{}
 
-// 			if len(statusFilter) > 0 {
-// 				for _, v := range aircraftDetails {
-// 					if v.Status == statusFilter {
-// 						aircraft = append(aircraft, GetAircraftSummary(v))
-// 					}
-// 				}
-// 			} else {
-// 				for _, v := range aircraftDetails {
-// 					aircraft = append(aircraft, GetAircraftSummary(v))
-// 				}
-// 			}
+			if len(statusFilter) > 0 {
+				for _, aircraftDetail := range aircraftDetails {
+					if aircraftDetail.Status == statusFilter {
+						aircraft = append(aircraft, GetAircraftSummary(aircraftDetail))
+					}
+				}
+			} else {
+				for _, v := range aircraftDetails {
+					aircraft = append(aircraft, GetAircraftSummary(v))
+				}
+			}
 
-// 			respond(w, aircraft)
-// 		}
-// 	default:
-// 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
-// 		return
-// 	}
-// }
+			respond(w, aircraft)
+		}
+	default:
+		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
+		return
+	}
+}
 
 // // AircraftDetailHandler ...
 // func AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {

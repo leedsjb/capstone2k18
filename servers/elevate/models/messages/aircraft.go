@@ -104,7 +104,7 @@ type OOSDetail struct {
 
 // Aircraft ...
 type Aircraft struct {
-	ID          int      `json:"id"`
+	ID          string   `json:"id"`
 	Status      string   `json:"status"`
 	Type        string   `json:"type"`
 	Callsign    string   `json:"callsign"`
@@ -120,7 +120,7 @@ type Aircraft struct {
 
 // AircraftDetail ...
 type AircraftDetail struct {
-	ID          int            `json:"id"`
+	ID          string         `json:"id"`
 	Status      string         `json:"status"`
 	Type        string         `json:"type"`
 	Callsign    string         `json:"callsign"`
