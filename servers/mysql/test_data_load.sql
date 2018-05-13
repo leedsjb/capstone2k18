@@ -4,9 +4,13 @@ Created: Wednesday Apil 25, 2018
 Modified:
 Authors: J. Benjamin Leeds
 License: None
+Status: DEPRECATED
 
 This script loads the necessary data into Google Cloud MySQL to begin receiving data additions
 and updates from Flight Vector on-premise via Google Cloud Pub/Sub.
+
+Script loads static data. Deprecated in favor of script that loads prod data dynamically
+from Flight Vector SQL Server
 
 */
 
