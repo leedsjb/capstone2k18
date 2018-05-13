@@ -75,6 +75,7 @@ class InsetMapView extends Component {
     renderMapView = () => {
         if (
             !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
             let selected = this.props.aircraft.data.find(air => {

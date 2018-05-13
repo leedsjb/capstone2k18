@@ -82,10 +82,17 @@ class AircraftDetailPage extends Component {
                     <title>Missions</title>
                 </Helmet>
                 <TitleBar back backPath={backPath} />
-                <ScrollView>
-                    <InsetMapView id={this.props.id} />
-                    {this.renderAircraftDetail(this.props.aircraftDetail)}
-                </ScrollView>
+                {this.props.aircraftDetail.error ? (
+                    <FlexFillVH flexDirection="column">
+                        An error has occurred:{" "}
+                        {this.props.aircraftDetail.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <ScrollView>
+                        <InsetMapView id={this.props.id} />
+                        {this.renderAircraftDetail(this.props.aircraftDetail)}
+                    </ScrollView>
+                )}
                 <TabBar />
             </FlexFillVH>
         );

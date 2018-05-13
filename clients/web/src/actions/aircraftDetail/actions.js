@@ -2,7 +2,8 @@ import axios from "axios";
 
 import {
     FETCH_AIRCRAFTDETAIL_PENDING,
-    FETCH_AIRCRAFTDETAIL_SUCCESS
+    FETCH_AIRCRAFTDETAIL_SUCCESS,
+    FETCH_AIRCRAFTDETAIL_ERROR
 } from "./types";
 
 export function fetchAircraftDetail(id) {
@@ -20,6 +21,11 @@ export function fetchAircraftDetail(id) {
                 type: FETCH_AIRCRAFTDETAIL_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_AIRCRAFTDETAIL_ERROR,
+                error: e
+            });
+        }
     };
 }

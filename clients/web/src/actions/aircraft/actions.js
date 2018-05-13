@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { FETCH_AIRCRAFT_PENDING, FETCH_AIRCRAFT_SUCCESS } from "./types";
+import {
+    FETCH_AIRCRAFT_PENDING,
+    FETCH_AIRCRAFT_SUCCESS,
+    FETCH_AIRCRAFT_ERROR
+} from "./types";
 
 export function fetchAircraft(term, status) {
     return async dispatch => {
@@ -23,6 +27,11 @@ export function fetchAircraft(term, status) {
                 type: FETCH_AIRCRAFT_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_AIRCRAFT_ERROR,
+                error: e
+            });
+        }
     };
 }

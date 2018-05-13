@@ -67,7 +67,6 @@ class MapView extends Component {
     }
 
     getUserLocation() {
-        console.log(this.state.map);
         if (navigator.geolocation && this.state.map) {
             navigator.geolocation.getCurrentPosition(
                 position => {
@@ -119,6 +118,7 @@ class MapView extends Component {
 
     mapCenter = () => {
         if (
+            !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
             !Array.isArray(this.props.aircraftDetail.data)
         ) {
@@ -133,6 +133,7 @@ class MapView extends Component {
     renderMapView = () => {
         if (
             !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
             return (

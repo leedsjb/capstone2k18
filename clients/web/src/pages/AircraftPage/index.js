@@ -92,7 +92,11 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        return (
+        return this.props.aircraft.error ? (
+            <div>
+                An error has occurred: {this.props.aircraft.error.toString()}
+            </div>
+        ) : (
             <div>
                 <Box px={3} py={2}>
                     <SearchBox
@@ -121,7 +125,12 @@ class AircraftPage extends Component {
     };
 
     renderDetailView = () => {
-        return (
+        return this.props.aircraftDetail.error ? (
+            <div>
+                An error has occurred:{" "}
+                {this.props.aircraftDetail.error.toString()}
+            </div>
+        ) : (
             <div>
                 <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
                 {this.renderAircraftDetail(this.props.aircraftDetail)}
@@ -135,11 +144,7 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar
-                    title="Aircraft"
-                    showMap={true}
-                    link="/aircraft/map"
-                />
+                <TitleBar title="Aircraft" showMap link="/aircraft/map" />
                 <NavBar />
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
