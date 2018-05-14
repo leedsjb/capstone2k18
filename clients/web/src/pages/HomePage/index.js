@@ -129,7 +129,7 @@ const HomePage = () => {
                             </Heading>
                             <Measure mt={2}>
                                 We comply with HIPAA and do not store or show
-                                any PHI information.
+                                any PHI.
                             </Measure>
                         </Box>
 
