@@ -291,7 +291,7 @@ const HomePage = () => {
                                     textAlign="center"
                                     color="white"
                                 >
-                                    TPM and Developer
+                                    Product Owner and Developer
                                 </Span>
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
