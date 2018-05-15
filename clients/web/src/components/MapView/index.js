@@ -12,10 +12,7 @@ import Span from "../../components/Span";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-import airplane from "../../images/airplane.svg";
-
 const image = new Image(32, 32);
-image.src = airplane;
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -67,7 +64,7 @@ class MapView extends Component {
     }
 
     getUserLocation() {
-        if (navigator.geolocation && this.state.map) {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     this.state.map.addLayer({
