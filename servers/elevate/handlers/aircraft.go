@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,8 +20,8 @@ type missionRow struct {
 
 type waypointRow struct {
 	Name        string
-	ETE         string
-	ETT         string
+	ETE         time.Time
+	ETT         time.Time
 	Active      string
 	FlightRules string
 }
@@ -104,11 +105,15 @@ type aircraftDetailRow struct {
 
 // IndexAircraft ...
 func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
-	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
+	aircraftID, err := strconv.Atoi(aircraft.ID)
+	if err != nil {
+		fmt.Printf("Error changing aircraft ID from string to int")
+	}
+	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraftID); err != nil {
 		return fmt.Errorf("Error adding aircraft to trie: %v", err)
 	}
 
-	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraft.ID); err != nil {
+	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraftID); err != nil {
 		return fmt.Errorf("Error adding aircraft to trie: %v", err)
 	}
 
@@ -125,149 +130,119 @@ func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 // 	return nil
 // }
 
-// // GetTrieAircraft ...
-// func GetTrieAircraft(aircraftIDS []int) []*Aircraft {
-// 	results := []*Aircraft{}
+// GetTrieAircraft ...
+func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) []*messages.Aircraft {
+	results := []*messages.Aircraft{}
 
-// 	for _, aircraftID := range aircraftIDS {
-// 		results = append(results, GetAircraftSummary(aircraftDetails[aircraftID-1]))
-// 	}
+	for _, aircraftID := range aircraftIDS {
+		ID := strconv.Itoa(aircraftID)
+		aircraftRows, err := ctx.GetAircraftByID(ID)
+		aircraftRow := &aircraftRow{}
+		for aircraftRows.Next() {
+			err = aircraftRows.Scan(aircraftRow)
+			if err != nil {
+				fmt.Printf("Error scanning aircraft row: %v", err)
+			}
+		}
+		results = append(results, ctx.GetAircraftSummary(aircraftRow))
+	}
 
-// 	return results
-// }
+	return results
+}
 
 // GetAircraftSummary ...
-func (ctx *HandlerContext) GetAircraftSummary(v *messages.AircraftDetail) *messages.Aircraft {
-	aircrafts := []*messages.Aircraft{}
-	// TODO: SQL sproc for getting aircraft info
-	aircraftRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
+func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages.Aircraft {
+	// [GENERAL AIRCRAFT INFO]
+	aircraftType := currentRow.Manufacturer + " " + currentRow.Title
+
+	aircraft := &messages.Aircraft{
+		ID:       currentRow.ID,
+		Status:   currentRow.Status,
+		Type:     aircraftType,
+		Callsign: currentRow.Callsign,
+		Class:    currentRow.Class,
+		Lat:      currentRow.Lat,
+		Long:     currentRow.Long,
+		Area:     currentRow.LocationName,
+		NNum:     currentRow.Nnum,
+	}
+
+	// [MISSION]
+	mission := &messages.Mission{}
+	// TODO: SQL sproc for finding mission by aircraftID
+	missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
+	missionRow := &missionRow{}
+	for missionRows.Next() {
+		err = missionRows.Scan(missionRow)
+		if err != nil {
+			fmt.Printf("Error scanning mission row: %v", err)
+		}
+		mission = &messages.Mission{
+			Type:      missionRow.Type,
+			Vision:    missionRow.FlightRules,
+			FlightNum: missionRow.FlightRules,
+		}
+	}
+	nextETE := ""
+
+	// [Waypoint]
+	waypoints := []*messages.ClientMissionWaypoint{}
+	// TODO: SQL sproc for finding waypoints by missionID
+	waypointRows, err := ctx.DB.Query("SELECT things")
 	if err != nil {
-		fmt.Printf("Error querying MySQL for groups: %v", err)
+		fmt.Printf("Error querying MySQL for waypoint: %v", err)
 	}
-
-	// create variables and fill contents from retrieved rows
-
-	currentRow := &aircraftRow{}
-	for aircraftRows.Next() {
-		err = aircraftRows.Scan(currentRow)
+	waypointRow := &waypointRow{}
+	for waypointRows.Next() {
+		err = waypointRows.Scan(waypointRow)
 		if err != nil {
-			fmt.Printf("Error scanning aircraft row: %v", err)
-			os.Exit(1)
+			fmt.Printf("Error scanning waypoint row: %v", err)
+		}
+		waypoint := &messages.ClientMissionWaypoint{
+			Name:        waypointRow.Name,
+			ETE:         waypointRow.ETE.String(),
+			ETT:         waypointRow.ETT.String(),
+			Active:      waypointRow.Active,
+			FlightRules: waypointRow.FlightRules,
 		}
 
-		// [GENERAL AIRCRAFT INFO]
-		aircraftType := currentRow.Manufacturer + " " + currentRow.Title
-
-		currentAircraft := &messages.Aircraft{
-			ID:       currentRow.ID,
-			Status:   currentRow.Status,
-			Type:     aircraftType,
-			Callsign: currentRow.Callsign,
-			Class:    currentRow.Class,
-			Lat:      currentRow.Lat,
-			Long:     currentRow.Long,
-			Area:     currentRow.LocationName,
-			NNum:     currentRow.Nnum,
+		if strings.ToLower(waypointRow.Active) == "true" {
+			nextETE = waypointRow.ETE.String()
 		}
+		waypoints = append(waypoints, waypoint)
+	}
+	// add waypoints to mission
+	mission.Waypoints = waypoints
+	mission.NextWaypointETE = nextETE
 
-		// [MISSION]
-		mission := &messages.Mission{}
-		// TODO: SQL sproc for finding mission by aircraftID
-		missionRows, err := ctx.DB.Query("SELECT things")
+	// [OOS]
+	// TODO: SQL sproc for finding OOS status by aircraftID
+	oos := &messages.OOS{}
+	oosRows, err := ctx.DB.Query("SELECT things")
+	if err != nil {
+		fmt.Printf("Error querying MySQL for OOS status: %v", err)
+	}
+	oosRow := &oosRow{}
+	for oosRows.Next() {
+		err = oosRows.Scan(oosRow)
 		if err != nil {
-			fmt.Printf("Error querying MySQL for mission: %v", err)
-		}
-		missionRow := &missionRow{}
-		for missionRows.Next() {
-			err = missionRows.Scan(missionRow)
-			if err != nil {
-				fmt.Printf("Error scanning mission row: %v", err)
-			}
-			mission = &messages.Mission{
-				Type:      missionRow.Type,
-				Vision:    missionRow.FlightRules,
-				FlightNum: missionRow.FlightRules,
-			}
+			fmt.Printf("Error scanning OOS row: %v", err)
 		}
 
-		// [Waypoint]
-		waypoints := []*messages.ClientMissionWaypoint{}
-		// TODO: SQL sproc for finding waypoints by missionID
-		waypointRows, err := ctx.DB.Query("SELECT things")
-		if err != nil {
-			fmt.Printf("Error querying MySQL for waypoint: %v", err)
+		oosFinishTime := time.Until(oosRow.EndTime)
+		remaining := oosFinishTime.String()
+
+		oos = &messages.OOS{
+			Reason:    oosRow.Reason,
+			Remaining: remaining,
 		}
-		waypointRow := &waypointRow{}
-		for waypointRows.Next() {
-			err = waypointRows.Scan(waypointRow)
-			if err != nil {
-				fmt.Printf("Error scanning waypoint row: %v", err)
-			}
-			waypoint := &messages.ClientMissionWaypoint{
-				Name:        waypointRow.Name,
-				ETE:         waypointRow.ETE,
-				ETT:         waypointRow.ETT,
-				Active:      waypointRow.Active,
-				FlightRules: waypointRow.FlightRules,
-			}
-
-			waypoints = append(waypoints, waypoint)
-		}
-		// add waypoints to mission
-		mission.Waypoints = waypoints
-
-		// [OOS]
-		// TODO: SQL sproc for finding OOS status by aircraftID
-		oosRows, err := ctx.DB.Query("SELECT things")
-		if err != nil {
-			fmt.Printf("Error querying MySQL for OOS status: %v", err)
-		}
-		oosRow := &oosRow{}
-		for oosRows.Next() {
-			err = oosRows.Scan(oosRow)
-			if err != nil {
-				fmt.Printf("Error scanning OOS row: %v", err)
-			}
-
-			oosFinishTime := time.Until(oosRow.EndTime)
-			remaining := oosFinishTime.String()
-
-			oos := &messages.OOS{
-				Reason:    oosRow.Reason,
-				Remaining: remaining,
-			}
-		}
-
-		aircrafts = append(aircrafts, currentAircraft)
 	}
 
-	a := &messages.Aircraft{
-		ID:          v.ID,
-		Status:      v.Status,
-		Type:        v.Type,
-		Callsign:    v.Callsign,
-		LevelOfCare: v.LevelOfCare,
-		Class:       v.Class,
-		Lat:         v.Lat,
-		Long:        v.Long,
-		Area:        v.Area,
-		NNum:        v.NNum,
-	}
-	if v.Mission != nil {
-		a.Mission = &messages.Mission{
-			Type:            v.Mission.Type,
-			Vision:          v.Mission.Vision,
-			NextWaypointETE: v.Mission.NextWaypointETE,
-			FlightNum:       v.Mission.FlightNum,
-		}
-	}
-	if v.OOS != nil {
-		a.OOS = &messages.OOS{
-			Reason:    v.OOS.Reason,
-			Remaining: v.OOS.Remaining,
-		}
-	}
-	return a
+	// add mission to aircraft
+	aircraft.Mission = mission
+	// add OOS to aircraft
+	aircraft.OOS = oos
+	return aircraft
 }
 
 // AircraftHandler ...
@@ -278,24 +253,45 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 		term := query.Get("q")
 
+		// TODO: refactor to be cleaner
 		if len(term) > 0 {
+			// search query non-empty
 			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
-			aircraft := GetTrieAircraft(aircraftIDS)
+			aircraft := ctx.GetTrieAircraft(aircraftIDS)
 			respond(w, aircraft)
 		} else {
+			// search query empty
 			statusFilter := query.Get("status")
 
 			aircraft := []*messages.Aircraft{}
 
 			if len(statusFilter) > 0 {
-				for _, aircraftDetail := range aircraftDetails {
-					if aircraftDetail.Status == statusFilter {
-						aircraft = append(aircraft, GetAircraftSummary(aircraftDetail))
+				// filter by status
+
+				// TODO: SQL sproc for aircraft by status
+				// map status to statusID
+				aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
+
+				currentRow := &aircraftRow{}
+				for aircraftRows.Next() {
+					err = aircraftRows.Scan(currentRow)
+					if err != nil {
+						fmt.Printf("Error scanning aircraft row: %v", err)
+						os.Exit(1)
 					}
+					aircraft = append(aircraft, ctx.GetAircraftSummary(currentRow))
 				}
 			} else {
-				for _, v := range aircraftDetails {
-					aircraft = append(aircraft, GetAircraftSummary(v))
+				// no filter, return all
+				aircraftRows, err := ctx.GetAllAircraft()
+				currentRow := &aircraftRow{}
+				for aircraftRows.Next() {
+					err = aircraftRows.Scan(currentRow)
+					if err != nil {
+						fmt.Printf("Error scanning aircraft row: %v", err)
+						os.Exit(1)
+					}
+					aircraft = append(aircraft, ctx.GetAircraftSummary(currentRow))
 				}
 			}
 
