@@ -22,6 +22,7 @@ import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
+import openSocket from "../../actions/socket/openSocket";
 
 import airplane from "../../images/airplane.svg";
 
@@ -43,6 +44,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
+        this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -90,7 +92,11 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        return (
+        return this.props.aircraft.error ? (
+            <div>
+                An error has occurred: {this.props.aircraft.error.toString()}
+            </div>
+        ) : (
             <div>
                 <Box px={3} py={2}>
                     <SearchBox
@@ -119,7 +125,12 @@ class AircraftPage extends Component {
     };
 
     renderDetailView = () => {
-        return (
+        return this.props.aircraftDetail.error ? (
+            <div>
+                An error has occurred:{" "}
+                {this.props.aircraftDetail.error.toString()}
+            </div>
+        ) : (
             <div>
                 <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
                 {this.renderAircraftDetail(this.props.aircraftDetail)}
@@ -133,11 +144,7 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar
-                    title="Aircraft"
-                    showMap={true}
-                    link="/aircraft/map"
-                />
+                <TitleBar title="Aircraft" showMap link="/aircraft/map" />
                 <NavBar />
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
@@ -161,7 +168,8 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
     fetchAircraft,
     fetchAircraftDetail,
-    push
+    push,
+    openSocket
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);

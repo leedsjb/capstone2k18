@@ -63,7 +63,9 @@ const HomePage = () => {
                                 ill or injured patients by helicopter to reach
                                 life-saving medical treatment.
                             </Measure>
-                            <Button mt={3}>Get Started</Button>
+                            <Link to="/signin">
+                                <Button mt={3}>Get Started</Button>
+                            </Link>
                         </Box>
                         <Box my={5} width={[1, 1, 1 / 3]}>
                             <Image src={phone} width={1} />
@@ -127,7 +129,7 @@ const HomePage = () => {
                             </Heading>
                             <Measure mt={2}>
                                 We comply with HIPAA and do not store or show
-                                any PHI information.
+                                any PHI.
                             </Measure>
                         </Box>
 
@@ -244,14 +246,16 @@ const HomePage = () => {
                             </Box>
                             <Box>
                                 <Heading is="h2" fontSize={4}>
-                                    In partnership with Airlift Northwest
+                                    About Airlift Northwest
                                 </Heading>
                                 <Measure mt={2}>
                                     Elevate was built together with Airlift
-                                    Norhwest, the preeminent medical transport
+                                    Northwest, the preeminent medical transport
                                     service in the Pacific Northwest.
                                 </Measure>
-                                <Button>Get to know Airlift</Button>
+                                <a href="http://airliftnw.org/" target="_blank">
+                                    <Button>Get to know Airlift</Button>
+                                </a>
                             </Box>
                         </Flex>
                     </Box>
@@ -262,7 +266,7 @@ const HomePage = () => {
                 <Container px={5} py={5}>
                     <Box>
                         <Heading is="h2" fontSize={4} mb={5} color="white">
-                            We elevate
+                            Team
                         </Heading>
                         <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
                             <Box mb={3} mr={[0, 0, 5]}>
@@ -287,7 +291,7 @@ const HomePage = () => {
                                     textAlign="center"
                                     color="white"
                                 >
-                                    TPM and Developer
+                                    Product Owner and Developer
                                 </Span>
                             </Box>
                             <Box mb={3} mr={[0, 0, 5]}>
@@ -390,10 +394,14 @@ const HomePage = () => {
                                 employees
                             </Span>
                             <Flex justifyContent="center" mt={3}>
-                                <Button>Get Started</Button>
-                                <ButtonOutline ml={2}>
-                                    Contact Airlift
-                                </ButtonOutline>
+                                <Link to="/signin">
+                                    <Button>Get Started</Button>
+                                </Link>
+                                <a href="https://www.uwmedicine.org/airlift-nw/contact-us">
+                                    <ButtonOutline ml={2}>
+                                        Contact Airlift
+                                    </ButtonOutline>
+                                </a>
                             </Flex>
                         </Container>
                     </Box>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { push } from "react-router-redux";
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
@@ -74,6 +75,7 @@ class InsetMapView extends Component {
     renderMapView = () => {
         if (
             !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
             let selected = this.props.aircraft.data.find(air => {
@@ -121,8 +123,7 @@ class InsetMapView extends Component {
     render() {
         return (
             <Map
-                onStyleLoad={map => this.setState({ map })}
-                style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
+                animationOptions={{ animate: false }}
                 containerStyle={{
                     width: "80%",
                     height: "25%",
@@ -130,7 +131,11 @@ class InsetMapView extends Component {
                     margin: "0 auto"
                 }}
                 center={this.mapCenter()}
-                animationOptions={{ animate: false }}
+                onClick={() =>
+                    this.props.push(`/aircraft/map/${this.props.id}`)
+                }
+                onStyleLoad={map => this.setState({ map })}
+                style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
             >
                 {this.renderMapView()}
             </Map>
@@ -147,7 +152,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     fetchAircraft,
-    fetchAircraftDetail
+    fetchAircraftDetail,
+    push
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

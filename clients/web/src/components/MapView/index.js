@@ -67,49 +67,47 @@ class MapView extends Component {
     }
 
     getUserLocation() {
-        if (navigator.geolocation) {
+        if (navigator.geolocation && this.state.map) {
             navigator.geolocation.getCurrentPosition(
                 position => {
-                    if (this.state.map) {
-                        this.state.map.addLayer({
-                            id: "points",
-                            type: "symbol",
-                            source: {
-                                type: "geojson",
-                                data: {
-                                    type: "FeatureCollection",
-                                    features: [
-                                        {
-                                            type: "Feature",
-                                            geometry: {
-                                                type: "Point",
-                                                coordinates: [
-                                                    position.coords.longitude,
-                                                    position.coords.latitude
-                                                ]
-                                            }
+                    this.state.map.addLayer({
+                        id: "points",
+                        type: "symbol",
+                        source: {
+                            type: "geojson",
+                            data: {
+                                type: "FeatureCollection",
+                                features: [
+                                    {
+                                        type: "Feature",
+                                        geometry: {
+                                            type: "Point",
+                                            coordinates: [
+                                                position.coords.longitude,
+                                                position.coords.latitude
+                                            ]
                                         }
-                                    ]
-                                }
-                            },
-                            layout: {
-                                "icon-image": "circle-15",
-                                "icon-allow-overlap": true
-                            }
-                        });
-                        if (!this.props.id) {
-                            this.setState({
-                                center: [
-                                    position.coords.longitude,
-                                    position.coords.latitude
+                                    }
                                 ]
-                            });
-                            this.state.map.setCenter([
+                            }
+                        },
+                        layout: {
+                            "icon-image": "circle-15",
+                            "icon-allow-overlap": true
+                        }
+                    });
+                    if (!this.props.id) {
+                        this.setState({
+                            center: [
                                 position.coords.longitude,
                                 position.coords.latitude
-                            ]);
-                            this.state.map.setZoom(11);
-                        }
+                            ]
+                        });
+                        this.state.map.setCenter([
+                            position.coords.longitude,
+                            position.coords.latitude
+                        ]);
+                        this.state.map.setZoom(11);
                     }
                 },
                 null,
@@ -120,6 +118,7 @@ class MapView extends Component {
 
     mapCenter = () => {
         if (
+            !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
             !Array.isArray(this.props.aircraftDetail.data)
         ) {
@@ -134,6 +133,7 @@ class MapView extends Component {
     renderMapView = () => {
         if (
             !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
             return (

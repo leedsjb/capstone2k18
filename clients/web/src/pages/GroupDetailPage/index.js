@@ -14,7 +14,6 @@ const GroupDetailPage = () => {
             <Helmet>
                 <title />
             </Helmet>
-
             <TitleBar title="Aircraft" />
             <Toolbar>Test</Toolbar>
             <ScrollView>

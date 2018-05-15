@@ -61,25 +61,34 @@ const Footer = () => {
                         </Box>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Span
-                            fontSize={1}
-                            fontWeight="bold"
-                            lineHeight={2}
-                            mr={4}
+                        <a href="mailto:alnw@airliftnw.org">
+                            <Span
+                                fontSize={1}
+                                fontWeight="bold"
+                                lineHeight={2}
+                                mr={4}
+                            >
+                                Contact us
+                            </Span>
+                        </a>
+                        <a href="https://www.uwmedicine.org/about/compliance/privacy">
+                            <Span
+                                fontSize={1}
+                                fontWeight="bold"
+                                lineHeight={2}
+                                mr={4}
+                            >
+                                Privacy
+                            </Span>
+                        </a>
+                        <a
+                            href="https://www.washington.edu/online/terms/"
+                            target="_blank"
                         >
-                            Contact us
-                        </Span>
-                        <Span
-                            fontSize={1}
-                            fontWeight="bold"
-                            lineHeight={2}
-                            mr={4}
-                        >
-                            Privacy
-                        </Span>
-                        <Span fontSize={1} fontWeight="bold" lineHeight={2}>
-                            Terms
-                        </Span>
+                            <Span fontSize={1} fontWeight="bold" lineHeight={2}>
+                                Terms
+                            </Span>
+                        </a>
                     </Flex>
                 </Flex>
             </Box>
