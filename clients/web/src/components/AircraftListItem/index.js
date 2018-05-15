@@ -16,7 +16,10 @@ const AircraftListItem = ({ aircraft, active }) => {
                     <Span>{aircraft.nNum}</Span>
                     <Badge>{aircraft.status}</Badge>
                 </Flex>
-                <Icon glyph="earth" size={14} />
+                <Flex alignItems="center">
+                    <Icon glyph="earth" size={14} />
+                    <Span>{aircraft.area}</Span>
+                </Flex>
             </Box>
         </MasterListItem>
     );
