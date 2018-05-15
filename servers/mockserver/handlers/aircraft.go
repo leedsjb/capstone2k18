@@ -28,7 +28,7 @@ type MissionDetail struct {
 	FlightNum       string `json:"flightNum"`
 	RadioReport     string `json:"radioReport"`
 	Requestor       string `json:"requestor"`
-	Receiver		string `json:"receiver"`
+	Receiver        string `json:"receiver"`
 }
 
 // OOS ...
@@ -114,7 +114,7 @@ var aircraftDetails = []*AircraftDetail{
 	},
 	{
 		ID:          3,
-		Status:      "on a mission",
+		Status:      "On Mission",
 		Type:        "August A109E Power",
 		Callsign:    "AL2",
 		Crew:        groupDetails[0],
@@ -132,7 +132,7 @@ var aircraftDetails = []*AircraftDetail{
 			FlightNum:       "18-0013",
 			RadioReport:     "18-0013, 65, 90, male, GSW to chest. Has chest tube., Yes, 4, Paced externally - bring pacer box, Upper GI Bleed, Less than 5cm - launch without AOC Notification",
 			Requestor:       "Lopez Island EMS",
-			Receiver:		 "Harborview Medical Center",
+			Receiver:        "Harborview Medical Center",
 		},
 		OOS: nil,
 	},
