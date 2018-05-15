@@ -12,8 +12,6 @@ import Span from "../../components/Span";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-const image = new Image(32, 32);
-
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
 });
@@ -28,7 +26,6 @@ class MapView extends Component {
     }
 
     componentDidMount() {
-        this.getUserLocation();
         this.props.fetchAircraft();
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
@@ -136,7 +133,7 @@ class MapView extends Component {
             return (
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
-                        const images = [aircraft.callsign, image];
+                        const images = [aircraft.callsign];
                         return (
                             <Box key={aircraft.id}>
                                 <Layer
@@ -279,7 +276,11 @@ class MapView extends Component {
         return (
             <Flex flex={1}>
                 <Map
-                    onStyleLoad={map => this.setState({ map })}
+                    onStyleLoad={map =>
+                        this.setState({ map }, () => {
+                            this.getUserLocation();
+                        })
+                    }
                     style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
                     containerStyle={{
                         width: "100%",
