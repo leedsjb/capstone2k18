@@ -7,7 +7,7 @@ import Box from "../Box";
 
 const ButtonDropdown = ({ children, ...props }) => {
     return (
-        <Button {...props}>
+        <Button py={1} px={2} {...props}>
             <Flex alignItems="center">
                 <Box mr={2}>{children}</Box>
                 <Icon glyph="triangleDown" size={6} />

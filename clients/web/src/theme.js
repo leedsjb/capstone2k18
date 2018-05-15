@@ -6,9 +6,11 @@ const breakpoints = [32, 48, 64, 80].map(n => n + "em");
 
 let space = [];
 
-for (let i = 1; i <= 36; i++) {
+for (let i = 0; i < 37; i++) {
     space.push(i * 4);
 }
+
+console.log(space);
 
 const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72, 96];
 

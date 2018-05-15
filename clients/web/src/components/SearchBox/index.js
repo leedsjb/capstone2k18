@@ -55,6 +55,7 @@ class SearchBox extends Component {
                                     }
                                 )
                             }
+                            py={0}
                             value={this.state.query}
                         />
                         <div>
