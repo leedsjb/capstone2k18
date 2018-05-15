@@ -1,0 +1,25 @@
+# Filename: elevate-deployment-nodeport.yaml
+# Created: May 10, 2018
+# Modified: May 14, 2018
+# Author: J. Benjamin Leeds
+# License: None
+# NodePort for elevate HTTP(S) Ingress controlled GCP Load Balancer
+# note: ClusterIP service automatically created by this NodePort service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: alnw-deployment-node-port-service
+  labels:
+    tier: frontend
+    environment: production
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      # nodePort: automatically selected by cluster between 30000 and 32767
+      # targetPort: 80 # defaults to 80, no need to include
+      # protocol: TCP
+      # name: you can name ports
+  selector:
+    run: alnw-deployment

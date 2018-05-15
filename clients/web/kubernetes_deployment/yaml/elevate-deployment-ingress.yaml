@@ -1,0 +1,67 @@
+# Filename: elevate-deployment-ingress.yaml
+# Created: May 10, 2018
+# Modified: May 11, 2018
+# Author: J. Benjamin Leeds
+# License: None
+
+# Creates an Ingress controlled GCP HTTP(S) L7 Load Balancer
+# YAML Reference: https://github.com/kubernetes/ingress-gce/blob/master/README.md
+# LB Documentation: https://cloud.google.com/kubernetes-engine/docs/tutorials/http-balancer
+# To create or update: kubectl apply -f elevate-deployment-ingress.yaml --record
+# Note: services must return HTTP 200 to GET on the / path to receive traffic
+# to-do: all unmatched(default) rules are being created although they are not specified
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elevate-cluster-ingress-https-l7
+  namespace: default
+  labels:
+    tier: frontend-backend
+    environment: production
+spec:
+  rules:
+    - host: elevate.airliftnw.org 
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: alnw-deployment-node-port-service
+              servicePort: 80
+          # - path: /
+          #   backend:
+          #     serviceName: alnw-deployment-node-port-service
+          #     servicePort: 80
+          # - path: /
+          #   backend:
+          #     serviceName: go-saml-web-server-deployment-node-port-service 
+          #     servicePort: 80
+    - host: test.elevate.airliftnw.org
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: go-saml-web-server-deployment-node-port-service 
+              servicePort: 80
+
+# multiple host matching template
+
+# -  rules:
+# -  - host: foo.bar.com
+# -    http:
+# -      paths:
+# -      - path: /foo
+# -        backend:
+# -          serviceName: echoheadersx
+# -          servicePort: 80
+# -  - host: bar.baz.com
+# -    http:
+# -      paths:
+# -      - path: /bar
+# -        backend:
+# -          serviceName: echoheadersy
+# -          servicePort: 80
+# -      - path: /foo
+# -        backend:
+# -          serviceName: echoheadersx
+# -          servicePort: 80

@@ -1,6 +1,7 @@
 # Filename: crewjam-deployment.yaml
 # Created: Tuesday May 8, 2018
-# Modified: Friday May 11, 2018
+# Modified: Tuesday May 15, 2018
+# Last Change: Added tier and environment labels
 # Author: J. Benjamin Leeds
 # License: None
 # Purpose: Kubernetes Deployment YAML for crewjam SAML Go Web Server
@@ -15,6 +16,8 @@ metadata:
   namespace: "default"
   labels:
     app: "go-saml-web-server-app"
+    tier: frontend
+    environment: test
 spec:
   replicas: 1
   selector:
@@ -32,7 +35,7 @@ spec:
     spec:
       containers: # inside spec -> containers list
         - name: crewjam-saml-image # 1st element in a list inside containers
-          image: us.gcr.io/airliftnw-uw/go-webclient:0.16
+          image: us.gcr.io/airliftnw-uw/go-webclient:0.17
           ports:
             - containerPort: 80
               protocol: TCP
