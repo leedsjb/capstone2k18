@@ -5,6 +5,7 @@ import Badge from "../Badge";
 import Box from "../Box";
 import MasterListItem from "../MasterListItem";
 import Span from "../Span";
+import Icon from "../Icon";
 
 const AircraftListItem = ({ aircraft, active }) => {
     return (
@@ -13,6 +14,7 @@ const AircraftListItem = ({ aircraft, active }) => {
                 <Flex alignItems="center">
                     <Box mr={2}>
                         <Span fontWeight="bold">{aircraft.callsign}</Span>
+                        <Icon glyph="hourglass" />
                     </Box>
                     <Box mr={1}>
                         <Span>{aircraft.nNum}</Span>
