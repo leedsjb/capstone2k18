@@ -4,7 +4,11 @@ const colors = {
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
 
-const space = [0, 4, 8, 16, 32, 64, 128];
+let space = [];
+
+for (let i = 1; i <= 36; i++) {
+    space.push(i * 4);
+}
 
 const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72, 96];
 
