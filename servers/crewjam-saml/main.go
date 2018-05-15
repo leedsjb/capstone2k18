@@ -180,14 +180,13 @@ func main() {
 	rootURL := &url.URL{} // ****** correct usage of &?
 
 	if ENV == "kubernetes" {
-		// rootURL, err = url.Parse("https://test.elevate.airliftnw.org")
-		rootURL, err = url.Parse("http://35.201.91.31/crewjam")
+		rootURL, err = url.Parse("http://test.elevate.airliftnw.org")
 		if err != nil {
 			panic(err)
 		}
 	} else {
 		// rootURL, err = url.Parse("https://crewjam-saml.test.elevate.emeloid.co")
-		rootURL, err = url.Parse("https://localhost:4430/crewjam")
+		rootURL, err = url.Parse("https://localhost:4430")
 		if err != nil {
 			panic(err)
 		}
@@ -205,12 +204,12 @@ func main() {
 	rootHandler := http.HandlerFunc(RootPathHandler)
 	mux.Handle("/", rootHandler)
 
-	mux.HandleFunc("/crewjam/testing", testPathHandler)
+	mux.HandleFunc("/testing", testPathHandler)
 
-	app := http.HandlerFunc(hello)                            // define handler to call for requests to protected path
-	mux.Handle("/crewjam/hello/", samlSP.RequireAccount(app)) // direct requests to /hello/* to hello to app and ensures clients are authenticated with SSO
+	app := http.HandlerFunc(hello)                      // define handler to call for requests to protected path
+	mux.Handle("/sign-in/", samlSP.RequireAccount(app)) // direct requests to /hello/* to hello to app and ensures clients are authenticated with SSO
 
-	mux.Handle("/crewjam/saml/", samlSP) // direct requests to the /saml/ route to samlSP
+	mux.Handle("/saml/", samlSP) // direct requests to the /saml/ route to samlSP
 
 	addr := host + ":" + port
 	fmt.Println("current set addr is : " + addr)
@@ -231,5 +230,4 @@ func main() {
 		log.Printf("Unable to listen and serve: %v", listenServeErr)
 		// panic(listenServeErr)
 	}
-
 }
