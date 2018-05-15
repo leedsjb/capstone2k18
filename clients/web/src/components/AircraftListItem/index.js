@@ -12,15 +12,11 @@ const AircraftListItem = ({ aircraft, active }) => {
         <MasterListItem active={active}>
             <Box>
                 <Flex alignItems="center">
-                    <Box mr={2}>
-                        <Span fontWeight="bold">{aircraft.callsign}</Span>
-                        <Icon glyph="hourglass" />
-                    </Box>
-                    <Box mr={1}>
-                        <Span>{aircraft.nNum}</Span>
-                    </Box>
+                    <Span fontWeight="bold">{aircraft.callsign}</Span>
+                    <Span>{aircraft.nNum}</Span>
                     <Badge>{aircraft.status}</Badge>
                 </Flex>
+                <Icon glyph="earth" size={14} />
             </Box>
         </MasterListItem>
     );

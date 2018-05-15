@@ -99,13 +99,25 @@ class AircraftPage extends Component {
         ) : (
             <div>
                 <Box px={3} py={2}>
+                    <Heading is="h1" fontSize={4}>
+                        Aircraft
+                    </Heading>
                     <SearchBox
                         handleChange={query =>
                             this.props.fetchAircraft(query, null)
                         }
                         handleClear={() => this.props.fetchAircraft()}
                     />
-                    <Flex alignItems="center" mt={2}>
+                    <Flex alignItems="center" mt={0}>
+                        <DropdownSelect
+                            items={statusFilters}
+                            onChange={status => {
+                                if (status === "Any status") {
+                                    status = null;
+                                }
+                                this.props.fetchAircraft(null, status);
+                            }}
+                        />
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
