@@ -12,6 +12,7 @@ import (
 	"os"
 
 	"github.com/crewjam/saml/samlsp"
+	samlspsecure "github.com/edaniels/go-saml"
 )
 
 /*
@@ -24,7 +25,7 @@ import (
 // prints information about signed is session to page
 // from the request object
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %s", samlsp.Token(r.Context()).Attributes.Get("cn"))
+	fmt.Fprintf(w, "Hello, %s", samlspsecure.Token(r.Context()).Attributes.Get("cn"))
 
 	fmt.Println("request URI: " + r.RequestURI)
 	fmt.Println("request Method:" + r.Method)
@@ -172,7 +173,8 @@ func main() {
 		// panic(err)
 	}
 
-	idpMetadataURL, err := url.Parse("http://www.testshib.org/metadata/testshib-providers.xml") //idp.u.washington.edu
+	// idpMetadataURL, err := url.Parse("https://www.testshib.org/metadata/testshib-providers.xml")
+	idpMetadataURL, err := url.Parse("https://idp.u.washington.edu/metadata/idp-metadata.xml")
 	if err != nil {
 		panic(err)
 	}
@@ -193,6 +195,7 @@ func main() {
 	}
 
 	samlSP, _ := samlsp.New(samlsp.Options{
+		// samlSP, _ := samlsp.New(samlsp.Options{
 		URL:            *rootURL,
 		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
 		Certificate:    keyPair.Leaf,
