@@ -52,6 +52,18 @@ type crewRow struct {
 	Role        string
 }
 
+type reportRow struct {
+	Sex         string
+	ShortReport string
+	Intubated   string
+	Drips       string
+	Age         string
+	Weight      string
+	Cardiac     string
+	GIBleed     string
+	OB          string
+}
+
 const (
 	timeFormat = "2006-01-02 15:04 MST"
 )
@@ -313,25 +325,24 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 
 	// [MISSION]
 	missionDetail := &messages.MissionDetail{}
-	missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
-	missionRow := &missionRow{}
-	for missionRows.Next() {
-		err = missionRows.Scan(missionRow)
+	missionDetailRows, err := ctx.GetMissionDetailsByAircraft(currentRow.ID)
+	missionDetailRow := &missionDetailRow{}
+	for missionDetailRows.Next() {
+		err = missionDetailRows.Scan(missionDetailRow)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning mission row: %v", err)
 		}
 		missionDetail = &messages.MissionDetail{
-			Type:   missionRow.Type,
-			Vision: missionRow.FlightRules,
+			Type:   missionDetailRow.Type,
+			Vision: missionDetailRow.FlightRules,
 			// NextWaypointETE
 			// Waypoints
-			FlightNum: missionRow.FlightRules,
+			FlightNum: missionDetailRow.FlightRules,
 			// RadioReport
-			// Requestor
-			// Receiver
+			Requestor: missionDetailRow.Requestor,
+			Receiver:  missionDetailRow.Receiver,
 		}
 	}
-
 	// [Waypoint]
 	nextETE := ""
 	waypoints := []*messages.ClientMissionWaypoint{}
@@ -362,7 +373,33 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	// add waypoints to mission
 	missionDetail.Waypoints = waypoints
 	missionDetail.NextWaypointETE = nextETE
-	// add mission and waypoints to aircraft detail
+	// [RADIO REPORT]
+	report := &messages.Patient{}
+	reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Error returning radio report: %v", err)
+	}
+	reportRow := &reportRow{}
+	for reportRows.Next() {
+		err = reportRows.Scan(reportRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error scanning report row: %v", err)
+		}
+		report = &messages.Patient{
+			ShortReport: reportRow.ShortReport,
+			Intubated:   reportRow.Intubated,
+			Drips:       reportRow.Drips,
+			Age:         reportRow.Age,
+			Weight:      reportRow.Weight,
+			Gender:      reportRow.Sex,
+			Cardiac:     reportRow.Cardiac,
+			GIBleed:     reportRow.GIBleed,
+			OB:          reportRow.OB,
+		}
+	}
+	// add patient information to mission
+	missionDetail.RadioReport = report
+	// add mission, waypoints, and radio report to aircraft detail
 	aircraftDetail.Mission = missionDetail
 
 	// [OOS]

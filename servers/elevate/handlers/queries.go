@@ -76,3 +76,21 @@ func (ctx *HandlerContext) GetCrewByAircraft(aircraftID string) (*sql.Rows, erro
 	}
 	return crewRows, nil
 }
+
+func (ctx *HandlerContext) GetMissionDetailsByAircraft(aircraftID string) (*sql.Rows, error) {
+	// TODO sql sproc
+	mdRows, err := ctx.DB.Query("SELECT things")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for mission details: %v", err)
+	}
+	return mdRows, nil
+}
+
+func (ctx *HandlerContext) GetPatientByAircraft(aircraftID string) (*sql.Rows, error) {
+	// TODO sql sproc
+	patientRows, err := ctx.DB.Query("SELECT things")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for patient info: %v", err)
+	}
+	return patientRows, nil
+}
