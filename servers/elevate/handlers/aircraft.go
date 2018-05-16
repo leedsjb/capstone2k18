@@ -18,6 +18,14 @@ type missionRow struct {
 	FlightNum   string
 }
 
+type missionDetailRow struct {
+	Type        string
+	FlightRules string
+	FlightNum   string
+	Requestor   string
+	Receiver    string
+}
+
 type waypointRow struct {
 	Name        string
 	ETE         time.Time
@@ -29,6 +37,19 @@ type waypointRow struct {
 type oosRow struct {
 	Reason  string
 	EndTime time.Time
+}
+
+type oosDetailRow struct {
+	Reason    string
+	StartTime time.Time
+	EndTime   time.Time
+}
+
+type crewRow struct {
+	PersonnelID string
+	FName       string
+	LName       string
+	Role        string
 }
 
 const (
@@ -65,39 +86,42 @@ type aircraftDetailRow struct {
 	ID           string
 	Callsign     string
 	Nnum         string
-	AircraftType string
+	Manufacturer string
+	Title        string
+	Class        string
 	Lat          string
 	Long         string
 	LocationName string
+	Status       string
 	// [CREW]
-	PersonnelID string
-	FName       string
-	LName       string
-	Role        string
-	/* [MISSION DETAIL]
-	MissionType string
-	FlightRules string
-	TCNum string
-	// [WAYPOINTS]
-	WaypointTitle string
-	WaypointETE string
-	WaypointETT string
-	WaypointActive string
-	// [RADIO REPORT]
-	ShortReport string
-	Intubated string
-	Drips string
-	Age string
-	Weight string
-	Sex string
-	Cardiac string
-	GIBleed string
-	OB string
-	// [END radio report]
-	Requestor string
-	Receiverstring
-	*/
-	// [OOS Detail]
+	// PersonnelID string
+	// FName       string
+	// LName       string
+	// Role        string
+	// // [START MISSION DETAIL]
+	// MissionType string
+	// FlightRules string
+	// TCNum       string
+	// Requestor string
+	// Receiver  string
+	// // [WAYPOINTS]
+	// WaypointTitle  string
+	// WaypointETE    string
+	// WaypointETT    string
+	// WaypointActive string
+	// // [RADIO REPORT]
+	// ShortReport string
+	// Intubated   string
+	// Drips       string
+	// Age         string
+	// Weight      string
+	// Sex         string
+	// Cardiac     string
+	// GIBleed     string
+	// OB          string
+	// // [END radio report]
+	// // [END MISSION DETAIL]
+	// // [OOS Detail]
 	// OOSReason    string
 	// OOSStartTime string
 	// OOSEndTime   string
@@ -180,7 +204,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages
 		mission = &messages.Mission{
 			Type:      missionRow.Type,
 			Vision:    missionRow.FlightRules,
-			FlightNum: missionRow.FlightRules,
+			FlightNum: missionRow.FlightNum,
 		}
 	}
 	nextETE := ""
@@ -238,11 +262,138 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages
 		}
 	}
 
+	// []
+
 	// add mission to aircraft
 	aircraft.Mission = mission
 	// add OOS to aircraft
 	aircraft.OOS = oos
 	return aircraft
+}
+
+// GetAircraftDetailSummary ...
+func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRow) (*messages.AircraftDetail, error) {
+	// [GENERAL AIRCRAFT INFO]
+	aircraftType := currentRow.Manufacturer + " " + currentRow.Title
+
+	aircraftDetail := &messages.AircraftDetail{
+		ID:       currentRow.ID,
+		Status:   currentRow.Status,
+		Type:     aircraftType,
+		Callsign: currentRow.Callsign,
+		// Crew
+		Class: currentRow.Class,
+		Lat:   currentRow.Lat,
+		Long:  currentRow.Long,
+		Area:  currentRow.LocationName,
+		NNum:  currentRow.Nnum,
+		// Mission
+		// Waypoints
+		// OOS &message.OOSDetail{}
+	}
+
+	// [CREW]
+	crew := []*messages.Person{}
+	crewRows, err := ctx.GetCrewByAircraft(currentRow.ID)
+	crewRow := &crewRow{}
+	for crewRows.Next() {
+		err = crewRows.Scan(crewRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error scanning mission row: %v", err)
+		}
+		crewMember := &messages.Person{
+			ID:       crewRow.PersonnelID,
+			FName:    crewRow.FName,
+			LName:    crewRow.LName,
+			Position: crewRow.Role,
+		}
+		crew = append(crew, crewMember)
+	}
+	aircraftDetail.Crew = crew
+
+	// [MISSION]
+	missionDetail := &messages.MissionDetail{}
+	missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
+	missionRow := &missionRow{}
+	for missionRows.Next() {
+		err = missionRows.Scan(missionRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error scanning mission row: %v", err)
+		}
+		missionDetail = &messages.MissionDetail{
+			Type:   missionRow.Type,
+			Vision: missionRow.FlightRules,
+			// NextWaypointETE
+			// Waypoints
+			FlightNum: missionRow.FlightRules,
+			// RadioReport
+			// Requestor
+			// Receiver
+		}
+	}
+
+	// [Waypoint]
+	nextETE := ""
+	waypoints := []*messages.ClientMissionWaypoint{}
+	// TODO: SQL sproc for finding waypoints by missionID
+	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Error returning waypoints: %v", err)
+	}
+	waypointRow := &waypointRow{}
+	for waypointRows.Next() {
+		err = waypointRows.Scan(waypointRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
+		}
+		waypoint := &messages.ClientMissionWaypoint{
+			Name:        waypointRow.Name,
+			ETE:         waypointRow.ETE.String(),
+			ETT:         waypointRow.ETT.String(),
+			Active:      waypointRow.Active,
+			FlightRules: waypointRow.FlightRules,
+		}
+
+		if strings.ToLower(waypointRow.Active) == "true" {
+			nextETE = waypointRow.ETE.String()
+		}
+		waypoints = append(waypoints, waypoint)
+	}
+	// add waypoints to mission
+	missionDetail.Waypoints = waypoints
+	missionDetail.NextWaypointETE = nextETE
+	// add mission and waypoints to aircraft detail
+	aircraftDetail.Mission = missionDetail
+
+	// [OOS]
+	// TODO: SQL sproc for finding OOS status by aircraftID
+	oos := &messages.OOSDetail{}
+	oosRows, err := ctx.GetOOSByAircraft(currentRow.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Error returning OOS details: %v", err)
+	}
+	oosRow := &oosDetailRow{}
+	for oosRows.Next() {
+		err = oosRows.Scan(oosRow)
+		if err != nil {
+			fmt.Printf("Error scanning OOS row: %v", err)
+		}
+
+		oosFinishTime := time.Until(oosRow.EndTime)
+		remaining := oosFinishTime.String()
+		oosElapsedTime := time.Since(oosRow.StartTime)
+		duration := oosElapsedTime.String()
+
+		oos = &messages.OOSDetail{
+			Reason:    oosRow.Reason,
+			Remaining: remaining,
+			Duration:  duration,
+		}
+	}
+	// add OOS to aircraft
+	aircraftDetail.OOS = oos
+
+	return aircraftDetail, nil
 }
 
 // AircraftHandler ...
@@ -303,29 +454,35 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// // AircraftDetailHandler ...
-// func AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
-// 	id, err := strconv.Atoi(path.Base(r.URL.Path))
-// 	if err != nil {
-// 		http.Error(w, fmt.Sprintf("Error decoding ID: %v", err), http.StatusBadRequest)
-// 		return
-// 	}
-// 	var ad *AircraftDetail
-// 	for _, v := range aircraftDetails {
-// 		if v.ID == id {
-// 			ad = v
-// 			break
-// 		}
-// 	}
-// 	if ad == nil {
-// 		http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
-// 		return
-// 	}
-// 	switch r.Method {
-// 	case "GET":
-// 		respond(w, ad)
-// 	default:
-// 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
-// 		return
-// 	}
-// }
+// AircraftDetailHandler ...
+func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		id := r.URL.Path
+		aircraftDetail := &messages.AircraftDetail{}
+
+		aircraftDetailRows, err := ctx.GetAircraftDetailById(id)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		aircraftDetailRow := &aircraftDetailRow{}
+		for aircraftDetailRows.Next() {
+			err = aircraftDetailRows.Scan(aircraftDetailRow)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
+				return
+			}
+			aircraftDetail, err = ctx.GetAircraftDetailSummary(aircraftDetailRow)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error populating aircraft detail summary: %v", err), http.StatusInternalServerError)
+				return
+			}
+		}
+		respond(w, aircraftDetail)
+	default:
+		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
+		return
+	}
+}
