@@ -32,7 +32,7 @@ const NavBarItem = ({ title, glyph, path }) => {
                                 size={24}
                                 color="white"
                             />
-                            <Box ml={2}>
+                            <Box ml={3}>
                                 <Span color="white">{title}</Span>
                             </Box>
                         </Flex>

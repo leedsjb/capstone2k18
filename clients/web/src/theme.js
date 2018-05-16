@@ -1,7 +1,8 @@
 const colors = {
     wireframe: "#d8d8d8",
     primary: "#3E50C2",
-    primaryLight: "#4052C7"
+    primaryLight: "#4052C7",
+    border: "#D4D5D6"
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
