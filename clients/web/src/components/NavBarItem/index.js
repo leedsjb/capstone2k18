@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import Box from "../Box";
 import Icon from "../Icon";
 import Link from "../Link";
+import Span from "../Span";
 
 import RouterProvider from "../../containers/RouterProvider";
 
@@ -29,8 +30,11 @@ const NavBarItem = ({ title, glyph, path }) => {
                                         : `${glyph}Line`
                                 }
                                 size={24}
+                                color="white"
                             />
-                            <Box ml={2}>{title}</Box>
+                            <Box ml={2}>
+                                <Span color="white">{title}</Span>
+                            </Box>
                         </Flex>
                     </Link>
                 );

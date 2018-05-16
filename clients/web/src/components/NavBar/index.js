@@ -9,13 +9,14 @@ import Logo from "../Logo";
 import ProfileDropdown from "../ProfileDropdown";
 import ResourcesDropdown from "../ResourcesDropdown";
 import NavBarItem from "../NavBarItem";
+import GradientBox from "./GradientBox";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
                 matches ? (
-                    <Box bg="wireframe" py={3} px={3}>
+                    <GradientBox py={3} px={3}>
                         <Flex
                             justifyContent="space-between"
                             alignItems="center"
@@ -44,7 +45,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 <ProfileDropdown />
                             </Flex>
                         </Flex>
-                    </Box>
+                    </GradientBox>
                 ) : null
             }
         </Media>
