@@ -21,6 +21,7 @@ class MapView extends Component {
         super(props);
         this.state = {
             center: [-122.4821475, 47.6129432],
+            userPos: null,
             map: null
         };
     }
@@ -61,47 +62,29 @@ class MapView extends Component {
     }
 
     getUserLocation() {
-        if (navigator.geolocation && this.state.map) {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
-                    this.state.map.addLayer({
-                        id: "points",
-                        type: "symbol",
-                        source: {
-                            type: "geojson",
-                            data: {
-                                type: "FeatureCollection",
-                                features: [
-                                    {
-                                        type: "Feature",
-                                        geometry: {
-                                            type: "Point",
-                                            coordinates: [
-                                                position.coords.longitude,
-                                                position.coords.latitude
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        layout: {
-                            "icon-image": "circle-15",
-                            "icon-allow-overlap": true
-                        }
-                    });
-                    if (!this.props.id) {
+                    if (this.refs.aircraftPage) {
                         this.setState({
-                            center: [
+                            userPos: [
                                 position.coords.longitude,
                                 position.coords.latitude
                             ]
                         });
-                        this.state.map.setCenter([
-                            position.coords.longitude,
-                            position.coords.latitude
-                        ]);
-                        this.state.map.setZoom(11);
+                        if (!this.props.id) {
+                            this.setState({
+                                center: [
+                                    position.coords.longitude,
+                                    position.coords.latitude
+                                ]
+                            });
+                            this.state.map.setCenter([
+                                position.coords.longitude,
+                                position.coords.latitude
+                            ]);
+                            this.state.map.setZoom(11);
+                        }
                     }
                 },
                 null,
@@ -150,6 +133,19 @@ class MapView extends Component {
                                         ]}
                                     />
                                 </Layer>
+                                {this.state.userPos ? (
+                                    <Layer
+                                        type="symbol"
+                                        layout={{
+                                            "icon-image": "circle-15",
+                                            "icon-allow-overlap": true
+                                        }}
+                                    >
+                                        <Feature
+                                            coordinates={this.state.userPos}
+                                        />
+                                    </Layer>
+                                ) : null}
                                 {this.props.id ? (
                                     <Box>
                                         <Layer
@@ -274,7 +270,7 @@ class MapView extends Component {
 
     render() {
         return (
-            <Flex flex={1}>
+            <Flex flex={1} ref="aircraftPage">
                 <Map
                     onStyleLoad={map =>
                         this.setState({ map }, () => {
