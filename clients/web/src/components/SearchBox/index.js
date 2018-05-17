@@ -33,7 +33,7 @@ class SearchBox extends Component {
             <div>
                 <Box
                     borderRadius={32}
-                    border={`1px solid ${this.props.theme.colors.wireframe}`}
+                    border={`1px solid ${this.props.theme.colors.border}`}
                 >
                     <Flex alignItems="center">
                         <Box px={2}>

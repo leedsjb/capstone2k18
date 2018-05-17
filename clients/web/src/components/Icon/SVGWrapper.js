@@ -6,7 +6,8 @@ const SVGWrapper = sys(
         size: 24,
         position: "relative"
     },
-    "size"
+    "size",
+    "color"
 );
 
 SVGWrapper.displayName = "SVGWrapper";

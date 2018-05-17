@@ -5,7 +5,7 @@ import sys from "system-components";
 const Border = sys(
     {
         border: 1,
-        borderColor: "gray"
+        borderColor: "border"
     },
     "space",
     "width",

@@ -9,29 +9,33 @@ import Logo from "../Logo";
 import ProfileDropdown from "../ProfileDropdown";
 import ResourcesDropdown from "../ResourcesDropdown";
 import NavBarItem from "../NavBarItem";
+import GradientBox from "./GradientBox";
+import Image from "../Image";
+
+import logo from "../../images/logo.svg";
 
 const NavBar = ({ theme: { breakpoints } }) => {
     return (
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
                 matches ? (
-                    <Box bg="wireframe" py={3} px={3}>
+                    <GradientBox py={3} px={4}>
                         <Flex
                             justifyContent="space-between"
                             alignItems="center"
                         >
                             <Flex alignItems="center">
                                 <Link to="/aircraft">
-                                    <Logo />
+                                    <Image src={logo} alt="Elevate" w={49} />
                                 </Link>
-                                <Box ml={4}>
+                                <Box ml={8}>
                                     <NavBarItem
                                         title="Aircraft"
                                         path="/aircraft"
                                         glyph="airplaneFlight"
                                     />
                                 </Box>
-                                <Box ml={3}>
+                                <Box ml={6}>
                                     <NavBarItem
                                         title="People"
                                         path="/people"
@@ -41,10 +45,12 @@ const NavBar = ({ theme: { breakpoints } }) => {
                             </Flex>
                             <Flex alignItems="center">
                                 <ResourcesDropdown />
-                                <ProfileDropdown />
+                                <Box ml={3}>
+                                    <ProfileDropdown />
+                                </Box>
                             </Flex>
                         </Flex>
-                    </Box>
+                    </GradientBox>
                 ) : null
             }
         </Media>

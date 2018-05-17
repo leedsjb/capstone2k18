@@ -86,6 +86,15 @@ class AircraftPage extends Component {
         return <div>Loading...</div>;
     }
 
+    /*
+        <SearchBox
+            handleChange={query =>
+                this.props.fetchAircraft(query, null)
+            }
+            handleClear={() => this.props.fetchAircraft()}
+        />
+    */
+
     renderMasterView = () => {
         return this.props.aircraft.error ? (
             <div>
@@ -93,17 +102,12 @@ class AircraftPage extends Component {
             </div>
         ) : (
             <div>
-                <Box px={3} py={2}>
+                <Box bg="#F7F8FC" px={3} py={6}>
                     <Heading is="h1" fontSize={4}>
                         Aircraft
                     </Heading>
-                    <SearchBox
-                        handleChange={query =>
-                            this.props.fetchAircraft(query, null)
-                        }
-                        handleClear={() => this.props.fetchAircraft()}
-                    />
-                    <Flex alignItems="center" mt={0}>
+
+                    <Flex alignItems="center" mt={4}>
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
@@ -113,15 +117,17 @@ class AircraftPage extends Component {
                                 this.props.fetchAircraft(null, status);
                             }}
                         />
-                        <DropdownSelect
-                            items={statusFilters}
-                            onChange={status => {
-                                if (status === "Any status") {
-                                    status = null;
-                                }
-                                this.props.fetchAircraft(null, status);
-                            }}
-                        />
+                        <Box ml={3}>
+                            <DropdownSelect
+                                items={statusFilters}
+                                onChange={status => {
+                                    if (status === "Any status") {
+                                        status = null;
+                                    }
+                                    this.props.fetchAircraft(null, status);
+                                }}
+                            />
+                        </Box>
                     </Flex>
                 </Box>
 
