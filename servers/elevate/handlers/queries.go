@@ -119,6 +119,15 @@ func (ctx *HandlerContext) GetGroupDetails(groupID string) (*sql.Rows, error) {
 
 // [PEOPLE QUERIES]
 
+func (ctx *HandlerContext) GetPeople() (*sql.Rows, error) {
+	// TODO sql sproc
+	peopleRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
+	}
+	return peopleRows, nil
+}
+
 func (ctx *HandlerContext) GetPersonDetails(personID string) (*sql.Rows, error) {
 	// TODO sql sproc
 	pdRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")

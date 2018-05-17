@@ -37,28 +37,25 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 		/*
 			SELECT personnel_id, personnel_F_Name, personnel_L_Name, role_title
 		*/
-		peopleRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
-
+		peopleRows, err := ctx.GetPeople()
 		if err != nil {
-			fmt.Printf("Error querying MySQL for groups: %v", err)
+			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
 		}
 
 		people := []*messages.Person{}
-
-		currentRow := &personRow{}
-
+		personRow := &personRow{}
 		for peopleRows.Next() {
-			err = peopleRows.Scan(currentRow)
+			err = peopleRows.Scan(personRow)
 			if err != nil {
 				fmt.Printf("Error scanning person row: %v", err)
 				os.Exit(1)
 			}
 			// TODO: maybe optimize to actually check if these already exist
 			currentPerson := &messages.Person{
-				ID:       currentRow.PersonID,
-				FName:    currentRow.FName,
-				LName:    currentRow.LName,
-				Position: currentRow.RoleTitle,
+				ID:       personRow.PersonID,
+				FName:    personRow.FName,
+				LName:    personRow.LName,
+				Position: personRow.RoleTitle,
 			}
 
 			people = append(people, currentPerson)
