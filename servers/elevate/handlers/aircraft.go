@@ -156,15 +156,28 @@ func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 	return nil
 }
 
-// // LoadAircraftTrie ...
-// func LoadAircraftTrie(trie *indexes.Trie) error {
-// 	for _, v := range aircraftDetails {
-// 		if err := IndexAircraft(trie, GetAircraftSummary(v)); err != nil {
-// 			return fmt.Errorf("Error loading trie: %v", err)
-// 		}
-// 	}
-// 	return nil
-// }
+// LoadAircraftTrie ...
+func (ctx *HandlerContext) LoadAircraftTrie(trie *indexes.Trie) error {
+	aircraftRows, err := ctx.GetAllAircraft()
+	if err != nil {
+		return fmt.Errorf("Error loading trie: %v", err)
+	}
+	aircraftRow := &aircraftRow{}
+	for aircraftRows.Next() {
+		err = aircraftRows.Scan(aircraftRow)
+		if err != nil {
+			return fmt.Errorf("Error scanning aircraft row: %v", err)
+		}
+		aircraft, err := ctx.GetAircraftSummary(aircraftRow)
+		if err != nil {
+			return fmt.Errorf("Error populating aircraft: %v", err)
+		}
+		if err := IndexAircraft(trie, aircraft); err != nil {
+			return fmt.Errorf("Error loading trie: %v", err)
+		}
+	}
+	return nil
+}
 
 // GetTrieAircraft ...
 func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) ([]*messages.Aircraft, error) {

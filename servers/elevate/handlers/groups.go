@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/leedsjb/capstone2k18/servers/elevate/indexes"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -26,17 +27,68 @@ type groupDetailRow struct {
 	RoleTitle   string
 }
 
+// IndexGroup ...
+func IndexGroup(trie *indexes.Trie, group *messages.ClientGroup) error {
+	groupID, err := strconv.Atoi(group.ID)
+	if err != nil {
+		fmt.Printf("Error changing group ID from string to int")
+	}
+	if err := trie.AddEntity(strings.ToLower(group.Name), groupID); err != nil {
+		return fmt.Errorf("Error adding group to trie: %v", err)
+	}
+
+	for _, member := range group.PeoplePreview {
+		nameParts := strings.Fields(member)
+		for _, namePart := range nameParts {
+			if err := trie.AddEntity(strings.ToLower(namePart), groupID); err != nil {
+				return fmt.Errorf("Error adding group to trie: %v", err)
+			}
+		}
+	}
+	return nil
+}
+
+// LoadGroupsTrie ...
+func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
+	groupRows, err := ctx.GetAllGroups()
+	if err != nil {
+		return fmt.Errorf("Error querying MySQL for groups: %v", err)
+	}
+	// create variables and fill contents from retrieved rows
+	currentRow := &groupRow{}
+	currentGroupID := "first"
+	currentGroup := &messages.ClientGroup{}
+	currentName := ""
+	for groupRows.Next() {
+		err = groupRows.Scan(currentRow)
+		if err != nil {
+			return fmt.Errorf("Error scanning group row: %v", err)
+		}
+		if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
+			if err := IndexGroup(trie, currentGroup); err != nil {
+				return fmt.Errorf("Error loading trie: %v", err)
+			}
+		}
+		// TODO: maybe optimize to actually check if these already exist
+		// TODO: will this append individual groups even though the same
+		// group object is being reused?
+		currentGroup.ID = currentRow.GroupID
+		currentGroup.Name = currentRow.GroupName
+		currentName = currentRow.FName + currentRow.LName
+		currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
+	}
+	return nil
+}
+
 func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGroup, error) {
 	groups := []*messages.ClientGroup{}
 
-	// get each group with matching id
+	// get each group whose prefix matches the search term
 	for _, groupID := range groupIDS {
 		group := &messages.ClientGroup{}
 		ID := strconv.Itoa(groupID)
 		groupRows, err := ctx.GetGroupByID(ID)
 		groupRow := &groupRow{}
-		// for each group with matching id,
-		// get all matching rows
 		for groupRows.Next() {
 			err = groupRows.Scan(groupRow)
 			if err != nil {
@@ -83,8 +135,9 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 
 		if len(term) > 0 {
 			// search query non-empty
-			// get matching group prefixes
+			// find groupIDs that match the search term
 			groupIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			// retrieve the actual group information
 			groups, err := ctx.GetTrieGroups(groupIDS)
 			if err != nil {
 				fmt.Printf("Error pulling groups from trie: %v", err)
@@ -105,7 +158,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
 			// ORDER BY group_name
 
-			groupRows, err := ctx.GetGroups()
+			groupRows, err := ctx.GetAllGroups()
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
 				return

@@ -99,7 +99,7 @@ func (ctx *HandlerContext) GetPatientByAircraft(aircraftID string) (*sql.Rows, e
 
 // [GROUP GUERIES]
 
-func (ctx *HandlerContext) GetGroups() (*sql.Rows, error) {
+func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
 	// TODO sql sproc
 	groupRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
 	if err != nil {
