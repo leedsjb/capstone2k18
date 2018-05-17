@@ -10,8 +10,6 @@ for (let i = 0; i < 37; i++) {
     space.push(i * 4);
 }
 
-console.log(space);
-
 const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72, 96];
 
 const fontWeights = {

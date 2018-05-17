@@ -22,7 +22,6 @@ class GroupsDetailPage extends Component {
         if (this.props.id) {
             this.props.fetchGroupsDetail(this.props.id);
         }
-        console.log(this.props.id);
     }
 
     renderGroupsDetail() {
