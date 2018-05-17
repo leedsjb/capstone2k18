@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { withTheme } from "styled-components";
 
 import Box from "../Box";
-import Logo from "../Logo";
 import ProfileDropdown from "../ProfileDropdown";
 import ResourcesDropdown from "../ResourcesDropdown";
 import NavBarItem from "../NavBarItem";

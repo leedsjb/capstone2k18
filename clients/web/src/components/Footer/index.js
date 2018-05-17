@@ -8,7 +8,6 @@ import Span from "../Span";
 
 import collab from "../../images/collab.svg";
 import symbol from "../../images/symbol.svg";
-import placeholder from "../../images/placeholder-image.jpg";
 
 const Footer = () => {
     return (
