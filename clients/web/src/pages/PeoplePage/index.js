@@ -186,43 +186,43 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        let content = "";
-
         if (
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
         ) {
             let person = this.props.peopleDetail.data;
 
-            content = (
-                <Flex flexDirection="column" alignItems="center">
-                    <Box mt={4}>
-                        <ProfileAvatar fName={person.fName} size={72} />
-                    </Box>
-                    <Heading
-                        children={`${person.fName} ${person.lName}`}
-                        is="h2"
-                        fontSize={4}
-                        mt={3}
-                    />
-                    <Heading
-                        children={`${person.position}`}
-                        is="h3"
-                        fontWeight="normal"
-                        fontSize={2}
-                    />
-                    <Flex mt={3}>
-                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <Box mx={3}>
-                            <ButtonIcon glyph="phone">Call</ButtonIcon>
+            return (
+                <DetailView>
+                    <Flex flexDirection="column" alignItems="center">
+                        <Box mt={4}>
+                            <ProfileAvatar fName={person.fName} size={72} />
                         </Box>
-                        <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        <Heading
+                            children={`${person.fName} ${person.lName}`}
+                            is="h2"
+                            fontSize={4}
+                            mt={3}
+                        />
+                        <Heading
+                            children={`${person.position}`}
+                            is="h3"
+                            fontWeight="normal"
+                            fontSize={2}
+                        />
+                        <Flex mt={3}>
+                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        </Flex>
                     </Flex>
-                </Flex>
+                </DetailView>
             );
         }
 
-        return <DetailView>{content}</DetailView>;
+        return <DetailView />;
     }
 
     render() {
