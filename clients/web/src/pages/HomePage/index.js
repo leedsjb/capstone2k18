@@ -250,7 +250,11 @@ const HomePage = () => {
                                     Northwest, the preeminent medical transport
                                     service in the Pacific Northwest.
                                 </Measure>
-                                <a href="http://airliftnw.org/" target="_blank">
+                                <a
+                                    href="http://airliftnw.org/"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
                                     <Button>Get to know Airlift</Button>
                                 </a>
                             </Box>
