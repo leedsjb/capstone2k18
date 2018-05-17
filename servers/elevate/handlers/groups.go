@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"path"
+	"strconv"
+	"strings"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
@@ -24,50 +26,113 @@ type groupDetailRow struct {
 	RoleTitle   string
 }
 
+func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGroup, error) {
+	groups := []*messages.ClientGroup{}
+
+	// get each group with matching id
+	for _, groupID := range groupIDS {
+		group := &messages.ClientGroup{}
+		ID := strconv.Itoa(groupID)
+		groupRows, err := ctx.GetGroupByID(ID)
+		groupRow := &groupRow{}
+		// for each group with matching id,
+		// get all matching rows
+		for groupRows.Next() {
+			err = groupRows.Scan(groupRow)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning group row: %v", err)
+			}
+			// for each matching row, re-define
+			// groupID and groupName, which should stay the same
+			// and append members until there are no more
+			group, err = ctx.GetGroupSummary(groupRow, group)
+			if err != nil {
+				return nil, fmt.Errorf("Error populating group for trie: %v", err)
+			}
+		}
+		// after getting all the members, add the group
+		// to the list of returned groups
+		groups = append(groups, group)
+	}
+	return groups, nil
+}
+
+// GetGroupSummary populates a passed-in group with ID, Name, and
+// appends the current given row's member name to the group's list of members
+func (ctx *HandlerContext) GetGroupSummary(currentRow *groupRow, group *messages.ClientGroup) (*messages.ClientGroup, error) {
+	person := currentRow.FName + " " + currentRow.LName
+	people := append(group.PeoplePreview, person)
+
+	group = &messages.ClientGroup{
+		ID:            currentRow.GroupID,
+		Name:          currentRow.GroupName,
+		PeoplePreview: people,
+	}
+	return group, nil
+}
+
 // GroupsHandler ...
 func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		query := r.URL.Query()
+
+		term := query.Get("q")
+
 		groups := []*messages.ClientGroup{}
 
-		// type GroupDetail struct {
-		// 	ID            string    `json:"id"`
-		// 	Name          string    `json:"name"`
-		// 	PeoplePreview string    `json:"peoplePreview"`
-		// }
-
-		// SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP
-		// JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id
-		// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
-		// ORDER BY group_name
-
-		groupRows, err := ctx.GetGroups()
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
-			return
-		}
-		// create variables and fill contents from retrieved rows
-		currentRow := &groupRow{}
-		currentGroupID := "first"
-		currentGroup := &messages.ClientGroup{}
-		currentName := ""
-		for groupRows.Next() {
-			err = groupRows.Scan(currentRow)
+		if len(term) > 0 {
+			// search query non-empty
+			// get matching group prefixes
+			groupIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			groups, err := ctx.GetTrieGroups(groupIDS)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error scanning group row: %v", err), http.StatusInternalServerError)
+				fmt.Printf("Error pulling groups from trie: %v", err)
 				return
 			}
-			if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
-				groups = append(groups, currentGroup)
-			}
-			// TODO: maybe optimize to actually check if these already exist
-			currentGroup.ID = currentRow.GroupID
-			currentGroup.Name = currentRow.GroupName
-			currentName = currentRow.FName + currentRow.LName
-			currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
-		}
+			respond(w, groups)
+		} else {
+			// no filters, return all groups
 
-		respond(w, groups)
+			// type Group struct {
+			// 	ID            string    `json:"id"`
+			// 	Name          string    `json:"name"`
+			// 	PeoplePreview string    `json:"peoplePreview"`
+			// }
+
+			// SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP
+			// JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id
+			// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
+			// ORDER BY group_name
+
+			groupRows, err := ctx.GetGroups()
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+				return
+			}
+			// create variables and fill contents from retrieved rows
+			currentRow := &groupRow{}
+			currentGroupID := "first"
+			currentGroup := &messages.ClientGroup{}
+			currentName := ""
+			for groupRows.Next() {
+				err = groupRows.Scan(currentRow)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error scanning group row: %v", err), http.StatusInternalServerError)
+					return
+				}
+				if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
+					groups = append(groups, currentGroup)
+				}
+				// TODO: maybe optimize to actually check if these already exist
+				currentGroup.ID = currentRow.GroupID
+				currentGroup.Name = currentRow.GroupName
+				currentName = currentRow.FName + currentRow.LName
+				currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
+			}
+
+			respond(w, groups)
+		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
