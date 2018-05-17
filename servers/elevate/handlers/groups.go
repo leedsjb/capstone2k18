@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"path"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
@@ -44,7 +43,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 
 		groupRows, err := ctx.GetGroups()
 		if err != nil {
-			fmt.Printf("Error querying MySQL for groups: %v", err)
+			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+			return
 		}
 		// create variables and fill contents from retrieved rows
 		currentRow := &groupRow{}
@@ -54,8 +54,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 		for groupRows.Next() {
 			err = groupRows.Scan(currentRow)
 			if err != nil {
-				fmt.Printf("Error scanning group row: %v", err)
-				os.Exit(1)
+				http.Error(w, fmt.Sprintf("Error scanning group row: %v", err), http.StatusInternalServerError)
+				return
 			}
 			if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
 				groups = append(groups, currentGroup)
@@ -103,10 +103,10 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		*/
 
 		// TODO: Insert stored procedure here
-		groupDetailRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id WHERE group_id = " + id + "ORDER BY group_name")
-
+		groupDetailRows, err := ctx.GetGroupDetails(id)
 		if err != nil {
-			fmt.Printf("Error querying MySQL for groups: %v", err)
+			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+			return
 		}
 
 		// create variables and fill contents from retrieved rows
@@ -120,8 +120,8 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		for groupDetailRows.Next() {
 			err = groupDetailRows.Scan(row)
 			if err != nil {
-				fmt.Printf("Error scanning group detail row: %v", err)
-				os.Exit(1)
+				http.Error(w, fmt.Sprintf("Error scanning group detail row: %v", err), http.StatusInternalServerError)
+				return
 			}
 			// TODO: maybe optimize to actually check if these already exist
 			groupDetail.ID = row.GroupID
