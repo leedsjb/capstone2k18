@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"os"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -167,7 +167,7 @@ func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 // }
 
 // GetTrieAircraft ...
-func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) []*messages.Aircraft {
+func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) ([]*messages.Aircraft, error) {
 	results := []*messages.Aircraft{}
 
 	for _, aircraftID := range aircraftIDS {
@@ -177,17 +177,21 @@ func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) []*messages.Aircra
 		for aircraftRows.Next() {
 			err = aircraftRows.Scan(aircraftRow)
 			if err != nil {
-				fmt.Printf("Error scanning aircraft row: %v", err)
+				return nil, fmt.Errorf("Error scanning aircraft row: %v", err)
 			}
 		}
-		results = append(results, ctx.GetAircraftSummary(aircraftRow))
+		result, err := ctx.GetAircraftSummary(aircraftRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error populating aircraft for trie: %v", err)
+		}
+		results = append(results, result)
 	}
 
-	return results
+	return results, nil
 }
 
 // GetAircraftSummary ...
-func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages.Aircraft {
+func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*messages.Aircraft, error) {
 	// [GENERAL AIRCRAFT INFO]
 	aircraftType := currentRow.Manufacturer + " " + currentRow.Title
 
@@ -211,7 +215,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages
 	for missionRows.Next() {
 		err = missionRows.Scan(missionRow)
 		if err != nil {
-			fmt.Printf("Error scanning mission row: %v", err)
+			return nil, fmt.Errorf("Error scanning mission row: %v", err)
 		}
 		mission = &messages.Mission{
 			Type:      missionRow.Type,
@@ -280,7 +284,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) *messages
 	aircraft.Mission = mission
 	// add OOS to aircraft
 	aircraft.OOS = oos
-	return aircraft
+	return aircraft, nil
 }
 
 // GetAircraftDetailSummary ...
@@ -445,7 +449,11 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 		if len(term) > 0 {
 			// search query non-empty
 			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
-			aircraft := ctx.GetTrieAircraft(aircraftIDS)
+			aircraft, err := ctx.GetTrieAircraft(aircraftIDS)
+			if err != nil {
+				fmt.Printf("Error pulling aircraft from trie: %v", err)
+				return
+			}
 			respond(w, aircraft)
 		} else {
 			// search query empty
@@ -465,9 +473,14 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 					err = aircraftRows.Scan(currentRow)
 					if err != nil {
 						fmt.Printf("Error scanning aircraft row: %v", err)
-						os.Exit(1)
+						return
 					}
-					aircraft = append(aircraft, ctx.GetAircraftSummary(currentRow))
+					tempAircraft, err := ctx.GetAircraftSummary(currentRow)
+					if err != nil {
+						fmt.Printf("Error populating aircraft: %v", err)
+						return
+					}
+					aircraft = append(aircraft, tempAircraft)
 				}
 			} else {
 				// no filter, return all
@@ -477,9 +490,14 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 					err = aircraftRows.Scan(currentRow)
 					if err != nil {
 						fmt.Printf("Error scanning aircraft row: %v", err)
-						os.Exit(1)
+						return
 					}
-					aircraft = append(aircraft, ctx.GetAircraftSummary(currentRow))
+					tempAircraft, err := ctx.GetAircraftSummary(currentRow)
+					if err != nil {
+						fmt.Printf("Error populating aircraft: %v", err)
+						return
+					}
+					aircraft = append(aircraft, tempAircraft)
 				}
 			}
 
@@ -495,29 +513,33 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		id := r.URL.Path
-		aircraftDetail := &messages.AircraftDetail{}
+		id := path.Base(r.URL.Path)
+		if id != "." {
+			aircraftDetail := &messages.AircraftDetail{}
 
-		aircraftDetailRows, err := ctx.GetAircraftDetailById(id)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
-			return
-		}
-
-		aircraftDetailRow := &aircraftDetailRow{}
-		for aircraftDetailRows.Next() {
-			err = aircraftDetailRows.Scan(aircraftDetailRow)
+			aircraftDetailRows, err := ctx.GetAircraftDetailById(id)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
 				return
 			}
-			aircraftDetail, err = ctx.GetAircraftDetailSummary(aircraftDetailRow)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Error populating aircraft detail summary: %v", err), http.StatusInternalServerError)
-				return
+
+			aircraftDetailRow := &aircraftDetailRow{}
+			for aircraftDetailRows.Next() {
+				err = aircraftDetailRows.Scan(aircraftDetailRow)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
+					return
+				}
+				aircraftDetail, err = ctx.GetAircraftDetailSummary(aircraftDetailRow)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error populating aircraft detail summary: %v", err), http.StatusInternalServerError)
+					return
+				}
 			}
+			respond(w, aircraftDetail)
+		} else {
+			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
 		}
-		respond(w, aircraftDetail)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
