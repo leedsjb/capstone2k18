@@ -170,11 +170,18 @@ func main() {
 	// [HTTPS]
 
 	var aircraftTrie = indexes.NewTrie()
-	if err := handlers.LoadAircraftTrie(aircraftTrie); err != nil {
+	var personnelTrie = indexes.NewTrie()
+
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
+	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 		log.Fatalf("Error loading aircraft trie")
 	}
-
-	handlerCtx := handlers.NewHandlerContext(aircraftTrie, db)
+	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
+		log.Fatalf("Error loading groups into personnel trie")
+	}
+	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
+		log.Fatalf("Error loading people into personnel trie")
+	}
 
 	// Create a new mux for the web server.
 	mux := http.NewServeMux()
@@ -185,11 +192,13 @@ func main() {
 	mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
 	mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)
 	mux.HandleFunc("/people", handlerCtx.PeopleHandler)
-	mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
+	// TODO: write peopleMeHandler for auth
+	// mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
 	mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
 	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
 	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
-	mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
+	// TODO: write resourcesHandler after we set up cloud storage
+	// mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.
@@ -200,7 +209,7 @@ func main() {
 	// the root handler. Use log.Fatal() to report any errors
 	// that occur when trying to start the web server.
 	log.Printf("server is listening at %s...", addr)
-	log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(http.ListenAndServe(addr, wrappedMux))
 }
 
 func mustGetenv(k string) string {

@@ -49,6 +49,8 @@ func IndexGroup(trie *indexes.Trie, group *messages.ClientGroup) error {
 }
 
 // LoadGroupsTrie ...
+// *** Pass in the same trie as for handlers/people.go LoadPeopleTrie
+// to allow both to be mutually searchable ***
 func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 	groupRows, err := ctx.GetAllGroups()
 	if err != nil {
@@ -136,7 +138,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 		if len(term) > 0 {
 			// search query non-empty
 			// find groupIDs that match the search term
-			groupIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			groupIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
 			// retrieve the actual group information
 			groups, err := ctx.GetTrieGroups(groupIDS)
 			if err != nil {

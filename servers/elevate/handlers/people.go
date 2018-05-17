@@ -5,7 +5,10 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 
+	"github.com/leedsjb/capstone2k18/servers/elevate/indexes"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -29,38 +32,133 @@ type personDetailRow struct {
 	// SpecialQuals   string
 }
 
-// PeopleHandler ...
-func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		// TODO: replace with SPROC
-		/*
-			SELECT personnel_id, personnel_F_Name, personnel_L_Name, role_title
-		*/
-		peopleRows, err := ctx.GetPeople()
+// IndexPerson
+func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
+	personID, err := strconv.Atoi(person.ID)
+	if err != nil {
+		fmt.Printf("Error changing person ID from string to int")
+	}
+	personName := person.FName + " " + person.LName
+	if err := trie.AddEntity(strings.ToLower(personName), personID); err != nil {
+		return fmt.Errorf("Error adding person name to trie: %v", err)
+	}
+
+	if err := trie.AddEntity(strings.ToLower(person.Position), personID); err != nil {
+		return fmt.Errorf("Errod adding person role to trie: %v", err)
+	}
+	return nil
+}
+
+// LoadPeopleTrie
+// *** Pass in the same trie as for handlers/groups.go LoadGroupsTrie
+// to allow both to be mutually searchable ***
+func (ctx *HandlerContext) LoadPeopleTrie(trie *indexes.Trie) error {
+	peopleRows, err := ctx.GetPeople()
+	if err != nil {
+		return fmt.Errorf("Error querying MySQL for people: %v", err)
+	}
+
+	personRow := &personRow{}
+	for peopleRows.Next() {
+		err = peopleRows.Scan(personRow)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+			return fmt.Errorf("Error scanning person row: %v", err)
+		}
+		// TODO: maybe optimize to actually check if these already exist
+		currentPerson := &messages.Person{
+			ID:       personRow.PersonID,
+			FName:    personRow.FName,
+			LName:    personRow.LName,
+			Position: personRow.RoleTitle,
 		}
 
-		people := []*messages.Person{}
+		if err := IndexPerson(trie, currentPerson); err != nil {
+			return fmt.Errorf("Error loading people trie: %v", err)
+		}
+	}
+	return nil
+}
+
+// GetTriePeople
+func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, error) {
+	people := []*messages.Person{}
+
+	// get each group whose prefix matches the search term
+	for _, personID := range peopleIDS {
+		person := &messages.Person{}
+		ID := strconv.Itoa(personID)
+		peopleRows, err := ctx.GetPersonByID(ID)
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving people from the DB: %v", err)
+		}
 		personRow := &personRow{}
 		for peopleRows.Next() {
 			err = peopleRows.Scan(personRow)
 			if err != nil {
-				fmt.Printf("Error scanning person row: %v", err)
-				os.Exit(1)
+				return nil, fmt.Errorf("Error scanning group row: %v", err)
 			}
 			// TODO: maybe optimize to actually check if these already exist
-			currentPerson := &messages.Person{
+			person = &messages.Person{
 				ID:       personRow.PersonID,
 				FName:    personRow.FName,
 				LName:    personRow.LName,
 				Position: personRow.RoleTitle,
 			}
-
-			people = append(people, currentPerson)
 		}
-		respond(w, people)
+		// TODO: append outside the people scan loop to ensure you only get
+		// one person per ID?
+		// Or some sort of logic to append multiple positions to a person?
+		people = append(people, person)
+	}
+	return people, nil
+}
+
+// PeopleHandler ...
+func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		query := r.URL.Query()
+
+		term := query.Get("q")
+
+		people := []*messages.Person{}
+
+		if len(term) > 0 {
+			// search term non-empty, filter which people are returned
+			peopleIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
+			// retrieve the actual group information
+			people, err := ctx.GetTriePeople(peopleIDS)
+			if err != nil {
+				fmt.Printf("Error pulling groups from trie: %v", err)
+				return
+			}
+			respond(w, people)
+		} else {
+			// search term empty, return all people
+			peopleRows, err := ctx.GetPeople()
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+			}
+
+			personRow := &personRow{}
+			for peopleRows.Next() {
+				err = peopleRows.Scan(personRow)
+				if err != nil {
+					fmt.Printf("Error scanning person row: %v", err)
+					os.Exit(1)
+				}
+				// TODO: maybe optimize to actually check if these already exist
+				currentPerson := &messages.Person{
+					ID:       personRow.PersonID,
+					FName:    personRow.FName,
+					LName:    personRow.LName,
+					Position: personRow.RoleTitle,
+				}
+
+				people = append(people, currentPerson)
+			}
+			respond(w, people)
+		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
