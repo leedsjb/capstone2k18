@@ -97,6 +97,15 @@ func (ctx *HandlerContext) GetPatientByAircraft(aircraftID string) (*sql.Rows, e
 	return patientRows, nil
 }
 
+func (ctx *HandlerContext) GetOOSDetailByAircraft(aircraftID string) (*sql.Rows, error) {
+	// TODO sql sproc
+	OOSDetailRows, err := ctx.DB.Query("SELECT things")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for OOS details: %v", err)
+	}
+	return OOSDetailRows, nil
+}
+
 // [GROUP GUERIES]
 
 func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
