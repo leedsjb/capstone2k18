@@ -32,7 +32,12 @@ class GroupsDetailPage extends Component {
         ) {
             return this.props.groupsDetail.data.people.map(person => {
                 return (
-                    <Link to={`/people/${person.id}`} key={person.id}>
+                    <Link
+                        to={`/people/${person.id}?source=groups&id=${
+                            this.props.id
+                        }`}
+                        key={person.id}
+                    >
                         <MasterListItem>
                             <div>{person.fName}</div>
                         </MasterListItem>

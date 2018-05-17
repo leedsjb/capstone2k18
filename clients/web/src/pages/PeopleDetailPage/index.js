@@ -58,12 +58,19 @@ class PeopleDetailPage extends Component {
     }
 
     render() {
+        let backPath =
+            new URLSearchParams(window.location.search).get("source") ===
+            "groups"
+                ? `/groups/${new URLSearchParams(window.location.search).get(
+                      "id"
+                  )}`
+                : "/people";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>People</title>
                 </Helmet>
-                <TitleBar back backPath={"/people"} title="People" />
+                <TitleBar back backPath={backPath} title="People" />
                 <ScrollView>
                     {this.renderPeopleDetail(this.props.peopleDetail.data)}
                 </ScrollView>

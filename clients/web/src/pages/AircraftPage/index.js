@@ -24,12 +24,7 @@ import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 import openSocket from "../../actions/socket/openSocket";
 
-import airplane from "../../images/airplane.svg";
-
 const statusFilters = ["Any status", "On Mission", "OOS"];
-
-const image = new Image(32, 32);
-image.src = airplane;
 
 class AircraftPage extends Component {
     constructor(props) {

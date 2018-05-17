@@ -226,12 +226,7 @@ class PeoplePage extends Component {
     }
 
     render() {
-        let title = "";
-        if (this.isPeopleTab()) {
-            title = "People";
-        } else {
-            title = "Groups";
-        }
+        let title = this.isPeopleTab() ? "People" : "Groups";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
