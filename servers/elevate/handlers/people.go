@@ -3,116 +3,65 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"path"
-	"strconv"
+
+	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
-// Person ...
-type Person struct {
-	ID       int    `json:"id"`
-	FName    string `json:"fName"`
-	LName    string `json:"lName"`
-	Position string `json:"position"`
+type personRow struct {
+	PersonID  string
+	FName     string
+	LName     string
+	RoleTitle string
 }
 
-// PersonDetail ...
-type PersonDetail struct {
-	ID           int    `json:"id"`
-	FName        string `json:"fName"`
-	LName        string `json:"lName"`
-	Position     string `json:"position"`
-	Email        string `json:"email"`
-	UWNetID      string `json:"uwNetID"`
-	Mobile       string `json:"mobile"`
-	SpecialQuals string `json:"specialQuals"`
-}
-
-var personDetails = []*PersonDetail{
-	{
-		ID:           1,
-		FName:        "Andrew",
-		LName:        "Wiles",
-		Position:     "Adult RN",
-		Email:        "andrewwiles@uw.edu",
-		UWNetID:      "andrewwiles",
-		Mobile:       "(811) 328 3218",
-		SpecialQuals: "",
-	},
-	{
-		ID:           2,
-		FName:        "Austin",
-		LName:        "Bailey",
-		Position:     "Pilot",
-		Email:        "austinbailey@airliftnw.org",
-		UWNetID:      "austinbailey",
-		Mobile:       "(206) 456 7890",
-		SpecialQuals: "",
-	},
-	{
-		ID:           3,
-		FName:        "Brenda",
-		LName:        "Nelson",
-		Position:     "Chief Flight Nurse",
-		Email:        "brendanelson@airliftnw.org",
-		UWNetID:      "brendanelson",
-		Mobile:       "(123) 456 7890",
-		SpecialQuals: "",
-	},
-	{
-		ID:           4,
-		FName:        "Donald",
-		LName:        "Lynch",
-		Position:     "Flight Nurse",
-		Email:        "donaldlynch@uw.edu",
-		UWNetID:      "donaldlynch",
-		Mobile:       "(456) 789 0123",
-		SpecialQuals: "",
-	},
-	{
-		ID:           5,
-		FName:        "Christine",
-		LName:        "Engle",
-		Position:     "Pilot",
-		Email:        "chrisengle@airliftnw.org",
-		UWNetID:      "chrisengle",
-		Mobile:       "(425) 598 6442",
-		SpecialQuals: "",
-	},
-	{
-		ID:           6,
-		FName:        "Atif",
-		LName:        "Mack",
-		Position:     "Flight Nurse",
-		Email:        "atifmack@uw.edu",
-		UWNetID:      "atifmack",
-		Mobile:       "(206) 280 7212",
-		SpecialQuals: "",
-	},
-	{
-		ID:           7,
-		FName:        "David",
-		LName:        "Gallagher",
-		Position:     "Analyst",
-		Email:        "david.gallagher@airliftnw.org",
-		UWNetID:      "dgallagher",
-		Mobile:       "(202) 555 0110",
-		SpecialQuals: "",
-	},
+type personDetailRow struct {
+	PersonnelID    string
+	FName          string
+	LName          string
+	PersonnelTitle string
+	Email          string
+	// Will we still have UWNetID in the DB if we're using UW Groups?
+	// UWNetID        string
+	SMS string
+	// Infer?
+	// SpecialQuals   string
 }
 
 // PeopleHandler ...
-func PeopleHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		people := []*Person{}
-		for _, v := range personDetails {
-			p := &Person{
-				ID:       v.ID,
-				FName:    v.FName,
-				LName:    v.LName,
-				Position: v.Position,
+		// TODO: replace with SPROC
+		/*
+			SELECT personnel_id, personnel_F_Name, personnel_L_Name, role_title
+		*/
+		peopleRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
+
+		if err != nil {
+			fmt.Printf("Error querying MySQL for groups: %v", err)
+		}
+
+		people := []*messages.Person{}
+
+		currentRow := &personRow{}
+
+		for peopleRows.Next() {
+			err = peopleRows.Scan(currentRow)
+			if err != nil {
+				fmt.Printf("Error scanning person row: %v", err)
+				os.Exit(1)
 			}
-			people = append(people, p)
+			// TODO: maybe optimize to actually check if these already exist
+			currentPerson := &messages.Person{
+				ID:       currentRow.PersonID,
+				FName:    currentRow.FName,
+				LName:    currentRow.LName,
+				Position: currentRow.RoleTitle,
+			}
+
+			people = append(people, currentPerson)
 		}
 		respond(w, people)
 	default:
@@ -122,26 +71,42 @@ func PeopleHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // PersonDetailHandler ...
-func PersonDetailHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(path.Base(r.URL.Path))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Error decoding ID: %v", err), http.StatusBadRequest)
-		return
-	}
-	var pd *PersonDetail
-	for _, v := range personDetails {
-		if v.ID == id {
-			pd = v
-			break
-		}
-	}
-	if pd == nil {
-		http.Error(w, "No person with that ID", http.StatusBadRequest)
-		return
-	}
+func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		respond(w, pd)
+		id := path.Base(r.URL.Path)
+		if id != "." {
+			personDetail := &messages.PersonDetail{}
+
+			personDetailRows, err := ctx.GetPersonDetails(id)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error getting person details from DB: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			personDetailRow := &personDetailRow{}
+			for personDetailRows.Next() {
+				err = personDetailRows.Scan(personDetailRow)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error scanning person details from query: %v", err), http.StatusInternalServerError)
+					return
+				}
+				personDetail = &messages.PersonDetail{
+					ID:       personDetailRow.PersonnelID,
+					FName:    personDetailRow.FName,
+					LName:    personDetailRow.LName,
+					Position: personDetailRow.PersonnelTitle,
+					Email:    personDetailRow.Email,
+					// UWNetID:      personDetailRow.UWNetID,
+					Mobile: personDetailRow.SMS,
+					// SpecialQuals: personDetailRow.SpecialQuals,
+				}
+
+			}
+			respond(w, personDetail)
+		} else {
+			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
+		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return

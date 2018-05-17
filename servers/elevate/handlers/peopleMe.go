@@ -6,7 +6,8 @@ import "net/http"
 func PeopleMeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		respond(w, personDetails[6])
+		// TODO: when auth, store active user
+		// respond(w, personDetails[6])
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return

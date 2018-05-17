@@ -42,8 +42,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 		// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
 		// ORDER BY group_name
 
-		groupsRow, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id ORDER BY group_name")
-
+		groupRows, err := ctx.GetGroups()
 		if err != nil {
 			fmt.Printf("Error querying MySQL for groups: %v", err)
 		}
@@ -52,8 +51,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 		currentGroupID := "first"
 		currentGroup := &messages.ClientGroup{}
 		currentName := ""
-		for groupsRow.Next() {
-			err = groupsRow.Scan(currentRow)
+		for groupRows.Next() {
+			err = groupRows.Scan(currentRow)
 			if err != nil {
 				fmt.Printf("Error scanning group row: %v", err)
 				os.Exit(1)
@@ -104,7 +103,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		*/
 
 		// TODO: Insert stored procedure here
-		groupsRow, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id WHERE group_id = " + id + "ORDER BY group_name")
+		groupDetailRows, err := ctx.DB.Query("SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id,  FROM tblPERSONNEL_GROUP JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id WHERE group_id = " + id + "ORDER BY group_name")
 
 		if err != nil {
 			fmt.Printf("Error querying MySQL for groups: %v", err)
@@ -118,8 +117,8 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		currentPerson := &messages.Person{}
 		row := &groupDetailRow{}
 		currentName := ""
-		for groupsRow.Next() {
-			err = groupsRow.Scan(row)
+		for groupDetailRows.Next() {
+			err = groupDetailRows.Scan(row)
 			if err != nil {
 				fmt.Printf("Error scanning group detail row: %v", err)
 				os.Exit(1)
