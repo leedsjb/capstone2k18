@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 
 import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
-import DetailView from "../../components/DetailView";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
 import ProfileAvatar from "../../components/ProfileAvatar";

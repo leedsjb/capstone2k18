@@ -9,7 +9,7 @@ import FlexFillVH from "../FlexFillVH";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import AircraftMapPage from "../../pages/AircraftMapPage";
-import GroupDetailPage from "../../pages/GroupDetailPage";
+import GroupsDetailPage from "../../pages/GroupsDetailPage";
 import HomePage from "../../pages/HomePage";
 import NotFoundPage from "../../pages/NotFoundPage";
 import PeoplePage from "../../pages/PeoplePage";
@@ -17,7 +17,6 @@ import PeopleDetailPage from "../../pages/PeopleDetailPage";
 import ProfilePage from "../../pages/ProfilePage";
 import ResourcesPage from "../../pages/ResourcesPage";
 import SignInPage from "../../pages/SignInPage";
-import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -81,7 +80,7 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/aircraft" component={AircraftPage} />
                             <Route
                                 path="/groups/:groupID"
-                                component={GroupDetailPage}
+                                component={GroupsDetailPage}
                             />
                             <Route path="/groups" component={PeoplePage} />
                             <Route

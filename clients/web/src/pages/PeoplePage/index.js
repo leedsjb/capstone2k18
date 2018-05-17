@@ -226,13 +226,19 @@ class PeoplePage extends Component {
     }
 
     render() {
+        let title = "";
+        if (this.isPeopleTab()) {
+            title = "People";
+        } else {
+            title = "Groups";
+        }
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
 
-                <TitleBar title="People" />
+                <TitleBar title={title} />
                 <NavBar />
 
                 <MasterDetailView>

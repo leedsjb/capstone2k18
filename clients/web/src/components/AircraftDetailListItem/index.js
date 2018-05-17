@@ -3,7 +3,6 @@ import React from "react";
 import Box from "../Box";
 import CrewDetailListItem from "../CrewDetailListItem";
 import Heading from "../Heading";
-import MasterListItem from "../MasterListItem";
 import Text from "../Text";
 
 const AircraftDetailListItem = ({ aircraftDetail }) => {
