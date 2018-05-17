@@ -61,7 +61,7 @@ class MapView extends Component {
     }
 
     getUserLocation() {
-        if (navigator.geolocation) {
+        if (navigator.geolocation && this.state.map) {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     this.state.map.addLayer({
