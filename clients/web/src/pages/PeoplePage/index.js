@@ -51,8 +51,8 @@ class PeoplePage extends Component {
             this.props.fetchPeopleDetail(nextProps.id);
         }
 
-        if (nextProps.groupId && nextProps.groupId !== this.props.groupId) {
-            this.props.fetchGroupsDetail(nextProps.groupId);
+        if (nextProps.groupID && nextProps.groupID !== this.props.groupID) {
+            this.props.fetchGroupsDetail(nextProps.groupID);
         }
     }
 
@@ -61,7 +61,7 @@ class PeoplePage extends Component {
     }
 
     isGroupDetailView() {
-        return matchPath(this.props.location.pathname, "/groups/:groupId");
+        return matchPath(this.props.location.pathname, "/groups/:groupID");
     }
 
     renderPeopleList() {
@@ -186,7 +186,7 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        let content = "Loading...";
+        let content = "";
 
         if (
             !this.props.peopleDetail.pending &&
