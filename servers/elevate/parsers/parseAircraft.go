@@ -11,20 +11,26 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
-func ParseAircraftCreate(msg *messages.Aircraft_Create,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+// For each action, consider:
+// Send to client?
+// Write to db?
+// Write to trie?
+
+func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Create: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
 
 	// TODO: parse and write to sql sproc
+
 	// type Aircraft_Create struct {
 	// 	ID                string   `json:"ID"`
 	// 	NNum              string   `json:"nNum"`
@@ -44,17 +50,37 @@ func ParseAircraftCreate(msg *messages.Aircraft_Create,
 	// 	CallTypes         []string `json:"callTypes"`
 	// }
 
+	// [ADD AIRCRAFT TO DB]
+	// if err := ctx.AddNewAircraft(stuff goes here); err != nil {
+	// 	return fmt.Errorf("Error adding new aircraft to DB: %v", err)
+	// }
+
+	// [ADD AIRCRAFT TO TRIE]
+	// aircraftID, err := strconv.Atoi(msg.ID)
+	// if err != nil {
+	// 	return fmt.Errorf("Error converting aircraft ID to int: %v", err)
+	// }
+
+	// if err = ctx.AircraftTrie.AddEntity(strings.ToLower(msg.Callsign), aircraftID); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	// }
+
+	// if err = ctx.AircraftTrie.AddEntity(strings.ToLower(msg.NNum), aircraftID); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft to trie: %v", err)
+	// }
+
+	return nil
 }
 
-func ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Props-Update: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -72,21 +98,28 @@ func ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
 	// 	Vendor           string `json:"vendor"`
 	// 	SpecialEquipment string `json:"specialEquipment"`
 	// }
+
+	// [ADD PROPS UPDATE TO DB]
+	// if err := ctx.UpdateAircraftProps(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // PENDING: Brian add "id" to message
 // ParseAircraftCrewUpdate handles the standard assignment of crews
 // to aircraft as shifts change
 // does not notify client, writes new info to db
-func ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Crew-Update: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -98,21 +131,28 @@ func ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 	// 	AdultRN     string `json:"adultRN"`
 	// 	PediatricRN string `json:"pediatricRN"`
 	// }
+
+	// [ADD CREW UPDATE TO DB]
+	// if err := ctx.UpdateAircraftCrew(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft crew updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // PENDING: Brian add "id" to message
 // ParseAircraftServiceSchedule handles when aircraft are scheduled
 // to be serviced for maintenance or otherwise
 // does not notify client, writes new info to db
-func ParseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Service-Schedule: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -125,21 +165,28 @@ func ParseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
 	// 	EndTime   string `json:"endTime"`
 	// 	Status    string `json:"status"`
 	// }
+
+	// [ADD SERVICE SCHEDULE UPDATE TO DB]
+	// if err := ctx.UpdateAircraftServiceSchedule(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft service schedule updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // PENDING: Brian add "id" to message
 // ParseAircraftPositionUpdate handles anytime the aircraft moves,
 // and is highly relevant to missions
 // notifies client, writes new info to db
-func ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Position-Update: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -178,4 +225,11 @@ func ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 
 	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+
+	// ADD POSITION UPDATE TO DB
+	// if err := ctx.UpdateAircraftPosition(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding aircraft position updates to DB: %v", err)
+	// }
+
+	return nil
 }
