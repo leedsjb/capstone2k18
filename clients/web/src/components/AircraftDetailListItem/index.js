@@ -35,7 +35,7 @@ class AircraftDetailListItem extends Component {
                     </Clickable>
                 </Flex>
                 <Divider />
-                <Box px={6} my={6}>
+                <Box mx={6} my={6}>
                     {this.props.aircraftDetail.data.mission ? (
                         <div>
                             <Heading is="h2" fontSize={4}>
@@ -47,21 +47,26 @@ class AircraftDetailListItem extends Component {
                     <Heading is="h2" fontSize={4} mt={4}>
                         Patient
                     </Heading>
+
                     {this.props.aircraftDetail.data.crew ? (
                         <Box>
                             <Heading is="h2" fontSize={4}>
                                 Assigned Crew
                             </Heading>
-                            {this.props.aircraftDetail.data.crew.people.map(
-                                c => {
-                                    return (
-                                        <CrewDetailListItem
-                                            crewDetail={c}
-                                            key={c.id}
-                                        />
-                                    );
-                                }
-                            )}
+                            <Flex flexWrap="wrap">
+                                {this.props.aircraftDetail.data.crew.people.map(
+                                    c => {
+                                        return (
+                                            <CrewDetailListItem
+                                                crewDetail={c}
+                                                key={c.id}
+                                                w="calc(50% - 8px)"
+                                                mx={2}
+                                            />
+                                        );
+                                    }
+                                )}
+                            </Flex>
                         </Box>
                     ) : null}
                     {this.props.aircraftDetail.data.mission ? (
@@ -69,12 +74,7 @@ class AircraftDetailListItem extends Component {
                             <Heading is="h6" fontSize={3} my={3}>
                                 Radio Report
                             </Heading>
-                            <Text>
-                                {
-                                    this.props.aircraftDetail.data.mission
-                                        .radioReport
-                                }
-                            </Text>
+                            <Text />
                         </Box>
                     ) : null}
                     {this.props.aircraftDetail.data.mission ? (
