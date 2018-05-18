@@ -82,6 +82,7 @@ const Footer = () => {
                         </a>
                         <a
                             href="https://www.washington.edu/online/terms/"
+                            rel="noopener noreferrer"
                             target="_blank"
                         >
                             <Span fontSize={1} fontWeight="bold" lineHeight={2}>
