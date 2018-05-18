@@ -10,6 +10,7 @@
 #   2. Create proxy user on MySQL instance
 #         gcloud sql users create proxyuser cloudsqlproxy~%
 #         --instance=airliftnw-uw:us-west1:alnw-elevate-test --password=
+
 # Instance connection name: airliftnw-uw:us-west1:alnw-elevate-test
 #   3. Create Kubernetes secret objects
 #     kubectl create secret generic cloudsql-instance-credentials --from-file=airliftnw-uw-9170188dcf15.json=./
@@ -40,8 +41,8 @@ spec:
         app: "go-api-server-app"
     spec:
       containers: 
-      - name: crewjam-saml-image
-        image: us.gcr.io/airliftnw-uw/go-apiserver:0.1
+      - name: go-apiserver-container
+        image: us.gcr.io/airliftnw-uw/go-apiserver:0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -67,7 +68,7 @@ spec:
           value: "airliftnw-uw"
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:1.11
-        command: ["/cloud_sql_proxy","-instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306","-credential_file=/secrets/cloudsql/credentials.json"]
+        command: ["/cloud_sql_proxy","-instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306","-credential_file=/secrets/cloudsql/airliftnw-uw-9170188dcf15.json"]
         volumeMounts:
           - name: cloudsql-instance-credentials
             mountPath: /secrets/cloudsql
