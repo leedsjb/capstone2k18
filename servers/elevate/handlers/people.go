@@ -53,7 +53,7 @@ func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
 // *** Pass in the same trie as for handlers/groups.go LoadGroupsTrie
 // to allow both to be mutually searchable ***
 func (ctx *HandlerContext) LoadPeopleTrie(trie *indexes.Trie) error {
-	peopleRows, err := ctx.GetPeople()
+	peopleRows, err := ctx.GetAllPeople()
 	if err != nil {
 		return fmt.Errorf("Error querying MySQL for people: %v", err)
 	}
@@ -136,7 +136,7 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 			respond(w, people)
 		} else {
 			// search term empty, return all people
-			peopleRows, err := ctx.GetPeople()
+			peopleRows, err := ctx.GetAllPeople()
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error retrieving people from DB: %v", err), http.StatusInternalServerError)
 			}
@@ -174,7 +174,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 		if id != "." {
 			personDetail := &messages.PersonDetail{}
 
-			personDetailRows, err := ctx.GetPersonDetails(id)
+			personDetailRows, err := ctx.GetPersonDetailsByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting person details from DB: %v", err), http.StatusInternalServerError)
 				return

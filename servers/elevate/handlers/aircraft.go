@@ -94,8 +94,8 @@ type aircraftRow struct {
 	WaypointActive string
 	*/
 	// [OOS]
-	OOSReason  string
-	OOSEndTime string
+	// OOSReason  string
+	// OOSEndTime string
 }
 
 type aircraftDetailRow struct {
@@ -546,7 +546,7 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 		if id != "." {
 			aircraftDetail := &messages.AircraftDetail{}
 
-			aircraftDetailRows, err := ctx.GetAircraftDetailById(id)
+			aircraftDetailRows, err := ctx.GetAircraftDetailByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
 				return

@@ -233,7 +233,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 		if id != "." {
 			// TODO: Insert stored procedure here
-			groupDetailRows, err := ctx.GetGroupDetails(id)
+			groupDetailRows, err := ctx.GetGroupDetailsByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
 				return
