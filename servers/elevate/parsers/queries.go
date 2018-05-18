@@ -37,3 +37,17 @@ func (ctx *ParserContext) UpdateGroup(groupInfo *messages.Group) error {
 func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group) error {
 	return nil
 }
+
+// [MISSIONS]
+
+func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) error {
+	return nil
+}
+
+func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_Waypoint_Update) error {
+	return nil
+}
+
+func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_Update) error {
+	return nil
+}
