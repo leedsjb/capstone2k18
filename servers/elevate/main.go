@@ -89,16 +89,16 @@ func main() {
 	notifier := handlers.NewNotifier()
 
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
-	parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
-	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
-		log.Fatalf("Error loading aircraft trie")
-	}
+	// parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
+	// if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
+	// 	log.Fatalf("Error loading aircraft trie")
+	// }
 	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
 		log.Fatalf("Error loading groups into personnel trie")
 	}
-	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading people into personnel trie")
-	}
+	// if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
+	// 	log.Fatalf("Error loading people into personnel trie")
+	// }
 
 	// [PUB/SUB]
 
@@ -178,7 +178,7 @@ func main() {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
-		go subscribe(subscription, notifier, parserCtx)
+		// go subscribe(subscription, notifier, parserCtx)
 	}
 
 	// [HTTPS]
@@ -189,14 +189,14 @@ func main() {
 	// Tell the mux to call your handlers
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.Handle("/v1/ws", wsh)
-	mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
-	mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)
-	mux.HandleFunc("/people", handlerCtx.PeopleHandler)
+	// mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
+	// mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)
+	// mux.HandleFunc("/people", handlerCtx.PeopleHandler)
 	// TODO: write peopleMeHandler for auth
 	// mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
-	mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
+	// mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
 	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
-	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
+	// mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
 	// TODO: write resourcesHandler after we set up cloud storage
 	// mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
