@@ -51,3 +51,17 @@ func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_W
 func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_Update) error {
 	return nil
 }
+
+// [USERS]
+
+func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
+	return nil
+}
+
+func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
+	return nil
+}
+
+func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
+	return nil
+}
