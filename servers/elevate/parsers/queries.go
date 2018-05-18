@@ -65,3 +65,16 @@ func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 	return nil
 }
+
+// [WAYPOINTS]
+
+func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error {
+	return nil
+}
+
+func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error {
+	return nil
+}
+func (ctx *ParserContext) DeleteWaypoint(waypointInfo *messages.Waypoint_Delete) error {
+	return nil
+}
