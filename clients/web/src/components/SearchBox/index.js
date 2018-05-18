@@ -51,6 +51,7 @@ class SearchBox extends Component {
                                 }
                             })
                         }
+                        onEnter={() => console.log("Enter was hit")}
                         py={0}
                         value={this.state.query}
                     />
