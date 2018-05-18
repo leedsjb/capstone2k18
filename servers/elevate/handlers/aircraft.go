@@ -12,6 +12,10 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
+// These structs receive data from SQL queries
+// and allow the structure of SQL data to be abstracted
+// from the structure of what is sent to the client.
+
 type missionRow struct {
 	Type        string
 	FlightRules string

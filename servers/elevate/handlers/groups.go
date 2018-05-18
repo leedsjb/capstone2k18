@@ -11,6 +11,10 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
+// These structs receive data from SQL queries
+// and allow the structure of SQL data to be abstracted
+// from the structure of what is sent to the client.
+
 type groupRow struct {
 	GroupID   string
 	GroupName string
@@ -54,7 +58,7 @@ func IndexGroup(trie *indexes.Trie, group *messages.ClientGroup) error {
 func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 	groupRows, err := ctx.GetAllGroups()
 	if err != nil {
-		return fmt.Errorf("Error querying MySQL for groups: %v", err)
+		return fmt.Errorf("Error retrieving groups for personnel trie: %v", err)
 	}
 	// create variables and fill contents from retrieved rows
 	currentRow := &groupRow{}
@@ -90,6 +94,9 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 		group := &messages.ClientGroup{}
 		ID := strconv.Itoa(groupID)
 		groupRows, err := ctx.GetGroupByID(ID)
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving groups by ID: %v", err)
+		}
 		groupRow := &groupRow{}
 		for groupRows.Next() {
 			err = groupRows.Scan(groupRow)
@@ -113,6 +120,8 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 
 // GetGroupSummary populates a passed-in group with ID, Name, and
 // appends the current given row's member name to the group's list of members
+
+// TODO: does this need an error??
 func (ctx *HandlerContext) GetGroupSummary(currentRow *groupRow, group *messages.ClientGroup) (*messages.ClientGroup, error) {
 	person := currentRow.FName + " " + currentRow.LName
 	people := append(group.PeoplePreview, person)
@@ -162,7 +171,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 
 			groupRows, err := ctx.GetAllGroups()
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("Error getting groups: %v", err), http.StatusInternalServerError)
 				return
 			}
 			// create variables and fill contents from retrieved rows
@@ -225,7 +234,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		// TODO: Insert stored procedure here
 		groupDetailRows, err := ctx.GetGroupDetails(id)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
 			return
 		}
 
@@ -240,7 +249,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		for groupDetailRows.Next() {
 			err = groupDetailRows.Scan(row)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error scanning group detail row: %v", err), http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("Error scanning group detail row for group [%v]: %v", id, err), http.StatusInternalServerError)
 				return
 			}
 			// TODO: maybe optimize to actually check if these already exist
