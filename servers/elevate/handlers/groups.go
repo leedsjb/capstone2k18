@@ -207,9 +207,6 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		// TODO: make sure this isn't potentially exposing anything
-		id := path.Base(r.URL.Path)
-
 		// type GroupDetail struct {
 		// 	ID            string    `json:"id"`
 		// 	Name          string    `json:"name"`
@@ -231,44 +228,51 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 			JOIN tblROLES ON tblPERSONNEL.personnel_id = tbl
 		*/
 
-		// TODO: Insert stored procedure here
-		groupDetailRows, err := ctx.GetGroupDetails(id)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
-			return
-		}
+		// TODO: make sure this isn't potentially exposing anything
+		id := path.Base(r.URL.Path)
 
-		// create variables and fill contents from retrieved rows
-		groupDetail := &messages.GroupDetail{}
-		people := []*messages.Person{}
-		// var people []*messages.Person
-
-		currentPerson := &messages.Person{}
-		row := &groupDetailRow{}
-		currentName := ""
-		for groupDetailRows.Next() {
-			err = groupDetailRows.Scan(row)
+		if id != "." {
+			// TODO: Insert stored procedure here
+			groupDetailRows, err := ctx.GetGroupDetails(id)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error scanning group detail row for group [%v]: %v", id, err), http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
 				return
 			}
-			// TODO: maybe optimize to actually check if these already exist
-			groupDetail.ID = row.GroupID
-			groupDetail.Name = row.GroupName
-			currentName = row.FName + row.LName
-			groupDetail.PeoplePreview = append(groupDetail.PeoplePreview, currentName)
 
-			currentPerson = &messages.Person{
-				ID:       row.PersonnelID,
-				FName:    row.FName,
-				LName:    row.LName,
-				Position: row.RoleTitle,
+			// create variables and fill contents from retrieved rows
+			groupDetail := &messages.GroupDetail{}
+			people := []*messages.Person{}
+			// var people []*messages.Person
+
+			currentPerson := &messages.Person{}
+			row := &groupDetailRow{}
+			currentName := ""
+			for groupDetailRows.Next() {
+				err = groupDetailRows.Scan(row)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error scanning group detail row for group [%v]: %v", id, err), http.StatusInternalServerError)
+					return
+				}
+				// TODO: maybe optimize to actually check if these already exist
+				groupDetail.ID = row.GroupID
+				groupDetail.Name = row.GroupName
+				currentName = row.FName + row.LName
+				groupDetail.PeoplePreview = append(groupDetail.PeoplePreview, currentName)
+
+				currentPerson = &messages.Person{
+					ID:       row.PersonnelID,
+					FName:    row.FName,
+					LName:    row.LName,
+					Position: row.RoleTitle,
+				}
+
+				people = append(people, currentPerson)
 			}
-
-			people = append(people, currentPerson)
+			respond(w, groupDetail)
+		} else {
+			http.Error(w, "No group with that ID", http.StatusBadRequest)
 		}
 
-		respond(w, groupDetail)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
