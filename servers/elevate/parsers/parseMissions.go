@@ -1,7 +1,6 @@
 package parsers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,7 +8,6 @@ import (
 	"strings"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -18,7 +16,7 @@ import (
 // notifies client and writes new info to db
 // assumes Mission_Create topic comes with all information
 func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -36,7 +34,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	// is raw MissionID what we want, or is it mapped?
 
 	if msg.RequestorID != "" {
-		reqRow, err := db.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.RequestorID)
+		// TODO: factor out
+		reqRow, err := ctx.DB.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.RequestorID)
 		if err != nil {
 			fmt.Printf("Error querying MySQL for requestor: %v", err)
 		}
@@ -48,7 +47,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		msg.RequestorID = requestor
 	}
 	if msg.ReceiverID != "" {
-		recRow, err := db.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.ReceiverID)
+		// TODO: factor out
+		recRow, err := ctx.DB.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.ReceiverID)
 		if err != nil {
 			fmt.Printf("Error querying MySQL for receiver: %v", err)
 		}
@@ -69,7 +69,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 			// retrieve member first and last name
 			var fName string
 			var lName string
-			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
+			// TODO: factor out
+			memRow, err := ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
@@ -81,7 +82,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 			// retrieve member role
 			roleTitle := ""
-			roleRow, err := db.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
+			// TODO: factor out
+			roleRow, err := ctx.DB.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
@@ -106,7 +108,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	nextWaypointETE := ""
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			wayPtRow, err := db.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
+			// TODO: factor out
+			wayPtRow, err := ctx.DB.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
 			}
@@ -161,8 +164,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		Mission:  missionDetail,
 	}
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
 
 	// [ADD MISSION TO DB]
 	// if err := ctx.AddNewMission(msg); err != nil {
@@ -177,7 +180,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 // and modifications to the route
 // notifies client and writes new info to db
 func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -195,8 +198,8 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			// TODO: Fix SQL query
-			wayPtRow, err := db.Query("SELECT waypoint_title FROM tblWAYPOINT WHERE waypoint_id=" + waypoint.ID)
+			// TODO: factor out
+			wayPtRow, err := ctx.DB.Query("SELECT waypoint_title FROM tblWAYPOINT WHERE waypoint_id=" + waypoint.ID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for waypoint: %v", err)
 			}
@@ -228,7 +231,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	// [START format aircraft]
 	// get mission from db using missionID
-	aircraftCallsign, err := getAircraftCallsign(msg.MissionID, db)
+	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.MissionID)
 	if err != nil {
 		fmt.Printf("Error getting aircraftCallsign: %v", err)
 		// TODO: continue with empty aircraft callsign?
@@ -247,7 +250,8 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	// [END format aircraft]
 
 	// [START format aircraftDetail]
-	missionRow, err := db.Query("SELECT tc_number FROM tblMISSION WHERE mission_id=" + msg.MissionID)
+	// TODO: factor out
+	missionRow, err := ctx.DB.Query("SELECT tc_number FROM tblMISSION WHERE mission_id=" + msg.MissionID)
 	if err != nil {
 		fmt.Printf("Error querying MySQL for mission: %v", err)
 	}
@@ -271,8 +275,8 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	}
 	// [END format aircraftDetail]
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
 
 	// [ADD WAYPOINT UPDATE TO DB]
 	// if err := ctx.UpdateMissionWaypoints(msg); err != nil {
@@ -286,7 +290,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 // with respect to an assigned mission
 // notifies client, writes new info to db
 func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -310,7 +314,8 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 			// retrieve member first and last name
 			var fName string
 			var lName string
-			memRow, err := db.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
+			// TODO: factor out
+			memRow, err := ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
@@ -322,7 +327,8 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 
 			// retrieve member role
 			roleTitle := ""
-			roleRow, err := db.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
+			// TODO: factor out
+			roleRow, err := ctx.DB.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + memberID)
 			if err != nil {
 				fmt.Printf("Error querying MySQL for member: %v", err)
 			}
@@ -343,7 +349,7 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 		}
 	}
 
-	aircraftCallsign, err := getAircraftCallsign(msg.MissionID, db)
+	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.MissionID)
 	if err != nil {
 		fmt.Printf("Error getting aircraft callsign: %v", err)
 	}
@@ -352,7 +358,7 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 		Callsign: aircraftCallsign,
 		Crew:     people,
 	}
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
 
 	// [ADD CREW UPDATES TO DB]
 	// if err := ctx.UpdateMissionCrew(msg); err != nil {

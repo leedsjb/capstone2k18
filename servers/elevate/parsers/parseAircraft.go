@@ -1,13 +1,11 @@
 package parsers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -17,7 +15,7 @@ import (
 // Write to trie?
 
 func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -73,7 +71,7 @@ func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 }
 
 func (ctx *ParserContext) ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -112,7 +110,7 @@ func (ctx *ParserContext) ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_
 // to aircraft as shifts change
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -145,7 +143,7 @@ func (ctx *ParserContext) ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Up
 // to be serviced for maintenance or otherwise
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Service_Schedule,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -179,7 +177,7 @@ func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Se
 // and is highly relevant to missions
 // notifies client, writes new info to db
 func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -199,9 +197,9 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT WHERE ac_id=" + msg.ID)
+	aircraftRow, err := ctx.GetAircraftByID(msg.ID)
 	if err != nil {
-		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
+		fmt.Printf("Error retrieving aircraft from database: %v", err)
 	}
 	var aircraftCallsign string
 	err = aircraftRow.Scan(&aircraftCallsign)
@@ -223,8 +221,8 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 		Area:     msg.PosFriendlyName,
 	}
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
+	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
 
 	// ADD POSITION UPDATE TO DB
 	// if err := ctx.UpdateAircraftPosition(msg); err != nil {
