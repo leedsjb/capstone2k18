@@ -1,12 +1,12 @@
 /*
     mysql_load_csv_data.sql
     Created: Saturday May 12, 2018
-    Modified: Thursday May 17, 2018
+    Modified: Friday Mau 18, 2018
     Authors: J. Benjamin Leeds
     License: None
 
     This script populates the Airlift Northwest Elevate application database 
-    with data from Flight Vector's T-SQL database from CSV.
+    with static data.
 
     Environment: 
         RDBMS: Google Cloud SQL MySQL Database 
@@ -34,27 +34,5 @@ VALUES
     (10,"Family Member Rider",	"None"),
     (11,"Ambulance Driver",	    "Driver");
 
-CREATE TABLE tblPERSONNEL(
-    personnel_id INTEGER PRIMARY KEY NOT NULL,
-    personnel_f_name NVARCHAR(50) NOT NULL,
-    personnel_l_name NVARCHAR(50) NOT NULL,
-    personnel_title NVARCHAR(50), 
-    crew_type_id INTEGER,
-    personnel_sms_num NVARCHAR(50),
-    personnel_email NVARCHAR(50)
-    FOREIGN KEY (crew_type_id) REFERENCES tblCREW_TYPE(crew_type_id)
-);
-
-CREATE TABLE tblGENDER(
-    gender_id INTEGER AUTO_INCREMENT PRIMARY KEY, -- ** AUTO_INC??
-    gender_name NVARCHAR(50) NOT NULL
-)
 INSERT INTO tblGENDER(gender_name)
 VALUES('Male', 'Female', 'Other')
-
--- Possible Method to load data: 
-LOAD DATA INFILE 'Crew_Export_test.csv' INTO TABLE tblPERSONNEL_CSV_TEST
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n';
--- IGNORE 1 LINES;

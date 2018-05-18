@@ -21,6 +21,7 @@
 *.crt
 *.csr
 *.key
+*.csv
 
 # misc
 .DS_Store

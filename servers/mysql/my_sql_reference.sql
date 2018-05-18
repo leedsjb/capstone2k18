@@ -1,7 +1,7 @@
 /*
 my_sql_reference.sql
 Created: Wednesday May 2, 2018
-Modified:
+Modified: Friday May 18, 2018
 Authors: J. Benjamin Leeds
 License: None
 
@@ -34,9 +34,8 @@ UPDATE tblAIRCRAFT
 SET tblAIRCRAFT.ac_type_id = 1
 WHERE aircraft_id = 10;
 
-SELECT * FROM tblAIRCRAFT
-
-
+-- show stored procedures
+SHOW PROCEDURE STATUS;
 
 -- show current time zone settings for MySQL
 SELECT @@global.time_zone, @@session.time_zone, @@system_time_zone
@@ -45,4 +44,3 @@ SELECT NOW(); -- select current time
 -- show current set flags for MySQL DB:
 -- More Details: https://cloud.google.com/sql/docs/mysql/flags
 SHOW VARIABLES;
-
