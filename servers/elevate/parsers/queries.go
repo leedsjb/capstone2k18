@@ -7,10 +7,12 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
+// empty, no-time-out context for sql queries
 var sqlCtx = context.Background()
 
 // [AIRCRAFT]
 
+// AddNewAircraft adds a new aircraft object to the database
 func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create) error {
 	query := `CALL uspAddNewUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	if _, err := ctx.DB.QueryContext(
@@ -34,6 +36,7 @@ func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create)
 	return nil
 }
 
+// UpdateAircraftProps updates an existing aircraft object
 func (ctx *ParserContext) UpdateAircraftProps(aircraftInfo *messages.Aircraft_Props_Update) error {
 	query := `CALL uspUpdateAircraftProps($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
 	if _, err := ctx.DB.QueryContext(
@@ -55,6 +58,7 @@ func (ctx *ParserContext) UpdateAircraftProps(aircraftInfo *messages.Aircraft_Pr
 	return nil
 }
 
+// UpdateAircraftCrew updates the crewmembers that are assigned to an aircraft
 func (ctx *ParserContext) UpdateAircraftCrew(aircraftInfo *messages.Aircraft_Crew_Update) error {
 	query := `CALL uspUpateAircraftCrew($1, $2, $3, $4)`
 	if _, err := ctx.DB.QueryContext(
@@ -70,6 +74,7 @@ func (ctx *ParserContext) UpdateAircraftCrew(aircraftInfo *messages.Aircraft_Cre
 	return nil
 }
 
+// UpdateAircraftServiceSchedule updates the OOS status of an existing aircraft
 func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.Aircraft_Service_Schedule) error {
 	query := `CALL uspUpdateAircraftServiceSchedule($1, $2, $3, $4, $5)`
 	if _, err := ctx.DB.QueryContext(
@@ -86,6 +91,8 @@ func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.A
 	return nil
 }
 
+// UpdateAircraftPosition updates the lat/long and a human-friendly area name
+// for an existing aircraft's position
 func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft_Pos_Update) error {
 	query := `CALL uspUpdateAircraftPosition($1, $2, $3, $4)`
 	if _, err := ctx.DB.QueryContext(
@@ -103,6 +110,7 @@ func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft
 
 // [GROUPS]
 
+// AddNewGroup adds a new group object to the database
 func (ctx *ParserContext) AddNewGroup(groupInfo *messages.Group) error {
 	query := `CALL uspAddNewGroup($1, $2, $3)`
 	if _, err := ctx.DB.QueryContext(
@@ -117,6 +125,7 @@ func (ctx *ParserContext) AddNewGroup(groupInfo *messages.Group) error {
 	return nil
 }
 
+// UpdateGroup updates an existing group object
 func (ctx *ParserContext) UpdateGroup(groupInfo *messages.Group) error {
 	query := `CALL uspUpdateGroup($1, $2, $3)`
 	if _, err := ctx.DB.QueryContext(
@@ -131,6 +140,7 @@ func (ctx *ParserContext) UpdateGroup(groupInfo *messages.Group) error {
 	return nil
 }
 
+// DeleteGroup deletes an existing group object from the database
 func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 	query := `CALL uspDeleteGroup($1)`
 	if _, err := ctx.DB.QueryContext(
@@ -145,6 +155,7 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 
 // [MISSIONS]
 
+// AddNewMission adds a new mission object to the database
 func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) error {
 	query := `CALL uspAddNewMission($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
 	if _, err := ctx.DB.QueryContext(
@@ -167,6 +178,7 @@ func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) er
 	return nil
 }
 
+// UpdateMissionWaypoints updates the waypoints for an existing mission
 func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_Waypoint_Update) error {
 	query := `CALL uspUpdateMissionWaypoints($1, $2)`
 	if _, err := ctx.DB.QueryContext(
@@ -180,6 +192,9 @@ func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_W
 	return nil
 }
 
+// UpdateMissionCrew updates the crew assigned to a mission
+// Note: Although crew are usually tied to an aircraft, this handles
+// the case when crew is reassigned for a particular mission
 func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_Update) error {
 	query := `CALL uspUpdateMissionCrew($1, $2)`
 	if _, err := ctx.DB.QueryContext(
@@ -195,6 +210,7 @@ func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_U
 
 // [USERS]
 
+// AddNewUser adds a new user object to the database
 func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
 	query := `CALL uspAddNewUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	if _, err := ctx.DB.QueryContext(
@@ -218,6 +234,7 @@ func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
 	return nil
 }
 
+// UpdateUser updates an existing user
 func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 	query := `CALL uspUpdateUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	if _, err := ctx.DB.QueryContext(
@@ -241,6 +258,7 @@ func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 	return nil
 }
 
+// DeleteUser deletes an existing user from the database
 func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 	query := `CALL uspDeleteUser($1)`
 	if _, err := ctx.DB.QueryContext(
@@ -255,6 +273,7 @@ func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 
 // [WAYPOINTS]
 
+// AddNewWaypoint adds a new waypoint object to the database
 func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error {
 	query := `CALL uspAddNewWaypoint($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`
 	if _, err := ctx.DB.QueryContext(
@@ -286,6 +305,7 @@ func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error 
 	return nil
 }
 
+// UpdateWaypoint updates an existing waypoint's information
 func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error {
 	query := `CALL uspUpdateWaypoint($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`
 	if _, err := ctx.DB.QueryContext(
@@ -316,6 +336,8 @@ func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error 
 	}
 	return nil
 }
+
+// DeleteWaypoint deletes an existing waypoint from the database
 func (ctx *ParserContext) DeleteWaypoint(waypointInfo *messages.Waypoint_Delete) error {
 	query := `CALL uspDeleteWaypoint($1)`
 	if _, err := ctx.DB.QueryContext(
