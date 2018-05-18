@@ -44,7 +44,7 @@ func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
 	// }
 
 	// [ADD USER TO DB]
-	// if err := ctx.AddNewUser(stuff); err != nil {
+	// if err := ctx.AddNewUser(msg); err != nil {
 	// 	return fmt.Errorf("Error adding new user to DB: %v", err)
 	// }
 
@@ -84,7 +84,7 @@ func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
 	// }
 
 	// [ADD USER UPDATE TO DB]
-	// if err := ctx.UpdateUser(stuff); err != nil {
+	// if err := ctx.UpdateUser(msg); err != nil {
 	// 	return fmt.Errorf("Error adding user updates to DB: %v", err)
 	// }
 
@@ -113,7 +113,7 @@ func (ctx *ParserContext) ParseUserDelete(msg *messages.User_Delete,
 	// }
 
 	// [DELETE USER FROM DB]
-	// if err := ctx.DeleteUser(stuff); err != nil {
+	// if err := ctx.DeleteUser(msg); err != nil {
 	// 	return fmt.Errorf("Error deleting user from DB: %v", err)
 	// }
 

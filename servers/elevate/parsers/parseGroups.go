@@ -35,7 +35,7 @@ func (ctx *ParserContext) ParseGroupCreate(msg *messages.Group,
 	// }
 
 	// [ADD GROUP TO DB]
-	// if err := ctx.AddNewGroup(stuff); err != nil {
+	// if err := ctx.AddNewGroup(msg); err != nil {
 	// 	return fmt.Errorf("Error adding new group to DB: %v", err)
 	// }
 	return nil
@@ -65,7 +65,7 @@ func (ctx *ParserContext) ParseGroupUpdate(msg *messages.Group,
 	// }
 
 	// [ADD GROUP UPDATE TO DB]
-	// if err := ctx.UpdateGroup(stuff); err != nil {
+	// if err := ctx.UpdateGroup(msg); err != nil {
 	// 	return fmt.Errorf("Error adding group updates to DB: %v", err)
 	// }
 	return nil
@@ -93,7 +93,7 @@ func (ctx *ParserContext) ParseGroupDelete(msg *messages.Group_Delete,
 	// }
 
 	// [DELETE GROUP FROM DB]
-	// if err := ctx.DeleteGroup(stuff); err != nil {
+	// if err := ctx.DeleteGroup(msg); err != nil {
 	// 	return fmt.Errorf("Error deleting group from DB: %v", err)
 	// }
 	return nil

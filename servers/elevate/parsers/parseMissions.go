@@ -165,7 +165,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 
 	// [ADD MISSION TO DB]
-	// if err := ctx.AddNewMission(stuff); err != nil {
+	// if err := ctx.AddNewMission(msg); err != nil {
 	// 	return fmt.Errorf("Error adding new mission to DB: %v", err)
 	// }
 
@@ -275,7 +275,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 
 	// [ADD WAYPOINT UPDATE TO DB]
-	// if err := ctx.UpdateMissionWaypoints(stuff); err != nil {
+	// if err := ctx.UpdateMissionWaypoints(msg); err != nil {
 	// 	return fmt.Errorf("Error adding mission waypoint updates to DB: %v", err)
 	// }
 
@@ -355,7 +355,7 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 
 	// [ADD CREW UPDATES TO DB]
-	// if err := ctx.UpdateMissionCrew(stuff); err != nil {
+	// if err := ctx.UpdateMissionCrew(msg); err != nil {
 	// 	return fmt.Errorf("Error adding mission crew updates to DB: %v", err)
 	// }
 

@@ -51,7 +51,7 @@ func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	// }
 
 	// [ADD AIRCRAFT TO DB]
-	// if err := ctx.AddNewAircraft(stuff goes here); err != nil {
+	// if err := ctx.AddNewAircraft(msg); err != nil {
 	// 	return fmt.Errorf("Error adding new aircraft to DB: %v", err)
 	// }
 
@@ -100,7 +100,7 @@ func (ctx *ParserContext) ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_
 	// }
 
 	// [ADD PROPS UPDATE TO DB]
-	// if err := ctx.UpdateAircraftProps(stuff); err != nil {
+	// if err := ctx.UpdateAircraftProps(msg); err != nil {
 	// 	return fmt.Errorf("Error adding aircraft updates to DB: %v", err)
 	// }
 
@@ -133,7 +133,7 @@ func (ctx *ParserContext) ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Up
 	// }
 
 	// [ADD CREW UPDATE TO DB]
-	// if err := ctx.UpdateAircraftCrew(stuff); err != nil {
+	// if err := ctx.UpdateAircraftCrew(msg); err != nil {
 	// 	return fmt.Errorf("Error adding aircraft crew updates to DB: %v", err)
 	// }
 
@@ -167,7 +167,7 @@ func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Se
 	// }
 
 	// [ADD SERVICE SCHEDULE UPDATE TO DB]
-	// if err := ctx.UpdateAircraftServiceSchedule(stuff); err != nil {
+	// if err := ctx.UpdateAircraftServiceSchedule(msg); err != nil {
 	// 	return fmt.Errorf("Error adding aircraft service schedule updates to DB: %v", err)
 	// }
 
@@ -227,7 +227,7 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
 
 	// ADD POSITION UPDATE TO DB
-	// if err := ctx.UpdateAircraftPosition(stuff); err != nil {
+	// if err := ctx.UpdateAircraftPosition(msg); err != nil {
 	// 	return fmt.Errorf("Error adding aircraft position updates to DB: %v", err)
 	// }
 

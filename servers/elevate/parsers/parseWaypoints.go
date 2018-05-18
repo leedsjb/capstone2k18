@@ -95,7 +95,7 @@ func (ctx *ParserContext) ParseWaypointCreate(msg *messages.Waypoint,
 	// [END AIRCRAFT]
 
 	// [ADD WAYPOINT TO DB]
-	// if err := ctx.AddNewWaypoint(stuff); err != nil {
+	// if err := ctx.AddNewWaypoint(msg); err != nil {
 	// 	return fmt.Errorf("Error adding waypoint to DB: %v", err)
 	// }
 
@@ -143,7 +143,7 @@ func (ctx *ParserContext) ParseWaypointUpdate(msg *messages.Waypoint,
 	// }
 
 	// [ADD WAYPOINT UPDATE TO DB]
-	// if err := ctx.UpdateWaypoint(stuff); err != nil {
+	// if err := ctx.UpdateWaypoint(msg); err != nil {
 	// 	return fmt.Errorf("Error adding waypoint updates to DB: %v", err)
 	// }
 
@@ -172,7 +172,7 @@ func (ctx *ParserContext) ParseWaypointDelete(msg *messages.Waypoint_Delete,
 	// }
 
 	// [DELETE WAYPOINT FROM DB]
-	// if err := ctx.DeleteWaypoint(stuff); err != nil {
+	// if err := ctx.DeleteWaypoint(msg); err != nil {
 	// 	return fmt.Errorf("Error deleting waypoint from DB: %v", err)
 	// }
 
