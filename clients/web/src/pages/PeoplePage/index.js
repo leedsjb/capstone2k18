@@ -45,18 +45,13 @@ class PeoplePage extends Component {
             this.props.fetchGroupsDetail(this.props.groupID);
         }
 
-        if (
-            new URLSearchParams(window.location.search).get("source") ===
-            "groups"
-        ) {
-            this.props.fetchGroupsDetail(
-                new URLSearchParams(window.location.search).get("id")
-            );
+        if (this.isGroupPeopleDetail()) {
+            this.props.fetchGroupsDetail(this.getGroupID());
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.id && !(nextProps.id === this.props.id)) {
+        if (nextProps.id && nextProps.id !== this.props.id) {
             this.props.fetchPeopleDetail(nextProps.id);
         }
 
@@ -65,12 +60,23 @@ class PeoplePage extends Component {
         }
     }
 
+    getGroupID() {
+        return new URLSearchParams(window.location.search).get("id");
+    }
+
     isPeopleTab() {
         return matchPath(this.props.location.pathname, "/people");
     }
 
     isGroupDetailView() {
         return matchPath(this.props.location.pathname, "/groups/:groupID");
+    }
+
+    isGroupPeopleDetail() {
+        return (
+            new URLSearchParams(window.location.search).get("source") ===
+            "groups"
+        );
     }
 
     renderPeopleList() {
@@ -128,10 +134,7 @@ class PeoplePage extends Component {
                 return (
                     <Link
                         to={`/people/${person.id}?source=groups&id=${this.props
-                            .groupID ||
-                            new URLSearchParams(window.location.search).get(
-                                "id"
-                            )}`}
+                            .groupID || this.getGroupID()}`}
                         key={person.id}
                     >
                         <MasterListItem>
@@ -229,11 +232,7 @@ class PeoplePage extends Component {
 
     renderMasterView() {
         let list;
-        if (
-            this.isGroupDetailView() ||
-            new URLSearchParams(window.location.search).get("source") ===
-                "groups"
-        ) {
+        if (this.isGroupDetailView() || this.isGroupPeopleDetail()) {
             list = this.renderGroupsDetailList();
         } else if (this.isPeopleTab()) {
             list = this.renderPeopleList();
@@ -242,9 +241,7 @@ class PeoplePage extends Component {
         }
 
         let controller =
-            !this.isGroupDetailView() &&
-            new URLSearchParams(window.location.search).get("source") !==
-                "groups" ? (
+            !this.isGroupDetailView() && !this.isGroupPeopleDetail() ? (
                 <Flex>
                     <Tab active={this.isPeopleTab()} is={Link} to="/people">
                         People
