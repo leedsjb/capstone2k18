@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Flex } from "grid-styled";
 import { push } from "react-router-redux";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import Box from "../Box";
 import CrewDetailListItem from "../CrewDetailListItem";
@@ -152,11 +153,14 @@ class AircraftDetailListItem extends Component {
                                 {this.props.aircraftDetail.data.crew.people.map(
                                     c => {
                                         return (
-                                            <CrewDetailListItem
-                                                crewDetail={c}
-                                                key={c.id}
-                                                w="calc(50% - 8px)"
-                                            />
+                                            <Box w="calc(50% - 8px)">
+                                                <Link to={`/people/${c.id}`}>
+                                                    <CrewDetailListItem
+                                                        crewDetail={c}
+                                                        key={c.id}
+                                                    />
+                                                </Link>
+                                            </Box>
                                         );
                                     }
                                 )}
