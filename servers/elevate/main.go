@@ -86,9 +86,10 @@ func main() {
 	// [LOAD TRIES]
 	var aircraftTrie = indexes.NewTrie()
 	var personnelTrie = indexes.NewTrie()
+	notifier := handlers.NewNotifier()
 
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
-	parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db)
+	parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
 	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 		log.Fatalf("Error loading aircraft trie")
 	}
@@ -149,8 +150,6 @@ func main() {
 		"test_group_update_sub",
 		"test_group_delete_sub",
 	}
-
-	notifier := handlers.NewNotifier()
 
 	// create topics and subscriptions if don't yet exist
 	for i, testTopicName := range testTopicNames {
