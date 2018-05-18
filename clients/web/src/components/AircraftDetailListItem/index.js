@@ -1,4 +1,5 @@
 import React from "react";
+import { Flex } from "grid-styled";
 
 import Box from "../Box";
 import CrewDetailListItem from "../CrewDetailListItem";
@@ -6,13 +7,21 @@ import Heading from "../Heading";
 import Text from "../Text";
 import Divider from "../Divider";
 import Badge from "../Badge";
+import AicraftIdentifier from "../AircraftIdentifier";
+import AircraftIdentifier from "../AircraftIdentifier";
 
 const AircraftDetailListItem = ({ aircraftDetail }) => {
+    let { callsign, nNum, status } = aircraftDetail.data;
+
     return (
         <Box>
-            <Box py={3}>
-                Test <Badge>PLCHOLDER</Badge>
-            </Box>
+            <Flex py={3} justifyContent="center">
+                <AircraftIdentifier
+                    callsign={callsign}
+                    nNum={nNum}
+                    status={status}
+                />
+            </Flex>
             <Divider />
             <Box px={6}>
                 <Heading is="h2" fontSize={4}>

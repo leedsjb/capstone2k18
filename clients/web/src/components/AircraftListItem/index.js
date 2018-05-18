@@ -13,12 +13,18 @@ const AircraftListItem = ({ aircraft, active }) => {
             <Box>
                 <Flex alignItems="center">
                     <Span fontWeight="bold">{aircraft.callsign}</Span>
-                    <Span>{aircraft.nNum}</Span>
-                    <Badge>{aircraft.status}</Badge>
+                    <Box ml={2}>
+                        <Span>{aircraft.nNum}</Span>
+                    </Box>
+                    <Box ml={2}>
+                        <Badge>{aircraft.status}</Badge>
+                    </Box>
                 </Flex>
-                <Flex alignItems="center">
+                <Flex alignItems="center" mt={2}>
                     <Icon glyph="earth" size={14} />
-                    <Span>{aircraft.area}</Span>
+                    <Box ml={2}>
+                        <Span>{aircraft.area}</Span>
+                    </Box>
                 </Flex>
             </Box>
         </MasterListItem>
