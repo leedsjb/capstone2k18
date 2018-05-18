@@ -3,6 +3,7 @@ package parsers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
@@ -13,15 +14,15 @@ import (
 // ParseUserCreate handles the creation of a new user in
 // the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseUserCreate(msg *messages.User,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in User-Create: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -41,20 +42,27 @@ func ParseUserCreate(msg *messages.User,
 	// 	CellPhone       string `json:"cellPhone"`
 	// 	QualificationID string `json:"qualificationID"`
 	// }
+
+	// [ADD USER TO DB]
+	// if err := ctx.AddNewUser(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding new user to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseUserUpdate handles modifications to a user in
 // the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseUserUpdate(msg *messages.User,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in User-Update: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -74,20 +82,27 @@ func ParseUserUpdate(msg *messages.User,
 	// 	CellPhone       string `json:"cellPhone"`
 	// 	QualificationID string `json:"qualificationID"`
 	// }
+
+	// [ADD USER UPDATE TO DB]
+	// if err := ctx.UpdateUser(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding user updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseUserDelete handles the deletion of a user from
 // the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseUserDelete(msg *messages.User_Delete,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseUserDelete(msg *messages.User_Delete,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in User-Delete: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -96,4 +111,11 @@ func ParseUserDelete(msg *messages.User_Delete,
 	// type User_Delete struct {
 	// 	ID string `json:"ID"`
 	// }
+
+	// [DELETE USER FROM DB]
+	// if err := ctx.DeleteUser(stuff); err != nil {
+	// 	return fmt.Errorf("Error deleting user from DB: %v", err)
+	// }
+
+	return nil
 }
