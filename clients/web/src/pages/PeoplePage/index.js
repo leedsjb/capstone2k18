@@ -119,7 +119,10 @@ class PeoplePage extends Component {
 
             return this.props.groupsDetail.data.people.map(person => {
                 return (
-                    <Link to={`/groups/${id}/${person.id}`} key={person.id}>
+                    <Link
+                        to={`/people/${person.id}?source=groups`}
+                        key={person.id}
+                    >
                         <MasterListItem>
                             <div>{person.fName}</div>
                         </MasterListItem>
@@ -140,58 +143,35 @@ class PeoplePage extends Component {
         }
     }
 
-    renderMasterView() {
-        let list;
-        if (this.isPeopleTab()) {
-            list = this.renderPeopleList();
-        } else if (!this.isGroupDetailView()) {
-            list = this.renderGroupsList();
-        } else {
-            list = this.renderGroupsDetailList();
+    renderGroupsDetail() {
+        if (
+            !this.props.groupsDetail.pending &&
+            !Array.isArray(this.props.groupsDetail.data)
+        ) {
+            const { id } = this.props.groupsDetail.data;
+
+            return this.props.groupsDetail.data.people.map(person => {
+                return this.renderPeopleDetail(person);
+            });
+        } else if (!this.props.groupsDetail.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Group Details
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groupsDetail.pending) {
+            return <div>Loading...</div>;
         }
-
-        let controller = !this.isGroupDetailView() ? (
-            <Flex>
-                <Tab active={this.isPeopleTab()} is={Link} to="/people">
-                    People
-                </Tab>
-                <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
-                    Groups
-                </Tab>
-            </Flex>
-        ) : (
-            <Flex
-                alignItems="center"
-                justifyContent="space-between"
-                py={2}
-                px={3}
-            >
-                <Link to="/groups">
-                    <Icon glyph="chevronLeft" size={16} />
-                </Link>
-                <Span fontWeight="bold">
-                    {this.props.groupsDetail.data.name}
-                </Span>
-                <Box size={16} />
-            </Flex>
-        );
-
-        return (
-            <MasterView>
-                {controller}
-                <Divider />
-                {list}
-            </MasterView>
-        );
     }
 
-    renderDetailView() {
+    renderPeopleDetail(person) {
         if (
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
         ) {
-            let person = this.props.peopleDetail.data;
-
             return (
                 <DetailView>
                     <Flex flexDirection="column" alignItems="center">
@@ -223,6 +203,66 @@ class PeoplePage extends Component {
         }
 
         return <DetailView />;
+    }
+
+    renderMasterView() {
+        let list;
+        if (
+            this.isGroupDetailView() ||
+            new URLSearchParams(window.location.search).get("source") ===
+                "groups"
+        ) {
+            list = this.renderGroupsDetailList();
+        } else if (this.isPeopleTab()) {
+            list = this.renderPeopleList();
+        } else {
+            list = this.renderGroupsList();
+        }
+
+        let controller =
+            !this.isGroupDetailView() &&
+            new URLSearchParams(window.location.search).get("source") !==
+                "groups" ? (
+                <Flex>
+                    <Tab active={this.isPeopleTab()} is={Link} to="/people">
+                        People
+                    </Tab>
+                    <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
+                        Groups
+                    </Tab>
+                </Flex>
+            ) : (
+                <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    py={2}
+                    px={3}
+                >
+                    <Link to="/groups">
+                        <Icon glyph="chevronLeft" size={16} />
+                    </Link>
+                    <Span fontWeight="bold">
+                        {this.props.groupsDetail.data.name}
+                    </Span>
+                    <Box size={16} />
+                </Flex>
+            );
+
+        return (
+            <MasterView>
+                {controller}
+                <Divider />
+                {list}
+            </MasterView>
+        );
+    }
+
+    renderDetailView() {
+        if (this.isGroupDetailView()) {
+            return this.renderGroupsDetail();
+        } else if (this.props.id) {
+            return this.renderPeopleDetail(this.props.peopleDetail.data);
+        }
     }
 
     render() {
