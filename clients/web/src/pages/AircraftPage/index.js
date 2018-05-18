@@ -19,6 +19,7 @@ import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
 import SearchBox from "../../components/SearchBox";
 import Span from "../../components/Span";
+import Icon from "../../components/Icon";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -30,7 +31,7 @@ class AircraftPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSearching: false
+            query: ""
         };
     }
 
@@ -102,12 +103,14 @@ class AircraftPage extends Component {
             </div>
         ) : (
             <div>
-                <Box bg="#F7F8FC" px={3} py={6}>
-                    <Heading is="h1" fontSize={4}>
-                        Aircraft
-                    </Heading>
+                <Box bg="#F7F8FC" px={3} py={4}>
+                    <SearchBox
+                        handleChange={query => {
+                            this.setState({ query });
+                        }}
+                    />
 
-                    <Flex alignItems="center" mt={4}>
+                    <Flex alignItems="center" mt={2}>
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
