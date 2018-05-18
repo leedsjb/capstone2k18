@@ -17,15 +17,15 @@ import (
 // an aircraft
 // notifies client and writes new info to db
 // assumes Mission_Create topic comes with all information
-func ParseMissionCreate(msg *messages.Mission_Create,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Mission-Create: %v", err)
 	}
 
 	// parse pubsub message for client
@@ -163,21 +163,28 @@ func ParseMissionCreate(msg *messages.Mission_Create,
 
 	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+
+	// [ADD MISSION TO DB]
+	// if err := ctx.AddNewMission(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding new mission to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseMissionWaypointsUpdate handles changes to a mission's
 // waypoints, including ETE, ETT, friendly names,
 // and modifications to the route
 // notifies client and writes new info to db
-func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Mission-Waypoints-Update: %v", err)
 	}
 
 	// parse pubsub message for client
@@ -266,20 +273,27 @@ func ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 
 	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, notifier)
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+
+	// [ADD WAYPOINT UPDATE TO DB]
+	// if err := ctx.UpdateMissionWaypoints(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding mission waypoint updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseMissionCrewUpdate handles when an aircraft has crew adjusted
 // with respect to an assigned mission
 // notifies client, writes new info to db
-func ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	// unmarshal json into correct struct
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Mission-Crew-Update: %v", err)
 	}
 
 	// parse pubsub message for client
@@ -339,4 +353,11 @@ func ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 		Crew:     people,
 	}
 	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, notifier)
+
+	// [ADD CREW UPDATES TO DB]
+	// if err := ctx.UpdateMissionCrew(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding mission crew updates to DB: %v", err)
+	// }
+
+	return nil
 }
