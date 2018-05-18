@@ -10,6 +10,19 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/mockserver/indexes"
 )
 
+// Patient ...
+type Patient struct {
+	ShortReport string `json:"shortReport"`
+	Intubated   string `json:"intubated"`
+	Drips       string `json:"drips"`
+	Age         string `json:"age"`
+	Weight      string `json:"weight"`
+	Gender      string `json:"gender"`
+	Cardiac     string `json:"cardiac"`
+	GIBleed     string `json:"GIBleed"`
+	OB          string `json:"OB"`
+}
+
 // Mission ...
 type Mission struct {
 	Type            string `json:"type"`
@@ -129,8 +142,18 @@ var aircraftDetails = []*AircraftDetail{
 			Status:          "ongoing",
 			Vision:          "IFR",
 			NextWaypointETE: "x min to...",
-			FlightNum:       "18-0013",
-			RadioReport:     "18-0013, 65, 90, male, GSW to chest. Has chest tube., Yes, 4, Paced externally - bring pacer box, Upper GI Bleed, Less than 5cm - launch without AOC Notification",
+			FlightNum:       "18-0013", // same as TCNum
+			Patient:         &Patient{
+				ShortReport: "GSW to chest. Has chest tube.",
+				Intubated:  "yes",
+				Drips:      "4",
+				Age:        "65",
+				Weight: 	"90", // this is in kg
+				Gender:     "male",
+				Cardiac:    "Paced externally - bring pacer box",
+				GIBleed:    "Upper GI Bleed",
+				OB:   "Less than 5cm - launch without AOC Notification"
+			},
 			Requestor:       "Lopez Island EMS",
 			Receiver:        "Harborview Medical Center",
 		},
