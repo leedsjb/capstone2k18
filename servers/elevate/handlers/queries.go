@@ -122,6 +122,7 @@ func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
 	}
+	fmt.Println("Got all groups")
 	return groupRows, nil
 }
 

@@ -71,8 +71,6 @@ func main() {
 	sqlUser := os.Getenv("SQLUSER")
 	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
-	// // sqlTblName := os.Getenv("SQLTABLENAME")
-	// first25Missions := os.Getenv("SQLMISSIONS")
 
 	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
 	cfg.DBName = sqlDbName
@@ -81,6 +79,7 @@ func main() {
 		fmt.Printf("Error dialing MySQL: %v", err)
 		os.Exit(1)
 	}
+	fmt.Println("Connected to SQL")
 	defer db.Close()
 
 	// [LOAD TRIES]
