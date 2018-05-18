@@ -5,7 +5,7 @@ import Box from "../Box";
 
 const Card = sys(
     {
-        p: 2,
+        p: 4,
         bg: "white",
         borderRadius: 4,
         border: "1px solid",
