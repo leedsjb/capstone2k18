@@ -144,10 +144,7 @@ class AircraftPage extends Component {
                 {this.props.aircraftDetail.error.toString()}
             </div>
         ) : (
-            <div>
-                <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
-                {this.renderAircraftDetail(this.props.aircraftDetail)}
-            </div>
+            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
         );
     };
 
