@@ -44,6 +44,15 @@ class PeoplePage extends Component {
         if (this.props.groupID) {
             this.props.fetchGroupsDetail(this.props.groupID);
         }
+
+        if (
+            new URLSearchParams(window.location.search).get("source") ===
+            "groups"
+        ) {
+            this.props.fetchGroupsDetail(
+                new URLSearchParams(window.location.search).get("id")
+            );
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -115,12 +124,14 @@ class PeoplePage extends Component {
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
-            const { id } = this.props.groupsDetail.data;
-
             return this.props.groupsDetail.data.people.map(person => {
                 return (
                     <Link
-                        to={`/people/${person.id}?source=groups`}
+                        to={`/people/${person.id}?source=groups&id=${this.props
+                            .groupID ||
+                            new URLSearchParams(window.location.search).get(
+                                "id"
+                            )}`}
                         key={person.id}
                     >
                         <MasterListItem>
@@ -144,12 +155,16 @@ class PeoplePage extends Component {
     }
 
     renderGroupsDetail() {
-        if (
+        if (!this.props.groupID) {
+            return (
+                <DetailView>
+                    <Box bg="gray" height="100%" />
+                </DetailView>
+            );
+        } else if (
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
-            const { id } = this.props.groupsDetail.data;
-
             return this.props.groupsDetail.data.people.map(person => {
                 return this.renderPeopleDetail(person);
             });
@@ -168,9 +183,16 @@ class PeoplePage extends Component {
     }
 
     renderPeopleDetail(person) {
-        if (
-            !this.props.peopleDetail.pending &&
-            !Array.isArray(this.props.peopleDetail.data)
+        if (!this.props.id && !this.props.groupID) {
+            return (
+                <DetailView>
+                    <Box bg="gray" height="100%" />
+                </DetailView>
+            );
+        } else if (
+            (!this.props.peopleDetail.pending &&
+                !Array.isArray(this.props.peopleDetail.data)) ||
+            this.isGroupDetailView()
         ) {
             return (
                 <DetailView>
@@ -200,9 +222,9 @@ class PeoplePage extends Component {
                     </Flex>
                 </DetailView>
             );
+        } else {
+            return <DetailView />;
         }
-
-        return <DetailView />;
     }
 
     renderMasterView() {
@@ -258,10 +280,10 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        if (this.isGroupDetailView()) {
-            return this.renderGroupsDetail();
-        } else if (this.props.id) {
+        if (this.isPeopleTab()) {
             return this.renderPeopleDetail(this.props.peopleDetail.data);
+        } else {
+            return this.renderGroupsDetail();
         }
     }
 
