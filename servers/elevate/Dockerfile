@@ -1,6 +1,8 @@
-FROM alpine
-RUN apk add --no-cache ca-certificates
-COPY gateway /gateway
-EXPOSE 443
-ENTRYPOINT ["/gateway"]
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
 
+FROM scratch
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY elevate /elevate
+EXPOSE 443
+ENTRYPOINT ["/elevate"]
