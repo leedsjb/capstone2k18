@@ -3,13 +3,18 @@ import { Flex } from "grid-styled";
 
 import Badge from "../Badge";
 import Span from "../Span";
+import Box from "../Box";
 
 const AircraftIdentifier = ({ callsign, nNum, status }) => {
     return (
         <Flex alignItems="center">
             <Span fontWeight="bold">{callsign}</Span>
-            <Span>{nNum}</Span>
-            <Badge>{status}</Badge>
+            <Box ml={2}>
+                <Span>{nNum}</Span>
+            </Box>
+            <Box ml={2}>
+                <Badge>{status}</Badge>
+            </Box>
         </Flex>
     );
 };
