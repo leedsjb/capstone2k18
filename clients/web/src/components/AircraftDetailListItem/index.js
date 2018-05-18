@@ -35,11 +35,16 @@ class AircraftDetailListItem extends Component {
                     </Clickable>
                 </Flex>
                 <Divider />
-                <Box px={6}>
-                    <Heading is="h2" fontSize={4}>
-                        ETA
-                    </Heading>
-                    <Heading is="h2" fontSize={4}>
+                <Box px={6} my={6}>
+                    {this.props.aircraftDetail.data.mission ? (
+                        <div>
+                            <Heading is="h2" fontSize={4}>
+                                ETA
+                            </Heading>
+                            <Text mt={2}>Route component goes here</Text>
+                        </div>
+                    ) : null}
+                    <Heading is="h2" fontSize={4} mt={4}>
                         Patient
                     </Heading>
                     {this.props.aircraftDetail.data.crew ? (
