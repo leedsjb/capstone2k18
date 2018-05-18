@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
@@ -11,6 +12,31 @@ import (
 var sqlCtx = context.Background()
 
 // [AIRCRAFT]
+
+// GetAircraftCallsign retrieves an aircraft's callsign given a missionID
+func (ctx *ParserContext) GetAircraftCallsign(missionID string) (string, error) {
+	// get mission from db using missionID
+	aircraftRow, err := ctx.DB.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + missionID)
+	if err != nil {
+		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
+	}
+	var aircraftCallsign string
+	err = aircraftRow.Scan(&aircraftCallsign)
+	if err != nil {
+		return "", err
+	}
+	return aircraftCallsign, nil
+}
+
+// GetAircraftByID retrieves an aircraft object with the matching ID from the database
+func (ctx *ParserContext) GetAircraftByID(aircraftID string) (*sql.Rows, error) {
+	// TODO sql sproc
+	aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByID(" + aircraftID + ")")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for aircraft: %v", err)
+	}
+	return aircraftRows, nil
+}
 
 // AddNewAircraft adds a new aircraft object to the database
 func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create) error {

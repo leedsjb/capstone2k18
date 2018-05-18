@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -84,6 +83,23 @@ func main() {
 	}
 	defer db.Close()
 
+	// [LOAD TRIES]
+	var aircraftTrie = indexes.NewTrie()
+	var personnelTrie = indexes.NewTrie()
+	notifier := handlers.NewNotifier()
+
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
+	parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
+	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
+		log.Fatalf("Error loading aircraft trie")
+	}
+	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
+		log.Fatalf("Error loading groups into personnel trie")
+	}
+	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
+		log.Fatalf("Error loading people into personnel trie")
+	}
+
 	// [PUB/SUB]
 
 	// TODO: temp workaround, maybe better soln?
@@ -135,8 +151,6 @@ func main() {
 		"test_group_delete_sub",
 	}
 
-	notifier := handlers.NewNotifier()
-
 	// create topics and subscriptions if don't yet exist
 	for i, testTopicName := range testTopicNames {
 		topic := psClient.Topic(testTopicName)
@@ -164,24 +178,10 @@ func main() {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
-		go subscribe(subscription, notifier, db)
+		go subscribe(subscription, notifier, parserCtx)
 	}
 
 	// [HTTPS]
-
-	var aircraftTrie = indexes.NewTrie()
-	var personnelTrie = indexes.NewTrie()
-
-	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
-	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
-		log.Fatalf("Error loading aircraft trie")
-	}
-	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading groups into personnel trie")
-	}
-	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading people into personnel trie")
-	}
 
 	// Create a new mux for the web server.
 	mux := http.NewServeMux()
@@ -230,7 +230,7 @@ type pubSubMessage struct {
 }
 
 // listen for and process pubsub events
-func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, db *sql.DB) {
+func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, parserCtx *parsers.ParserContext) {
 	ctx := context.Background()
 	err := subscription.Receive(ctx, func(ctx context.Context, pulledMsg *pubsub.Message) {
 		// if subscription is topicName
@@ -242,54 +242,54 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			msgType := "mission-create"
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			parsers.ParseMissionCreate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseMissionCreate(msg, pulledMsg, msgType)
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
 			msgType := "mission-waypoints-update"
-			parsers.ParseMissionWaypointsUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseMissionWaypointsUpdate(msg, pulledMsg, msgType)
 		case "test_mission_crew_update_sub":
 			msg := &messages.Mission_Crew_Update{}
 			msgType := "mission-crew-update"
-			parsers.ParseMissionCrewUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseMissionCrewUpdate(msg, pulledMsg, msgType)
 		case "test_waypoint_create_sub":
 			msg := &messages.Waypoint{}
 			msgType := "waypoint-create"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseWaypointCreate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseWaypointCreate(msg, pulledMsg, msgType)
 		case "test_waypoint_update_sub":
 			msg := &messages.Waypoint{}
 			msgType := "waypoint-update"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseWaypointUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseWaypointUpdate(msg, pulledMsg, msgType)
 		case "test_waypoint_delete_sub":
 			msg := &messages.Waypoint_Delete{}
 			msgType := "waypoint-delete"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseWaypointDelete(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseWaypointDelete(msg, pulledMsg, msgType)
 		case "test_aircraft_create_sub":
 			msg := &messages.Aircraft_Create{}
 			msgType := "aircraft-create"
-			parsers.ParseAircraftCreate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseAircraftCreate(msg, pulledMsg, msgType)
 		case "test_ac_properties_update_sub":
 			msg := &messages.Aircraft_Props_Update{}
 			msgType := "aircraft-props-update"
-			parsers.ParseAircraftPropsUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseAircraftPropsUpdate(msg, pulledMsg, msgType)
 
 		// [PENDING]: Wait for Brian to add ID to these actions
 		case "test_ac_crew_update_sub":
 			msg := &messages.Aircraft_Crew_Update{}
 			msgType := "aircraft-crew-update"
-			parsers.ParseAircraftCrewUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseAircraftCrewUpdate(msg, pulledMsg, msgType)
 			// TODO: call sql sproc
 		case "test_ac_service_schedule_sub":
 			msg := &messages.Aircraft_Service_Schedule{}
 			msgType := "aircraft-service-schedule"
-			parsers.ParseAircraftServiceSchedule(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseAircraftServiceSchedule(msg, pulledMsg, msgType)
 			// TODO: call sql sproc
 		case "test_ac_position_update_sub":
 			msg := &messages.Aircraft_Pos_Update{}
 			msgType := "aircraft-position-update"
-			parsers.ParseAircraftPositionUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseAircraftPositionUpdate(msg, pulledMsg, msgType)
 			// TODO: call sql sproc
 		//[END PENDING]
 
@@ -297,32 +297,32 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, d
 			msg := &messages.User{}
 			msgType := "user-create"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseUserCreate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseUserCreate(msg, pulledMsg, msgType)
 		case "test_user_update_sub":
 			msg := &messages.User{}
 			msgType := "user-update"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseUserUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseUserUpdate(msg, pulledMsg, msgType)
 		case "test_user_delete_sub":
 			msg := &messages.User_Delete{}
 			msgType := "user-delete"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseUserDelete(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseUserDelete(msg, pulledMsg, msgType)
 		case "test_group_create_sub":
 			msg := &messages.Group{}
 			msgType := "group-create"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseGroupCreate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseGroupCreate(msg, pulledMsg, msgType)
 		case "test_group_update_sub":
 			msg := &messages.Group{}
 			msgType := "group-update"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseGroupUpdate(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseGroupUpdate(msg, pulledMsg, msgType)
 		case "test_group_delete_sub":
 			msg := &messages.Group_Delete{}
 			msgType := "group-delete"
 			log.Printf("no current action: %v", subName)
-			parsers.ParseGroupDelete(msg, pulledMsg, msgType, db, notifier)
+			parserCtx.ParseGroupDelete(msg, pulledMsg, msgType)
 		default:
 			log.Printf("not a valid subscription type")
 		}

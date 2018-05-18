@@ -1,13 +1,11 @@
 package parsers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -15,7 +13,7 @@ import (
 // the Flight Vector DB
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -55,7 +53,7 @@ func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
 // the Flight Vector DB
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
@@ -95,7 +93,7 @@ func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
 // the Flight Vector DB
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserDelete(msg *messages.User_Delete,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
+	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
