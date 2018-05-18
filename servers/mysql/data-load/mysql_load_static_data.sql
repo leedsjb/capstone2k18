@@ -36,3 +36,28 @@ VALUES
 
 INSERT INTO tblGENDER(gender_name)
 VALUES('Male', 'Female', 'Other')
+
+INSERT INTO tblPERSONNEL(personnel_id, personnel_f_name, personnel_l_name, personnel_title, personnel_sms_num, personnel_email)
+VALUES
+(1,"Tiffany","Chen","Developer","5555555555","tzc@uw.edu"),
+(2,"Benjamin","Leeds","Developer","7777777777","jbl@uw.edu")
+
+INSERT INTO tblPERSONNEL_GROUP(personnelGroupID,personnel_id,group_id)
+VALUES
+(1,1,20),
+(2,1,18),
+(3,2,12),
+(4,2,18)
+
+SELECT tblGROUP.group_id, group_name, personnel_f_name, personnel_l_name FROM tblGROUP
+JOIN tblPERSONNEL_GROUP ON tblGROUP.group_id = tblPERSONNEL_GROUP.group_id
+JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id
+ORDER BY tblGROUP.group_name ASC
+
+DESCRIBE tblGROUP;
+
+
+DESCRIBE tblPERSONNEL_GROUP;
+
+DESCRIBE tblPERSONNEL;
+SELECT * FROM tblPERSONNEL;
