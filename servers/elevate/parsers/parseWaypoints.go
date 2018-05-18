@@ -3,6 +3,7 @@ package parsers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
@@ -13,15 +14,15 @@ import (
 // ParseWaypointCreate handles the creation of new persistent waypoints
 // in the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseWaypointCreate(msg *messages.Waypoint,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseWaypointCreate(msg *messages.Waypoint,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Waypoint-Create: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -92,20 +93,27 @@ func ParseWaypointCreate(msg *messages.Waypoint,
 	// [START AIRCRAFT]
 
 	// [END AIRCRAFT]
+
+	// [ADD WAYPOINT TO DB]
+	// if err := ctx.AddNewWaypoint(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding waypoint to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseWaypointUpdate handles the modification of persistent waypoints
 // in the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseWaypointUpdate(msg *messages.Waypoint,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseWaypointUpdate(msg *messages.Waypoint,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Waypoint-Update: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -133,20 +141,27 @@ func ParseWaypointUpdate(msg *messages.Waypoint,
 	// 	RadioChannels		[]string `json:"radioChannels"`
 	// 	NOTAMS				string   `json:"NOTAMS"`
 	// }
+
+	// [ADD WAYPOINT UPDATE TO DB]
+	// if err := ctx.UpdateWaypoint(stuff); err != nil {
+	// 	return fmt.Errorf("Error adding waypoint updates to DB: %v", err)
+	// }
+
+	return nil
 }
 
 // ParseWaypointDelete handles the deletion of persistent waypoints
 // from the Flight Vector DB
 // does not notify client, writes new info to db
-func ParseWaypointDelete(msg *messages.Waypoint_Delete,
-	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ParseWaypointDelete(msg *messages.Waypoint_Delete,
+	pulledMsg *pubsub.Message, msgType string, db *sql.DB, notifier *handlers.Notifier) error {
 	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
 		pulledMsg.Ack()
-		return
+		return fmt.Errorf("Error unmarshaling message data in Waypoint-Delete: %v", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
@@ -155,4 +170,11 @@ func ParseWaypointDelete(msg *messages.Waypoint_Delete,
 	// type Waypoint_Delete struct {
 	// 	ID		string `json:"ID"`
 	// }
+
+	// [DELETE WAYPOINT FROM DB]
+	// if err := ctx.DeleteWaypoint(stuff); err != nil {
+	// 	return fmt.Errorf("Error deleting waypoint from DB: %v", err)
+	// }
+
+	return nil
 }
