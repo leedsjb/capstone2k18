@@ -34,14 +34,14 @@ type Mission struct {
 
 // MissionDetail ...
 type MissionDetail struct {
-	Type            string `json:"type"`
-	Status          string `json:"status"`
-	Vision          string `json:"vision"`
-	NextWaypointETE string `json:"nextWaypointETE"`
-	FlightNum       string `json:"flightNum"`
-	RadioReport     string `json:"radioReport"`
-	Requestor       string `json:"requestor"`
-	Receiver        string `json:"receiver"`
+	Type            string   `json:"type"`
+	Status          string   `json:"status"`
+	Vision          string   `json:"vision"`
+	NextWaypointETE string   `json:"nextWaypointETE"`
+	FlightNum       string   `json:"flightNum"`
+	RadioReport     *Patient `json:"radioReport"`
+	Requestor       string   `json:"requestor"`
+	Receiver        string   `json:"receiver"`
 }
 
 // OOS ...
@@ -143,19 +143,19 @@ var aircraftDetails = []*AircraftDetail{
 			Vision:          "IFR",
 			NextWaypointETE: "x min to...",
 			FlightNum:       "18-0013", // same as TCNum
-			Patient:         &Patient{
+			RadioReport: &Patient{
 				ShortReport: "GSW to chest. Has chest tube.",
-				Intubated:  "yes",
-				Drips:      "4",
-				Age:        "65",
-				Weight: 	"90", // this is in kg
-				Gender:     "male",
-				Cardiac:    "Paced externally - bring pacer box",
-				GIBleed:    "Upper GI Bleed",
-				OB:   "Less than 5cm - launch without AOC Notification"
+				Intubated:   "yes",
+				Drips:       "4",
+				Age:         "65",
+				Weight:      "90", // this is in kg
+				Gender:      "male",
+				Cardiac:     "Paced externally - bring pacer box",
+				GIBleed:     "Upper GI Bleed",
+				OB:          "Less than 5cm - launch without AOC Notification",
 			},
-			Requestor:       "Lopez Island EMS",
-			Receiver:        "Harborview Medical Center",
+			Requestor: "Lopez Island EMS",
+			Receiver:  "Harborview Medical Center",
 		},
 		OOS: nil,
 	},
