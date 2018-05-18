@@ -79,7 +79,8 @@ func (ctx *HandlerContext) LoadPeopleTrie(trie *indexes.Trie) error {
 	return nil
 }
 
-// GetTriePeople
+// GetTriePeople retrieves information on people who match
+// the search term based on IDs found in the personnel trie
 func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, error) {
 	people := []*messages.Person{}
 
@@ -95,7 +96,7 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 		for peopleRows.Next() {
 			err = peopleRows.Scan(personRow)
 			if err != nil {
-				return nil, fmt.Errorf("Error scanning group row: %v", err)
+				return nil, fmt.Errorf("Error scanning person row: %v", err)
 			}
 			// TODO: maybe optimize to actually check if these already exist
 			person = &messages.Person{
@@ -137,7 +138,7 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 			// search term empty, return all people
 			peopleRows, err := ctx.GetPeople()
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error querying MySQL for groups: %v", err), http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("Error retrieving people from DB: %v", err), http.StatusInternalServerError)
 			}
 
 			personRow := &personRow{}
@@ -183,7 +184,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 			for personDetailRows.Next() {
 				err = personDetailRows.Scan(personDetailRow)
 				if err != nil {
-					http.Error(w, fmt.Sprintf("Error scanning person details from query: %v", err), http.StatusInternalServerError)
+					http.Error(w, fmt.Sprintf("Error scanning person details: %v", err), http.StatusInternalServerError)
 					return
 				}
 				personDetail = &messages.PersonDetail{
@@ -200,7 +201,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 			}
 			respond(w, personDetail)
 		} else {
-			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
+			http.Error(w, "No person with that ID", http.StatusBadRequest)
 		}
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
