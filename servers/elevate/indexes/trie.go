@@ -80,6 +80,8 @@ func (trie *Trie) findBranch(key string) *TrieNode {
 // a given prefix string
 // The actual work is done by the helper function getBranchEntities
 func (trie *Trie) GetEntities(prefix string, limit int) []int {
+	fmt.Printf("[GET ENTITY] term is: %v\n", prefix)
+
 	// Obtain a read lock
 	trie.mx.RLock()
 	// Use defer to exit the read lock as we exit the function
@@ -92,6 +94,7 @@ func (trie *Trie) GetEntities(prefix string, limit int) []int {
 	// recurse down the branch, gathering values
 	branch := trie.findBranch(prefixes[0])
 	if branch == nil {
+		fmt.Println("[GET ENTITY] branch is nil")
 		return []int{}
 	}
 

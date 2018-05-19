@@ -195,7 +195,7 @@ func main() {
 	// mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
 	// mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
 	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
-	// mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
+	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
 	// TODO: write resourcesHandler after we set up cloud storage
 	// mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
