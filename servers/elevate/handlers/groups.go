@@ -62,12 +62,11 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 		return fmt.Errorf("Error retrieving groups for personnel trie: %v", err)
 	}
 	// create variables and fill contents from retrieved rows
+
 	currentRow := &groupRow{}
 	currentRow.GroupID = "first"
 	currentGroupID := "first"
 	currentGroup := &messages.ClientGroup{}
-	currentName := ""
-
 	var rowID string
 	var rowName string
 	var rowFName string
@@ -75,18 +74,28 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 
 	for groupRows.Next() {
 		err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
-		fmt.Println("about to scan group")
 		if err != nil {
-			fmt.Println("ERROR SCANNING GROUP")
-			fmt.Printf("CURRENT GROUP: %v, %v, %v, %v\n", rowID, rowName, rowFName, rowLName)
 			return fmt.Errorf("Error scanning group row: %v", err)
 		}
-		fmt.Printf("GROUP: %v", currentRow)
-		if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
+		// if this isn't the first group or if it is a different group than before,
+		// append the previous group
+
+		if currentGroupID == "first" {
+			fmt.Println("[GROUP HANDLER] currentGroupID was first")
+			currentGroupID = rowID
+		}
+		fmt.Printf("[GROUP HANDLER] Current RowID is: [%v], GroupID is: [%v]\n", rowID, currentGroupID)
+		if rowID != currentGroupID {
+			fmt.Printf("[GROUP HANDLER] Non-matching rowID [%v] and groupID [%v]\n", rowID, currentGroupID)
 			if err := IndexGroup(trie, currentGroup); err != nil {
 				return fmt.Errorf("Error loading trie: %v", err)
 			}
+			// empty out the current group being built
+			currentGroup = &messages.ClientGroup{}
+			// update current groupID
+			currentGroupID = rowID
 		}
+		// otherwise, continue as usual and assign values to the receiving struct
 		currentRow = &groupRow{
 			GroupID:   rowID,
 			GroupName: rowName,
@@ -94,12 +103,14 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 			LName:     rowLName,
 		}
 		// TODO: maybe optimize to actually check if these already exist
-		// TODO: will this append individual groups even though the same
-		// group object is being reused?
-		currentGroup.ID = currentRow.GroupID
-		currentGroup.Name = currentRow.GroupName
-		currentName = currentRow.FName + currentRow.LName
-		currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
+		currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
+		if err != nil {
+			return fmt.Errorf("Error populating group for trie: %v", err)
+		}
+	}
+	// Index last group
+	if err := IndexGroup(trie, currentGroup); err != nil {
+		return fmt.Errorf("Error loading trie: %v", err)
 	}
 	return nil
 }
@@ -109,7 +120,7 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 
 	// get each group whose prefix matches the search term
 	for _, groupID := range groupIDS {
-		group := &messages.ClientGroup{}
+		currentGroup := &messages.ClientGroup{}
 		ID := strconv.Itoa(groupID)
 		groupRows, err := ctx.GetGroupByID(ID)
 		if err != nil {
@@ -134,14 +145,15 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 				FName:     rowFName,
 				LName:     rowLName,
 			}
-			group, err = ctx.GetGroupSummary(currentRow, group)
+			currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
 			if err != nil {
 				return nil, fmt.Errorf("Error populating group for trie: %v", err)
 			}
 		}
 		// after getting all the members, add the group
 		// to the list of returned groups
-		groups = append(groups, group)
+		fmt.Printf("[GROUP HANDLER TRIE] Add group to return groups: %#v\n", currentGroup)
+		groups = append(groups, currentGroup)
 	}
 	return groups, nil
 }
@@ -167,15 +179,19 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 	switch r.Method {
 	case "GET":
 		query := r.URL.Query()
+		fmt.Printf("[GROUP TRIE] query is: %v\n", query)
 
 		term := query.Get("q")
+		fmt.Printf("[GROUP TRIE] term is: %v\n", term)
 
 		groups := []*messages.ClientGroup{}
 
 		if len(term) > 0 {
+			fmt.Println("[GROUP TRIE] in filtering")
 			// search query non-empty
 			// find groupIDs that match the search term
 			groupIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
+			fmt.Printf("[GROUP TRIE] groupIDS: %v", groupIDS)
 			// retrieve the actual group information
 			groups, err := ctx.GetTrieGroups(groupIDS)
 			if err != nil {
@@ -206,7 +222,6 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			currentRow.GroupID = "first"
 			currentGroupID := "first"
 			currentGroup := &messages.ClientGroup{}
-			currentName := ""
 			for groupRows.Next() {
 				err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
 				if err != nil {
@@ -237,10 +252,11 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 					LName:     rowLName,
 				}
 				// TODO: maybe optimize to actually check if these already exist
-				currentGroup.ID = currentRow.GroupID
-				currentGroup.Name = currentRow.GroupName
-				currentName = currentRow.FName + currentRow.LName
-				currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
+				currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error populating group for trie: %v", err), http.StatusInternalServerError)
+					return
+				}
 			}
 			// add last group to the list of groups
 			groups = append(groups, currentGroup)
@@ -270,13 +286,6 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		// 	LName    string `json:"lName"`
 		// 	Position string `json:"position"`
 		// }
-
-		/*
-			SELECT group_id, group_name, personnel_F_Name, personnel_L_Name, personnel_id, role_title
-			FROM tblPERSONNEL
-			JOIN tblASSIGNED_PERSONNEL_ROLES ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id
-			JOIN tblROLES ON tblPERSONNEL.personnel_id = tbl
-		*/
 
 		// TODO: make sure this isn't potentially exposing anything
 		id := path.Base(r.URL.Path)

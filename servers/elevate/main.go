@@ -69,10 +69,9 @@ func main() {
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
 	sqlUser := os.Getenv("SQLUSER")
-	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
-	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
+	cfg := mysql.Cfg(sqlInstance, sqlUser, "")
 	cfg.DBName = sqlDbName
 	db, err := mysql.DialCfg(cfg)
 	if err != nil {
@@ -195,7 +194,7 @@ func main() {
 	// mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
 	// mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
 	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
-	// mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
+	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
 	// TODO: write resourcesHandler after we set up cloud storage
 	// mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
