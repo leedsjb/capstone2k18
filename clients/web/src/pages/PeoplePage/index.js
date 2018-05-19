@@ -18,6 +18,7 @@ import MasterListItem from "../../components/MasterListItem";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
 import ProfileAvatar from "../../components/ProfileAvatar";
+import ScrollView from "../../components/ScrollView";
 import Span from "../../components/Span";
 import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
@@ -170,20 +171,22 @@ class PeoplePage extends Component {
         ) {
             return (
                 <DetailView>
-                    <Flex
-                        alignItems="center"
-                        flexWrap="wrap"
-                        justifyContent={[
-                            "space-evenly",
-                            "space-evenly",
-                            "space-evenly",
-                            "center"
-                        ]}
-                    >
-                        {this.props.groupsDetail.data.people.map(person => {
-                            return this.renderPeopleDetail(person);
-                        })}
-                    </Flex>
+                    <ScrollView>
+                        <Flex
+                            alignItems="center"
+                            flexWrap="wrap"
+                            justifyContent={[
+                                "space-evenly",
+                                "space-evenly",
+                                "space-evenly",
+                                "center"
+                            ]}
+                        >
+                            {this.props.groupsDetail.data.people.map(person => {
+                                return this.renderPeopleDetail(person);
+                            })}
+                        </Flex>
+                    </ScrollView>
                 </DetailView>
             );
         } else if (!this.props.groupsDetail.pending) {
@@ -276,7 +279,7 @@ class PeoplePage extends Component {
                     py={2}
                     px={3}
                 >
-                    <Link to="/groups">
+                    <Link to={`/groups/${this.getGroupID()}`}>
                         <Icon glyph="chevronLeft" size={16} />
                     </Link>
                     <Span fontWeight="bold">
