@@ -78,7 +78,7 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 		fmt.Println("about to scan group")
 		if err != nil {
 			fmt.Println("ERROR SCANNING GROUP")
-			fmt.Printf("CURRENT GROUP: %v, %v, %v, %v", rowID, rowName, rowFName, rowLName)
+			fmt.Printf("CURRENT GROUP: %v, %v, %v, %v\n", rowID, rowName, rowFName, rowLName)
 			return fmt.Errorf("Error scanning group row: %v", err)
 		}
 		fmt.Printf("GROUP: %v", currentRow)
@@ -192,11 +192,6 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			// 	PeoplePreview string    `json:"peoplePreview"`
 			// }
 
-			// SELECT group_id, group_name, personnel_F_Name, personnel_L_Name FROM tblPERSONNEL_GROUP
-			// JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id
-			// JOIN tblGROUP ON tblPERSONNEL_GROUP.group_id = tblGROUP.group_id
-			// ORDER BY group_name
-
 			groupRows, err := ctx.GetAllGroups()
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting groups: %v", err), http.StatusInternalServerError)
@@ -208,6 +203,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			var rowName string
 			var rowFName string
 			var rowLName string
+			currentRow.GroupID = "first"
 			currentGroupID := "first"
 			currentGroup := &messages.ClientGroup{}
 			currentName := ""
@@ -217,9 +213,23 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 					http.Error(w, fmt.Sprintf("Error scanning group row: %v", err), http.StatusInternalServerError)
 					return
 				}
-				if currentGroupID != "first" || currentRow.GroupID != currentGroupID {
-					groups = append(groups, currentGroup)
+				// if this isn't the first group or if it is a different group than before,
+				// append the previous group
+
+				if currentGroupID == "first" {
+					fmt.Println("[GROUP HANDLER] currentGroupID was first")
+					currentGroupID = rowID
 				}
+				fmt.Printf("[GROUP HANDLER] Current RowID is: [%v], GroupID is: [%v]\n", rowID, currentGroupID)
+				if rowID != currentGroupID {
+					fmt.Printf("[GROUP HANDLER] Non-matching rowID [%v] and groupID [%v]\n", rowID, currentGroupID)
+					groups = append(groups, currentGroup)
+					// empty out the current group being built
+					currentGroup = &messages.ClientGroup{}
+					// update current groupID
+					currentGroupID = rowID
+				}
+				// otherwise, continue as usual and assign values to the receiving struct
 				currentRow = &groupRow{
 					GroupID:   rowID,
 					GroupName: rowName,
@@ -232,6 +242,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 				currentName = currentRow.FName + currentRow.LName
 				currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
 			}
+			// add last group to the list of groups
+			groups = append(groups, currentGroup)
 
 			respond(w, groups)
 		}
