@@ -262,6 +262,10 @@ class PeoplePage extends Component {
             list = this.renderGroupsList();
         }
 
+        let groupPath = this.isGroupPeopleDetail()
+            ? `/groups/${this.getGroupID()}`
+            : "/groups";
+
         let controller =
             !this.isGroupDetailView() && !this.isGroupPeopleDetail() ? (
                 <Flex>
@@ -279,7 +283,7 @@ class PeoplePage extends Component {
                     py={2}
                     px={3}
                 >
-                    <Link to={`/groups/${this.getGroupID()}`}>
+                    <Link to={groupPath}>
                         <Icon glyph="chevronLeft" size={16} />
                     </Link>
                     <Span fontWeight="bold">
