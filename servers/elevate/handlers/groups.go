@@ -206,7 +206,6 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			currentRow.GroupID = "first"
 			currentGroupID := "first"
 			currentGroup := &messages.ClientGroup{}
-			currentName := ""
 			for groupRows.Next() {
 				err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
 				if err != nil {
@@ -237,10 +236,11 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 					LName:     rowLName,
 				}
 				// TODO: maybe optimize to actually check if these already exist
-				currentGroup.ID = currentRow.GroupID
-				currentGroup.Name = currentRow.GroupName
-				currentName = currentRow.FName + currentRow.LName
-				currentGroup.PeoplePreview = append(currentGroup.PeoplePreview, currentName)
+				currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error populating group for trie: %v", err), http.StatusInternalServerError)
+					return
+				}
 			}
 			// add last group to the list of groups
 			groups = append(groups, currentGroup)
