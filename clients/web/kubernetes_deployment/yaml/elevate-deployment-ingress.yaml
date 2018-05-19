@@ -40,3 +40,10 @@ spec:
             backend:
               serviceName: go-saml-web-server-deployment-node-port-service 
               servicePort: 80
+    - host: api.test.elevate.airliftnw.org
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: alnw-apiserver-deployment-node-port-service
+              servicePort: 80
