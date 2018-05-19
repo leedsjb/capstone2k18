@@ -1,22 +1,21 @@
 # Filename: elevate-apiserver-deployment.yaml
 # Created: Friday May 18, 2018
-# Modified: 
+# Modified: Saturday May 19, 2018
 # Author: J. Benjamin Leeds
 # License: None
-# Purpose: Deploy Elevate apiserver to Kubernetes
+# Purpose: Deploy Elevate apiserver to Kubernetes with CloudSQL Connection
+
+# Instance connection name: airliftnw-uw:us-west1:alnw-elevate-test
 
 # Prereqs
 #   1. Service account for CloudSQL for proxy to use
-#   2. Create proxy user on MySQL instance
-#         gcloud sql users create proxyuser cloudsqlproxy~%
-#         --instance=airliftnw-uw:us-west1:alnw-elevate-test --password=
-
-# Instance connection name: airliftnw-uw:us-west1:alnw-elevate-test
+#   2. Create proxy user on MySQL instance w/ no password
+#     gcloud sql users create proxyuser cloudsqlproxy~%
+#     --instance=airliftnw-uw:us-west1:alnw-elevate-test
 #   3. Create Kubernetes secret objects
-#     kubectl create secret generic cloudsql-instance-credentials --from-file=airliftnw-uw-9170188dcf15.json=./
-#     kubectl create secret generic cloudsql-db-credentials --from-literal=username=proxyuser --from-literal=password=******
+#     kubectl create secret generic cloudsql-instance-credentials --from-file=airliftnw-uw-c9fe29678933.json=./
+#     kubectl create secret generic cloudsql-db-credentials --from-literal=username=proxyuser
 #   4. Provide ENV to elevate apiserver
-#
 
 apiVersion: apps/v1
 kind: Deployment
@@ -42,7 +41,7 @@ spec:
     spec:
       containers: 
       - name: go-apiserver-container
-        image: us.gcr.io/airliftnw-uw/go-apiserver:0.2
+        image: us.gcr.io/airliftnw-uw/go-apiserver:0.7
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -66,9 +65,12 @@ spec:
           value: "elevate_test"
         - name: GOOGLE_CLOUD_PROJECT
           value: "airliftnw-uw"
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.11
-        command: ["/cloud_sql_proxy","-instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306","-credential_file=/secrets/cloudsql/airliftnw-uw-9170188dcf15.json"]
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/secrets/cloudsql/airliftnw-uw-c9fe29678933.json"
+      # Sidecar pattern no longer needed because we are using the SQL proxy built into Go
+      # - name: cloudsql-proxy
+      #   image: gcr.io/cloudsql-docker/gce-proxy:1.11
+      #   command: ["/cloud_sql_proxy","-instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306","-credential_file=/secrets/cloudsql/airliftnw-uw-c9fe29678933.json"]
         volumeMounts:
           - name: cloudsql-instance-credentials
             mountPath: /secrets/cloudsql
