@@ -2,7 +2,8 @@
 
 GOOS=linux go build
 
-docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.1 .
+docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.4 .
 
-docker push us.gcr.io/airliftnw-uw/go-apiserver
+go clean
 
+docker push us.gcr.io/airliftnw-uw/go-apiserver:0.4
