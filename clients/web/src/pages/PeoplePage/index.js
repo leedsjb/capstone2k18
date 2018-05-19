@@ -168,9 +168,24 @@ class PeoplePage extends Component {
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
-            return this.props.groupsDetail.data.people.map(person => {
-                return this.renderPeopleDetail(person);
-            });
+            return (
+                <DetailView>
+                    <Flex
+                        alignItems="center"
+                        flexWrap="wrap"
+                        justifyContent={[
+                            "space-evenly",
+                            "space-evenly",
+                            "space-evenly",
+                            "center"
+                        ]}
+                    >
+                        {this.props.groupsDetail.data.people.map(person => {
+                            return this.renderPeopleDetail(person);
+                        })}
+                    </Flex>
+                </DetailView>
+            );
         } else if (!this.props.groupsDetail.pending) {
             return (
                 <Box mt={4}>
@@ -187,46 +202,50 @@ class PeoplePage extends Component {
 
     renderPeopleDetail(person) {
         if (!this.props.id && !this.props.groupID) {
-            return (
-                <DetailView>
-                    <Box bg="gray" height="100%" />
-                </DetailView>
-            );
+            return <Box bg="gray" height="100%" />;
         } else if (
             (!this.props.peopleDetail.pending &&
                 !Array.isArray(this.props.peopleDetail.data)) ||
             this.isGroupDetailView()
         ) {
+            let flex = this.isGroupDetailView() ? "0 1 25%" : "0 1 auto";
+            let mx = this.isGroupDetailView() ? 5 : 0;
+            let mb = this.isGroupDetailView() ? 8 : 0;
             return (
-                <DetailView>
-                    <Flex flexDirection="column" alignItems="center">
-                        <Box mt={4}>
-                            <ProfileAvatar fName={person.fName} size={72} />
+                <Flex
+                    alignItems="center"
+                    flex={flex}
+                    flexDirection="column"
+                    justifyContent="center"
+                    mb={mb}
+                    mx={mx}
+                >
+                    <Box mt={4}>
+                        <ProfileAvatar fName={person.fName} size={72} />
+                    </Box>
+                    <Heading
+                        children={`${person.fName} ${person.lName}`}
+                        is="h2"
+                        fontSize={4}
+                        mt={3}
+                    />
+                    <Heading
+                        children={`${person.position}`}
+                        is="h3"
+                        fontWeight="normal"
+                        fontSize={2}
+                    />
+                    <Flex mt={3}>
+                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                        <Box mx={3}>
+                            <ButtonIcon glyph="phone">Call</ButtonIcon>
                         </Box>
-                        <Heading
-                            children={`${person.fName} ${person.lName}`}
-                            is="h2"
-                            fontSize={4}
-                            mt={3}
-                        />
-                        <Heading
-                            children={`${person.position}`}
-                            is="h3"
-                            fontWeight="normal"
-                            fontSize={2}
-                        />
-                        <Flex mt={3}>
-                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                            <Box mx={3}>
-                                <ButtonIcon glyph="phone">Call</ButtonIcon>
-                            </Box>
-                            <ButtonIcon glyph="email">Mail</ButtonIcon>
-                        </Flex>
+                        <ButtonIcon glyph="email">Mail</ButtonIcon>
                     </Flex>
-                </DetailView>
+                </Flex>
             );
         } else {
-            return <DetailView />;
+            return null;
         }
     }
 
@@ -278,7 +297,11 @@ class PeoplePage extends Component {
 
     renderDetailView() {
         if (this.isPeopleTab()) {
-            return this.renderPeopleDetail(this.props.peopleDetail.data);
+            return (
+                <DetailView>
+                    {this.renderPeopleDetail(this.props.peopleDetail.data)}
+                </DetailView>
+            );
         } else {
             return this.renderGroupsDetail();
         }
