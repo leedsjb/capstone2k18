@@ -2,8 +2,13 @@
 
 GOOS=linux go build
 
-docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.4 .
+docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.6 .
 
 go clean
 
-docker push us.gcr.io/airliftnw-uw/go-apiserver:0.4
+docker push us.gcr.io/airliftnw-uw/go-apiserver:0.6
+
+## Warning: ensure YAML spec updated to current version number
+
+kubectl apply -f deployment/elevate-apiserver-deployment.yaml --record
+kubectl rollout status deployment/go-api-server-deployment
