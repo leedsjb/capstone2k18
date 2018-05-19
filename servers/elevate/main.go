@@ -37,6 +37,16 @@ func (nh *NotificationsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	nh.notifier.Notify([]byte(msg))
 }
 
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		w.Write([]byte("Google Cloud HTTPS L7 Load Balancer Health Check"))
+	default:
+		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
 //main is the main entry point for the server
 func main() {
 
@@ -48,7 +58,7 @@ func main() {
 	addr := os.Getenv("ADDR")
 	// If empty, default to ":443" for https
 	if len(addr) == 0 {
-		addr = ":443"
+		addr = ":80"
 	}
 
 	//TLSKEY and TLSCERT: paths to TLS key and cert
@@ -69,10 +79,9 @@ func main() {
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
 	sqlUser := os.Getenv("SQLUSER")
-	sqlPass := os.Getenv("SQLPASS")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
-	cfg := mysql.Cfg(sqlInstance, sqlUser, sqlPass)
+	cfg := mysql.Cfg(sqlInstance, sqlUser, "123")
 	cfg.DBName = sqlDbName
 	db, err := mysql.DialCfg(cfg)
 	if err != nil {
@@ -187,6 +196,7 @@ func main() {
 
 	// Tell the mux to call your handlers
 	wsh := handlers.NewWebSocketsHandler(notifier)
+	mux.HandleFunc("/", HealthCheckHandler)
 	mux.Handle("/v1/ws", wsh)
 	// mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
 	// mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)

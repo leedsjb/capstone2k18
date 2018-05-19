@@ -125,9 +125,9 @@ func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
 	return groupRows, nil
 }
 
-func (ctx *HandlerContext) GetGroupDetailsByID(groupID string) (*sql.Rows, error) {
+func (ctx *HandlerContext) GetGroupDetailByID(groupID string) (*sql.Rows, error) {
 	// TODO sql sproc
-	gdRows, err := ctx.DB.Query("CALL uspGetGroupDetails(" + groupID + ")")
+	gdRows, err := ctx.DB.Query("CALL uspGetGroupDetailByID(" + groupID + ")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
 	}
