@@ -31,7 +31,8 @@ class AircraftPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            query: ""
+            query: "",
+            isSearching: "false"
         };
     }
 
@@ -107,6 +108,17 @@ class AircraftPage extends Component {
                     <SearchBox
                         handleChange={query => {
                             this.setState({ query });
+                        }}
+                        query={this.state.query}
+                        handleClear={() => {
+                            this.setState({ query: "", isSearching: false });
+                            this.props.fetchAircraft();
+                        }}
+                        handleEnter={() => {
+                            this.setState({
+                                isSearching: true
+                            });
+                            this.props.fetchAircraft(this.state.query, null);
                         }}
                     />
 

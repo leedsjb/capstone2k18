@@ -11,8 +11,7 @@ class SearchBox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isFocused: false,
-            query: ""
+            isFocused: false
         };
     }
 
@@ -45,27 +44,23 @@ class SearchBox extends Component {
                         onFocus={this.handleFocus}
                         onBlur={this.handleBlur}
                         onChange={event =>
-                            this.setState({ query: event.target.value }, () => {
-                                if (this.props.handleChange) {
-                                    this.props.handleChange(this.state.query);
-                                }
-                            })
+                            this.props.handleChange(event.target.value)
                         }
-                        onEnter={() => console.log("Enter was hit")}
+                        onKeyPress={e => {
+                            if (e.key === "Enter") {
+                                this.props.handleEnter();
+                            }
+                        }}
                         py={0}
-                        value={this.state.query}
+                        value={this.props.query}
                     />
                     <div>
                         <Box px={2}>
                             {this.state.isFocused ||
-                            this.state.query.length > 0 ? (
+                            this.props.query.length > 0 ? (
                                 <Clickable
                                     onClick={() => {
-                                        this.setState({ query: "" }, () => {
-                                            if (this.props.handleClear) {
-                                                this.props.handleClear();
-                                            }
-                                        });
+                                        this.props.handleClear();
                                     }}
                                 >
                                     <Icon glyph="closeCircle" size={16} />
