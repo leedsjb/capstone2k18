@@ -20,6 +20,8 @@ import Text from "../../components/Text";
 import SearchBox from "../../components/SearchBox";
 import Span from "../../components/Span";
 import Icon from "../../components/Icon";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
+import Clickable from "../../components/Clickable";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -32,7 +34,7 @@ class AircraftPage extends Component {
         super(props);
         this.state = {
             query: "",
-            isSearching: "false"
+            isSearching: false
         };
     }
 
@@ -52,16 +54,41 @@ class AircraftPage extends Component {
 
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
-            return aircraft.data.map(a => {
-                return (
-                    <Link to={`/aircraft/${a.id}`} key={a.id}>
-                        <AircraftListItem
-                            aircraft={a}
-                            active={this.props.id == a.id}
-                        />
-                    </Link>
-                );
-            });
+            return (
+                <div>
+                    {this.state.isSearching ? (
+                        <Box px={3} py={3}>
+                            <Span fontSize={4} fontWeight="bold">{`${
+                                aircraft.data.length
+                            } aircraft`}</Span>
+                        </Box>
+                    ) : null}
+                    {aircraft.data.map(a => {
+                        return (
+                            <Clickable
+                                key={a.id}
+                                onClick={() => {
+                                    if (this.state.isSearching) {
+                                        if (this.state.isSearching) {
+                                            this.setState({
+                                                query: "",
+                                                isSearching: false
+                                            });
+                                            this.props.fetchAircraft();
+                                        }
+                                    }
+                                    this.props.push(`/aircraft/${a.id}`);
+                                }}
+                            >
+                                <AircraftListItem
+                                    aircraft={a}
+                                    active={this.props.id == a.id}
+                                />
+                            </Clickable>
+                        );
+                    })}
+                </div>
+            );
         } else if (!aircraft.pending) {
             return (
                 <Box mt={4}>
@@ -88,51 +115,43 @@ class AircraftPage extends Component {
         return <div>Loading...</div>;
     }
 
-    /*
-        <SearchBox
-            handleChange={query =>
-                this.props.fetchAircraft(query, null)
-            }
-            handleClear={() => this.props.fetchAircraft()}
-        />
-    */
-
     renderMasterView = () => {
         return this.props.aircraft.error ? (
             <div>
                 An error has occurred: {this.props.aircraft.error.toString()}
             </div>
         ) : (
-            <div>
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearching) {
+                        this.setState({ query: "", isSearching: false });
+                        this.props.fetchAircraft();
+                    }
+                }}
+            >
                 <Box bg="#F7F8FC" px={3} py={4}>
                     <SearchBox
                         handleChange={query => {
-                            this.setState({ query });
+                            this.setState({ query }, () => {
+                                this.props.fetchAircraft(
+                                    this.state.query,
+                                    null
+                                );
+                            });
                         }}
+                        isSearching={this.state.isSearching}
                         query={this.state.query}
                         handleClear={() => {
                             this.setState({ query: "", isSearching: false });
                             this.props.fetchAircraft();
                         }}
-                        handleEnter={() => {
-                            this.setState({
-                                isSearching: true
-                            });
-                            this.props.fetchAircraft(this.state.query, null);
+                        handleFocus={() => {
+                            this.setState({ isSearching: true });
                         }}
                     />
 
-                    <Flex alignItems="center" mt={2}>
-                        <DropdownSelect
-                            items={statusFilters}
-                            onChange={status => {
-                                if (status === "Any status") {
-                                    status = null;
-                                }
-                                this.props.fetchAircraft(null, status);
-                            }}
-                        />
-                        <Box ml={3}>
+                    {!this.state.isSearching ? (
+                        <Flex alignItems="center" mt={2}>
                             <DropdownSelect
                                 items={statusFilters}
                                 onChange={status => {
@@ -142,13 +161,24 @@ class AircraftPage extends Component {
                                     this.props.fetchAircraft(null, status);
                                 }}
                             />
-                        </Box>
-                    </Flex>
+                            <Box ml={3}>
+                                <DropdownSelect
+                                    items={statusFilters}
+                                    onChange={status => {
+                                        if (status === "Any status") {
+                                            status = null;
+                                        }
+                                        this.props.fetchAircraft(null, status);
+                                    }}
+                                />
+                            </Box>
+                        </Flex>
+                    ) : null}
                 </Box>
 
                 <Divider />
                 {this.renderAircraft(this.props.aircraft)}
-            </div>
+            </OutsideClickHandler>
         );
     };
 
