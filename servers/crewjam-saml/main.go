@@ -12,7 +12,7 @@ import (
 	"os"
 
 	"github.com/crewjam/saml/samlsp"
-	samlspsecure "github.com/edaniels/go-saml"
+	// samlspsecure "github.com/edaniels/go-saml"
 )
 
 /*
@@ -25,7 +25,7 @@ import (
 // prints information about signed is session to page
 // from the request object
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %s", samlspsecure.Token(r.Context()).Attributes.Get("cn"))
+	fmt.Fprintf(w, "Hello, %s", samlsp.Token(r.Context()).Attributes.Get("cn"))
 
 	fmt.Println("request URI: " + r.RequestURI)
 	fmt.Println("request Method:" + r.Method)
@@ -105,8 +105,61 @@ func testPathHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	PWD := os.Getenv("PWD")
+	// rs, err := http.Get("https://google.com")
+	// // Process response
+	// if err != nil {
+	// 	panic(err) // More idiomatic way would be to print the error and die unless it's a serious error
+	// }
+	// defer rs.Body.Close()
 
+	// bodyBytes, err := ioutil.ReadAll(rs.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// bodyString := string(bodyBytes)
+
+	// idpMetadataURLTEST, err := url.Parse("https://idp.u.washington.edu/metadata/idp-metadata.xml")
+	// idpMetadataURLTEST, err := url.Parse("https://google.com")
+
+	// rootCAs, _ := x509.SystemCertPool() // retrieves RootCA list from system
+	// if rootCAs == nil {
+	// 	fmt.Println("new ******")
+	// 	rootCAs = x509.NewCertPool()
+	// }
+
+	// fmt.Println(rootCAs)
+
+	// config := &tls.Config{
+	// 	InsecureSkipVerify: false,
+	// 	RootCAs:            rootCAs,
+	// }
+	// tr := &http.Transport{TLSClientConfig: config}
+	// client := &http.Client{Transport: tr}
+
+	// req, err := http.NewRequest("GET", idpMetadataURLTEST.String(), nil)
+	// if err != nil {
+	// 	errString := fmt.Errorf("error: %v", err)
+	// 	log.Fatalln(errString)
+	// }
+
+	// client := &http.Client{}
+	// resp, err := client.Do(req)
+	// if err != nil {
+	// 	errString := fmt.Errorf("error on line 146: %v", err)
+	// 	log.Fatalln(errString)
+	// }
+	// // defer resp.Body.Close()
+
+	// bodyBytes, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// bodyString := string(bodyBytes)
+	// fmt.Println(bodyString)
+
+	PWD := os.Getenv("PWD")
 	ENV := os.Getenv("environment")
 
 	if ENV == "" {
@@ -182,12 +235,17 @@ func main() {
 	rootURL := &url.URL{} // ****** correct usage of &?
 
 	if ENV == "kubernetes" {
-		rootURL, err = url.Parse("http://test.elevate.airliftnw.org")
+		rootURL, err = url.Parse("http://test.elevate.airliftnw.org") // TODO: change to https
+		if err != nil {
+			panic(err)
+		}
+	}
+	if ENV == "local-docker-dev" {
+		rootURL, err = url.Parse("http://localhost:80")
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		// rootURL, err = url.Parse("https://crewjam-saml.test.elevate.emeloid.co")
 		rootURL, err = url.Parse("https://localhost:4430")
 		if err != nil {
 			panic(err)
@@ -195,7 +253,6 @@ func main() {
 	}
 
 	samlSP, _ := samlsp.New(samlsp.Options{
-		// samlSP, _ := samlsp.New(samlsp.Options{
 		URL:            *rootURL,
 		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
 		Certificate:    keyPair.Leaf,
@@ -204,10 +261,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	rootHandler := http.HandlerFunc(RootPathHandler)
-	mux.Handle("/", rootHandler)
+	mux.HandleFunc("/", RootPathHandler)
 
-	mux.HandleFunc("/testing", testPathHandler)
+	mux.HandleFunc("/testing/", testPathHandler)
 
 	app := http.HandlerFunc(hello)                      // define handler to call for requests to protected path
 	mux.Handle("/sign-in/", samlSP.RequireAccount(app)) // direct requests to /hello/* to hello to app and ensures clients are authenticated with SSO
@@ -221,12 +277,11 @@ func main() {
 
 	if ENV == "kubernetes" {
 		fmt.Println("crewjam listening at: " + addr)
-		listenServeErr = http.ListenAndServe(addr, mux) // 2nd arg: handler, nil -> default serve mux
+		listenServeErr = http.ListenAndServe(addr, mux)
 
 	} else {
 		fmt.Println("crewjam listening at: " + addr)
 		listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, mux)
-		// listenServeErr = http.ListenAndServe(addr, nil)
 	}
 
 	if listenServeErr != nil {

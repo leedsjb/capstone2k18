@@ -1,6 +1,6 @@
 # Filename: crewjam-deployment.yaml
 # Created: Tuesday May 8, 2018
-# Modified: Tuesday May 15, 2018
+# Modified: Tuesday May 19, 2018
 # Last Change: Added tier and environment labels
 # Author: J. Benjamin Leeds
 # License: None
@@ -35,7 +35,7 @@ spec:
     spec:
       containers: # inside spec -> containers list
         - name: crewjam-saml-image # 1st element in a list inside containers
-          image: us.gcr.io/airliftnw-uw/go-webclient:0.17
+          image: us.gcr.io/airliftnw-uw/go-webclient:0.21
           ports:
             - containerPort: 80
               protocol: TCP
