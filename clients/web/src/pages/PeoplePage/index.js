@@ -172,19 +172,17 @@ class PeoplePage extends Component {
             return (
                 <DetailView>
                     <ScrollView>
-                        <Flex
-                            alignItems="center"
-                            flexWrap="wrap"
-                            justifyContent={[
-                                "space-evenly",
-                                "space-evenly",
-                                "space-evenly",
-                                "center"
-                            ]}
-                        >
-                            {this.props.groupsDetail.data.people.map(person => {
-                                return this.renderPeopleDetail(person);
-                            })}
+                        <Flex justifyContent="center">
+                            <Flex
+                                flexWrap="wrap"
+                                justifyContent="space-between"
+                            >
+                                {this.props.groupsDetail.data.people.map(
+                                    person => {
+                                        return this.renderPeopleDetail(person);
+                                    }
+                                )}
+                            </Flex>
                         </Flex>
                     </ScrollView>
                 </DetailView>
@@ -211,39 +209,42 @@ class PeoplePage extends Component {
                 !Array.isArray(this.props.peopleDetail.data)) ||
             this.isGroupDetailView()
         ) {
-            let flex = this.isGroupDetailView() ? "0 1 25%" : "0 1 auto";
-            let mx = this.isGroupDetailView() ? 5 : 0;
+            let mx = this.isGroupDetailView() ? 20 : 0;
             let mb = this.isGroupDetailView() ? 8 : 0;
+            let flex = this.isGroupDetailView()
+                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 50%", "0 1 33%"]
+                : "0 1 auto";
             return (
-                <Flex
-                    alignItems="center"
-                    flex={flex}
-                    flexDirection="column"
-                    justifyContent="center"
-                    mb={mb}
-                    mx={mx}
-                >
-                    <Box mt={4}>
-                        <ProfileAvatar fName={person.fName} size={72} />
-                    </Box>
-                    <Heading
-                        children={`${person.fName} ${person.lName}`}
-                        is="h2"
-                        fontSize={4}
-                        mt={3}
-                    />
-                    <Heading
-                        children={`${person.position}`}
-                        is="h3"
-                        fontWeight="normal"
-                        fontSize={2}
-                    />
-                    <Flex mt={3}>
-                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <Box mx={3}>
-                            <ButtonIcon glyph="phone">Call</ButtonIcon>
+                <Flex flex={flex} justifyContent="center" key={person.id}>
+                    <Flex
+                        alignItems="center"
+                        flexDirection="column"
+                        justifyContent="center"
+                        mb={mb}
+                        mx={mx}
+                    >
+                        <Box mt={4}>
+                            <ProfileAvatar fName={person.fName} size={72} />
                         </Box>
-                        <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        <Heading
+                            children={`${person.fName} ${person.lName}`}
+                            is="h2"
+                            fontSize={4}
+                            mt={3}
+                        />
+                        <Heading
+                            children={`${person.position}`}
+                            is="h3"
+                            fontWeight="normal"
+                            fontSize={2}
+                        />
+                        <Flex mt={3}>
+                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        </Flex>
                     </Flex>
                 </Flex>
             );
