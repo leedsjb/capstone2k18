@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Clickable from "../Clickable";
 import DisplayWhenOpen from "../DisplayWhenOpen";
 import Box from "../Box";
+import Span from "../Span";
 
 class AccordionSection extends Component {
     constructor(props) {
@@ -27,8 +28,9 @@ class AccordionSection extends Component {
                             this.props.id === 0 ? "1px solid black" : "none"
                         }
                         borderBottom="1px solid black"
+                        px={3}
                     >
-                        {this.props.title}
+                        <Span fontWeight="bold"> {this.props.title}</Span>
                     </Box>
                 </Clickable>
                 <DisplayWhenOpen
@@ -36,6 +38,7 @@ class AccordionSection extends Component {
                     borderBottom={
                         this.state.isopen ? "1px solid black" : "none"
                     }
+                    px={3}
                 >
                     {this.props.children}
                 </DisplayWhenOpen>

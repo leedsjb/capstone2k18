@@ -9,7 +9,8 @@ const Box = sys(
     "borders",
     "maxWidth",
     "height",
-    "borderRadius"
+    "borderRadius",
+    "boxShadow"
 );
 
 Box.displayName = "Box";

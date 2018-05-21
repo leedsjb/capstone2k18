@@ -3,13 +3,17 @@ import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 
 import Accordion from "../../components/Accordion";
+import Box from "../../components/Box";
 import AccordionSection from "../../components/AccordionSection";
 import CrewDetailListItem from "../../components/CrewDetailListItem";
+import Divider from "../../components/Divider";
+import Icon from "../../components/Icon";
 import FlexFillVH from "../../components/FlexFillVH";
 import InsetMapView from "../../components/InsetMapView";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
+import Heading from "../../components/Heading";
 import TitleBar from "../../components/TitleBar";
 
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -42,15 +46,7 @@ class AircraftDetailPage extends Component {
                     ) : (
                         <div />
                     )}
-                    {aircraftDetail.data.mission ? (
-                        <AccordionSection title="Radio Report">
-                            <Text>
-                                {aircraftDetail.data.mission.radioReport}
-                            </Text>
-                        </AccordionSection>
-                    ) : (
-                        <div />
-                    )}
+
                     {aircraftDetail.data.mission ? (
                         <AccordionSection title="Requestor">
                             <Text>{aircraftDetail.data.mission.requestor}</Text>
@@ -81,7 +77,7 @@ class AircraftDetailPage extends Component {
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
-                <TitleBar back backPath={backPath} />
+                <TitleBar back backPath={backPath} title="Placeholder" />
                 {this.props.aircraftDetail.error ? (
                     <FlexFillVH flexDirection="column">
                         An error has occurred:{" "}
@@ -89,7 +85,12 @@ class AircraftDetailPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
+                        <Box py={3}>
+                            <Heading is="h1">Placeholder</Heading>
+                        </Box>
+                        <Divider />
                         <InsetMapView id={this.props.id} />
+                        <Icon glyph="earth" />
                         {this.renderAircraftDetail(this.props.aircraftDetail)}
                     </ScrollView>
                 )}

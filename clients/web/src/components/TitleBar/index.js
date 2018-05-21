@@ -68,7 +68,7 @@ class TitleBar extends Component {
                         <GradientBox p={3}>
                             <Flex justifyContent="space-between" align="center">
                                 {this.renderIconLeft()}
-                                <Heading is="h3" fontSize={2}>
+                                <Heading is="h3" fontSize={2} color="white">
                                     {this.props.title}
                                 </Heading>
                                 {this.renderIconRight()}
