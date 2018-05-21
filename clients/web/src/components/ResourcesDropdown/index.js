@@ -78,65 +78,7 @@ class ResourcesDropdown extends Component {
                 />
             );
         }
-        return <div>Loading...</div>;
-        // <ResourcesProvider
-        //     render={({ resources }) => {
-        //         return (
-        //             <Downshift
-        //                 onChange={onChange}
-        //                 render={({
-        //                     getLabelProps,
-        //                     getInputProps,
-        //                     getButtonProps,
-        //                     getItemProps,
-        //                     isOpen,
-        //                     toggleMenu,
-        //                     clearSelection,
-        //                     selectedItem,
-        //                     inputValue,
-        //                     highlightedIndex
-        //                 }) => {
-        //                     return (
-        //                         <div>
-        //                             <Relative>
-        //                                 <Icon
-        //                                     glyph="grid"
-        //                                     size={16}
-        //                                     onClick={toggleMenu}
-        //                                     color="white"
-        //                                 />
-        //                                 {isOpen ? (
-        //                                     <Absolute
-        //                                         bg="white"
-        //                                         right={0}
-        //                                         zIndex={1}
-        //                                     >
-        //                                         {resources.pending ? null : (
-        //                                             <div>
-        //                                                 {
-        //                                                     resources
-        //                                                         .data[0]
-        //                                                         .name
-        //                                                 }
-        //                                                 <Image
-        //                                                     src={
-        //                                                         resources
-        //                                                             .data[0]
-        //                                                             .imageLink
-        //                                                     }
-        //                                                 />
-        //                                             </div>
-        //                                         )}
-        //                                     </Absolute>
-        //                                 ) : null}
-        //                             </Relative>
-        //                         </div>
-        //                     );
-        //                 }}
-        //             />
-        //         );
-        //     }}
-        // />
+        return <div />;
     }
 }
 
