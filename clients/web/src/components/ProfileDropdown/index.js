@@ -7,6 +7,7 @@ import Absolute from "../Absolute";
 import Relative from "../Relative";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";
 import DropdownItem from "../DropdownItem";
+import Clickable from "../Clickable";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
@@ -33,10 +34,9 @@ const ProfileDropdown = () => {
                         }) => {
                             return (
                                 <div>
-                                    <ProfileAvatar
-                                        fName="Dave"
-                                        onClick={toggleMenu}
-                                    />
+                                    <Clickable onClick={toggleMenu}>
+                                        <ProfileAvatar fName="Dave" />
+                                    </Clickable>
                                     {isOpen ? (
                                         <Relative>
                                             <Absolute
@@ -53,7 +53,7 @@ const ProfileDropdown = () => {
                                                 >
                                                     <Link to="/profile">
                                                         <DropdownItem>
-                                                            Profile...
+                                                            My profile
                                                         </DropdownItem>
                                                     </Link>
                                                     <DropdownItem>
