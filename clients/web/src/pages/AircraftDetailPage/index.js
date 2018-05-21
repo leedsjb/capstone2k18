@@ -10,7 +10,10 @@ import InsetMapView from "../../components/InsetMapView";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
+import Heading from "../../components/Heading";
 import TitleBar from "../../components/TitleBar";
+import Divider from "../../components/Divider";
+import Box from "../../components/Box";
 import Icon from "../../components/Icon";
 
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -74,7 +77,7 @@ class AircraftDetailPage extends Component {
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
-                <TitleBar back backPath={backPath} />
+                <TitleBar back backPath={backPath} title="Placeholder" />
                 {this.props.aircraftDetail.error ? (
                     <FlexFillVH flexDirection="column">
                         An error has occurred:{" "}
@@ -82,7 +85,12 @@ class AircraftDetailPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
+                        <Box py={3}>
+                            <Heading is="h1">Placeholder</Heading>
+                        </Box>
+                        <Divider />
                         <InsetMapView id={this.props.id} />
+                        <Icon glyph="earth" />
                         {this.renderAircraftDetail(this.props.aircraftDetail)}
                     </ScrollView>
                 )}
