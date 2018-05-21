@@ -9,6 +9,8 @@ import Box from "../Box";
 import Image from "../Image";
 import Clickable from "../Clickable";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";
+import FlexFillHeight from "../FlexFillHeight";
+import Span from "../Span";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
@@ -57,7 +59,11 @@ const ResourcesDropdown = () => {
                                                         w={1}
                                                         boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
                                                     >
-                                                        <Flex flexWrap="wrap">
+                                                        <Flex
+                                                            flexWrap="wrap"
+                                                            p={4}
+                                                            alignItems="center"
+                                                        >
                                                             {resources.data.map(
                                                                 item => {
                                                                     return (
@@ -69,10 +75,61 @@ const ResourcesDropdown = () => {
                                                                             key={
                                                                                 item.name
                                                                             }
-                                                                        >
-                                                                            {
-                                                                                item.name
+                                                                            px={
+                                                                                4
                                                                             }
+                                                                        >
+                                                                            <a
+                                                                                href={
+                                                                                    item.link
+                                                                                }
+                                                                                target="_blank"
+                                                                            >
+                                                                                <Relative
+                                                                                    w={
+                                                                                        1
+                                                                                    }
+                                                                                    pt="100%"
+                                                                                >
+                                                                                    <Absolute
+                                                                                        top={
+                                                                                            0
+                                                                                        }
+                                                                                        left={
+                                                                                            0
+                                                                                        }
+                                                                                        bottom={
+                                                                                            0
+                                                                                        }
+                                                                                        right={
+                                                                                            0
+                                                                                        }
+                                                                                    >
+                                                                                        <FlexFillHeight alignItems="center">
+                                                                                            <div
+                                                                                            >
+                                                                                                <Image
+                                                                                                    src={
+                                                                                                        item.imageLink
+                                                                                                    }
+                                                                                                />
+                                                                                            </div>
+                                                                                        </FlexFillHeight>
+                                                                                    </Absolute>
+                                                                                </Relative>
+                                                                                <Box
+                                                                                    mt={
+                                                                                        2
+                                                                                    }
+                                                                                >
+                                                                                    <Span
+                                                                                    >
+                                                                                        {
+                                                                                            item.name
+                                                                                        }
+                                                                                    </Span>
+                                                                                </Box>
+                                                                            </a>
                                                                         </Box>
                                                                     );
                                                                 }
