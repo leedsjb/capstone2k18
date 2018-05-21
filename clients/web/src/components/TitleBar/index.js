@@ -19,17 +19,7 @@ class TitleBar extends Component {
                 </Link>
             );
         }
-
-        return <Box w={24} />;
-    };
-
-    renderIconRight = () => {
-        return (
-            <Flex alignItems="center">
-                <Icon glyph="grid" size={16} color="white" />
-                <ProfileAvatar fName="Dave" />
-            </Flex>
-        );
+        return <Box w={16} />;
     };
 
     renderMapIcon = () => {
@@ -71,7 +61,7 @@ class TitleBar extends Component {
                                 <Heading is="h3" fontSize={2} color="white">
                                     {this.props.title}
                                 </Heading>
-                                {this.renderIconRight()}
+                                <Box w={16} />
                             </Flex>
                         </GradientBox>
                     )

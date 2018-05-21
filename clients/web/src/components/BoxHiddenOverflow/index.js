@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 import Box from "../Box";
 
-const DropdownWrapper = styled(Box)`
+const BoxHiddenOverflow = styled(Box)`
     overflow: hidden;
 `;
 
-export default DropdownWrapper;
+export default BoxHiddenOverflow;

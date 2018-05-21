@@ -15,15 +15,27 @@ type Resource struct {
 var resources = []*Resource{
 	{
 		ID:        1,
-		Link:      "www.google.com",
+		Link:      "https://google.com",
 		Name:      "Google",
-		ImageLink: "http://www.stickpng.com/assets/images/580b57fcd9996e24bc43c51f.png",
+		ImageLink: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/272px-Google_2015_logo.svg.png",
 	},
 	{
 		ID:        2,
-		Link:      "www.facebook.com",
+		Link:      "https://facebook.com",
 		Name:      "Facebook",
-		ImageLink: "http://pngimg.com/uploads/facebook_logos/facebook_logos_PNG19751.png",
+		ImageLink: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/240px-F_icon.svg.png",
+	},
+	{
+		ID:        3,
+		Link:      "https://twitter.com",
+		Name:      "Twitter",
+		ImageLink: "https://upload.wikimedia.org/wikipedia/en/thumb/9/9f/Twitter_bird_logo_2012.svg/295px-Twitter_bird_logo_2012.svg.png",
+	},
+	{
+		ID:        4,
+		Link:      "https://amazon.com",
+		Name:      "Amazon",
+		ImageLink: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Amazon_logo_plain.svg/602px-Amazon_logo_plain.svg.png",
 	},
 }
 

@@ -6,8 +6,8 @@ import Relative from "../Relative";
 import ButtonDropdown from "../ButtonDropdown";
 import Box from "../Box";
 import Span from "../Span";
-import DropdownItem from "./DropdownItem";
-import DropdownWrapper from "./DropdownWrapper";
+import DropdownItem from "../DropdownItem";
+import BoxHiddenOverflow from "../BoxHiddenOverflow";
 import Clickable from "../Clickable";
 
 const DropdownSelect = ({ items, onChange }) => {
@@ -33,13 +33,8 @@ const DropdownSelect = ({ items, onChange }) => {
                     </ButtonDropdown>
                     {isOpen ? (
                         <Relative zIndex={1}>
-                            <Absolute
-                                top={10}
-                                left={0}
-                                right={0}
-                                minWidth={160}
-                            >
-                                <DropdownWrapper
+                            <Absolute top={8} left={0} right={0} minWidth={160}>
+                                <BoxHiddenOverflow
                                     bg="white"
                                     borderRadius={4}
                                     w={1}
@@ -63,7 +58,7 @@ const DropdownSelect = ({ items, onChange }) => {
                                             </DropdownItem>
                                         </Clickable>
                                     ))}
-                                </DropdownWrapper>
+                                </BoxHiddenOverflow>
                             </Absolute>
                         </Relative>
                     ) : null}
