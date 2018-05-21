@@ -42,7 +42,11 @@ class ResourcesDropdown extends Component {
                         {this.props.resources.data.map(item => {
                             return (
                                 <Box w={1 / 3} key={item.name} px={4}>
-                                    <a href={item.link} target="_blank">
+                                    <a
+                                        href={item.link}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
                                         <Relative w={1} pt="100%">
                                             <Absolute
                                                 top={0}

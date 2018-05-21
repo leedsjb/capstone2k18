@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
@@ -13,7 +12,6 @@ import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
-import Icon from "../../components/Icon";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";

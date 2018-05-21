@@ -4,7 +4,6 @@ import Downshift from "downshift";
 import Absolute from "../Absolute";
 import Relative from "../Relative";
 import ButtonDropdown from "../ButtonDropdown";
-import Box from "../Box";
 import Span from "../Span";
 import DropdownItem from "../DropdownItem";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";

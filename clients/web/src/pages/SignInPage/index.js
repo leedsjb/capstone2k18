@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 import Heading from "../../components/Heading";
 import Text from "../../components/Text";
-import Container from "../../components/Container";
 import Box from "../../components/Box";
 import Logo from "../../components/Logo";
 

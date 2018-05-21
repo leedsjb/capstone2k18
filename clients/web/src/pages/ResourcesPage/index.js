@@ -70,7 +70,9 @@ class ResourcesPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
-                        {this.renderResources(this.props.resources)}
+                        <Container>
+                            {this.renderResources(this.props.resources)}
+                        </Container>
                     </ScrollView>
                 )}
                 <TabBar />

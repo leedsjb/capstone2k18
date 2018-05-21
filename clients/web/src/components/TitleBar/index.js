@@ -7,7 +7,6 @@ import { withTheme } from "styled-components";
 import Box from "../Box";
 import Icon from "../Icon";
 import Heading from "../Heading";
-import ProfileAvatar from "../ProfileAvatar";
 import GradientBox from "../GradientBox";
 
 class TitleBar extends Component {
