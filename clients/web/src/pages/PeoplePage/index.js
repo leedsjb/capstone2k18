@@ -254,53 +254,65 @@ class PeoplePage extends Component {
     }
 
     renderMasterView() {
-        let list;
-        if (this.isGroupDetailView() || this.isGroupPeopleDetail()) {
-            list = this.renderGroupsDetailList();
-        } else if (this.isPeopleTab()) {
-            list = this.renderPeopleList();
-        } else {
-            list = this.renderGroupsList();
-        }
-
-        let groupPath = this.isGroupPeopleDetail()
-            ? `/groups/${this.getGroupID()}`
-            : "/groups";
-
-        let controller =
-            !this.isGroupDetailView() && !this.isGroupPeopleDetail() ? (
-                <Flex>
-                    <Tab active={this.isPeopleTab()} is={Link} to="/people">
-                        People
-                    </Tab>
-                    <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
-                        Groups
-                    </Tab>
-                </Flex>
-            ) : (
-                <Flex
-                    alignItems="center"
-                    justifyContent="space-between"
-                    py={2}
-                    px={3}
-                >
-                    <Link to={groupPath}>
-                        <Icon glyph="chevronLeft" size={16} />
-                    </Link>
-                    <Span fontWeight="bold">
-                        {this.props.groupsDetail.data.name}
-                    </Span>
-                    <Box size={16} />
-                </Flex>
+        if (this.props.people.error || this.props.groups.error) {
+            return (
+                <MasterView>
+                    An error has occurred: {this.props.people.error.toString()}
+                </MasterView>
             );
+        } else {
+            let list;
+            if (this.isGroupDetailView() || this.isGroupPeopleDetail()) {
+                list = this.renderGroupsDetailList();
+            } else if (this.isPeopleTab()) {
+                list = this.renderPeopleList();
+            } else {
+                list = this.renderGroupsList();
+            }
 
-        return (
-            <MasterView>
-                {controller}
-                <Divider />
-                {list}
-            </MasterView>
-        );
+            let groupPath = this.isGroupPeopleDetail()
+                ? `/groups/${this.getGroupID()}`
+                : "/groups";
+
+            let controller =
+                !this.isGroupDetailView() && !this.isGroupPeopleDetail() ? (
+                    <Flex>
+                        <Tab active={this.isPeopleTab()} is={Link} to="/people">
+                            People
+                        </Tab>
+                        <Tab
+                            active={!this.isPeopleTab()}
+                            is={Link}
+                            to="/groups"
+                        >
+                            Groups
+                        </Tab>
+                    </Flex>
+                ) : (
+                    <Flex
+                        alignItems="center"
+                        justifyContent="space-between"
+                        py={2}
+                        px={3}
+                    >
+                        <Link to={groupPath}>
+                            <Icon glyph="chevronLeft" size={16} />
+                        </Link>
+                        <Span fontWeight="bold">
+                            {this.props.groupsDetail.data.name}
+                        </Span>
+                        <Box size={16} />
+                    </Flex>
+                );
+
+            return (
+                <MasterView>
+                    {controller}
+                    <Divider />
+                    {list}
+                </MasterView>
+            );
+        }
     }
 
     renderDetailView() {

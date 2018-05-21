@@ -11,7 +11,6 @@ import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
-import Icon from "../../components/Icon";
 
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 

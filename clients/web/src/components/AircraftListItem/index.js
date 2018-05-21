@@ -1,7 +1,6 @@
 import React from "react";
 import { Flex } from "grid-styled";
 
-import Badge from "../Badge";
 import Box from "../Box";
 import MasterListItem from "../MasterListItem";
 import Span from "../Span";

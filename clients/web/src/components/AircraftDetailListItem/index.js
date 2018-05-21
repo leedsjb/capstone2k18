@@ -9,8 +9,6 @@ import CrewDetailListItem from "../CrewDetailListItem";
 import Heading from "../Heading";
 import Text from "../Text";
 import Divider from "../Divider";
-import Badge from "../Badge";
-import AicraftIdentifier from "../AircraftIdentifier";
 import AircraftIdentifier from "../AircraftIdentifier";
 import Icon from "../Icon";
 import Clickable from "../Clickable";

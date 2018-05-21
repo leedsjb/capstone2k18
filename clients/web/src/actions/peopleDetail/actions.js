@@ -2,7 +2,8 @@ import axios from "axios";
 
 import {
     FETCH_PEOPLEDETAIL_PENDING,
-    FETCH_PEOPLEDETAIL_SUCCESS
+    FETCH_PEOPLEDETAIL_SUCCESS,
+    FETCH_PEOPLEDETAIL_ERROR
 } from "./types";
 
 export function fetchPeopleDetail(id) {
@@ -20,6 +21,11 @@ export function fetchPeopleDetail(id) {
                 type: FETCH_PEOPLEDETAIL_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_PEOPLEDETAIL_ERROR,
+                error: e
+            });
+        }
     };
 }

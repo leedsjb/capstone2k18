@@ -18,8 +18,6 @@ import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
 import SearchBox from "../../components/SearchBox";
-import Span from "../../components/Span";
-import Icon from "../../components/Icon";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";

@@ -21,6 +21,11 @@ export function fetchGroupsDetail(id) {
                 type: FETCH_GROUPSDETAIL_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_GROUPSDETAIL_ERROR,
+                error: e
+            });
+        }
     };
 }

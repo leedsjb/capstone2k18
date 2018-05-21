@@ -1,6 +1,7 @@
 import {
     FETCH_RESOURCES_PENDING,
-    FETCH_RESOURCES_SUCCESS
+    FETCH_RESOURCES_SUCCESS,
+    FETCH_RESOURCES_ERROR
 } from "../actions/resources/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const resourcesReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_RESOURCES_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

@@ -2,7 +2,6 @@ import React from "react";
 import { Flex } from "grid-styled";
 
 import Card from "../Card";
-import Avatar from "../Avatar";
 import Span from "../Span";
 import PersonAvatar from "../PersonAvatar";
 import Box from "../Box";

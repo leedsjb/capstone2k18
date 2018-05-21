@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { FETCH_PEOPLE_PENDING, FETCH_PEOPLE_SUCCESS } from "./types";
+import {
+    FETCH_PEOPLE_PENDING,
+    FETCH_PEOPLE_SUCCESS,
+    FETCH_PEOPLE_ERROR
+} from "./types";
 
 export function fetchPeople() {
     return async dispatch => {
@@ -15,6 +19,11 @@ export function fetchPeople() {
                 type: FETCH_PEOPLE_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_PEOPLE_ERROR,
+                error: e
+            });
+        }
     };
 }

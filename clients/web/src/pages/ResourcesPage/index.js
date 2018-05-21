@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 
 import TitleBar from "../../components/TitleBar";
@@ -7,31 +8,55 @@ import TabBar from "../../components/TabBar";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
 
-import ResourcesProvider from "../../containers/ResourcesProvider";
+import { fetchResources } from "../../actions/resources/actions";
 
-const ResourcesPage = () => {
-    return (
-        <FlexFillVH flexDirection="column">
-            <Helmet>
-                <title>Resources</title>
-            </Helmet>
+class ResourcesPage extends Component {
+    componentDidMount() {
+        this.props.fetchResources();
+    }
 
-            <TitleBar title="Resources" />
+    renderResources(resources) {
+        if (
+            !this.props.resources.pending &&
+            !Array.isArray(this.props.resources.data)
+        ) {
+            return <div>Resources</div>;
+        }
+        return <div>Loading...</div>;
+    }
 
-            <ScrollView>
-                <Container>
-                    <div>Resources</div>
-                    <ResourcesProvider
-                        render={resources => {
-                            return <div />;
-                        }}
-                    />
-                </Container>
-            </ScrollView>
+    render() {
+        return (
+            <FlexFillVH flexDirection="column">
+                <Helmet>
+                    <title>Resources</title>
+                </Helmet>
 
-            <TabBar />
-        </FlexFillVH>
-    );
+                <TitleBar title="Resources" />
+                {this.props.resources.error ? (
+                    <FlexFillVH flexDirection="column">
+                        An error has occurred:{" "}
+                        {this.props.resources.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <ScrollView>
+                        {this.renderResources(this.props.resources)}
+                    </ScrollView>
+                )}
+                <TabBar />
+            </FlexFillVH>
+        );
+    }
+}
+
+function mapStateToProps(state, ownProps) {
+    return {
+        resources: state.resources
+    };
+}
+
+const mapDispatchToProps = {
+    fetchResources
 };
 
-export default ResourcesPage;
+export default connect(mapStateToProps, mapDispatchToProps)(ResourcesPage);

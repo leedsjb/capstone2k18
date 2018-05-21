@@ -71,9 +71,17 @@ class PeopleDetailPage extends Component {
                     <title>People</title>
                 </Helmet>
                 <TitleBar back backPath={backPath} title="People" />
-                <ScrollView>
-                    {this.renderPeopleDetail(this.props.peopleDetail.data)}
-                </ScrollView>
+                {this.props.peopleDetail.error ? (
+                    <FlexFillVH flexDirection="column">
+                        An error has occurred:{" "}
+                        {this.props.peopleDetail.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <ScrollView>
+                        {this.renderPeopleDetail(this.props.peopleDetail.data)}
+                    </ScrollView>
+                )}
+
                 <TabBar />
             </FlexFillVH>
         );

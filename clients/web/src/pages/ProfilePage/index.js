@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 
 import TitleBar from "../../components/TitleBar";
@@ -10,47 +11,69 @@ import ScrollView from "../../components/ScrollView";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import ButtonIcon from "../../components/ButtonIcon";
 
-import ProfileProvider from "../../containers/ProfileProvider";
+import { fetchProfile } from "../../actions/profile/actions";
 
-const ProfilePage = () => {
-    return (
-        <FlexFillVH flexDirection="column">
-            <Helmet>
-                <title>Profile</title>
-            </Helmet>
+class ProfilePage extends Component {
+    componentDidMount() {
+        this.props.fetchProfile();
+    }
 
-            <TitleBar title="People" />
-            <NavBar />
+    renderProfile(currUser) {
+        if (
+            !this.props.profile.pending &&
+            !Array.isArray(this.props.profile.data)
+        ) {
+            return (
+                <div>
+                    <ProfileAvatar fName={currUser.data.fName} size={96} />
+                    <div>{`${currUser.data.fName} ${currUser.data.lName}`}</div>
+                    <div>{currUser.data.position}</div>
+                    <ButtonIcon />
+                    <ButtonIcon />
+                    <ButtonIcon />
+                </div>
+            );
+        }
+        return <div>Loading...</div>;
+    }
 
-            <ScrollView>
-                <Container>
-                    <ProfileProvider
-                        render={({ profile: { pending, data } }) => {
-                            if (pending || Array.isArray(data)) {
-                                return <div>Loading...</div>;
-                            }
+    render() {
+        return (
+            <FlexFillVH flexDirection="column">
+                <Helmet>
+                    <title>Profile</title>
+                </Helmet>
 
-                            return (
-                                <div>
-                                    <ProfileAvatar
-                                        fName={data.fName}
-                                        size={96}
-                                    />
-                                    <div>{`${data.fName} ${data.lName}`}</div>
-                                    <div>{data.position}</div>
-                                    <ButtonIcon />
-                                    <ButtonIcon />
-                                    <ButtonIcon />
-                                </div>
-                            );
-                        }}
-                    />
-                </Container>
-            </ScrollView>
+                <TitleBar title="People" />
+                <NavBar />
+                {this.props.profile.error ? (
+                    <Container>
+                        <FlexFillVH flexDirection="column">
+                            An error has occurred:{" "}
+                            {this.props.profile.error.toString()}
+                        </FlexFillVH>
+                    </Container>
+                ) : (
+                    <ScrollView>
+                        <Container>
+                            {this.renderProfile(this.props.profile)}
+                        </Container>
+                    </ScrollView>
+                )}
+                <TabBar />
+            </FlexFillVH>
+        );
+    }
+}
 
-            <TabBar />
-        </FlexFillVH>
-    );
+function mapStateToProps(state, ownProps) {
+    return {
+        profile: state.profile
+    };
+}
+
+const mapDispatchToProps = {
+    fetchProfile
 };
 
-export default ProfilePage;
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
