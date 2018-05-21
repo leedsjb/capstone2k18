@@ -1,10 +1,14 @@
 import React from "react";
 import Downshift from "downshift";
+import { Flex } from "grid-styled";
 
 import Absolute from "../Absolute";
 import Relative from "../Relative";
 import Icon from "../Icon";
+import Box from "../Box";
 import Image from "../Image";
+import Clickable from "../Clickable";
+import BoxHiddenOverflow from "../BoxHiddenOverflow";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
@@ -31,34 +35,54 @@ const ResourcesDropdown = () => {
                         }) => {
                             return (
                                 <div>
-                                    <Relative>
+                                    <Clickable onClick={toggleMenu}>
                                         <Icon
                                             glyph="grid"
                                             size={16}
-                                            onClick={toggleMenu}
                                             color="white"
                                         />
-                                        {isOpen ? (
+                                    </Clickable>
+                                    {isOpen ? (
+                                        <Relative>
                                             <Absolute
-                                                bg="white"
                                                 right={0}
                                                 zIndex={1}
+                                                top={8}
+                                                w={320}
                                             >
                                                 {resources.pending ? null : (
-                                                    <div>
-                                                        {resources.data[0].name}
-                                                        <Image
-                                                            src={
-                                                                resources
-                                                                    .data[0]
-                                                                    .imageLink
-                                                            }
-                                                        />
-                                                    </div>
+                                                    <BoxHiddenOverflow
+                                                        bg="white"
+                                                        borderRadius={4}
+                                                        w={1}
+                                                        boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
+                                                    >
+                                                        <Flex flexWrap="wrap">
+                                                            {resources.data.map(
+                                                                item => {
+                                                                    return (
+                                                                        <Box
+                                                                            w={
+                                                                                1 /
+                                                                                3
+                                                                            }
+                                                                            key={
+                                                                                item.name
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                item.name
+                                                                            }
+                                                                        </Box>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </Flex>
+                                                    </BoxHiddenOverflow>
                                                 )}
                                             </Absolute>
-                                        ) : null}
-                                    </Relative>
+                                        </Relative>
+                                    ) : null}
                                 </div>
                             );
                         }}
