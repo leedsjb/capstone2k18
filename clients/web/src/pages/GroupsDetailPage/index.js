@@ -65,7 +65,7 @@ class GroupsDetailPage extends Component {
                 </Helmet>
                 <TitleBar back backPath="/groups" title="Groups" />
                 {this.props.groupsDetail.error ? (
-                    <FlexFillVH flexDirection="column">
+                    <FlexFillVH>
                         An error has occurred:{" "}
                         {this.props.groupsDetail.error.toString()}
                     </FlexFillVH>

@@ -79,7 +79,7 @@ class AircraftDetailPage extends Component {
                 </Helmet>
                 <TitleBar back backPath={backPath} title="Placeholder" />
                 {this.props.aircraftDetail.error ? (
-                    <FlexFillVH flexDirection="column">
+                    <FlexFillVH>
                         An error has occurred:{" "}
                         {this.props.aircraftDetail.error.toString()}
                     </FlexFillVH>

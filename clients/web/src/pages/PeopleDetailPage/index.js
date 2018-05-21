@@ -72,7 +72,7 @@ class PeopleDetailPage extends Component {
                 </Helmet>
                 <TitleBar back backPath={backPath} title="People" />
                 {this.props.peopleDetail.error ? (
-                    <FlexFillVH flexDirection="column">
+                    <FlexFillVH>
                         An error has occurred:{" "}
                         {this.props.peopleDetail.error.toString()}
                     </FlexFillVH>

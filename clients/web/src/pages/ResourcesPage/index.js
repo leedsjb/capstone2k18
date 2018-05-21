@@ -64,7 +64,7 @@ class ResourcesPage extends Component {
 
                 <TitleBar title="Resources" />
                 {this.props.resources.error ? (
-                    <FlexFillVH flexDirection="column">
+                    <FlexFillVH>
                         An error has occurred:{" "}
                         {this.props.resources.error.toString()}
                     </FlexFillVH>

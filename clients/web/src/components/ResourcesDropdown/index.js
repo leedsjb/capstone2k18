@@ -25,10 +25,15 @@ class ResourcesDropdown extends Component {
     renderData() {
         if (this.props.resources.error) {
             return (
-                <div>
+                <BoxHiddenOverflow
+                    bg="white"
+                    borderRadius={4}
+                    w={1}
+                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
+                >
                     An error has occurred:{" "}
                     {this.props.resources.error.toString()}
-                </div>
+                </BoxHiddenOverflow>
             );
         } else if (!this.props.resources.pending) {
             return (

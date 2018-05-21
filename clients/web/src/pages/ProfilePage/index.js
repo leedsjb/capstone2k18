@@ -44,15 +44,13 @@ class ProfilePage extends Component {
                     <title>Profile</title>
                 </Helmet>
 
-                <TitleBar title="People" />
+                <TitleBar title="Profile" />
                 <NavBar />
                 {this.props.profile.error ? (
-                    <Container>
-                        <FlexFillVH flexDirection="column">
-                            An error has occurred:{" "}
-                            {this.props.profile.error.toString()}
-                        </FlexFillVH>
-                    </Container>
+                    <FlexFillVH>
+                        An error has occurred:{" "}
+                        {this.props.profile.error.toString()}
+                    </FlexFillVH>
                 ) : (
                     <ScrollView>
                         <Container>
