@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Clickable from "../Clickable";
 import DisplayWhenOpen from "../DisplayWhenOpen";
 import Box from "../Box";
+import Span from "../Span";
 
 class AccordionSection extends Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class AccordionSection extends Component {
                         }
                         borderBottom="1px solid black"
                     >
-                        {this.props.title}
+                        <Span fontWeight="bold"> {this.props.title}</Span>
                     </Box>
                 </Clickable>
                 <DisplayWhenOpen

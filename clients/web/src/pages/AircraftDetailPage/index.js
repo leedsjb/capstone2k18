@@ -43,15 +43,7 @@ class AircraftDetailPage extends Component {
                     ) : (
                         <div />
                     )}
-                    {aircraftDetail.data.mission ? (
-                        <AccordionSection title="Radio Report">
-                            <Text>
-                                {aircraftDetail.data.mission.radioReport}
-                            </Text>
-                        </AccordionSection>
-                    ) : (
-                        <div />
-                    )}
+
                     {aircraftDetail.data.mission ? (
                         <AccordionSection title="Requestor">
                             <Text>{aircraftDetail.data.mission.requestor}</Text>
