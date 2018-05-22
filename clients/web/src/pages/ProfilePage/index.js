@@ -39,8 +39,17 @@ class ProfilePage extends Component {
                     <Flex alignItems="center" flexDirection="column">
                         <ProfileAvatar fName={currUser.data.fName} size={96} />
                         <Box maxWidth="30em" w={1}>
-                            <Box mt={6}>
-                                <Label>uwNetID</Label>
+                            <Heading is="h2" mt={6}>
+                                Account
+                            </Heading>
+                            <Box mt={2}>
+                                <Span>
+                                    Contact Chris Bishop if you'd like to update
+                                    your information
+                                </Span>
+                            </Box>
+                            <Box mt={8}>
+                                <Label>UW NetID</Label>
                                 <TextInput
                                     value={currUser.data.uwNetID}
                                     disabled
