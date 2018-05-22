@@ -8,12 +8,14 @@ import Container from "../../components/Container";
 import TabBar from "../../components/TabBar";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
+import BoxHiddenOverflow from "../../components/BoxHiddenOverflow";
 import Box from "../../components/Box";
 import Image from "../../components/Image";
 import Absolute from "../../components/Absolute";
 import FlexFillHeight from "../../components/FlexFillHeight";
 import Relative from "../../components/Relative";
 import Span from "../../components/Span";
+import Card from "../../components/Card";
 
 import { fetchResources } from "../../actions/resources/actions";
 
@@ -28,24 +30,35 @@ class ResourcesPage extends Component {
                 <Flex flexWrap="wrap">
                     {resources.data.map(item => {
                         return (
-                            <Box w={1 / 2}>
-                                <Relative pt="100%" w={1}>
-                                    <Absolute
-                                        top={0}
-                                        left={0}
-                                        bottom={0}
-                                        right={0}
-                                    >
-                                        <FlexFillHeight alignItems="center">
-                                            <div>
-                                                <Image src={item.imageLink} />
-                                            </div>
-                                        </FlexFillHeight>
-                                    </Absolute>
-                                </Relative>
-                                <Flex mt={2} justifyContent="center">
-                                    <Span>{item.name}</Span>
-                                </Flex>
+                            <Box w={1 / 2} px={2} mt={4}>
+                                <a href={item.link} target="_blank">
+                                    <Card>
+                                        <Relative pt="50%" w={1}>
+                                            <Absolute
+                                                top={0}
+                                                left={0}
+                                                bottom={0}
+                                                right={0}
+                                            >
+                                                <FlexFillHeight
+                                                    justifyContent="center"
+                                                    alignItems="center"
+                                                >
+                                                    <Box w={1 / 2}>
+                                                        <Image
+                                                            src={item.imageLink}
+                                                        />
+                                                    </Box>
+                                                </FlexFillHeight>
+                                            </Absolute>
+                                        </Relative>
+                                        <Flex mt={4} justifyContent="center">
+                                            <Span fontWeight="bold">
+                                                {item.name}
+                                            </Span>
+                                        </Flex>
+                                    </Card>
+                                </a>
                             </Box>
                         );
                     })}
@@ -70,7 +83,7 @@ class ResourcesPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
-                        <Container>
+                        <Container py={6}>
                             {this.renderResources(this.props.resources)}
                         </Container>
                     </ScrollView>

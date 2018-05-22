@@ -17,7 +17,7 @@ import MasterDetailView from "../../components/MasterDetailView";
 import MasterListItem from "../../components/MasterListItem";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
-import ProfileAvatar from "../../components/ProfileAvatar";
+import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Span from "../../components/Span";
 import Tab from "../../components/Tab";
@@ -224,7 +224,7 @@ class PeoplePage extends Component {
                         mx={mx}
                     >
                         <Box mt={4}>
-                            <ProfileAvatar fName={person.fName} size={72} />
+                            <ColoredAvatar fName={person.fName} size={72} />
                         </Box>
                         <Heading
                             children={`${person.fName} ${person.lName}`}

@@ -2,7 +2,7 @@ import React from "react";
 import Downshift from "downshift";
 import { Link } from "react-router-dom";
 
-import ProfileAvatar from "../ProfileAvatar";
+import ColoredAvatar from "../ColoredAvatar";
 import Absolute from "../Absolute";
 import Relative from "../Relative";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";
@@ -35,7 +35,7 @@ const ProfileDropdown = () => {
                             return (
                                 <div>
                                     <Clickable onClick={toggleMenu}>
-                                        <ProfileAvatar fName="David" />
+                                        <ColoredAvatar fName="David" />
                                     </Clickable>
                                     {isOpen ? (
                                         <Relative>

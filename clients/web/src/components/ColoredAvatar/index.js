@@ -8,7 +8,7 @@ import Span from "../Span";
 
 import generateGradient from "../../utils/generateGradient";
 
-const ProfileAvatar = ({ fName, onClick, size = 32 }) => {
+const ColoredAvatar = ({ fName, onClick, size = 32 }) => {
     const gradient = generateGradient(fName);
 
     return (
@@ -28,4 +28,4 @@ const ProfileAvatar = ({ fName, onClick, size = 32 }) => {
     );
 };
 
-export default ProfileAvatar;
+export default ColoredAvatar;

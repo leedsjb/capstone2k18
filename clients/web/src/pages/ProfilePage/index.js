@@ -11,7 +11,7 @@ import Box from "../../components/Box";
 import Checkbox from "../../components/Checkbox";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
-import ProfileAvatar from "../../components/ProfileAvatar";
+import ColoredAvatar from "../../components/ColoredAvatar";
 import ButtonIcon from "../../components/ButtonIcon";
 import Heading from "../../components/Heading";
 import Span from "../../components/Span";
@@ -37,7 +37,7 @@ class ProfilePage extends Component {
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
-                        <ProfileAvatar fName={currUser.data.fName} size={96} />
+                        <ColoredAvatar fName={currUser.data.fName} size={96} />
                         <Box maxWidth="30em" w={1}>
                             <Heading is="h2" mt={6}>
                                 Account
