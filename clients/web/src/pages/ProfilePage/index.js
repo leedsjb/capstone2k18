@@ -4,8 +4,10 @@ import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 
 import TitleBar from "../../components/TitleBar";
+import Label from "../../components/Label";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
+import Box from "../../components/Box";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
 import ProfileAvatar from "../../components/ProfileAvatar";
@@ -22,26 +24,79 @@ class ProfilePage extends Component {
         this.props.fetchProfile();
     }
 
-    renderProfile(currUser) {
+    renderProfile() {
+        let currUser = this.props.profile;
+
         if (
             !this.props.profile.pending &&
             !Array.isArray(this.props.profile.data)
         ) {
+            console.log(currUser.data);
             return (
-                <Container>
-                    <ProfileAvatar fName={currUser.data.fName} size={96} />
+                <Container py={12}>
+                    <Flex alignItems="center" flexDirection="column">
+                        <ProfileAvatar fName={currUser.data.fName} size={96} />
+                        <Box maxWidth="30em" w={1}>
+                            <Box mt={6}>
+                                <Label>uwNetID</Label>
+                                <TextInput
+                                    value={currUser.data.uwNetID}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>First name</Label>
+                                <TextInput
+                                    value={currUser.data.fName}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Last name</Label>
+                                <TextInput
+                                    value={currUser.data.lName}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Email</Label>
+                                <TextInput
+                                    value={currUser.data.email}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Phone</Label>
+                                <TextInput
+                                    value={currUser.data.mobile}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Position</Label>
+                                <TextInput
+                                    value={currUser.data.position}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Special quals</Label>
+                                <TextInput
+                                    value={
+                                        currUser.data.specialQuals
+                                            ? currUser.data.specialQuals
+                                            : "N/A"
+                                    }
+                                    disabled
+                                />
+                            </Box>
 
-                    <Heading is="h1">{`${currUser.data.fName} ${
-                        currUser.data.lName
-                    }`}</Heading>
-                    <div>{currUser.data.position}</div>
-
-                    <Heading>Notification preferences</Heading>
-                    <Switch checked={false} color="primary" />
-                    <TextInput value="Test" disabled />
-                    <TextInput value="Test" disabled />
-                    <TextInput value="Test" disabled />
-                    <TextInput value="Test" disabled />
+                            <Heading is="h2" mt={6}>
+                                Notification preferences
+                            </Heading>
+                            <Switch checked={false} color="primary" />
+                        </Box>
+                    </Flex>
                 </Container>
             );
         }
@@ -64,9 +119,7 @@ class ProfilePage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
-                        <Container>
-                            {this.renderProfile(this.props.profile)}
-                        </Container>
+                        <Container>{this.renderProfile()}</Container>
                     </ScrollView>
                 )}
                 <TabBar />
