@@ -186,7 +186,7 @@ class PeoplePage extends Component {
             let mx = this.isGroupDetailView() ? 20 : 0;
             let mb = this.isGroupDetailView() ? 8 : 0;
             let flex = this.isGroupDetailView()
-                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 50%", "0 1 33%"]
+                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 100%", "0 1 33%"]
                 : "0 1 auto";
             return (
                 <Flex flex={flex} justifyContent="center" key={person.id}>
@@ -197,21 +197,32 @@ class PeoplePage extends Component {
                         mb={mb}
                         mx={mx}
                     >
-                        <Box mt={4}>
-                            <ProfileAvatar fName={person.fName} size={72} />
-                        </Box>
-                        <Heading
-                            is="h2"
-                            children={`${person.fName} ${person.lName}`}
-                            fontSize={4}
-                            mt={3}
-                        />
-                        <Heading
-                            is="h3"
-                            children={`${person.position}`}
-                            fontWeight="normal"
-                            fontSize={2}
-                        />
+                        <Link to={`/people/${person.id}`}>
+                            <Flex
+                                alignItems="center"
+                                flexDirection="column"
+                                justifyContent="center"
+                            >
+                                <Box mt={4}>
+                                    <ProfileAvatar
+                                        fName={person.fName}
+                                        size={72}
+                                    />
+                                </Box>
+                                <Heading
+                                    is="h2"
+                                    children={`${person.fName} ${person.lName}`}
+                                    fontSize={4}
+                                    mt={3}
+                                />
+                                <Heading
+                                    is="h3"
+                                    children={`${person.position}`}
+                                    fontWeight="normal"
+                                    fontSize={2}
+                                />
+                            </Flex>
+                        </Link>
                         <Flex mt={3}>
                             <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
                             <Box mx={3}>
