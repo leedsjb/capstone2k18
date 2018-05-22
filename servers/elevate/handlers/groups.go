@@ -278,7 +278,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		// TODO: make sure this isn't potentially exposing anything
 		id := path.Base(r.URL.Path)
 
-		if id != "." {
+		if id != "." && id != "groups" {
 			groupDetailRows, err := ctx.GetGroupDetailByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
@@ -316,6 +316,8 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 			// attach list of people to the groupDetail
 			groupDetail.People = people
 			respond(w, groupDetail)
+		} else if id == "groups" {
+			ctx.GroupsHandler(w, r)
 		} else {
 			http.Error(w, "No group with that ID", http.StatusBadRequest)
 		}
