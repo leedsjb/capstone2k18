@@ -1,7 +1,7 @@
 /*
     mysql_load_csv_data.sql
     Created: Saturday May 12, 2018
-    Modified: Thursday May 17, 2018
+    Modified: Monday May 21, 2018
     Authors: J. Benjamin Leeds
     License: None
 
@@ -20,37 +20,17 @@
     ./cloud_sql_proxy -instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306
 */
 
-INSERT INTO tblCREW_TYPE (crew_type_id, crew_type_name, crew_type_role)
-VALUES
-    (1,	"Pilot PIC",	        "Pilot in Command"), 
-    (2,	"Pilot SIC",	        "Second in Command"),
-    (3,	"Pediatric RN",	        "Medical"),
-    (4,	"Adult RN",	            "Medical"),
-    (5,	"MD",	                "Medical"),
-    (6,	"Observer",	            "Other"),
-    (7,	"ECMO",	                "Medical"),
-    (8,	"RT",	                "Other"),
-    (9,	"Other",	             "Other"),
-    (10,"Family Member Rider",	"None"),
-    (11,"Ambulance Driver",	    "Driver");
+/*
+Uploading .csv to Google Cloud Storage from ALNWMGMT machine: 
+gsutil cp [filename.ext] gs://elevate-test-flight-vector-import
+*/
 
-CREATE TABLE tblPERSONNEL(
-    personnel_id INTEGER PRIMARY KEY NOT NULL,
-    personnel_f_name NVARCHAR(50) NOT NULL,
-    personnel_l_name NVARCHAR(50) NOT NULL,
-    personnel_title NVARCHAR(50), 
-    crew_type_id INTEGER,
-    personnel_sms_num NVARCHAR(50),
-    personnel_email NVARCHAR(50)
-    FOREIGN KEY (crew_type_id) REFERENCES tblCREW_TYPE(crew_type_id)
-);
-
-CREATE TABLE tblGENDER(
-    gender_id INTEGER AUTO_INCREMENT PRIMARY KEY, -- ** AUTO_INC??
-    gender_name NVARCHAR(50) NOT NULL
-)
-INSERT INTO tblGENDER(gender_name)
-VALUES('Male', 'Female', 'Other')
+/*
+ Populate tblMISSION_TYPE
+ FV Source Table(s): [Call Types]
+ FV Source Column(s): [Call Types].ID, [Call Types].CallType
+ FV T-SQL Query: SELECT TOP(50) ID, CallType FROM [Call Types]
+ */
 
 -- Possible Method to load data: 
 LOAD DATA INFILE 'Crew_Export_test.csv' INTO TABLE tblPERSONNEL_CSV_TEST

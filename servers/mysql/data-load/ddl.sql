@@ -1,7 +1,7 @@
 /*
     ddl.sql
     Created: Thursday May 17, 2018
-    Modified: 
+    Modified: Monday May 21, 2018
     Authors: J. Benjamin Leeds
     License: None
 
@@ -55,6 +55,7 @@ DROP TABLE IF EXISTS `tblPATIENT`;
 DROP TABLE IF EXISTS `tblMISSION_PERSONNEL`;
 DROP TABLE IF EXISTS `tblASSIGNED_MISSION_STATUS`;
 DROP TABLE IF EXISTS `tblMISSION`;
+DROP TABLE IF EXISTS `tblMISSION_TYPE`;
 DROP TABLE IF EXISTS `tblAIRCRAFT`;
 DROP TABLE IF EXISTS `tblAGENCY`;
 DROP TABLE IF EXISTS `tblADDRESS`;
@@ -115,8 +116,8 @@ CREATE TABLE `tblAIRCRAFT` (
   `ac_lat` DECIMAL(9,6),
   `ac_long` DECIMAL(9,6),
   `ac_loc_display_name` NVARCHAR(50),
-  `ac_cell_phone` INTEGER,
-  `ac_sat_phone` INTEGER,
+  `ac_cell_phone` BIGINT,
+  `ac_sat_phone` BIGINT,
   PRIMARY KEY (`ac_id`),
   FOREIGN KEY (ac_type_id) REFERENCES tblAIRCRAFT_TYPE(aircraft_type_id)
 );
@@ -141,17 +142,24 @@ CREATE TABLE `tblAIRCRAFT_SCHED_SERVICE` (
   FOREIGN KEY(ac_id) REFERENCES tblAIRCRAFT(ac_id)
 );
 
-CREATE TABLE `tblMISSION` (
+CREATE TABLE `tblMISSION_TYPE`(
+    `mission_type_id` INTEGER NOT NULL PRIMARY KEY,
+    `mission_type_short_name` NVARCHAR(50)
+);
+
+CREATE TABLE `tblMISSION`(
     `mission_id` INTEGER,
     `aircraft_id` INTEGER,
-    `requestor` INTEGER,
-    `receiver` INTEGER,
+    `mission_type_id` INTEGER,
+    `requestor_id` INTEGER,
+    `receiver_id` INTEGER,
     `mission_date` TIMESTAMP,
     `tc_number` VARCHAR(10),
     PRIMARY KEY (`mission_id`),
     FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id),
-    FOREIGN KEY(requestor) REFERENCES tblAGENCY(agency_id),
-    FOREIGN KEY(receiver) REFERENCES tblAGENCY(agency_id)
+    FOREIGN KEY(mission_type_id) REFERENCES tblMISSION_TYPE(mission_type_id),
+    FOREIGN KEY(requestor_id) REFERENCES tblAGENCY(agency_id),
+    FOREIGN KEY(receiver_id) REFERENCES tblAGENCY(agency_id)
 );
 
 DROP TABLE IF EXISTS `tblMISSION_STATUS`;
@@ -235,7 +243,7 @@ CREATE TABLE `tblCREW_TYPE` (
 DROP TABLE IF EXISTS tblGROUP;
 CREATE TABLE `tblGROUP` (
     `group_id` INTEGER,
-    `group_name` NVARCHAR(100),
+    `group_name` NVARCHAR(100) NOT NULL,
     PRIMARY KEY (`group_id`)
 );
 
@@ -265,3 +273,14 @@ CREATE TABLE `tblMISSION_PERSONNEL` (
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
     FOREIGN KEY(personnel_crew_type_id) REFERENCES tblPERSONNEL_CREW_TYPE(personnel_crew_type_id)
 );
+
+DROP TABLE IF EXISTS `tblRESOURCE_LINKS`;
+CREATE TABLE `tblRESOURCE_LINKS` (
+    `resource_link_id` INTEGER AUTO_INCREMENT PRIMARY KEY,
+    `resource_short_name` NVARCHAR(25) NOT NULL,
+    `resource_long_name` NVARCHAR(100) NOT NULL,
+    `resource_url` NVARCHAR(100) NOT NULL, 
+    `resource_thumbnail_photo_url` NVARCHAR(200) NOT NULL
+);
+
+SHOW TABLES;

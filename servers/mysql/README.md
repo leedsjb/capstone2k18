@@ -15,6 +15,7 @@ gcloud auth application-default login
 Start Google Cloud SQL Proxy Instance
 Terminal session must be in directory where SQL Proxy is installed
 ./cloud_sql_proxy -instances=airliftnw-uw:us-west1:alnw-dev=tcp:3306
+./cloud_sql_proxy -instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306
 
 Option 2: Direct Connection
 

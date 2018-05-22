@@ -21,6 +21,11 @@ DESCRIBE TEST.tblAIRCRAFT_TYPE;
 ALTER TABLE [tbl_name]
 ADD [column_name] INTEGER 
 
+-- change existing column datatype
+ALTER TABLE tblRESOURCE_LINKS
+MODIFY resource_thumbnail_photo_url NVARCHAR(200);
+
+
 ALTER TABLE tblAIRCRAFT
 ADD ac_type_id INTEGER
 ADD FOREIGN KEY (ac_type_id) REFERENCES tblAIRCRAFT_TYPE(aircraft_type_id);
@@ -44,3 +49,11 @@ SELECT NOW(); -- select current time
 -- show current set flags for MySQL DB:
 -- More Details: https://cloud.google.com/sql/docs/mysql/flags
 SHOW VARIABLES;
+
+/*
+Mission Join details query, for reference, can delete.
+SELECT mission_id, mission_type_id, ac_callsign, aircraft_type_title FROM tblMISSION
+JOIN tblAIRCRAFT ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id
+JOIN tblAIRCRAFT_TYPE on tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
+ORDER BY mission_id ASC;
+*/
