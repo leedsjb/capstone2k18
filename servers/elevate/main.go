@@ -198,16 +198,16 @@ func main() {
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.HandleFunc("/", HealthCheckHandler)
 	mux.Handle("/v1/ws", wsh)
-	mux.HandleFunc("/aircraft", handlerCtx.AircraftHandler)
-	mux.HandleFunc("/aircraft/", handlerCtx.AircraftDetailHandler)
-	// mux.HandleFunc("/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
+	mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
+	// mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
 	// TODO: write peopleMeHandler for auth
-	// mux.HandleFunc("/people/me", handlerCtx.PeopleMeHandler)
-	// mux.HandleFunc("/people/", handlerCtx.PersonDetailHandler)
-	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
-	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
+	// mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
+	// mux.HandleFunc("/v1/people/me", handlerCtx.PeopleMeHandler)
+	mux.HandleFunc("/v1/groups", handlerCtx.GroupsHandler)
+	mux.HandleFunc("/v1/groups/", handlerCtx.GroupDetailHandler)
 	// TODO: write resourcesHandler after we set up cloud storage
-	mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
+	mux.HandleFunc("/v1/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.

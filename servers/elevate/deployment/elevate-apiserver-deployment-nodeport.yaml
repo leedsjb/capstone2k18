@@ -1,0 +1,26 @@
+# Filename: elevate-deployment-nodeport.yaml
+# Created: May 18, 2018
+# Modified:
+# Author: J. Benjamin Leeds
+# License: None
+# NodePort for elevate Golang apiserver
+# note: ClusterIP service automatically created by this NodePort service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: alnw-apiserver-deployment-node-port-service
+  labels:
+    app: go-api-server-app
+    tier: backend
+    environment: test
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      # nodePort: automatically selected by cluster between 30000 and 32767
+      # targetPort: 80 # defaults to 80, no need to include
+      # protocol: TCP
+      # name: you can name ports
+  selector:
+    app: go-api-server-app
