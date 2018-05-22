@@ -200,13 +200,12 @@ func main() {
 	mux.Handle("/v1/ws", wsh)
 	// mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
 	// mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
-	// mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
 	// TODO: write peopleMeHandler for auth
-	// mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
 	// mux.HandleFunc("/v1/people/me", handlerCtx.PeopleMeHandler)
 	mux.HandleFunc("/v1/groups", handlerCtx.GroupsHandler)
 	mux.HandleFunc("/v1/groups/", handlerCtx.GroupDetailHandler)
-	// TODO: write resourcesHandler after we set up cloud storage
 	mux.HandleFunc("/v1/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that

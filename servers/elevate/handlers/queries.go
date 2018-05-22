@@ -157,9 +157,9 @@ func (ctx *HandlerContext) GetAllPeople() (*sql.Rows, error) {
 	return peopleRows, nil
 }
 
-func (ctx *HandlerContext) GetPersonDetailsByID(personID string) (*sql.Rows, error) {
+func (ctx *HandlerContext) GetPersonDetailByID(personID string) (*sql.Rows, error) {
 	// TODO sql sproc
-	pdRows, err := ctx.DB.Query("CALL uspGetPersonDetailsByID(" + personID + ")")
+	pdRows, err := ctx.DB.Query("CALL uspGetPersonDetailByID(" + personID + ")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
 	}
