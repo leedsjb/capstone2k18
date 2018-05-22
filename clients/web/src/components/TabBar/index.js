@@ -4,7 +4,6 @@ import Media from "react-media";
 import { withTheme } from "styled-components";
 
 import TabBarItem from "../TabBarItem";
-import GradientBox from "../GradientBox";
 import Box from "../Box";
 
 const TabBar = ({ theme: { breakpoints } }) => {

@@ -9,11 +9,6 @@ import Box from "../../components/Box";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-import airplane from "../../images/airplane.svg";
-
-const image = new Image(32, 32);
-image.src = airplane;
-
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX,
     interactive: false
@@ -82,7 +77,6 @@ class InsetMapView extends Component {
                 return air.id == this.props.id;
             });
             if (selected) {
-                const images = [selected.callsign, image];
                 return (
                     <div>
                         <Box key={selected.id}>

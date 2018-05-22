@@ -116,7 +116,6 @@ class MapView extends Component {
             return (
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
-                        const images = [aircraft.callsign];
                         return (
                             <Box key={aircraft.id}>
                                 <Layer

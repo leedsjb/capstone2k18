@@ -12,10 +12,8 @@ import Checkbox from "../../components/Checkbox";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
 import ProfileAvatar from "../../components/ProfileAvatar";
-import ButtonIcon from "../../components/ButtonIcon";
 import Heading from "../../components/Heading";
 import Span from "../../components/Span";
-import Switch from "../../components/Switch";
 import TextInput from "../../components/TextInput";
 import Container from "../../components/Container";
 
@@ -105,7 +103,7 @@ class ProfilePage extends Component {
                                 Notification preferences
                             </Heading>
                             <Flex alignItems="baseline" mt={4}>
-                                <Checkbox defaultChecked />{" "}
+                                <Checkbox defaultChecked />
                                 <Span>
                                     Text me when I get assigned to a mission
                                 </Span>

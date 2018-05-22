@@ -11,15 +11,12 @@ import Divider from "../../components/Divider";
 import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
 import Heading from "../../components/Heading";
-import Icon from "../../components/Icon";
 import MasterView from "../../components/MasterView";
 import MasterDetailView from "../../components/MasterDetailView";
-import MasterListItem from "../../components/MasterListItem";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import ScrollView from "../../components/ScrollView";
-import Span from "../../components/Span";
 import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
@@ -126,38 +123,6 @@ class PeoplePage extends Component {
         }
     }
 
-    renderGroupsDetailList() {
-        if (
-            !this.props.groupsDetail.pending &&
-            !Array.isArray(this.props.groupsDetail.data)
-        ) {
-            return this.props.groupsDetail.data.people.map(person => {
-                return (
-                    <Link
-                        to={`/people/${person.id}?source=groups&id=${this.props
-                            .groupID || this.getGroupID()}`}
-                        key={person.id}
-                    >
-                        <MasterListItem>
-                            <div>{person.fName}</div>
-                        </MasterListItem>
-                    </Link>
-                );
-            });
-        } else if (!this.props.groupsDetail.pending) {
-            return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No Group Details
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
-            );
-        } else if (this.props.groupsDetail.pending) {
-            return <div>Loading...</div>;
-        }
-    }
-
     renderGroupsDetail() {
         if (!this.props.groupID) {
             return (
@@ -171,8 +136,17 @@ class PeoplePage extends Component {
         ) {
             return (
                 <DetailView>
+                    <Heading
+                        is="h1"
+                        fontWeight="bold"
+                        py={3}
+                        textAlign="center"
+                    >
+                        {this.props.groupsDetail.data.name}
+                    </Heading>
+                    <Divider />
                     <ScrollView>
-                        <Flex justifyContent="center">
+                        <Flex justifyContent="center" mt={5}>
                             <Flex
                                 flexWrap="wrap"
                                 justifyContent="space-between"
@@ -227,14 +201,14 @@ class PeoplePage extends Component {
                             <ProfileAvatar fName={person.fName} size={72} />
                         </Box>
                         <Heading
-                            children={`${person.fName} ${person.lName}`}
                             is="h2"
+                            children={`${person.fName} ${person.lName}`}
                             fontSize={4}
                             mt={3}
                         />
                         <Heading
-                            children={`${person.position}`}
                             is="h3"
+                            children={`${person.position}`}
                             fontWeight="normal"
                             fontSize={2}
                         />
@@ -261,53 +235,28 @@ class PeoplePage extends Component {
                 </MasterView>
             );
         } else {
-            let list;
-            if (this.isGroupDetailView() || this.isGroupPeopleDetail()) {
-                list = this.renderGroupsDetailList();
-            } else if (this.isPeopleTab()) {
-                list = this.renderPeopleList();
-            } else {
-                list = this.renderGroupsList();
-            }
+            let list = this.isPeopleTab()
+                ? this.renderPeopleList()
+                : this.renderGroupsList();
 
-            let groupPath = this.isGroupPeopleDetail()
-                ? `/groups/${this.getGroupID()}`
-                : "/groups";
-
-            let controller =
-                !this.isGroupDetailView() && !this.isGroupPeopleDetail() ? (
+            return (
+                <MasterView>
                     <Flex>
-                        <Tab active={this.isPeopleTab()} is={Link} to="/people">
+                        <Tab
+                            active={this.isPeopleTab() ? 1 : 0}
+                            is={Link}
+                            to="/people"
+                        >
                             People
                         </Tab>
                         <Tab
-                            active={!this.isPeopleTab()}
+                            active={!this.isPeopleTab() ? 1 : 0}
                             is={Link}
                             to="/groups"
                         >
                             Groups
                         </Tab>
                     </Flex>
-                ) : (
-                    <Flex
-                        alignItems="center"
-                        justifyContent="space-between"
-                        py={2}
-                        px={3}
-                    >
-                        <Link to={groupPath}>
-                            <Icon glyph="chevronLeft" size={16} />
-                        </Link>
-                        <Span fontWeight="bold">
-                            {this.props.groupsDetail.data.name}
-                        </Span>
-                        <Box size={16} />
-                    </Flex>
-                );
-
-            return (
-                <MasterView>
-                    {controller}
                     <Divider />
                     {list}
                 </MasterView>

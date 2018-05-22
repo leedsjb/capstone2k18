@@ -8,10 +8,6 @@ import Box from "../Box";
 import Clickable from "../Clickable";
 
 class SearchBox extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     handleFocus = () => {
         this.props.handleFocus();
     };

@@ -2,7 +2,6 @@ import React from "react";
 
 import FlexFullHeight from "./FlexFullHeight";
 
-import Circle from "../Circle";
 import GradientCircle from "../GradientCircle";
 import Span from "../Span";
 

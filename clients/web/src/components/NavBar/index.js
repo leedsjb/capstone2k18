@@ -8,7 +8,6 @@ import Box from "../Box";
 import ProfileDropdown from "../ProfileDropdown";
 import ResourcesDropdown from "../ResourcesDropdown";
 import NavBarItem from "../NavBarItem";
-import GradientBox from "../GradientBox";
 import Image from "../Image";
 
 import logo from "../../images/logo.svg";
