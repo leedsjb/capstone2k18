@@ -633,7 +633,7 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 	switch r.Method {
 	case "GET":
 		id := path.Base(r.URL.Path)
-		if id != "." {
+		if id != "." && id != "aircraft" {
 			aircraftDetail := &messages.AircraftDetail{}
 
 			aircraftDetailRows, err := ctx.GetAircraftDetailByID(id)
@@ -667,6 +667,8 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 				}
 			}
 			respond(w, aircraftDetail)
+		} else if id == "aircraft" {
+			ctx.AircraftHandler(w, r)
 		} else {
 			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
 		}

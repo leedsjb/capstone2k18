@@ -93,10 +93,12 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 	for _, personID := range peopleIDS {
 		person := &messages.Person{}
 		ID := strconv.Itoa(personID)
+		fmt.Printf("Query ID: %v\n", ID)
 		peopleRows, err := ctx.GetPersonByID(ID)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving people from the DB: %v", err)
 		}
+		fmt.Println("got people rows")
 		personRow := &personRow{}
 		for peopleRows.Next() {
 			err = peopleRows.Scan(
@@ -105,6 +107,10 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 				&personRow.LName,
 				&personRow.RoleTitle,
 			)
+			fmt.Printf("personRow.PersonID: %v\n", personRow.PersonID)
+			fmt.Printf("personRow.FName: %v\n", personRow.FName)
+			fmt.Printf("personRow.LName: %v\n", personRow.LName)
+			fmt.Printf("personRow.RoleTitle: %v\n", personRow.RoleTitle)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning person row: %v", err)
 			}
@@ -115,6 +121,10 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 				LName:    personRow.LName,
 				Position: personRow.RoleTitle,
 			}
+			fmt.Printf("person.ID: %v\n", person.ID)
+			fmt.Printf("person.FName: %v\n", person.FName)
+			fmt.Printf("person.LName: %v\n", person.LName)
+			fmt.Printf("person.Position: %v\n", person.Position)
 		}
 		// TODO: append outside the people scan loop to ensure you only get
 		// one person per ID?
@@ -137,10 +147,10 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 		if len(term) > 0 {
 			// search term non-empty, filter which people are returned
 			peopleIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
-			// retrieve the actual group information
+			// retrieve the actual people information
 			people, err := ctx.GetTriePeople(peopleIDS)
 			if err != nil {
-				fmt.Printf("Error pulling groups from trie: %v", err)
+				fmt.Printf("Error pulling people from trie: %v", err)
 				return
 			}
 			respond(w, people)
@@ -186,7 +196,8 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 	switch r.Method {
 	case "GET":
 		id := path.Base(r.URL.Path)
-		if id != "." {
+		fmt.Printf("path.Base of URL is: %v", id)
+		if id != "." && id != "people" {
 			personDetail := &messages.PersonDetail{}
 
 			personDetailRows, err := ctx.GetPersonDetailByID(id)
@@ -220,6 +231,8 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 
 			}
 			respond(w, personDetail)
+		} else if id == "people" {
+			ctx.PeopleHandler(w, r)
 		} else {
 			http.Error(w, "No person with that ID", http.StatusBadRequest)
 		}
