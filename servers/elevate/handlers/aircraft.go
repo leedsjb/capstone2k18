@@ -36,6 +36,7 @@ type waypointRow struct {
 	ETT         time.Time
 	Active      string
 	FlightRules string
+	Completed   string
 }
 
 type oosRow struct {
@@ -93,6 +94,7 @@ type aircraftRow struct {
 		WaypointETE    string
 		WaypointETT    string
 		WaypointActive string
+		WaypointCompleted string
 		// [OOS]
 		OOSReason  string
 		OOSEndTime string
@@ -126,6 +128,7 @@ type aircraftDetailRow struct {
 	// WaypointETE    string
 	// WaypointETT    string
 	// WaypointActive string
+	// WaypointCompleted string
 	// // [RADIO REPORT]
 	// ShortReport string
 	// Intubated   string
@@ -290,6 +293,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			&waypointRow.ETT,
 			&waypointRow.Active,
 			&waypointRow.FlightRules,
+			&waypointRow.Completed,
 		)
 		if err != nil {
 			fmt.Printf("Error scanning waypoint row: %v", err)
@@ -300,6 +304,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			ETT:         waypointRow.ETT.String(),
 			Active:      waypointRow.Active,
 			FlightRules: waypointRow.FlightRules,
+			Completed:   waypointRow.Completed,
 		}
 
 		if strings.ToLower(waypointRow.Active) == "true" {
@@ -439,6 +444,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			&waypointRow.ETT,
 			&waypointRow.Active,
 			&waypointRow.FlightRules,
+			&waypointRow.Completed,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
@@ -449,6 +455,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			ETT:         waypointRow.ETT.String(),
 			Active:      waypointRow.Active,
 			FlightRules: waypointRow.FlightRules,
+			Completed:   waypointRow.Completed,
 		}
 
 		if strings.ToLower(waypointRow.Active) == "true" {

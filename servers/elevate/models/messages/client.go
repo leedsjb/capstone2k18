@@ -11,6 +11,7 @@ type ClientMissionWaypoint struct {
 	ETT         string `json:"ETT"`    // cumulative mission time
 	Active      string `json:"active"` // denotes active waypoint
 	FlightRules string `json:"flightRules"`
+	Completed   string `json:"completed"`
 }
 
 type Client_Mission_Create struct {
