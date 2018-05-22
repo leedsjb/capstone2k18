@@ -32,6 +32,11 @@ type personDetailRow struct {
 	// SpecialQuals   string
 }
 
+type peopleAndGroups struct {
+	People []*messages.Person
+	Groups []*messages.ClientGroup
+}
+
 // IndexPerson
 func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
 	personID, err := strconv.Atoi(person.ID)
@@ -39,12 +44,16 @@ func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
 		fmt.Printf("Error changing person ID from string to int")
 	}
 	personName := person.FName + " " + person.LName
-	if err := trie.AddEntity(strings.ToLower(personName), personID); err != nil {
-		return fmt.Errorf("Error adding person name to trie: %v", err)
+
+	nameParts := strings.Fields(personName)
+	for _, namePart := range nameParts {
+		if err := trie.AddEntity(strings.ToLower(namePart), personID); err != nil {
+			return fmt.Errorf("Error adding person to trie: %v", err)
+		}
 	}
 
 	if err := trie.AddEntity(strings.ToLower(person.Position), personID); err != nil {
-		return fmt.Errorf("Errod adding person role to trie: %v", err)
+		return fmt.Errorf("Error adding person role to trie: %v", err)
 	}
 	return nil
 }
@@ -146,7 +155,7 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 
 		if len(term) > 0 {
 			// search term non-empty, filter which people are returned
-			peopleIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
+			peopleIDS := ctx.PeopleTrie.GetEntities(strings.ToLower(term), 20)
 			// retrieve the actual people information
 			people, err := ctx.GetTriePeople(peopleIDS)
 			if err != nil {
