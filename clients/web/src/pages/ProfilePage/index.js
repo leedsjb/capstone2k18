@@ -1,15 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
+import { Flex } from "grid-styled";
 
 import TitleBar from "../../components/TitleBar";
 import NavBar from "../../components/NavBar";
-import Container from "../../components/Container";
 import TabBar from "../../components/TabBar";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import ButtonIcon from "../../components/ButtonIcon";
+import Heading from "../../components/Heading";
+import Switch from "../../components/Switch";
+import TextInput from "../../components/TextInput";
+import Container from "../../components/Container";
 
 import { fetchProfile } from "../../actions/profile/actions";
 
@@ -24,14 +28,21 @@ class ProfilePage extends Component {
             !Array.isArray(this.props.profile.data)
         ) {
             return (
-                <div>
+                <Container>
                     <ProfileAvatar fName={currUser.data.fName} size={96} />
-                    <div>{`${currUser.data.fName} ${currUser.data.lName}`}</div>
+
+                    <Heading is="h1">{`${currUser.data.fName} ${
+                        currUser.data.lName
+                    }`}</Heading>
                     <div>{currUser.data.position}</div>
-                    <ButtonIcon />
-                    <ButtonIcon />
-                    <ButtonIcon />
-                </div>
+
+                    <Heading>Notification preferences</Heading>
+                    <Switch checked={false} color="primary" />
+                    <TextInput value="Test" disabled />
+                    <TextInput value="Test" disabled />
+                    <TextInput value="Test" disabled />
+                    <TextInput value="Test" disabled />
+                </Container>
             );
         }
         return <div>Loading...</div>;
