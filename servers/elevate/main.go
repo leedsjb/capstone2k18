@@ -93,19 +93,22 @@ func main() {
 
 	// [LOAD TRIES]
 	var aircraftTrie = indexes.NewTrie()
-	var personnelTrie = indexes.NewTrie()
+	// var personnelTrie = indexes.NewTrie()
+	var groupsTrie = indexes.NewTrie()
+	var peopleTrie = indexes.NewTrie()
 	notifier := handlers.NewNotifier()
 
-	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
+	// handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
 	// parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
 	// if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 	// 	log.Fatalf("Error loading aircraft trie")
 	// }
-	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading groups into personnel trie")
+	if err := handlerCtx.LoadGroupsTrie(groupsTrie); err != nil {
+		log.Fatalf("Error loading groups trie")
 	}
-	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading people into personnel trie")
+	if err := handlerCtx.LoadPeopleTrie(peopleTrie); err != nil {
+		log.Fatalf("Error loading people trie")
 	}
 
 	// [PUB/SUB]

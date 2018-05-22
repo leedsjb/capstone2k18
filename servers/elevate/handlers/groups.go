@@ -190,7 +190,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			fmt.Println("[GROUP TRIE] in filtering")
 			// search query non-empty
 			// find groupIDs that match the search term
-			groupIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
+			groupIDS := ctx.GroupsTrie.GetEntities(strings.ToLower(term), 20)
 			fmt.Printf("[GROUP TRIE] groupIDS: %v", groupIDS)
 			// retrieve the actual group information
 			groups, err := ctx.GetTrieGroups(groupIDS)
