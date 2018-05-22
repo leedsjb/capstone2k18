@@ -1,3 +1,13 @@
+/*
+Filename: main.go
+Created:
+Modified: Monday May 21, 2018
+Author: J. Benjamin Leeds
+License: None
+Purpose: This Go program serves as the HTTPS web server for ALNW elevate. It serves the Elevate
+	React Web App and handles authentication via Shibboleth SAML with the UW IdP.
+*/
+
 package main
 
 import (
@@ -160,7 +170,7 @@ func main() {
 	// fmt.Println(bodyString)
 
 	PWD := os.Getenv("PWD")
-	ENV := os.Getenv("environment")
+	ENV := os.Getenv("ENVIRONMENT")
 
 	if ENV == "" {
 		panic("error: set environment environment variable")
@@ -235,12 +245,12 @@ func main() {
 	rootURL := &url.URL{} // ****** correct usage of &?
 
 	if ENV == "kubernetes" {
-		rootURL, err = url.Parse("http://test.elevate.airliftnw.org") // TODO: change to https
+		log.Println("K8S: setting url to https://test.elevate.airliftnw.org")
+		rootURL, err = url.Parse("https://test.elevate.airliftnw.org") // TODO: change to https
 		if err != nil {
 			panic(err)
 		}
-	}
-	if ENV == "local-docker-dev" {
+	} else if ENV == "local-docker-dev" {
 		rootURL, err = url.Parse("http://localhost:80")
 		if err != nil {
 			panic(err)
