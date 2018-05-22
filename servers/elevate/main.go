@@ -81,7 +81,7 @@ func main() {
 	sqlUser := os.Getenv("SQLUSER")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
-	cfg := mysql.Cfg(sqlInstance, sqlUser, "123")
+	cfg := mysql.Cfg(sqlInstance, sqlUser)
 	cfg.DBName = sqlDbName
 	db, err := mysql.DialCfg(cfg)
 	if err != nil {
