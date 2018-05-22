@@ -44,12 +44,16 @@ func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
 		fmt.Printf("Error changing person ID from string to int")
 	}
 	personName := person.FName + " " + person.LName
-	if err := trie.AddEntity(strings.ToLower(personName), personID); err != nil {
-		return fmt.Errorf("Error adding person name to trie: %v", err)
+
+	nameParts := strings.Fields(personName)
+	for _, namePart := range nameParts {
+		if err := trie.AddEntity(strings.ToLower(namePart), personID); err != nil {
+			return fmt.Errorf("Error adding person to trie: %v", err)
+		}
 	}
 
 	if err := trie.AddEntity(strings.ToLower(person.Position), personID); err != nil {
-		return fmt.Errorf("Errod adding person role to trie: %v", err)
+		return fmt.Errorf("Error adding person role to trie: %v", err)
 	}
 	return nil
 }
