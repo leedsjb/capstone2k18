@@ -83,19 +83,20 @@ type aircraftRow struct {
 	Long         string
 	LocationName string
 	Status       string // TODO: double check what exactly this status is
-	/* [MISSION]
-	MissionType    string
-	FlightRules    string
-	TCNum      string
-	// [WAYPOINT]
-	WaypointTitle  string
-	WaypointETE    string
-	WaypointETT    string
-	WaypointActive string
+	/*
+		// [MISSION]
+		MissionType string
+		FlightRules string
+		TCNum       string
+		// [WAYPOINT]
+		WaypointTitle  string
+		WaypointETE    string
+		WaypointETT    string
+		WaypointActive string
+		// [OOS]
+		OOSReason  string
+		OOSEndTime string
 	*/
-	// [OOS]
-	// OOSReason  string
-	// OOSEndTime string
 }
 
 type aircraftDetailRow struct {
@@ -168,7 +169,18 @@ func (ctx *HandlerContext) LoadAircraftTrie(trie *indexes.Trie) error {
 	}
 	aircraftRow := &aircraftRow{}
 	for aircraftRows.Next() {
-		err = aircraftRows.Scan(aircraftRow)
+		err = aircraftRows.Scan(
+			&aircraftRow.ID,
+			&aircraftRow.Callsign,
+			&aircraftRow.Nnum,
+			&aircraftRow.Manufacturer,
+			&aircraftRow.Title,
+			&aircraftRow.Class,
+			&aircraftRow.Lat,
+			&aircraftRow.Long,
+			&aircraftRow.LocationName,
+			&aircraftRow.Status,
+		)
 		if err != nil {
 			return fmt.Errorf("Error scanning aircraft row: %v", err)
 		}
@@ -195,7 +207,18 @@ func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) ([]*messages.Aircr
 		}
 		aircraftRow := &aircraftRow{}
 		for aircraftRows.Next() {
-			err = aircraftRows.Scan(aircraftRow)
+			err = aircraftRows.Scan(
+				&aircraftRow.ID,
+				&aircraftRow.Callsign,
+				&aircraftRow.Nnum,
+				&aircraftRow.Manufacturer,
+				&aircraftRow.Title,
+				&aircraftRow.Class,
+				&aircraftRow.Lat,
+				&aircraftRow.Long,
+				&aircraftRow.LocationName,
+				&aircraftRow.Status,
+			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning aircraft row: %v", err)
 			}
@@ -236,7 +259,11 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 	missionRow := &missionRow{}
 	for missionRows.Next() {
-		err = missionRows.Scan(missionRow)
+		err = missionRows.Scan(
+			&missionRow.Type,
+			&missionRow.FlightRules,
+			&missionRow.FlightNum,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning mission row: %v", err)
 		}
@@ -257,7 +284,13 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 	waypointRow := &waypointRow{}
 	for waypointRows.Next() {
-		err = waypointRows.Scan(waypointRow)
+		err = waypointRows.Scan(
+			&waypointRow.Name,
+			&waypointRow.ETE,
+			&waypointRow.ETT,
+			&waypointRow.Active,
+			&waypointRow.FlightRules,
+		)
 		if err != nil {
 			fmt.Printf("Error scanning waypoint row: %v", err)
 		}
@@ -287,7 +320,10 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 	oosRow := &oosRow{}
 	for oosRows.Next() {
-		err = oosRows.Scan(oosRow)
+		err = oosRows.Scan(
+			&oosRow.Reason,
+			&oosRow.EndTime,
+		)
 		if err != nil {
 			fmt.Printf("Error scanning OOS row: %v", err)
 		}
@@ -339,7 +375,12 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	}
 	crewRow := &crewRow{}
 	for crewRows.Next() {
-		err = crewRows.Scan(crewRow)
+		err = crewRows.Scan(
+			&crewRow.PersonnelID,
+			&crewRow.FName,
+			&crewRow.LName,
+			&crewRow.Role,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning crew row: %v", err)
 		}
@@ -361,7 +402,13 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	}
 	missionDetailRow := &missionDetailRow{}
 	for missionDetailRows.Next() {
-		err = missionDetailRows.Scan(missionDetailRow)
+		err = missionDetailRows.Scan(
+			&missionDetailRow.Type,
+			&missionDetailRow.FlightRules,
+			&missionDetailRow.FlightNum,
+			&missionDetailRow.Requestor,
+			&missionDetailRow.Receiver,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning mission row: %v", err)
 		}
@@ -370,7 +417,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			Vision: missionDetailRow.FlightRules,
 			// NextWaypointETE
 			// Waypoints
-			FlightNum: missionDetailRow.FlightRules,
+			FlightNum: missionDetailRow.FlightNum,
 			// RadioReport
 			Requestor: missionDetailRow.Requestor,
 			Receiver:  missionDetailRow.Receiver,
@@ -386,7 +433,13 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	}
 	waypointRow := &waypointRow{}
 	for waypointRows.Next() {
-		err = waypointRows.Scan(waypointRow)
+		err = waypointRows.Scan(
+			&waypointRow.Name,
+			&waypointRow.ETE,
+			&waypointRow.ETT,
+			&waypointRow.Active,
+			&waypointRow.FlightRules,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
 		}
@@ -408,13 +461,24 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	missionDetail.NextWaypointETE = nextETE
 	// [RADIO REPORT]
 	report := &messages.Patient{}
+	// TODO: GetPatientByMission
 	reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)
 	}
 	reportRow := &reportRow{}
 	for reportRows.Next() {
-		err = reportRows.Scan(reportRow)
+		err = reportRows.Scan(
+			&reportRow.Sex,
+			&reportRow.ShortReport,
+			&reportRow.Intubated,
+			&reportRow.Drips,
+			&reportRow.Age,
+			&reportRow.Weight,
+			&reportRow.Cardiac,
+			&reportRow.GIBleed,
+			&reportRow.OB,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning report row: %v", err)
 		}
@@ -437,31 +501,35 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 
 	// [OOS]
 	// TODO: SQL sproc for finding OOS status by aircraftID
-	oos := &messages.OOSDetail{}
-	oosRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
+	oosDetail := &messages.OOSDetail{}
+	oosDetailRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error returning OOS details: %v", err)
 	}
-	oosRow := &oosDetailRow{}
-	for oosRows.Next() {
-		err = oosRows.Scan(oosRow)
+	oosDetailRow := &oosDetailRow{}
+	for oosDetailRows.Next() {
+		err = oosDetailRows.Scan(
+			&oosDetailRow.Reason,
+			&oosDetailRow.StartTime,
+			&oosDetailRow.EndTime,
+		)
 		if err != nil {
 			fmt.Printf("Error scanning OOS row: %v", err)
 		}
 
-		oosFinishTime := time.Until(oosRow.EndTime)
+		oosFinishTime := time.Until(oosDetailRow.EndTime)
 		remaining := oosFinishTime.String()
-		oosElapsedTime := time.Since(oosRow.StartTime)
+		oosElapsedTime := time.Since(oosDetailRow.StartTime)
 		duration := oosElapsedTime.String()
 
-		oos = &messages.OOSDetail{
-			Reason:    oosRow.Reason,
+		oosDetail = &messages.OOSDetail{
+			Reason:    oosDetailRow.Reason,
 			Remaining: remaining,
 			Duration:  duration,
 		}
 	}
 	// add OOS to aircraft
-	aircraftDetail.OOS = oos
+	aircraftDetail.OOS = oosDetail
 
 	return aircraftDetail, nil
 }
@@ -499,7 +567,18 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 				currentRow := &aircraftRow{}
 				for aircraftRows.Next() {
-					err = aircraftRows.Scan(currentRow)
+					err = aircraftRows.Scan(
+						&currentRow.ID,
+						&currentRow.Callsign,
+						&currentRow.Nnum,
+						&currentRow.Manufacturer,
+						&currentRow.Title,
+						&currentRow.Class,
+						&currentRow.Lat,
+						&currentRow.Long,
+						&currentRow.LocationName,
+						&currentRow.Status,
+					)
 					if err != nil {
 						fmt.Printf("Error scanning aircraft row: %v", err)
 						return
@@ -516,7 +595,18 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				aircraftRows, err := ctx.GetAllAircraft()
 				currentRow := &aircraftRow{}
 				for aircraftRows.Next() {
-					err = aircraftRows.Scan(currentRow)
+					err = aircraftRows.Scan(
+						&currentRow.ID,
+						&currentRow.Callsign,
+						&currentRow.Nnum,
+						&currentRow.Manufacturer,
+						&currentRow.Title,
+						&currentRow.Class,
+						&currentRow.Lat,
+						&currentRow.Long,
+						&currentRow.LocationName,
+						&currentRow.Status,
+					)
 					if err != nil {
 						fmt.Printf("Error scanning aircraft row: %v", err)
 						return
@@ -554,7 +644,18 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 
 			aircraftDetailRow := &aircraftDetailRow{}
 			for aircraftDetailRows.Next() {
-				err = aircraftDetailRows.Scan(aircraftDetailRow)
+				err = aircraftDetailRows.Scan(
+					&aircraftDetailRow.ID,
+					&aircraftDetailRow.Callsign,
+					&aircraftDetailRow.Nnum,
+					&aircraftDetailRow.Manufacturer,
+					&aircraftDetailRow.Title,
+					&aircraftDetailRow.Class,
+					&aircraftDetailRow.Lat,
+					&aircraftDetailRow.Long,
+					&aircraftDetailRow.LocationName,
+					&aircraftDetailRow.Status,
+				)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
 					return

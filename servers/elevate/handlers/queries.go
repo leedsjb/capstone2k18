@@ -122,13 +122,12 @@ func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
 	}
-	fmt.Println("Got all groups")
 	return groupRows, nil
 }
 
-func (ctx *HandlerContext) GetGroupDetailsByID(groupID string) (*sql.Rows, error) {
+func (ctx *HandlerContext) GetGroupDetailByID(groupID string) (*sql.Rows, error) {
 	// TODO sql sproc
-	gdRows, err := ctx.DB.Query("CALL uspGetGroupDetails(" + groupID + ")")
+	gdRows, err := ctx.DB.Query("CALL uspGetGroupDetailByID(" + groupID + ")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
 	}
@@ -174,4 +173,14 @@ func (ctx *HandlerContext) GetPersonByID(personID string) (*sql.Rows, error) {
 		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
 	}
 	return personRows, nil
+}
+
+// [RESOURCE QUERIES]
+
+func (ctx *HandlerContext) GetAllResources() (*sql.Rows, error) {
+	resourceRows, err := ctx.DB.Query("CALL uspGetResources()")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for resource details: %v", err)
+	}
+	return resourceRows, nil
 }

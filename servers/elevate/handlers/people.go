@@ -60,7 +60,12 @@ func (ctx *HandlerContext) LoadPeopleTrie(trie *indexes.Trie) error {
 
 	personRow := &personRow{}
 	for peopleRows.Next() {
-		err = peopleRows.Scan(personRow)
+		err = peopleRows.Scan(
+			&personRow.PersonID,
+			&personRow.FName,
+			&personRow.LName,
+			&personRow.RoleTitle,
+		)
 		if err != nil {
 			return fmt.Errorf("Error scanning person row: %v", err)
 		}
@@ -94,7 +99,12 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 		}
 		personRow := &personRow{}
 		for peopleRows.Next() {
-			err = peopleRows.Scan(personRow)
+			err = peopleRows.Scan(
+				&personRow.PersonID,
+				&personRow.FName,
+				&personRow.LName,
+				&personRow.RoleTitle,
+			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning person row: %v", err)
 			}
@@ -143,7 +153,12 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 
 			personRow := &personRow{}
 			for peopleRows.Next() {
-				err = peopleRows.Scan(personRow)
+				err = peopleRows.Scan(
+					&personRow.PersonID,
+					&personRow.FName,
+					&personRow.LName,
+					&personRow.RoleTitle,
+				)
 				if err != nil {
 					fmt.Printf("Error scanning person row: %v", err)
 					os.Exit(1)
@@ -182,7 +197,14 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 
 			personDetailRow := &personDetailRow{}
 			for personDetailRows.Next() {
-				err = personDetailRows.Scan(personDetailRow)
+				err = personDetailRows.Scan(
+					&personDetailRow.PersonnelID,
+					&personDetailRow.FName,
+					&personDetailRow.LName,
+					&personDetailRow.PersonnelTitle,
+					&personDetailRow.Email,
+					&personDetailRow.SMS,
+				)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning person details: %v", err), http.StatusInternalServerError)
 					return

@@ -215,15 +215,11 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			}
 			// create variables and fill contents from retrieved rows
 			currentRow := &groupRow{}
-			var rowID string
-			var rowName string
-			var rowFName string
-			var rowLName string
 			currentRow.GroupID = "first"
 			currentGroupID := "first"
 			currentGroup := &messages.ClientGroup{}
 			for groupRows.Next() {
-				err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
+				err = groupRows.Scan(&currentRow.GroupID, &currentRow.GroupName, &currentRow.FName, &currentRow.LName)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning group row: %v", err), http.StatusInternalServerError)
 					return
@@ -233,24 +229,16 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 
 				if currentGroupID == "first" {
 					fmt.Println("[GROUP HANDLER] currentGroupID was first")
-					currentGroupID = rowID
+					currentGroupID = currentRow.GroupID
 				}
-				fmt.Printf("[GROUP HANDLER] Current RowID is: [%v], GroupID is: [%v]\n", rowID, currentGroupID)
-				if rowID != currentGroupID {
-					fmt.Printf("[GROUP HANDLER] Non-matching rowID [%v] and groupID [%v]\n", rowID, currentGroupID)
+				if currentRow.GroupID != currentGroupID {
 					groups = append(groups, currentGroup)
 					// empty out the current group being built
 					currentGroup = &messages.ClientGroup{}
 					// update current groupID
-					currentGroupID = rowID
+					currentGroupID = currentRow.GroupID
 				}
 				// otherwise, continue as usual and assign values to the receiving struct
-				currentRow = &groupRow{
-					GroupID:   rowID,
-					GroupName: rowName,
-					FName:     rowFName,
-					LName:     rowLName,
-				}
 				// TODO: maybe optimize to actually check if these already exist
 				currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
 				if err != nil {
@@ -291,8 +279,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		id := path.Base(r.URL.Path)
 
 		if id != "." {
-			// TODO: Insert stored procedure here
-			groupDetailRows, err := ctx.GetGroupDetailsByID(id)
+			groupDetailRows, err := ctx.GetGroupDetailByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
 				return
@@ -301,13 +288,12 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 			// create variables and fill contents from retrieved rows
 			groupDetail := &messages.GroupDetail{}
 			people := []*messages.Person{}
-			// var people []*messages.Person
 
 			currentPerson := &messages.Person{}
 			row := &groupDetailRow{}
 			currentName := ""
 			for groupDetailRows.Next() {
-				err = groupDetailRows.Scan(row)
+				err = groupDetailRows.Scan(&row.GroupID, &row.GroupName, &row.FName, &row.LName, &row.PersonnelID, &row.RoleTitle)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning group detail row for group [%v]: %v", id, err), http.StatusInternalServerError)
 					return
@@ -327,6 +313,8 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 				people = append(people, currentPerson)
 			}
+			// attach list of people to the groupDetail
+			groupDetail.People = people
 			respond(w, groupDetail)
 		} else {
 			http.Error(w, "No group with that ID", http.StatusBadRequest)
