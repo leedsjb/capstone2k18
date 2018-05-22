@@ -18,7 +18,12 @@ const NavBar = ({ theme: { breakpoints } }) => {
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
                 matches ? (
-                    <GradientBox py={3} px={4}>
+                    <Box
+                        py={3}
+                        px={4}
+                        bg="white"
+                        borderBottom="1px solid #e5e5e4"
+                    >
                         <Flex
                             justifyContent="space-between"
                             alignItems="center"
@@ -49,7 +54,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 </Box>
                             </Flex>
                         </Flex>
-                    </GradientBox>
+                    </Box>
                 ) : null
             }
         </Media>

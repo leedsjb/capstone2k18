@@ -14,7 +14,7 @@ class TitleBar extends Component {
         if (this.props.back) {
             return (
                 <Link to={this.props.backPath}>
-                    <Icon glyph="chevronLeft" size={16} color="white" />
+                    <Icon glyph="chevronLeft" size={16} color="black" />
                 </Link>
             );
         }
@@ -24,7 +24,7 @@ class TitleBar extends Component {
     renderMapIcon = () => {
         return (
             <Flex alignItems="center">
-                <Icon glyph="map" size={16} color="white" />
+                <Icon glyph="map" size={16} color="black" />
             </Flex>
         );
     };
@@ -34,7 +34,7 @@ class TitleBar extends Component {
             <Media query={`(min-width: ${this.props.theme.breakpoints[1]})`}>
                 {matches =>
                     matches ? null : this.props.showMap ? (
-                        <GradientBox p={3}>
+                        <Box bg="white" p={3}>
                             <Flex justifyContent="flex-start" align="center">
                                 <Box width={1 / 3}>
                                     <Link to={this.props.link}>
@@ -46,23 +46,23 @@ class TitleBar extends Component {
                                         is="h3"
                                         fontSize={2}
                                         textAlign="center"
-                                        color="white"
+                                        color="black"
                                     >
                                         {this.props.title}
                                     </Heading>
                                 </Box>
                             </Flex>
-                        </GradientBox>
+                        </Box>
                     ) : (
-                        <GradientBox p={3}>
+                        <Box bg="white" p={3}>
                             <Flex justifyContent="space-between" align="center">
                                 {this.renderIconLeft()}
-                                <Heading is="h3" fontSize={2} color="white">
+                                <Heading is="h3" fontSize={2} color="black">
                                     {this.props.title}
                                 </Heading>
                                 <Box w={16} />
                             </Flex>
-                        </GradientBox>
+                        </Box>
                     )
                 }
             </Media>

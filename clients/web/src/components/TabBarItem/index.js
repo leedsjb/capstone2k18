@@ -37,9 +37,9 @@ const TabBarItem = ({ title, glyph, path }) => {
                                             : `${glyph}Line`
                                     }
                                     size={24}
-                                    color="white"
+                                    color="black"
                                 />
-                                <Span color="white">{title}</Span>
+                                <Span color="black">{title}</Span>
                             </Flex>
                         </Link>
                     </Box>
