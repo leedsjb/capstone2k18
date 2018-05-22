@@ -461,6 +461,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	missionDetail.NextWaypointETE = nextETE
 	// [RADIO REPORT]
 	report := &messages.Patient{}
+	// TODO: GetPatientByMission
 	reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)

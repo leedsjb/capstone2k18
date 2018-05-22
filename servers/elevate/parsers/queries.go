@@ -13,10 +13,10 @@ var sqlCtx = context.Background()
 
 // [AIRCRAFT]
 
-// GetAircraftCallsign retrieves an aircraft's callsign given a missionID
-func (ctx *ParserContext) GetAircraftCallsign(missionID string) (string, error) {
-	// get mission from db using missionID
-	aircraftRow, err := ctx.DB.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + missionID)
+// GetAircraftCallsign retrieves an aircraft's callsign given the aircraft's ID
+func (ctx *ParserContext) GetAircraftCallsign(aircraftID string) (string, error) {
+	// get callsign from db using aircraftID
+	aircraftRow, err := ctx.DB.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=")
 	if err != nil {
 		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
 	}
@@ -180,6 +180,62 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 }
 
 // [MISSIONS]
+
+func (ctx *ParserContext) GetRequestorByID(requestorID string) (string, error) {
+	query := `CALL uspGetRequestorByID($1)`
+	reqRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		requestorID,
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
+	}
+	var requestor string
+	err = reqRow.Scan(&requestor)
+	if err != nil {
+		return "", fmt.Errorf("Error scanning requestor row: %v", err)
+	}
+	return requestor, nil
+}
+
+func (ctx *ParserContext) GetReceiverByID(receiverID string) (string, error) {
+	query := `CALL uspGetReceiverByID($1)`
+	reqRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		receiverID,
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
+	}
+	var receiver string
+	err = reqRow.Scan(&receiver)
+	if err != nil {
+		return "", fmt.Errorf("Error scanning requestor row: %v", err)
+	}
+	return receiver, nil
+}
+
+func (ctx *ParserContext) GetCrewMemberByID(memberID string) (string, string, error) {
+	query := `CALL uspGetCrewMemberByID($1)`
+	memRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		memberID,
+	)
+	// ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
+	if err != nil {
+		return "", "", fmt.Errorf("Error querying MySQL for member: %v", err)
+	}
+	var fName string
+	var lName string
+	err = memRow.Scan(&fName, &lName)
+	if err != nil {
+		return "", "", fmt.Errorf("Error scanning member row: %v", err)
+	}
+	return fName, lName, nil
+}
 
 // AddNewMission adds a new mission object to the database
 func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) error {

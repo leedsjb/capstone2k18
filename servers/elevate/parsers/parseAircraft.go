@@ -197,12 +197,7 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	aircraftRow, err := ctx.GetAircraftByID(msg.ID)
-	if err != nil {
-		fmt.Printf("Error retrieving aircraft from database: %v", err)
-	}
-	var aircraftCallsign string
-	err = aircraftRow.Scan(&aircraftCallsign)
+	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.ID)
 	if err != nil {
 		fmt.Printf("Error getting aircraft callsign: %v", err)
 	}

@@ -207,7 +207,7 @@ func main() {
 	mux.HandleFunc("/groups", handlerCtx.GroupsHandler)
 	mux.HandleFunc("/groups/", handlerCtx.GroupDetailHandler)
 	// TODO: write resourcesHandler after we set up cloud storage
-	// mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
+	mux.HandleFunc("/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that
 	//to the main server mux.

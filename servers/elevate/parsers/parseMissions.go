@@ -31,34 +31,20 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	requestor := ""
 	receiver := ""
 	aircraftStatus := "on a mission" // assume aircraft assigned to mission is on that mission
-	// is raw MissionID what we want, or is it mapped?
 
 	if msg.RequestorID != "" {
-		// TODO: factor out
-		reqRow, err := ctx.DB.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.RequestorID)
+		req, err := ctx.GetRequestorByID(msg.RequestorID)
 		if err != nil {
-			fmt.Printf("Error querying MySQL for requestor: %v", err)
+			return fmt.Errorf("Could not retrieve requestor by given ID: %v", msg.RequestorID)
 		}
-		err = reqRow.Scan(&requestor)
-		if err != nil {
-			fmt.Printf("Error scanning requestor row: %v", err)
-			os.Exit(1)
-		}
-		msg.RequestorID = requestor
+		requestor = req
 	}
 	if msg.ReceiverID != "" {
-		// TODO: factor out
-		recRow, err := ctx.DB.Query("SELECT agency_name FROM tblAgency WHERE agency_id=" + msg.ReceiverID)
+		rec, err := ctx.GetReceiverByID(msg.ReceiverID)
 		if err != nil {
-			fmt.Printf("Error querying MySQL for receiver: %v", err)
+			return fmt.Errorf("Could not retrieve requestor by given ID: %v", msg.ReceiverID)
 		}
-		var receiver string
-		err = recRow.Scan(&receiver)
-		if err != nil {
-			fmt.Printf("Error scanning receiver row: %v", err)
-			os.Exit(1)
-		}
-		msg.ReceiverID = receiver
+		receiver = rec
 	}
 
 	// separate crewIDs to build crew members into related groups
@@ -70,14 +56,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 			var fName string
 			var lName string
 			// TODO: factor out
-			memRow, err := ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
+			fName, lName, err := ctx.GetCrewMemberByID(memberID)
 			if err != nil {
-				fmt.Printf("Error querying MySQL for member: %v", err)
-			}
-			err = memRow.Scan(&fName, &lName)
-			if err != nil {
-				fmt.Printf("Error scanning member row: %v", err)
-				os.Exit(1)
+				return fmt.Errorf("Could not retrieve crew member by given ID: %v", memberID)
 			}
 
 			// retrieve member role

@@ -174,3 +174,13 @@ func (ctx *HandlerContext) GetPersonByID(personID string) (*sql.Rows, error) {
 	}
 	return personRows, nil
 }
+
+// [RESOURCE QUERIES]
+
+func (ctx *HandlerContext) GetAllResources() (*sql.Rows, error) {
+	resourceRows, err := ctx.DB.Query("CALL uspGetResources()")
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for resource details: %v", err)
+	}
+	return resourceRows, nil
+}
