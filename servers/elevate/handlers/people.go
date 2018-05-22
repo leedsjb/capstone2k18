@@ -189,7 +189,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 		if id != "." {
 			personDetail := &messages.PersonDetail{}
 
-			personDetailRows, err := ctx.GetPersonDetailsByID(id)
+			personDetailRows, err := ctx.GetPersonDetailByID(id)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting person details from DB: %v", err), http.StatusInternalServerError)
 				return
@@ -215,9 +215,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 					LName:    personDetailRow.LName,
 					Position: personDetailRow.PersonnelTitle,
 					Email:    personDetailRow.Email,
-					// UWNetID:      personDetailRow.UWNetID,
-					Mobile: personDetailRow.SMS,
-					// SpecialQuals: personDetailRow.SpecialQuals,
+					Mobile:   personDetailRow.SMS,
 				}
 
 			}

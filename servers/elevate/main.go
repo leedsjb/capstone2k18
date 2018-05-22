@@ -81,7 +81,7 @@ func main() {
 	sqlUser := os.Getenv("SQLUSER")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
-	cfg := mysql.Cfg(sqlInstance, sqlUser)
+	cfg := mysql.Cfg(sqlInstance, sqlUser, "123")
 	cfg.DBName = sqlDbName
 	db, err := mysql.DialCfg(cfg)
 	if err != nil {
@@ -200,9 +200,9 @@ func main() {
 	mux.Handle("/v1/ws", wsh)
 	// mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
 	// mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
-	// mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
+	mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
 	// TODO: write peopleMeHandler for auth
-	// mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
 	// mux.HandleFunc("/v1/people/me", handlerCtx.PeopleMeHandler)
 	mux.HandleFunc("/v1/groups", handlerCtx.GroupsHandler)
 	mux.HandleFunc("/v1/groups/", handlerCtx.GroupDetailHandler)

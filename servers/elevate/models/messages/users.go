@@ -51,12 +51,12 @@ type Person struct {
 
 // PersonDetail ...
 type PersonDetail struct {
-	ID           string `json:"id"`
-	FName        string `json:"fName"`
-	LName        string `json:"lName"`
-	Position     string `json:"position"`
-	Email        string `json:"email"`
-	UWNetID      string `json:"uwNetID"`
-	Mobile       string `json:"mobile"`
-	SpecialQuals string `json:"specialQuals"`
+	ID       string `json:"id"`
+	FName    string `json:"fName"`
+	LName    string `json:"lName"`
+	Position string `json:"position"`
+	Email    string `json:"email"`
+	// UWNetID      string `json:"uwNetID"`
+	Mobile string `json:"mobile"`
+	// SpecialQuals string `json:"specialQuals"`
 }
