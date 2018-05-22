@@ -104,9 +104,9 @@ func main() {
 	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
 		log.Fatalf("Error loading groups into personnel trie")
 	}
-	// if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
-	// 	log.Fatalf("Error loading people into personnel trie")
-	// }
+	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
+		log.Fatalf("Error loading people into personnel trie")
+	}
 
 	// [PUB/SUB]
 
