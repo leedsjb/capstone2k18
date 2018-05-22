@@ -32,7 +32,7 @@ type groupDetailRow struct {
 }
 
 // IndexGroup ...
-func IndexGroup(trie *indexes.Trie, group *messages.ClientGroup) error {
+func IndexGroup(trie *indexes.Trie, group *messages.Group) error {
 	fmt.Println("group.ID is: " + group.ID)
 	groupID, err := strconv.Atoi(group.ID)
 	if err != nil {
@@ -42,7 +42,7 @@ func IndexGroup(trie *indexes.Trie, group *messages.ClientGroup) error {
 		return fmt.Errorf("Error adding group to trie: %v", err)
 	}
 
-	for _, member := range group.PeoplePreview {
+	for _, member := range group.Members {
 		nameParts := strings.Fields(member)
 		for _, namePart := range nameParts {
 			if err := trie.AddEntity(strings.ToLower(namePart), groupID); err != nil {
@@ -66,7 +66,7 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 	currentRow := &groupRow{}
 	currentRow.GroupID = "first"
 	currentGroupID := "first"
-	currentGroup := &messages.ClientGroup{}
+	currentGroup := &messages.Group{}
 	var rowID string
 	var rowName string
 	var rowFName string
@@ -91,7 +91,7 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 				return fmt.Errorf("Error loading trie: %v", err)
 			}
 			// empty out the current group being built
-			currentGroup = &messages.ClientGroup{}
+			currentGroup = &messages.Group{}
 			// update current groupID
 			currentGroupID = rowID
 		}
@@ -120,7 +120,7 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 
 	// get each group whose prefix matches the search term
 	for _, groupID := range groupIDS {
-		currentGroup := &messages.ClientGroup{}
+		currentGroup := &messages.Group{}
 		ID := strconv.Itoa(groupID)
 		groupRows, err := ctx.GetGroupByID(ID)
 		if err != nil {
@@ -153,23 +153,77 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 		// after getting all the members, add the group
 		// to the list of returned groups
 		fmt.Printf("[GROUP HANDLER TRIE] Add group to return groups: %#v\n", currentGroup)
-		groups = append(groups, currentGroup)
+		clientGroup := GroupToClientGroup(currentGroup)
+		groups = append(groups, clientGroup)
 	}
 	return groups, nil
+}
+
+func GroupToClientGroup(group *messages.Group) *messages.ClientGroup {
+	var preview string
+	var firstMember string
+	var count int
+	for i, member := range group.Members {
+		nameParts := strings.Fields(member)
+		for j, namePart := range nameParts {
+			if j == 0 {
+				if i == 0 {
+					preview = preview + namePart
+					firstMember = namePart
+				}
+				if i == 1 {
+					preview = preview + " and " + namePart
+				}
+			}
+			break
+		}
+		count = i
+	}
+	if count > 1 {
+		otherMembers := strconv.Itoa(count)
+		preview = firstMember + " and " + otherMembers + " others"
+	}
+	client := &messages.ClientGroup{
+		ID:            group.ID,
+		Name:          group.Name,
+		PeoplePreview: preview,
+	}
+	return client
+}
+
+func PeopleToPreview(people []*messages.Person) string {
+	var preview string
+	var firstMember string
+	var count int
+	for i, person := range people {
+		if i == 0 {
+			preview = preview + person.FName
+			firstMember = person.FName
+		}
+		if i == 1 {
+			preview = preview + " and " + person.FName
+		}
+		count = i
+	}
+	if count > 1 {
+		otherMembers := strconv.Itoa(count)
+		preview = firstMember + " and " + otherMembers + " others"
+	}
+	return preview
 }
 
 // GetGroupSummary populates a passed-in group with ID, Name, and
 // appends the current given row's member name to the group's list of members
 
 // TODO: does this need an error??
-func (ctx *HandlerContext) GetGroupSummary(currentRow *groupRow, group *messages.ClientGroup) (*messages.ClientGroup, error) {
+func (ctx *HandlerContext) GetGroupSummary(currentRow *groupRow, group *messages.Group) (*messages.Group, error) {
 	person := currentRow.FName + " " + currentRow.LName
-	people := append(group.PeoplePreview, person)
+	people := append(group.Members, person)
 
-	group = &messages.ClientGroup{
-		ID:            currentRow.GroupID,
-		Name:          currentRow.GroupName,
-		PeoplePreview: people,
+	group = &messages.Group{
+		ID:      currentRow.GroupID,
+		Name:    currentRow.GroupName,
+		Members: people,
 	}
 	return group, nil
 }
@@ -217,7 +271,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			currentRow := &groupRow{}
 			currentRow.GroupID = "first"
 			currentGroupID := "first"
-			currentGroup := &messages.ClientGroup{}
+			currentGroup := &messages.Group{}
 			for groupRows.Next() {
 				err = groupRows.Scan(&currentRow.GroupID, &currentRow.GroupName, &currentRow.FName, &currentRow.LName)
 				if err != nil {
@@ -232,9 +286,10 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 					currentGroupID = currentRow.GroupID
 				}
 				if currentRow.GroupID != currentGroupID {
-					groups = append(groups, currentGroup)
+					clientGroup := GroupToClientGroup(currentGroup)
+					groups = append(groups, clientGroup)
 					// empty out the current group being built
-					currentGroup = &messages.ClientGroup{}
+					currentGroup = &messages.Group{}
 					// update current groupID
 					currentGroupID = currentRow.GroupID
 				}
@@ -247,7 +302,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 				}
 			}
 			// add last group to the list of groups
-			groups = append(groups, currentGroup)
+			clientGroup := GroupToClientGroup(currentGroup)
+			groups = append(groups, clientGroup)
 
 			respond(w, groups)
 		}
@@ -291,7 +347,7 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 			currentPerson := &messages.Person{}
 			row := &groupDetailRow{}
-			currentName := ""
+			// currentName := ""
 			for groupDetailRows.Next() {
 				err = groupDetailRows.Scan(&row.GroupID, &row.GroupName, &row.FName, &row.LName, &row.PersonnelID, &row.RoleTitle)
 				if err != nil {
@@ -301,8 +357,6 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 				// TODO: maybe optimize to actually check if these already exist
 				groupDetail.ID = row.GroupID
 				groupDetail.Name = row.GroupName
-				currentName = row.FName + row.LName
-				groupDetail.PeoplePreview = append(groupDetail.PeoplePreview, currentName)
 
 				currentPerson = &messages.Person{
 					ID:       row.PersonnelID,
@@ -313,6 +367,9 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 				people = append(people, currentPerson)
 			}
+			// change array of members to client-friendly string
+			preview := PeopleToPreview(people)
+			groupDetail.PeoplePreview = preview
 			// attach list of people to the groupDetail
 			groupDetail.People = people
 			respond(w, groupDetail)
