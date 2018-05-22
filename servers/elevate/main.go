@@ -93,19 +93,20 @@ func main() {
 
 	// [LOAD TRIES]
 	var aircraftTrie = indexes.NewTrie()
-	var personnelTrie = indexes.NewTrie()
+	var groupsTrie = indexes.NewTrie()
+	var peopleTrie = indexes.NewTrie()
 	notifier := handlers.NewNotifier()
 
-	handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
+	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
 	// parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
 	// if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 	// 	log.Fatalf("Error loading aircraft trie")
 	// }
-	if err := handlerCtx.LoadGroupsTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading groups into personnel trie")
+	if err := handlerCtx.LoadGroupsTrie(groupsTrie); err != nil {
+		log.Fatalf("Error loading groups trie")
 	}
-	if err := handlerCtx.LoadPeopleTrie(personnelTrie); err != nil {
-		log.Fatalf("Error loading people into personnel trie")
+	if err := handlerCtx.LoadPeopleTrie(peopleTrie); err != nil {
+		log.Fatalf("Error loading people trie")
 	}
 
 	// [PUB/SUB]
@@ -206,6 +207,7 @@ func main() {
 	// mux.HandleFunc("/v1/people/me", handlerCtx.PeopleMeHandler)
 	mux.HandleFunc("/v1/groups", handlerCtx.GroupsHandler)
 	mux.HandleFunc("/v1/groups/", handlerCtx.GroupDetailHandler)
+	// TODO: write resourcesHandler after we set up cloud storage
 	mux.HandleFunc("/v1/resources/", handlerCtx.ResourcesHandler)
 
 	//Wrap this new mux with CORS middleware handler and add that
