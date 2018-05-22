@@ -198,8 +198,8 @@ func main() {
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.HandleFunc("/", HealthCheckHandler)
 	mux.Handle("/v1/ws", wsh)
-	mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
-	mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
+	// mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
+	// mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
 	// mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
 	// TODO: write peopleMeHandler for auth
 	// mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
