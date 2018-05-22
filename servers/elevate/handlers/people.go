@@ -32,11 +32,6 @@ type personDetailRow struct {
 	// SpecialQuals   string
 }
 
-type peopleAndGroups struct {
-	People []*messages.Person
-	Groups []*messages.ClientGroup
-}
-
 // IndexPerson
 func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
 	personID, err := strconv.Atoi(person.ID)
@@ -151,27 +146,14 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 
 		if len(term) > 0 {
 			// search term non-empty, filter which people are returned
-			peopleIDS := ctx.PeopleTrie.GetEntities(strings.ToLower(term), 20)
+			peopleIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
 			// retrieve the actual people information
 			people, err := ctx.GetTriePeople(peopleIDS)
 			if err != nil {
 				fmt.Printf("Error pulling people from trie: %v", err)
 				return
 			}
-			// respond(w, people)
-
-			groupIDS := ctx.GroupsTrie.GetEntities(strings.ToLower(term), 20)
-			groups, err := ctx.GetTrieGroups(groupIDS)
-			if err != nil {
-				fmt.Printf("Error pulling groups from trie: %v", err)
-				return
-			}
-
-			peopleAndGroups := &peopleAndGroups{
-				People: people,
-				Groups: groups,
-			}
-			respond(w, peopleAndGroups)
+			respond(w, people)
 		} else {
 			// search term empty, return all people
 			peopleRows, err := ctx.GetAllPeople()

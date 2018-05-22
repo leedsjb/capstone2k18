@@ -190,7 +190,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			fmt.Println("[GROUP TRIE] in filtering")
 			// search query non-empty
 			// find groupIDs that match the search term
-			groupIDS := ctx.GroupsTrie.GetEntities(strings.ToLower(term), 20)
+			groupIDS := ctx.PersonnelTrie.GetEntities(strings.ToLower(term), 20)
 			fmt.Printf("[GROUP TRIE] groupIDS: %v", groupIDS)
 			// retrieve the actual group information
 			groups, err := ctx.GetTrieGroups(groupIDS)
@@ -198,20 +198,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 				fmt.Printf("Error pulling groups from trie: %v", err)
 				return
 			}
-
-			peopleIDS := ctx.PeopleTrie.GetEntities(strings.ToLower(term), 20)
-			// retrieve the actual people information
-			people, err := ctx.GetTriePeople(peopleIDS)
-			if err != nil {
-				fmt.Printf("Error pulling people from trie: %v", err)
-				return
-			}
-
-			peopleAndGroups := &peopleAndGroups{
-				People: people,
-				Groups: groups,
-			}
-			respond(w, peopleAndGroups)
+			respond(w, groups)
 		} else {
 			// no filters, return all groups
 
