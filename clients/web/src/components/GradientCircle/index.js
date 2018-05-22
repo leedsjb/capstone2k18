@@ -6,8 +6,8 @@ const GradientCircle = sys(
         is: Circle
     },
     props => ({
-        background: `radial-gradient(circle at top left, ${props.firstColor}, ${
-            props.secondColor
+        background: `radial-gradient(circle at top left, ${props.firstcolor}, ${
+            props.secondcolor
         })`
     })
 );

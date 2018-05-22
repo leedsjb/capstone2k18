@@ -15,8 +15,8 @@ const ProfileAvatar = ({ fName, onClick, size = 32 }) => {
         <GradientCircle
             p={0}
             onClick={onClick}
-            firstColor={gradient[0]}
-            secondColor={gradient[1]}
+            firstcolor={gradient[0]}
+            secondcolor={gradient[1]}
             size={size}
         >
             <FlexFullHeight alignItems="center" justifyContent="center">

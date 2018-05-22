@@ -11,7 +11,7 @@ export default function configureStore(initialState = {}, history) {
     const middleware = [
         reduxThunkMiddleware,
         routerMiddleware(history),
-        logger,
+        // logger,
         socketMiddleware
     ];
 
