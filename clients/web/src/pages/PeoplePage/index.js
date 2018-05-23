@@ -185,7 +185,7 @@ class PeoplePage extends Component {
                         this.setState({ isSearchingGroups: true });
                     }}
                 />
-                {this.renderGroupList()}
+                <ScrollView>{this.renderGroupList()}</ScrollView>
             </OutsideClickHandler>
         );
     }
