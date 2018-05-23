@@ -16,36 +16,31 @@ import (
 // from the structure of what is sent to the client.
 
 type groupRow struct {
-	GroupID   string
+	GroupID   int
 	GroupName string
 	FName     string
 	LName     string
 }
 
 type groupDetailRow struct {
-	GroupID     string
+	GroupID     int
 	GroupName   string
 	FName       string
 	LName       string
-	PersonnelID string
+	PersonnelID int
 	RoleTitle   string
 }
 
 // IndexGroup ...
 func IndexGroup(trie *indexes.Trie, group *messages.Group) error {
-	fmt.Println("group.ID is: " + group.ID)
-	groupID, err := strconv.Atoi(group.ID)
-	if err != nil {
-		fmt.Printf("Error changing group ID from string to int")
-	}
-	if err := trie.AddEntity(strings.ToLower(group.Name), groupID); err != nil {
+	if err := trie.AddEntity(strings.ToLower(group.Name), group.ID); err != nil {
 		return fmt.Errorf("Error adding group to trie: %v", err)
 	}
 
 	for _, member := range group.Members {
 		nameParts := strings.Fields(member)
 		for _, namePart := range nameParts {
-			if err := trie.AddEntity(strings.ToLower(namePart), groupID); err != nil {
+			if err := trie.AddEntity(strings.ToLower(namePart), group.ID); err != nil {
 				return fmt.Errorf("Error adding group to trie: %v", err)
 			}
 		}
@@ -64,10 +59,10 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 	// create variables and fill contents from retrieved rows
 
 	currentRow := &groupRow{}
-	currentRow.GroupID = "first"
-	currentGroupID := "first"
+	currentRow.GroupID = -1
+	currentGroupID := -1
 	currentGroup := &messages.Group{}
-	var rowID string
+	var rowID int
 	var rowName string
 	var rowFName string
 	var rowLName string
@@ -80,7 +75,7 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 		// if this isn't the first group or if it is a different group than before,
 		// append the previous group
 
-		if currentGroupID == "first" {
+		if currentGroupID == -1 {
 			fmt.Println("[GROUP HANDLER] currentGroupID was first")
 			currentGroupID = rowID
 		}
@@ -121,13 +116,12 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 	// get each group whose prefix matches the search term
 	for _, groupID := range groupIDS {
 		currentGroup := &messages.Group{}
-		ID := strconv.Itoa(groupID)
-		groupRows, err := ctx.GetGroupByID(ID)
+		groupRows, err := ctx.GetGroupByID(groupID)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving groups by ID: %v", err)
 		}
 		currentRow := &groupRow{}
-		var rowID string
+		var rowID int
 		var rowName string
 		var rowFName string
 		var rowLName string
@@ -269,8 +263,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			}
 			// create variables and fill contents from retrieved rows
 			currentRow := &groupRow{}
-			currentRow.GroupID = "first"
-			currentGroupID := "first"
+			currentRow.GroupID = -1
+			currentGroupID := -1
 			currentGroup := &messages.Group{}
 			for groupRows.Next() {
 				err = groupRows.Scan(&currentRow.GroupID, &currentRow.GroupName, &currentRow.FName, &currentRow.LName)
@@ -281,7 +275,7 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 				// if this isn't the first group or if it is a different group than before,
 				// append the previous group
 
-				if currentGroupID == "first" {
+				if currentGroupID == -1 {
 					fmt.Println("[GROUP HANDLER] currentGroupID was first")
 					currentGroupID = currentRow.GroupID
 				}
@@ -335,7 +329,11 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 		id := path.Base(r.URL.Path)
 
 		if id != "." && id != "groups" {
-			groupDetailRows, err := ctx.GetGroupDetailByID(id)
+			groupID, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Printf("Error changing group ID from string to int")
+			}
+			groupDetailRows, err := ctx.GetGroupDetailByID(groupID)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error retrieving groups details for group [%v]: %v", id, err), http.StatusInternalServerError)
 				return
