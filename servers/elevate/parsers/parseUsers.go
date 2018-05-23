@@ -27,7 +27,7 @@ func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
 
 	// TODO: parse and write to sql sproc
 	// type User struct {
-	// 	ID              string `json:"ID"`
+	// 	ID              int `json:"ID"`
 	// 	UserName        string `json:"userName"`
 	// 	FirstName       string `json:"firstName"`
 	// 	MiddleName      string `json:"middleName"`
@@ -67,7 +67,7 @@ func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
 
 	// TODO: parse and write to sql sproc
 	// type User struct {
-	// 	ID              string `json:"ID"`
+	// 	ID              int `json:"ID"`
 	// 	UserName        string `json:"userName"`
 	// 	FirstName       string `json:"firstName"`
 	// 	MiddleName      string `json:"middleName"`
