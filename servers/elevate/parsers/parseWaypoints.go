@@ -27,7 +27,7 @@ func (ctx *ParserContext) ParseWaypointCreate(msg *messages.Waypoint,
 
 	// TODO: parse and write for sql sproc
 	// type Waypoint struct {
-	// 	ID					string 	 `json:"ID"`
+	// 	ID					int 	 `json:"ID"`
 	// 	Notes				string 	 `json:"notes"`
 	// 	Name				string 	 `json:"name"`
 	// 	Type				string 	 `json:"type"`
@@ -118,7 +118,7 @@ func (ctx *ParserContext) ParseWaypointUpdate(msg *messages.Waypoint,
 
 	// TODO: parse and write to sql sproc
 	// type Waypoint struct {
-	// 	ID					string 	 `json:"ID"`
+	// 	ID					int 	 `json:"ID"`
 	// 	Notes				string 	 `json:"notes"`
 	// 	Name				string 	 `json:"name"`
 	// 	Type				string 	 `json:"type"`
