@@ -9,6 +9,8 @@ import Box from "../../components/Box";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
+import mapStyle from "../../utils/mapbox/style.json";
+
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX,
     interactive: false
@@ -129,7 +131,7 @@ class InsetMapView extends Component {
                     this.props.push(`/aircraft/map/${this.props.id}`)
                 }
                 onStyleLoad={map => this.setState({ map })}
-                style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
+                style={mapStyle}
             >
                 {this.renderMapView()}
             </Map>
