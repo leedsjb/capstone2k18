@@ -6,9 +6,9 @@ import Span from "../Span";
 import Circle from "../Circle";
 import Box from "../Box";
 
-const GroupsListItem = ({ group }) => {
+const GroupsListItem = ({ active, group }) => {
     return (
-        <MasterListItem>
+        <MasterListItem active={active}>
             <Flex alignItems="center" justifyContent="space-between">
                 <Flex alignItems="center">
                     <Circle size={40} />

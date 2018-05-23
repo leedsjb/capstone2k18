@@ -7,7 +7,7 @@ import Span from "../Span";
 import Icon from "../Icon";
 import AircraftIdentifier from "../AircraftIdentifier";
 
-const AircraftListItem = ({ aircraft, active }) => {
+const AircraftListItem = ({ active, aircraft }) => {
     return (
         <MasterListItem active={active}>
             <Box>

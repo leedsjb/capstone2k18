@@ -6,9 +6,9 @@ import Circle from "../../components/Circle";
 import Span from "../../components/Span";
 import Box from "../../components/Box";
 
-const PeopleListItem = ({ person }) => {
+const PeopleListItem = ({ active, person }) => {
     return (
-        <MasterListItem>
+        <MasterListItem active={active}>
             <Flex alignItems="center">
                 <Circle size={40} />
                 <Box ml={2}>

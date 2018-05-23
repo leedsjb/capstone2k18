@@ -82,7 +82,10 @@ class PeoplePage extends Component {
             return this.props.people.data.map(person => {
                 return (
                     <Link to={`/people/${person.id}`} key={person.id}>
-                        <PeopleListItem person={person} />
+                        <PeopleListItem
+                            active={this.props.id == person.id ? 1 : 0}
+                            person={person}
+                        />
                     </Link>
                 );
             });
@@ -105,7 +108,10 @@ class PeoplePage extends Component {
             return this.props.groups.data.map(group => {
                 return (
                     <Link to={`/groups/${group.id}`} key={group.id}>
-                        <GroupsListItem group={group} />
+                        <GroupsListItem
+                            active={this.props.groupID == group.id ? 1 : 0}
+                            group={group}
+                        />
                     </Link>
                 );
             });
@@ -276,15 +282,13 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        if (this.isPeopleTab()) {
-            return (
-                <DetailView>
-                    {this.renderPeopleDetail(this.props.peopleDetail.data)}
-                </DetailView>
-            );
-        } else {
-            return this.renderGroupsDetail();
-        }
+        return this.isPeopleTab() ? (
+            <DetailView>
+                {this.renderPeopleDetail(this.props.peopleDetail.data)}
+            </DetailView>
+        ) : (
+            this.renderGroupsDetail()
+        );
     }
 
     render() {
