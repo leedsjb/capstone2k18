@@ -1,10 +1,12 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
-import { Button } from "rebass";
 
 import renderField from "../../utils/renderField";
 import validate from "./validate";
 import warn from "./warn";
+
+import Button from "../../components/Button";
+import Box from "../../components/Box";
 
 const SignInForm = props => {
     const { handleSubmit, onSubmit, submitting } = props;
@@ -17,15 +19,11 @@ const SignInForm = props => {
                 component={renderField}
                 label="Email"
             />
-            <Field
-                name="password"
-                type="password"
-                component={renderField}
-                label="Password"
-            />
-            <Button type="submit" disabled={submitting}>
-                Submit
-            </Button>
+            <Box mt={4}>
+                <Button type="submit" disabled={submitting}>
+                    Sign in
+                </Button>
+            </Box>
         </form>
     );
 };

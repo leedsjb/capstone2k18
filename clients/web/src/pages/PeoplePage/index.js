@@ -1,0 +1,334 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Flex } from "grid-styled";
+import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
+
+import Box from "../../components/Box";
+import ButtonIcon from "../../components/ButtonIcon";
+import DetailView from "../../components/DetailView";
+import Divider from "../../components/Divider";
+import FlexFillVH from "../../components/FlexFillVH";
+import GroupsListItem from "../../components/GroupsListItem";
+import Heading from "../../components/Heading";
+import MasterView from "../../components/MasterView";
+import MasterDetailView from "../../components/MasterDetailView";
+import NavBar from "../../components/NavBar";
+import PeopleListItem from "../../components/PeopleListItem";
+import ColoredAvatar from "../../components/ColoredAvatar";
+import ScrollView from "../../components/ScrollView";
+import Tab from "../../components/Tab";
+import TabBar from "../../components/TabBar";
+import Text from "../../components/Text";
+import TitleBar from "../../components/TitleBar";
+
+import { fetchPeople } from "../../actions/people/actions";
+import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
+
+import { fetchGroups } from "../../actions/groups/actions";
+import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
+
+import matchPath from "../../utils/matchPath";
+
+class PeoplePage extends Component {
+    componentDidMount() {
+        this.props.fetchPeople();
+        this.props.fetchGroups();
+
+        if (this.props.id) {
+            this.props.fetchPeopleDetail(this.props.id);
+        }
+
+        if (this.props.groupID) {
+            this.props.fetchGroupsDetail(this.props.groupID);
+        }
+
+        if (this.isGroupPeopleDetail()) {
+            this.props.fetchGroupsDetail(this.getGroupID());
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.id && nextProps.id !== this.props.id) {
+            this.props.fetchPeopleDetail(nextProps.id);
+        }
+
+        if (nextProps.groupID && nextProps.groupID !== this.props.groupID) {
+            this.props.fetchGroupsDetail(nextProps.groupID);
+        }
+    }
+
+    getGroupID() {
+        return new URLSearchParams(window.location.search).get("id");
+    }
+
+    isPeopleTab() {
+        return matchPath(this.props.location.pathname, "/people");
+    }
+
+    isGroupDetailView() {
+        return matchPath(this.props.location.pathname, "/groups/:groupID");
+    }
+
+    isGroupPeopleDetail() {
+        return (
+            new URLSearchParams(window.location.search).get("source") ===
+            "groups"
+        );
+    }
+
+    renderPeopleList() {
+        if (!this.props.people.pending && this.props.people.data.length > 0) {
+            return this.props.people.data.map(person => {
+                return (
+                    <Link to={`/people/${person.id}`} key={person.id}>
+                        <PeopleListItem
+                            active={this.props.id == person.id ? 1 : 0}
+                            person={person}
+                        />
+                    </Link>
+                );
+            });
+        } else if (!this.props.people.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No People
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.people.pending) {
+            return <div>Loading...</div>;
+        }
+    }
+
+    renderGroupsList() {
+        if (!this.props.groups.pending && this.props.groups.data.length > 0) {
+            return this.props.groups.data.map(group => {
+                return (
+                    <Link to={`/groups/${group.id}`} key={group.id}>
+                        <GroupsListItem
+                            active={this.props.groupID == group.id ? 1 : 0}
+                            group={group}
+                        />
+                    </Link>
+                );
+            });
+        } else if (!this.props.groups.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Groups
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groups.pending) {
+            return <div>Loading...</div>;
+        }
+    }
+
+    renderGroupsDetail() {
+        if (!this.props.groupID) {
+            return (
+                <DetailView>
+                    <Box bg="gray" height="100%" />
+                </DetailView>
+            );
+        } else if (
+            !this.props.groupsDetail.pending &&
+            !Array.isArray(this.props.groupsDetail.data)
+        ) {
+            return (
+                <DetailView>
+                    <Heading
+                        is="h1"
+                        fontWeight="bold"
+                        py={3}
+                        textAlign="center"
+                    >
+                        {this.props.groupsDetail.data.name}
+                    </Heading>
+                    <Divider />
+                    <ScrollView>
+                        <Flex justifyContent="center" mt={5}>
+                            <Flex
+                                flexWrap="wrap"
+                                justifyContent="space-between"
+                            >
+                                {this.props.groupsDetail.data.people.map(
+                                    person => {
+                                        return this.renderPeopleDetail(person);
+                                    }
+                                )}
+                            </Flex>
+                        </Flex>
+                    </ScrollView>
+                </DetailView>
+            );
+        } else if (!this.props.groupsDetail.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Group Details
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groupsDetail.pending) {
+            return <div>Loading...</div>;
+        }
+    }
+
+    renderPeopleDetail(person) {
+        if (!this.props.id && !this.props.groupID) {
+            return <Box bg="gray" height="100%" />;
+        } else if (
+            (!this.props.peopleDetail.pending &&
+                !Array.isArray(this.props.peopleDetail.data)) ||
+            this.isGroupDetailView()
+        ) {
+            let mx = this.isGroupDetailView() ? 20 : 0;
+            let mb = this.isGroupDetailView() ? 8 : 0;
+            let flex = this.isGroupDetailView()
+                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 100%", "0 1 33%"]
+                : "0 1 auto";
+            return (
+                <Flex flex={flex} justifyContent="center" key={person.id}>
+                    <Flex
+                        alignItems="center"
+                        flexDirection="column"
+                        justifyContent="center"
+                        mb={mb}
+                        mx={mx}
+                    >
+                        <Link to={`/people/${person.id}`}>
+                            <Flex
+                                alignItems="center"
+                                flexDirection="column"
+                                justifyContent="center"
+                            >
+                                <Box mt={4}>
+                                    <ColoredAvatar
+                                        fName={person.fName}
+                                        size={72}
+                                    />
+                                </Box>
+                                <Heading
+                                    is="h2"
+                                    children={`${person.fName} ${person.lName}`}
+                                    fontSize={4}
+                                    mt={3}
+                                />
+                                <Heading
+                                    is="h3"
+                                    children={`${person.position}`}
+                                    fontWeight="normal"
+                                    fontSize={2}
+                                />
+                            </Flex>
+                        </Link>
+                        <Flex mt={3}>
+                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        </Flex>
+                    </Flex>
+                </Flex>
+            );
+        } else {
+            return null;
+        }
+    }
+
+    renderMasterView() {
+        if (this.props.people.error || this.props.groups.error) {
+            return (
+                <MasterView>
+                    An error has occurred: {this.props.people.error.toString()}
+                </MasterView>
+            );
+        } else {
+            let list = this.isPeopleTab()
+                ? this.renderPeopleList()
+                : this.renderGroupsList();
+
+            return (
+                <MasterView>
+                    <Flex>
+                        <Tab
+                            active={this.isPeopleTab() ? 1 : 0}
+                            is={Link}
+                            to="/people"
+                        >
+                            People
+                        </Tab>
+                        <Tab
+                            active={!this.isPeopleTab() ? 1 : 0}
+                            is={Link}
+                            to="/groups"
+                        >
+                            Groups
+                        </Tab>
+                    </Flex>
+                    <Divider />
+                    {list}
+                </MasterView>
+            );
+        }
+    }
+
+    renderDetailView() {
+        return this.isPeopleTab() ? (
+            <DetailView>
+                {this.renderPeopleDetail(this.props.peopleDetail.data)}
+            </DetailView>
+        ) : (
+            this.renderGroupsDetail()
+        );
+    }
+
+    render() {
+        let title = this.isPeopleTab() ? "People" : "Groups";
+        return (
+            <FlexFillVH flexDirection="column">
+                <Helmet>
+                    <title>Missions</title>
+                </Helmet>
+
+                <TitleBar title={title} />
+                <NavBar />
+
+                <MasterDetailView>
+                    {this.renderMasterView()}
+                    {this.renderDetailView()}
+                </MasterDetailView>
+                <TabBar />
+            </FlexFillVH>
+        );
+    }
+}
+
+function mapStateToProps(state, ownProps) {
+    return {
+        people: state.people,
+        peopleDetail: state.peopleDetail,
+        groups: state.groups,
+        groupsDetail: state.groupsDetail,
+        location: state.router.location,
+        id: ownProps.match.params.id,
+        groupID: ownProps.match.params.groupID
+    };
+}
+
+const mapDispatchToProps = {
+    fetchPeople,
+    fetchPeopleDetail,
+    fetchGroups,
+    fetchGroupsDetail
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PeoplePage);

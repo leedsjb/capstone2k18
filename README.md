@@ -46,3 +46,4 @@ Articles/documentation that together explain our UI rationale. Meant to be read 
 
 [reselect](https://github.com/reactjs/reselect)
 
+University of Washington Informatics Capstone 2018
