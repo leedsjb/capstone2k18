@@ -6,14 +6,20 @@ import {
     FETCH_GROUPS_ERROR
 } from "./types";
 
-export function fetchGroups() {
+export function fetchGroups(term) {
     return async dispatch => {
         try {
             dispatch({
                 type: FETCH_GROUPS_PENDING
             });
 
-            const { data } = await axios.get("http://localhost:4000/groups");
+            let url = "http://api.test.elevate.airliftnw.org/v1/groups";
+
+            if (term) {
+                url = `${url}?q=${term}`;
+            }
+
+            const { data } = await axios.get(url);
 
             dispatch({
                 type: FETCH_GROUPS_SUCCESS,
@@ -27,3 +33,5 @@ export function fetchGroups() {
         }
     };
 }
+
+// http://api.test.elevate.airliftnw.org/v1/groups?q=dEr

@@ -22,6 +22,7 @@ import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
@@ -90,8 +91,37 @@ class PeoplePage extends Component {
     renderPeopleList() {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
             return (
-                <div>
-                    <SearchBox placeholder="Search all people" />
+                <OutsideClickHandler
+                    handleClickOutside={() => {
+                        if (this.state.isSearchingPeople) {
+                            this.setState({
+                                queryPeople: "",
+                                isSearchingPeople: false
+                            });
+                            // Dispatch Redux action
+                        }
+                    }}
+                >
+                    <SearchBox
+                        placeholder="Search all people"
+                        handleChange={queryPeople => {
+                            this.setState({ queryPeople }, () => {
+                                // Dispatch Redux action
+                            });
+                        }}
+                        isSearching={this.state.isSearchingPeople}
+                        query={this.state.queryPeople}
+                        handleClear={() => {
+                            this.setState({
+                                queryPeople: "",
+                                isSearchingPeople: false
+                            });
+                            // Dispatch Redux action
+                        }}
+                        handleFocus={() => {
+                            this.setState({ isSearchingPeople: true });
+                        }}
+                    />
                     {this.props.people.data.map(person => {
                         return (
                             <Link to={`/people/${person.id}`} key={person.id}>
@@ -106,7 +136,7 @@ class PeoplePage extends Component {
                             </Link>
                         );
                     })}
-                </div>
+                </OutsideClickHandler>
             );
         } else if (!this.props.people.pending) {
             return (
@@ -122,27 +152,58 @@ class PeoplePage extends Component {
         }
     }
 
-    renderGroupsList() {
+    renderGroups() {
+        return (
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearchingGroups) {
+                        this.setState({
+                            queryGroups: "",
+                            isSearchingGroups: false
+                        });
+                        this.props.fetchGroups();
+                    }
+                }}
+            >
+                <SearchBox
+                    placeholder="Search all groups"
+                    handleChange={queryGroups => {
+                        this.setState({ queryGroups }, () => {
+                            this.props.fetchGroups(this.state.queryGroups);
+                        });
+                    }}
+                    isSearching={this.state.isSearchingGroups}
+                    query={this.state.queryGroups}
+                    handleClear={() => {
+                        this.setState({
+                            queryGroups: "",
+                            isSearchingGroups: false
+                        });
+                        this.props.fetchGroups();
+                    }}
+                    handleFocus={() => {
+                        this.setState({ isSearchingGroups: true });
+                    }}
+                />
+                {this.renderGroupList()}
+            </OutsideClickHandler>
+        );
+    }
+
+    renderGroupList() {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
-            return (
-                <div>
-                    <SearchBox placeholder="Search all groups" />
-                    {this.props.groups.data.map(group => {
-                        return (
-                            <Link to={`/groups/${group.id}`} key={group.id}>
-                                <GroupsListItem
-                                    active={
-                                        Number(this.props.groupID) === group.id
-                                            ? 1
-                                            : 0
-                                    }
-                                    group={group}
-                                />
-                            </Link>
-                        );
-                    })}
-                </div>
-            );
+            return this.props.groups.data.map(group => {
+                return (
+                    <Link to={`/groups/${group.id}`} key={group.id}>
+                        <GroupsListItem
+                            active={
+                                Number(this.props.groupID) === group.id ? 1 : 0
+                            }
+                            group={group}
+                        />
+                    </Link>
+                );
+            });
         } else if (!this.props.groups.pending) {
             return (
                 <Box mt={4}>
@@ -282,7 +343,7 @@ class PeoplePage extends Component {
         } else {
             let list = this.isPeopleTab()
                 ? this.renderPeopleList()
-                : this.renderGroupsList();
+                : this.renderGroups();
 
             return (
                 <MasterView>
