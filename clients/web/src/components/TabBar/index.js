@@ -12,7 +12,7 @@ const TabBar = ({ theme: { breakpoints } }) => {
             query={`(max-width: ${breakpoints[1]})`}
             render={() => {
                 return (
-                    <Box bg="white">
+                    <Box bg="white" borderTop="1px solid gray">
                         <Flex>
                             <TabBarItem
                                 title="Aircraft"

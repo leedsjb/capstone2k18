@@ -12,7 +12,7 @@ const GroupsListItem = ({ active, group }) => {
             <Flex alignItems="center" justifyContent="space-between">
                 <Flex alignItems="center">
                     <Circle size={40} />
-                    <Box ml={2}>
+                    <Box ml={3}>
                         <Span fontWeight="bold">{group.name}</Span>
                         <br />
                         <Span>{group.peoplePreview}</Span>

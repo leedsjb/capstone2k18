@@ -11,10 +11,11 @@ const PeopleListItem = ({ active, person }) => {
         <MasterListItem active={active}>
             <Flex alignItems="center">
                 <ColoredAvatar fName={person.fName} size={40} />
-                <Box ml={2}>
+                <Box ml={3}>
                     <Span fontWeight="bold">{person.fName}</Span>
-                    <br />
-                    <Span>{person.position}</Span>
+                    <Box>
+                        <Span>{person.position}</Span>
+                    </Box>
                 </Box>
             </Flex>
         </MasterListItem>

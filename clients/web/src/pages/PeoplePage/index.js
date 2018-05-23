@@ -15,6 +15,7 @@ import MasterView from "../../components/MasterView";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
+import Span from "../../components/Span";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
@@ -22,6 +23,7 @@ import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+import Card from "../../components/Card";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchPeople } from "../../actions/people/actions";
@@ -101,26 +103,28 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <SearchBox
-                    placeholder="Search all people"
-                    handleChange={queryPeople => {
-                        this.setState({ queryPeople }, () => {
-                            this.props.fetchPeople(this.state.queryPeople);
-                        });
-                    }}
-                    isSearching={this.state.isSearchingPeople}
-                    query={this.state.queryPeople}
-                    handleClear={() => {
-                        this.setState({
-                            queryPeople: "",
-                            isSearchingPeople: false
-                        });
-                        this.props.fetchPeople();
-                    }}
-                    handleFocus={() => {
-                        this.setState({ isSearchingPeople: true });
-                    }}
-                />
+                <Box py={3} px={4}>
+                    <SearchBox
+                        placeholder="Search all people"
+                        handleChange={queryPeople => {
+                            this.setState({ queryPeople }, () => {
+                                this.props.fetchPeople(this.state.queryPeople);
+                            });
+                        }}
+                        isSearching={this.state.isSearchingPeople}
+                        query={this.state.queryPeople}
+                        handleClear={() => {
+                            this.setState({
+                                queryPeople: "",
+                                isSearchingPeople: false
+                            });
+                            this.props.fetchPeople();
+                        }}
+                        handleFocus={() => {
+                            this.setState({ isSearchingPeople: true });
+                        }}
+                    />
+                </Box>
                 <ScrollView>{this.renderPeopleList()}</ScrollView>
             </OutsideClickHandler>
         );
@@ -165,26 +169,28 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <SearchBox
-                    placeholder="Search all groups"
-                    handleChange={queryGroups => {
-                        this.setState({ queryGroups }, () => {
-                            this.props.fetchGroups(this.state.queryGroups);
-                        });
-                    }}
-                    isSearching={this.state.isSearchingGroups}
-                    query={this.state.queryGroups}
-                    handleClear={() => {
-                        this.setState({
-                            queryGroups: "",
-                            isSearchingGroups: false
-                        });
-                        this.props.fetchGroups();
-                    }}
-                    handleFocus={() => {
-                        this.setState({ isSearchingGroups: true });
-                    }}
-                />
+                <Box py={3} px={4}>
+                    <SearchBox
+                        placeholder="Search all groups"
+                        handleChange={queryGroups => {
+                            this.setState({ queryGroups }, () => {
+                                this.props.fetchGroups(this.state.queryGroups);
+                            });
+                        }}
+                        isSearching={this.state.isSearchingGroups}
+                        query={this.state.queryGroups}
+                        handleClear={() => {
+                            this.setState({
+                                queryGroups: "",
+                                isSearchingGroups: false
+                            });
+                            this.props.fetchGroups();
+                        }}
+                        handleFocus={() => {
+                            this.setState({ isSearchingGroups: true });
+                        }}
+                    />
+                </Box>
                 <ScrollView>{this.renderGroupList()}</ScrollView>
             </OutsideClickHandler>
         );
@@ -231,14 +237,9 @@ class PeoplePage extends Component {
         ) {
             return (
                 <DetailView>
-                    <Heading
-                        is="h1"
-                        fontWeight="bold"
-                        py={3}
-                        textAlign="center"
-                    >
+                    <Span fontWeight="bold" py={3} textAlign="center">
                         {this.props.groupsDetail.data.name}
-                    </Heading>
+                    </Span>
                     <Divider />
                     <ScrollView>
                         <Flex justifyContent="center" mt={5}>
@@ -304,27 +305,27 @@ class PeoplePage extends Component {
                                         size={72}
                                     />
                                 </Box>
-                                <Heading
-                                    is="h2"
+                                <Span
                                     children={`${person.fName} ${person.lName}`}
                                     fontSize={4}
+                                    fontWeight="bold"
                                     mt={3}
+                                    textAlign="center"
                                 />
-                                <Heading
-                                    is="h3"
+                                <Span
                                     children={`${person.position}`}
                                     fontWeight="normal"
                                     fontSize={2}
                                 />
                             </Flex>
+                            <Flex mt={3}>
+                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                                <Box mx={3}>
+                                    <ButtonIcon glyph="phone">Call</ButtonIcon>
+                                </Box>
+                                <ButtonIcon glyph="email">Mail</ButtonIcon>
+                            </Flex>
                         </Link>
-                        <Flex mt={3}>
-                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                            <Box mx={3}>
-                                <ButtonIcon glyph="phone">Call</ButtonIcon>
-                            </Box>
-                            <ButtonIcon glyph="email">Mail</ButtonIcon>
-                        </Flex>
                     </Flex>
                 </Flex>
             );
