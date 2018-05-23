@@ -55,13 +55,6 @@ class AircraftPage extends Component {
         if (!aircraft.pending && aircraft.data.length > 0) {
             return (
                 <div>
-                    {this.state.isSearching ? (
-                        <Box px={3} py={3}>
-                            <Span fontSize={4} fontWeight="bold">{`${
-                                aircraft.data.length
-                            } aircraft`}</Span>
-                        </Box>
-                    ) : null}
                     {aircraft.data.map(a => {
                         return (
                             <Clickable
@@ -130,7 +123,7 @@ class AircraftPage extends Component {
                     }
                 }}
             >
-                <Box bg="#F7F8FC" px={3} py={4}>
+                <Box bg="#F7F8FC" px={3} py={3}>
                     <SearchBox
                         handleChange={query => {
                             this.setState({ query }, () => {
