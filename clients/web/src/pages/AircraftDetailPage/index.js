@@ -262,9 +262,9 @@ class AircraftDetailPage extends Component {
                                 Route
                             </Heading>
                             <Text mt={2}>Route component goes here</Text>
-                        </Container>
-                        <InsetMapView id={this.props.id} />
-                        <Container mb={3}>
+                            <Box height={160} my={4}>
+                                <InsetMapView id={this.props.id} />
+                            </Box>
                             <Icon glyph="earth" />
                         </Container>
 

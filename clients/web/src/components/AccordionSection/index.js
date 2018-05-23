@@ -11,12 +11,14 @@ class AccordionSection extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            active: null,
             isopen: false
         };
     }
 
     toggleisopen = () => {
         this.setState({
+            active: this.state.active ? null : this.props.title,
             isopen: !this.state.isopen
         });
     };
@@ -29,7 +31,11 @@ class AccordionSection extends Component {
                         <Flex justifyContent="space-between">
                             <Span fontWeight="bold"> {this.props.title}</Span>
                             <Icon
-                                glyph="triangleDown"
+                                glyph={
+                                    this.state.active === this.props.title
+                                        ? "chevronUp"
+                                        : "chevronDown"
+                                }
                                 size={16}
                                 color="black"
                             />

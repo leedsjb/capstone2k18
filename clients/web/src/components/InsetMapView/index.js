@@ -121,10 +121,9 @@ class InsetMapView extends Component {
             <Map
                 animationOptions={{ animate: false }}
                 containerStyle={{
-                    width: "80%",
-                    height: "25%",
-                    borderRadius: "8px",
-                    margin: "0 auto"
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "8px"
                 }}
                 center={this.mapCenter()}
                 onClick={() =>
