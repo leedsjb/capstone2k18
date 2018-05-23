@@ -57,7 +57,7 @@ func (ctx *ParserContext) ParseGroupUpdate(msg *messages.Group,
 
 	// TODO: parse and write to sql sproc
 	// type Group struct {
-	// 	ID      string   `json:"ID"`
+	// 	ID      int   `json:"ID"`
 	// 	Name    string   `json:"Name"`
 	// 	Members []string `json:"members"`
 	// }

@@ -14,18 +14,18 @@ Topic Name: user_update
 Description: Update existing user
 */
 type User struct {
-	ID              string `json:"ID"`
-	UserName        string `json:"userName"`
-	FirstName       string `json:"firstName"`
-	MiddleName      string `json:"middleName"`
-	LastName        string `json:"lastName"`
-	Initials        string `json:"initials"`
-	Email           string `json:"email"`
-	UWNetID         string `json:"UWNetID"`
-	GroupID         string `json:"groupID"`
-	Role            string `json:"role"`
-	CellPhone       string `json:"cellPhone"`
-	QualificationID string `json:"qualificationID"`
+	ID         int    `json:"ID"`
+	UserName   string `json:"userName"`
+	FirstName  string `json:"firstName"`
+	MiddleName string `json:"middleName"`
+	LastName   string `json:"lastName"`
+	Initials   string `json:"initials"`
+	Email      string `json:"email"`
+	// UWNetID         string `json:"UWNetID"`
+	GroupID   int    `json:"groupID"`
+	Role      string `json:"role"`
+	CellPhone string `json:"cellPhone"`
+	// QualificationID string `json:"qualificationID"`
 }
 
 /*
@@ -36,14 +36,14 @@ Description: Delete existing user
 FV Table: Users
 */
 type User_Delete struct {
-	ID string `json:"ID"`
+	ID int `json:"ID"`
 }
 
 // [Client Messages]
 
 // Person ...
 type Person struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
 	Position string `json:"position"`
@@ -51,7 +51,7 @@ type Person struct {
 
 // PersonDetail ...
 type PersonDetail struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
 	Position string `json:"position"`

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
@@ -44,7 +45,8 @@ func clientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message, no
 	notifier.Notify(send)
 }
 
-func getAircraftCallsign(missionID string, db *sql.DB) (string, error) {
+func getAircraftCallsign(ID int, db *sql.DB) (string, error) {
+	missionID := strconv.Itoa(ID)
 	// get mission from db using missionID
 	aircraftRow, err := db.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + missionID)
 	if err != nil {

@@ -30,7 +30,7 @@ func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	// TODO: parse and write to sql sproc
 
 	// type Aircraft_Create struct {
-	// 	ID                string   `json:"ID"`
+	// 	ID                int   `json:"ID"`
 	// 	NNum              string   `json:"nNum"`
 	// 	SatPhone          string   `json:"satPhone"`
 	// 	CellPhone         string   `json:"cellPhone"`
@@ -197,12 +197,7 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	aircraftRow, err := ctx.GetAircraftByID(msg.ID)
-	if err != nil {
-		fmt.Printf("Error retrieving aircraft from database: %v", err)
-	}
-	var aircraftCallsign string
-	err = aircraftRow.Scan(&aircraftCallsign)
+	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.ID)
 	if err != nil {
 		fmt.Printf("Error getting aircraft callsign: %v", err)
 	}

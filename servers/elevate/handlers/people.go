@@ -13,14 +13,14 @@ import (
 )
 
 type personRow struct {
-	PersonID  string
+	PersonID  int
 	FName     string
 	LName     string
 	RoleTitle string
 }
 
 type personDetailRow struct {
-	PersonnelID    string
+	PersonnelID    int
 	FName          string
 	LName          string
 	PersonnelTitle string
@@ -39,20 +39,16 @@ type peopleAndGroups struct {
 
 // IndexPerson
 func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
-	personID, err := strconv.Atoi(person.ID)
-	if err != nil {
-		fmt.Printf("Error changing person ID from string to int")
-	}
 	personName := person.FName + " " + person.LName
 
 	nameParts := strings.Fields(personName)
 	for _, namePart := range nameParts {
-		if err := trie.AddEntity(strings.ToLower(namePart), personID); err != nil {
+		if err := trie.AddEntity(strings.ToLower(namePart), person.ID); err != nil {
 			return fmt.Errorf("Error adding person to trie: %v", err)
 		}
 	}
 
-	if err := trie.AddEntity(strings.ToLower(person.Position), personID); err != nil {
+	if err := trie.AddEntity(strings.ToLower(person.Position), person.ID); err != nil {
 		return fmt.Errorf("Error adding person role to trie: %v", err)
 	}
 	return nil
@@ -101,9 +97,8 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 	// get each group whose prefix matches the search term
 	for _, personID := range peopleIDS {
 		person := &messages.Person{}
-		ID := strconv.Itoa(personID)
-		fmt.Printf("Query ID: %v\n", ID)
-		peopleRows, err := ctx.GetPersonByID(ID)
+		fmt.Printf("Query ID: %v\n", personID)
+		peopleRows, err := ctx.GetPersonByID(personID)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving people from the DB: %v", err)
 		}
@@ -209,7 +204,12 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 		if id != "." && id != "people" {
 			personDetail := &messages.PersonDetail{}
 
-			personDetailRows, err := ctx.GetPersonDetailByID(id)
+			personID, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Printf("Error changing person ID from string to int")
+			}
+
+			personDetailRows, err := ctx.GetPersonDetailByID(personID)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting person details from DB: %v", err), http.StatusInternalServerError)
 				return

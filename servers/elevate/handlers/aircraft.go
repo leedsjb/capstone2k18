@@ -51,7 +51,7 @@ type oosDetailRow struct {
 }
 
 type crewRow struct {
-	PersonnelID string
+	PersonnelID int
 	FName       string
 	LName       string
 	Role        string
@@ -74,7 +74,7 @@ const (
 )
 
 type aircraftRow struct {
-	ID           string
+	ID           int
 	Callsign     string
 	Nnum         string
 	Manufacturer string // i.e. Augusta, Learjet, etc
@@ -102,7 +102,7 @@ type aircraftRow struct {
 }
 
 type aircraftDetailRow struct {
-	ID           string
+	ID           int
 	Callsign     string
 	Nnum         string
 	Manufacturer string
@@ -149,15 +149,11 @@ type aircraftDetailRow struct {
 
 // IndexAircraft ...
 func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
-	aircraftID, err := strconv.Atoi(aircraft.ID)
-	if err != nil {
-		fmt.Printf("Error changing aircraft ID from string to int")
-	}
-	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraftID); err != nil {
+	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
 		return fmt.Errorf("Error adding aircraft to trie: %v", err)
 	}
 
-	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraftID); err != nil {
+	if err := trie.AddEntity(strings.ToLower(aircraft.NNum), aircraft.ID); err != nil {
 		return fmt.Errorf("Error adding aircraft to trie: %v", err)
 	}
 
@@ -203,8 +199,7 @@ func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) ([]*messages.Aircr
 	results := []*messages.Aircraft{}
 
 	for _, aircraftID := range aircraftIDS {
-		ID := strconv.Itoa(aircraftID)
-		aircraftRows, err := ctx.GetAircraftByID(ID)
+		aircraftRows, err := ctx.GetAircraftByID(aircraftID)
 		if err != nil {
 			return nil, fmt.Errorf("Error getting trie aircraft: %v", err)
 		}
@@ -643,7 +638,12 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 		if id != "." && id != "aircraft" {
 			aircraftDetail := &messages.AircraftDetail{}
 
-			aircraftDetailRows, err := ctx.GetAircraftDetailByID(id)
+			aircraftID, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Printf("Error changing aircraft ID from string to int")
+			}
+
+			aircraftDetailRows, err := ctx.GetAircraftDetailByID(aircraftID)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
 				return
