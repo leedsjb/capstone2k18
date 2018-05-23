@@ -14,7 +14,7 @@ Description: Waypoint updated in waypoint catalog
 Waypoint types: airport, hospital, landing zone, base
 */
 type Waypoint struct {
-	ID                string   `json:"ID"`
+	ID                int      `json:"ID"`
 	Notes             string   `json:"notes"`
 	Name              string   `json:"name"`
 	Type              string   `json:"type"`

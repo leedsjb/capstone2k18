@@ -248,7 +248,7 @@ func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) er
 		query,
 		missionInfo.Asset,
 		missionInfo.CallType,
-		strconv.Itoa(missionInfo.CrewMemberID),
+		missionInfo.CrewMemberID,
 		strconv.Itoa(missionInfo.MissionID),
 		missionInfo.Patient,
 		missionInfo.Priority,
@@ -286,7 +286,7 @@ func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_U
 		sqlCtx,
 		query,
 		strconv.Itoa(missionInfo.MissionID),
-		strconv.Itoa(missionInfo.CrewMemberID),
+		missionInfo.CrewMemberID,
 	); err != nil {
 		return fmt.Errorf("Error updating mission crew in DB: %v", err)
 	}

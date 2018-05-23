@@ -14,18 +14,18 @@ Topic Name: user_update
 Description: Update existing user
 */
 type User struct {
-	ID              int    `json:"ID"`
-	UserName        string `json:"userName"`
-	FirstName       string `json:"firstName"`
-	MiddleName      string `json:"middleName"`
-	LastName        string `json:"lastName"`
-	Initials        string `json:"initials"`
-	Email           string `json:"email"`
-	UWNetID         string `json:"UWNetID"`
-	GroupID         string `json:"groupID"`
-	Role            string `json:"role"`
-	CellPhone       string `json:"cellPhone"`
-	QualificationID string `json:"qualificationID"`
+	ID         int    `json:"ID"`
+	UserName   string `json:"userName"`
+	FirstName  string `json:"firstName"`
+	MiddleName string `json:"middleName"`
+	LastName   string `json:"lastName"`
+	Initials   string `json:"initials"`
+	Email      string `json:"email"`
+	// UWNetID         string `json:"UWNetID"`
+	GroupID   int    `json:"groupID"`
+	Role      string `json:"role"`
+	CellPhone string `json:"cellPhone"`
+	// QualificationID string `json:"qualificationID"`
 }
 
 /*
