@@ -145,6 +145,7 @@ class AircraftPage extends Component {
                             this.setState({ query: "", isSearching: false });
                             this.props.fetchAircraft();
                         }}
+                        placeholder="Search all aircraft"
                         handleFocus={() => {
                             this.setState({ isSearching: true });
                         }}
