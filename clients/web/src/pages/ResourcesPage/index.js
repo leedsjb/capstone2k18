@@ -8,7 +8,6 @@ import Container from "../../components/Container";
 import TabBar from "../../components/TabBar";
 import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
-import BoxHiddenOverflow from "../../components/BoxHiddenOverflow";
 import Box from "../../components/Box";
 import Image from "../../components/Image";
 import Absolute from "../../components/Absolute";
@@ -30,8 +29,12 @@ class ResourcesPage extends Component {
                 <Flex flexWrap="wrap">
                     {resources.data.map(item => {
                         return (
-                            <Box w={1 / 2} px={2} mt={4}>
-                                <a href={item.link} target="_blank">
+                            <Box key={item.id} px={2} mt={4} w={1 / 2}>
+                                <a
+                                    href={item.link}
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
                                     <Card>
                                         <Relative pt="50%" w={1}>
                                             <Absolute

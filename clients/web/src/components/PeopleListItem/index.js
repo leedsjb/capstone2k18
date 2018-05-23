@@ -3,7 +3,6 @@ import { Flex } from "grid-styled";
 
 import MasterListItem from "../../components/MasterListItem";
 import ColoredAvatar from "../../components/ColoredAvatar";
-import Circle from "../../components/Circle";
 import Span from "../../components/Span";
 import Box from "../../components/Box";
 

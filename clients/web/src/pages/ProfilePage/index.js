@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
-import ButtonIcon from "../../components/ButtonIcon";
 import Checkbox from "../../components/Checkbox";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import Container from "../../components/Container";
@@ -32,7 +31,6 @@ class ProfilePage extends Component {
             !this.props.profile.pending &&
             !Array.isArray(this.props.profile.data)
         ) {
-            console.log(currUser.data);
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
