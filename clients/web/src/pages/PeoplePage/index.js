@@ -15,7 +15,7 @@ import MasterView from "../../components/MasterView";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
-import ProfileAvatar from "../../components/ProfileAvatar";
+import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
@@ -210,7 +210,7 @@ class PeoplePage extends Component {
                                 justifyContent="center"
                             >
                                 <Box mt={4}>
-                                    <ProfileAvatar
+                                    <ColoredAvatar
                                         fName={person.fName}
                                         size={72}
                                     />

@@ -3,19 +3,20 @@ import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 
-import TitleBar from "../../components/TitleBar";
+import Box from "../../components/Box";
+import ButtonIcon from "../../components/ButtonIcon";
+import Checkbox from "../../components/Checkbox";
+import ColoredAvatar from "../../components/ColoredAvatar";
+import Container from "../../components/Container";
+import FlexFillVH from "../../components/FlexFillVH";
+import Heading from "../../components/Heading";
 import Label from "../../components/Label";
 import NavBar from "../../components/NavBar";
-import TabBar from "../../components/TabBar";
-import Box from "../../components/Box";
-import Checkbox from "../../components/Checkbox";
-import FlexFillVH from "../../components/FlexFillVH";
 import ScrollView from "../../components/ScrollView";
-import ProfileAvatar from "../../components/ProfileAvatar";
-import Heading from "../../components/Heading";
 import Span from "../../components/Span";
+import TabBar from "../../components/TabBar";
 import TextInput from "../../components/TextInput";
-import Container from "../../components/Container";
+import TitleBar from "../../components/TitleBar";
 
 import { fetchProfile } from "../../actions/profile/actions";
 
@@ -35,7 +36,7 @@ class ProfilePage extends Component {
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
-                        <ProfileAvatar fName={currUser.data.fName} size={96} />
+                        <ColoredAvatar fName={currUser.data.fName} size={96} />
                         <Box maxWidth="30em" w={1}>
                             <Heading is="h2" mt={6}>
                                 Account
