@@ -14,7 +14,7 @@ Topic Name: user_update
 Description: Update existing user
 */
 type User struct {
-	ID              string `json:"ID"`
+	ID              int    `json:"ID"`
 	UserName        string `json:"userName"`
 	FirstName       string `json:"firstName"`
 	MiddleName      string `json:"middleName"`
@@ -36,14 +36,14 @@ Description: Delete existing user
 FV Table: Users
 */
 type User_Delete struct {
-	ID string `json:"ID"`
+	ID int `json:"ID"`
 }
 
 // [Client Messages]
 
 // Person ...
 type Person struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
 	Position string `json:"position"`
@@ -51,7 +51,7 @@ type Person struct {
 
 // PersonDetail ...
 type PersonDetail struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	FName    string `json:"fName"`
 	LName    string `json:"lName"`
 	Position string `json:"position"`
