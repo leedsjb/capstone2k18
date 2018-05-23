@@ -13,26 +13,3 @@ type ClientMissionWaypoint struct {
 	FlightRules string `json:"flightRules"`
 	Completed   string `json:"completed"`
 }
-
-type Client_Mission_Create struct {
-	MissionID   string                   `json:"missionID"`
-	TCNum       string                   `json:"TCNum"`
-	Asset       string                   `json:"asset"`
-	Requestor   string                   `json:"requestor"`
-	Receiver    string                   `json:"receiver"`
-	Priority    string                   `json:"priority"`
-	CallType    string                   `json:"callType"`
-	Patient     *Patient                 `json:"patient"`
-	CrewMembers string                   `json:"crewMembers"`
-	Waypoints   []*ClientMissionWaypoint `json:"waypoints"`
-}
-
-type Client_Mission_Waypoint_Update struct {
-	MissionID string                   `json:"missionID"`
-	Waypoints []*ClientMissionWaypoint `json:"waypoints"`
-}
-
-type Client_Mission_Crew_Update struct {
-	MissionID   string `json:"missionID"`
-	CrewMembers string `json:"crewMembers"`
-}

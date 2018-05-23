@@ -20,7 +20,7 @@ type Patient struct {
 }
 
 type MissionWaypoint struct {
-	ID          string `json:"ID"`
+	ID          int    `json:"ID"`
 	ETE         string `json:"ETE"`    // time to next point
 	ETT         string `json:"ETT"`    // cumulative mission time
 	Active      string `json:"active"` // denotes active waypoint
@@ -29,16 +29,16 @@ type MissionWaypoint struct {
 }
 
 type Mission_Create struct {
-	MissionID    string             `json:"missionID"`
+	MissionID    int                `json:"missionID"`
 	TCNum        string             `json:"TCNum"`
 	Asset        string             `json:"asset"`
-	RequestorID  string             `json:"requestorID"`
-	ReceiverID   string             `json:"receiverID"`
+	RequestorID  int                `json:"requestorID"`
+	ReceiverID   int                `json:"receiverID"`
 	Priority     string             `json:"priority"`
 	CallType     string             `json:"callType"`
 	Vision       string             `json:"vision"`
 	Patient      *Patient           `json:"patient"`
-	CrewMemberID []string           `json:"crewMemberID"`
+	CrewMemberID []int              `json:"crewMemberID"`
 	Waypoints    []*MissionWaypoint `json:"waypoints"`
 }
 
@@ -49,7 +49,7 @@ Topic Name: mission_waypoints_update
 Description: Changes to waypoint after mission creation (waypoints, ETE, ETT, active leg)
 */
 type Mission_Waypoint_Update struct {
-	MissionID string             `json:"missionID"`
+	MissionID int                `json:"missionID"`
 	Waypoints []*MissionWaypoint `json:"waypoints"`
 }
 
@@ -60,8 +60,8 @@ Topic Name: mission_crew_update
 Description: Changes to crew after mission creation
 */
 type Mission_Crew_Update struct {
-	MissionID    string   `json:"missionID"`
-	CrewMemberID []string `json:"crewMemberID"`
+	MissionID    int   `json:"missionID"`
+	CrewMemberID []int `json:"crewMemberID"`
 }
 
 // [Client Messages]
