@@ -18,6 +18,7 @@ import PeopleListItem from "../../components/PeopleListItem";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
+import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
@@ -79,16 +80,25 @@ class PeoplePage extends Component {
 
     renderPeopleList() {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
-            return this.props.people.data.map(person => {
-                return (
-                    <Link to={`/people/${person.id}`} key={person.id}>
-                        <PeopleListItem
-                            active={Number(this.props.id) === person.id ? 1 : 0}
-                            person={person}
-                        />
-                    </Link>
-                );
-            });
+            return (
+                <div>
+                    <SearchBox placeholder="Search all people" />
+                    {this.props.people.data.map(person => {
+                        return (
+                            <Link to={`/people/${person.id}`} key={person.id}>
+                                <PeopleListItem
+                                    active={
+                                        Number(this.props.id) === person.id
+                                            ? 1
+                                            : 0
+                                    }
+                                    person={person}
+                                />
+                            </Link>
+                        );
+                    })}
+                </div>
+            );
         } else if (!this.props.people.pending) {
             return (
                 <Box mt={4}>
@@ -105,18 +115,25 @@ class PeoplePage extends Component {
 
     renderGroupsList() {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
-            return this.props.groups.data.map(group => {
-                return (
-                    <Link to={`/groups/${group.id}`} key={group.id}>
-                        <GroupsListItem
-                            active={
-                                Number(this.props.groupID) === group.id ? 1 : 0
-                            }
-                            group={group}
-                        />
-                    </Link>
-                );
-            });
+            return (
+                <div>
+                    <SearchBox placeholder="Search all groups" />
+                    {this.props.groups.data.map(group => {
+                        return (
+                            <Link to={`/groups/${group.id}`} key={group.id}>
+                                <GroupsListItem
+                                    active={
+                                        Number(this.props.groupID) === group.id
+                                            ? 1
+                                            : 0
+                                    }
+                                    group={group}
+                                />
+                            </Link>
+                        );
+                    })}
+                </div>
+            );
         } else if (!this.props.groups.pending) {
             return (
                 <Box mt={4}>

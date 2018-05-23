@@ -25,7 +25,7 @@ class SearchBox extends Component {
                         <Icon glyph="search" size={16} />
                     </Box>
                     <TextInput
-                        placeholder="Search"
+                        placeholder={this.props.placeholder}
                         onFocus={this.handleFocus}
                         onChange={event =>
                             this.props.handleChange(event.target.value)
