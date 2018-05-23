@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
@@ -14,9 +15,10 @@ var sqlCtx = context.Background()
 // [AIRCRAFT]
 
 // GetAircraftCallsign retrieves an aircraft's callsign given the aircraft's ID
-func (ctx *ParserContext) GetAircraftCallsign(aircraftID string) (string, error) {
+func (ctx *ParserContext) GetAircraftCallsign(ID int) (string, error) {
 	// get callsign from db using aircraftID
-	aircraftRow, err := ctx.DB.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=")
+	aircraftID := strconv.Itoa(ID)
+	aircraftRow, err := ctx.DB.Query("SELECT ac_callsign FROM tblAIRCRAFT JOIN tblMISSION ON tblMISSION.aircraft_id = tblAIRCRAFT.ac_id WHERE mission_id=" + aircraftID)
 	if err != nil {
 		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
 	}
@@ -29,8 +31,9 @@ func (ctx *ParserContext) GetAircraftCallsign(aircraftID string) (string, error)
 }
 
 // GetAircraftByID retrieves an aircraft object with the matching ID from the database
-func (ctx *ParserContext) GetAircraftByID(aircraftID string) (*sql.Rows, error) {
+func (ctx *ParserContext) GetAircraftByID(ID int) (*sql.Rows, error) {
 	// TODO sql sproc
+	aircraftID := strconv.Itoa(ID)
 	aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByID(" + aircraftID + ")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for aircraft: %v", err)
@@ -40,16 +43,16 @@ func (ctx *ParserContext) GetAircraftByID(aircraftID string) (*sql.Rows, error) 
 
 // AddNewAircraft adds a new aircraft object to the database
 func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create) error {
-	query := `CALL uspAddNewUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
+	query := `CALL uspAddNewAircraft($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
+		strconv.Itoa(aircraftInfo.ID),
 		aircraftInfo.Base,
 		aircraftInfo.Callsign,
 		aircraftInfo.CallTypes,
 		aircraftInfo.CellPhone,
 		aircraftInfo.Color,
-		aircraftInfo.ID,
 		aircraftInfo.LastKnownLocation,
 		aircraftInfo.MaxPatientWeight,
 		aircraftInfo.Model,
@@ -68,10 +71,10 @@ func (ctx *ParserContext) UpdateAircraftProps(aircraftInfo *messages.Aircraft_Pr
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
+		strconv.Itoa(aircraftInfo.ID),
 		aircraftInfo.Base,
 		aircraftInfo.Callsign,
 		aircraftInfo.CellPhone,
-		aircraftInfo.ID,
 		aircraftInfo.MaxPatientWeight,
 		aircraftInfo.PadTimeDay,
 		aircraftInfo.PadTimeNight,
@@ -91,7 +94,7 @@ func (ctx *ParserContext) UpdateAircraftCrew(aircraftInfo *messages.Aircraft_Cre
 		sqlCtx,
 		query,
 		aircraftInfo.AdultRN,
-		aircraftInfo.ID,
+		strconv.Itoa(aircraftInfo.ID),
 		aircraftInfo.PediatricRN,
 		aircraftInfo.PIC,
 	); err != nil {
@@ -106,7 +109,7 @@ func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.A
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		aircraftInfo.ID,
+		strconv.Itoa(aircraftInfo.ID),
 		aircraftInfo.OosReason,
 		aircraftInfo.Status,
 		aircraftInfo.StartTime,
@@ -124,7 +127,7 @@ func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		aircraftInfo.ID,
+		strconv.Itoa(aircraftInfo.ID),
 		aircraftInfo.PosFriendlyName,
 		aircraftInfo.PosLat,
 		aircraftInfo.PosLong,
@@ -142,7 +145,7 @@ func (ctx *ParserContext) AddNewGroup(groupInfo *messages.Group) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		groupInfo.ID,
+		strconv.Itoa(groupInfo.ID),
 		groupInfo.Members,
 		groupInfo.Name,
 	); err != nil {
@@ -157,7 +160,7 @@ func (ctx *ParserContext) UpdateGroup(groupInfo *messages.Group) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		groupInfo.ID,
+		strconv.Itoa(groupInfo.ID),
 		groupInfo.Members,
 		groupInfo.Name,
 	); err != nil {
@@ -172,7 +175,7 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		groupInfo.ID,
+		strconv.Itoa(groupInfo.ID),
 	); err != nil {
 		return fmt.Errorf("Error deleting group from DB: %v", err)
 	}
@@ -181,12 +184,12 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 
 // [MISSIONS]
 
-func (ctx *ParserContext) GetRequestorByID(requestorID string) (string, error) {
+func (ctx *ParserContext) GetRequestorByID(requestorID int) (string, error) {
 	query := `CALL uspGetRequestorByID($1)`
 	reqRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		requestorID,
+		strconv.Itoa(requestorID),
 	)
 	if err != nil {
 		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
@@ -199,12 +202,12 @@ func (ctx *ParserContext) GetRequestorByID(requestorID string) (string, error) {
 	return requestor, nil
 }
 
-func (ctx *ParserContext) GetReceiverByID(receiverID string) (string, error) {
+func (ctx *ParserContext) GetReceiverByID(receiverID int) (string, error) {
 	query := `CALL uspGetReceiverByID($1)`
 	reqRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		receiverID,
+		strconv.Itoa(receiverID),
 	)
 	if err != nil {
 		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
@@ -217,12 +220,12 @@ func (ctx *ParserContext) GetReceiverByID(receiverID string) (string, error) {
 	return receiver, nil
 }
 
-func (ctx *ParserContext) GetCrewMemberByID(memberID string) (string, string, error) {
+func (ctx *ParserContext) GetCrewMemberByID(memberID int) (string, string, error) {
 	query := `CALL uspGetCrewMemberByID($1)`
 	memRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		memberID,
+		strconv.Itoa(memberID),
 	)
 	// ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + memberID)
 	if err != nil {
@@ -245,12 +248,12 @@ func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) er
 		query,
 		missionInfo.Asset,
 		missionInfo.CallType,
-		missionInfo.CrewMemberID,
-		missionInfo.MissionID,
+		strconv.Itoa(missionInfo.CrewMemberID),
+		strconv.Itoa(missionInfo.MissionID),
 		missionInfo.Patient,
 		missionInfo.Priority,
-		missionInfo.ReceiverID,
-		missionInfo.RequestorID,
+		strconv.Itoa(missionInfo.ReceiverID),
+		strconv.Itoa(missionInfo.RequestorID),
 		missionInfo.TCNum,
 		missionInfo.Vision,
 		missionInfo.Waypoints,
@@ -266,7 +269,7 @@ func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_W
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		missionInfo.MissionID,
+		strconv.Itoa(missionInfo.MissionID),
 		missionInfo.Waypoints,
 	); err != nil {
 		return fmt.Errorf("Error updating mission waypoints in DB: %v", err)
@@ -282,8 +285,8 @@ func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_U
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		missionInfo.MissionID,
-		missionInfo.CrewMemberID,
+		strconv.Itoa(missionInfo.MissionID),
+		strconv.Itoa(missionInfo.CrewMemberID),
 	); err != nil {
 		return fmt.Errorf("Error updating mission crew in DB: %v", err)
 	}
@@ -298,18 +301,18 @@ func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		userInfo.ID,
+		strconv.Itoa(userInfo.ID),
 		userInfo.UserName,
 		userInfo.FirstName,
 		userInfo.MiddleName,
 		userInfo.LastName,
 		userInfo.Initials,
 		userInfo.Email,
-		userInfo.UWNetID,
-		userInfo.GroupID,
+		// userInfo.UWNetID,
+		strconv.Itoa(userInfo.GroupID),
 		userInfo.Role,
 		userInfo.CellPhone,
-		userInfo.QualificationID,
+		// userInfo.QualificationID,
 	); err != nil {
 		return fmt.Errorf("Error adding new user to DB: %v", err)
 	}
@@ -322,18 +325,18 @@ func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		userInfo.ID,
+		strconv.Itoa(userInfo.ID),
 		userInfo.UserName,
 		userInfo.FirstName,
 		userInfo.MiddleName,
 		userInfo.LastName,
 		userInfo.Initials,
 		userInfo.Email,
-		userInfo.UWNetID,
-		userInfo.GroupID,
+		// userInfo.UWNetID,
+		strconv.Itoa(userInfo.GroupID),
 		userInfo.Role,
 		userInfo.CellPhone,
-		userInfo.QualificationID,
+		// userInfo.QualificationID,
 	); err != nil {
 		return fmt.Errorf("Error updating user in DB: %v", err)
 	}
@@ -346,7 +349,7 @@ func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		userInfo.ID,
+		strconv.Itoa(userInfo.ID),
 	); err != nil {
 		return fmt.Errorf("Error deleting user from DB: %v", err)
 	}
@@ -361,7 +364,7 @@ func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error 
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		waypointInfo.ID,
+		strconv.Itoa(waypointInfo.ID),
 		waypointInfo.Notes,
 		waypointInfo.Name,
 		waypointInfo.Type,
@@ -393,7 +396,7 @@ func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error 
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		waypointInfo.ID,
+		strconv.Itoa(waypointInfo.ID),
 		waypointInfo.Notes,
 		waypointInfo.Name,
 		waypointInfo.Type,
@@ -425,7 +428,7 @@ func (ctx *ParserContext) DeleteWaypoint(waypointInfo *messages.Waypoint_Delete)
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		waypointInfo.ID,
+		strconv.Itoa(waypointInfo.ID),
 	); err != nil {
 		return fmt.Errorf("Error deleting waypoint from DB: %v", err)
 	}
