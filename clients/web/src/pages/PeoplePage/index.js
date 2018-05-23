@@ -325,6 +325,7 @@ class PeoplePage extends Component {
                                 <ButtonIcon glyph="email">Mail</ButtonIcon>
                             </Flex>
                         </Link>
+                        <Heading>Placeholder</Heading>
                     </Flex>
                 </Flex>
             );
