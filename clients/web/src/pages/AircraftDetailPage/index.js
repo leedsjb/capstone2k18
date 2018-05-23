@@ -39,8 +39,8 @@ class AircraftDetailPage extends Component {
 
             return (
                 <Accordion>
-                    {mission ? (
-                        <Box borderTop="1px solid black">
+                    <Box borderTop="1px solid black">
+                        {mission ? (
                             <AccordionSection title="Radio Report">
                                 {mission.radioReport &&
                                 mission.radioReport.shortReport ? (
@@ -147,74 +147,72 @@ class AircraftDetailPage extends Component {
                                     </Box>
                                 ) : null}
                             </AccordionSection>
-                            <AccordionSection title="Assigned Crew">
-                                {this.props.aircraftDetail.data.crew ? (
-                                    <Box mb={3}>
-                                        <Flex
-                                            flexWrap="wrap"
-                                            justifyContent="space-between"
-                                            mt={3}
-                                        >
-                                            {this.props.aircraftDetail.data.crew.people.map(
-                                                c => {
-                                                    return (
-                                                        <Box
-                                                            key={c.id}
-                                                            w="calc(50% - 8px)"
+                        ) : (
+                            <div />
+                        )}
+                        <AccordionSection title="Assigned Crew">
+                            {this.props.aircraftDetail.data.crew ? (
+                                <Box mb={3}>
+                                    <Flex
+                                        flexWrap="wrap"
+                                        justifyContent="space-between"
+                                        mt={3}
+                                    >
+                                        {this.props.aircraftDetail.data.crew.people.map(
+                                            c => {
+                                                return (
+                                                    <Box
+                                                        key={c.id}
+                                                        w="calc(50% - 8px)"
+                                                    >
+                                                        <Link
+                                                            to={`/people/${
+                                                                c.id
+                                                            }`}
                                                         >
-                                                            <Link
-                                                                to={`/people/${
-                                                                    c.id
-                                                                }`}
-                                                            >
-                                                                <CrewDetailListItem
-                                                                    crewDetail={
-                                                                        c
-                                                                    }
-                                                                />
-                                                            </Link>
-                                                        </Box>
-                                                    );
-                                                }
-                                            )}
-                                        </Flex>
-                                    </Box>
-                                ) : (
-                                    <div />
-                                )}
-                            </AccordionSection>
+                                                            <CrewDetailListItem
+                                                                crewDetail={c}
+                                                            />
+                                                        </Link>
+                                                    </Box>
+                                                );
+                                            }
+                                        )}
+                                    </Flex>
+                                </Box>
+                            ) : (
+                                <div />
+                            )}
+                        </AccordionSection>
+                        {this.props.aircraftDetail.data.mission ? (
                             <AccordionSection title="Requestor">
-                                {this.props.aircraftDetail.data.mission ? (
-                                    <Box my={3}>
-                                        <Text>
-                                            {
-                                                this.props.aircraftDetail.data
-                                                    .mission.requestor
-                                            }
-                                        </Text>
-                                    </Box>
-                                ) : (
-                                    <div />
-                                )}
+                                <Box my={3}>
+                                    <Text>
+                                        {
+                                            this.props.aircraftDetail.data
+                                                .mission.requestor
+                                        }
+                                    </Text>
+                                </Box>
                             </AccordionSection>
+                        ) : (
+                            <div />
+                        )}
+                        {this.props.aircraftDetail.data.mission ? (
                             <AccordionSection title="Receiver">
-                                {this.props.aircraftDetail.data.mission ? (
-                                    <Box my={3}>
-                                        <Text>
-                                            {
-                                                this.props.aircraftDetail.data
-                                                    .mission.receiver
-                                            }
-                                        </Text>
-                                    </Box>
-                                ) : (
-                                    <div />
-                                )}
+                                <Box my={3}>
+                                    <Text>
+                                        {
+                                            this.props.aircraftDetail.data
+                                                .mission.receiver
+                                        }
+                                    </Text>
+                                </Box>
                             </AccordionSection>
-                        </Box>
-                    ) : (
-                        <div />
-                    )}
+                        ) : (
+                            <div />
+                        )}
+                    </Box>
                 </Accordion>
             );
         }
@@ -259,18 +257,19 @@ class AircraftDetailPage extends Component {
                             />
                         </Container>
                         <Divider />
+                        <Container mt={3}>
+                            <Heading is="h2" fontSize={4}>
+                                Route
+                            </Heading>
+                            <Text mt={2}>Route component goes here</Text>
+                        </Container>
+                        <InsetMapView id={this.props.id} />
+                        <Container mb={3}>
+                            <Icon glyph="earth" />
+                        </Container>
+
+                        <Divider />
                         <ScrollView>
-                            <Container mt={3}>
-                                <Heading is="h2" fontSize={4}>
-                                    Route
-                                </Heading>
-                                <Text mt={2}>Route component goes here</Text>
-                            </Container>
-                            <InsetMapView id={this.props.id} />
-                            <Container mb={3}>
-                                <Icon glyph="earth" />
-                            </Container>
-                            <Divider />
                             {this.renderAircraftDetail(
                                 this.props.aircraftDetail
                             )}
