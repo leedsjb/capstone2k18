@@ -88,56 +88,56 @@ class PeoplePage extends Component {
         );
     }
 
+    renderPeople() {
+        return (
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearchingPeople) {
+                        this.setState({
+                            queryPeople: "",
+                            isSearchingPeople: false
+                        });
+                        this.props.fetchPeople();
+                    }
+                }}
+            >
+                <SearchBox
+                    placeholder="Search all people"
+                    handleChange={queryPeople => {
+                        this.setState({ queryPeople }, () => {
+                            this.props.fetchPeople(this.state.queryPeople);
+                        });
+                    }}
+                    isSearching={this.state.isSearchingPeople}
+                    query={this.state.queryPeople}
+                    handleClear={() => {
+                        this.setState({
+                            queryPeople: "",
+                            isSearchingPeople: false
+                        });
+                        this.props.fetchPeople();
+                    }}
+                    handleFocus={() => {
+                        this.setState({ isSearchingPeople: true });
+                    }}
+                />
+                {this.renderPeopleList()}
+            </OutsideClickHandler>
+        );
+    }
+
     renderPeopleList() {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
-            return (
-                <OutsideClickHandler
-                    handleClickOutside={() => {
-                        if (this.state.isSearchingPeople) {
-                            this.setState({
-                                queryPeople: "",
-                                isSearchingPeople: false
-                            });
-                            // Dispatch Redux action
-                        }
-                    }}
-                >
-                    <SearchBox
-                        placeholder="Search all people"
-                        handleChange={queryPeople => {
-                            this.setState({ queryPeople }, () => {
-                                // Dispatch Redux action
-                            });
-                        }}
-                        isSearching={this.state.isSearchingPeople}
-                        query={this.state.queryPeople}
-                        handleClear={() => {
-                            this.setState({
-                                queryPeople: "",
-                                isSearchingPeople: false
-                            });
-                            // Dispatch Redux action
-                        }}
-                        handleFocus={() => {
-                            this.setState({ isSearchingPeople: true });
-                        }}
-                    />
-                    {this.props.people.data.map(person => {
-                        return (
-                            <Link to={`/people/${person.id}`} key={person.id}>
-                                <PeopleListItem
-                                    active={
-                                        Number(this.props.id) === person.id
-                                            ? 1
-                                            : 0
-                                    }
-                                    person={person}
-                                />
-                            </Link>
-                        );
-                    })}
-                </OutsideClickHandler>
-            );
+            return this.props.people.data.map(person => {
+                return (
+                    <Link to={`/people/${person.id}`} key={person.id}>
+                        <PeopleListItem
+                            active={Number(this.props.id) === person.id ? 1 : 0}
+                            person={person}
+                        />
+                    </Link>
+                );
+            });
         } else if (!this.props.people.pending) {
             return (
                 <Box mt={4}>
@@ -342,7 +342,7 @@ class PeoplePage extends Component {
             );
         } else {
             let list = this.isPeopleTab()
-                ? this.renderPeopleList()
+                ? this.renderPeople()
                 : this.renderGroups();
 
             return (
