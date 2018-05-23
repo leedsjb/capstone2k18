@@ -32,6 +32,15 @@ import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
 import matchPath from "../../utils/matchPath";
 
 class PeoplePage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            queryPeople: "",
+            isSearchingPeople: false,
+            queryGroups: "",
+            isSearchingGroups: false
+        };
+    }
     componentDidMount() {
         this.props.fetchPeople();
         this.props.fetchGroups();
