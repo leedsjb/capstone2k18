@@ -240,6 +240,62 @@ func (ctx *ParserContext) GetCrewMemberByID(memberID int) (string, string, error
 	return fName, lName, nil
 }
 
+// GetRoleByMemberID gets a member's assigned role from the database
+func (ctx *ParserContext) GetRoleByMemberID(memberID int) (string, error) {
+	// SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + strconv.Itoa(memberID)
+	query := `CALL uspGetRoleByMemberID($1)`
+	roleRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		strconv.Itoa(memberID),
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error querying MySQL for member: %v", err)
+	}
+	var roleTitle string
+	err = roleRow.Scan(&roleTitle)
+	if err != nil {
+		return "", fmt.Errorf("Error scanning role row: %v", err)
+	}
+	return roleTitle, nil
+}
+
+func (ctx *ParserContext) GetWaypointNameByID(waypointID int) (string, error) {
+	query := `CALL uspGetWaypointNameByID($1)`
+	wayPtRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		strconv.Itoa(waypointID),
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error querying MySQL for waypoint: %v", err)
+	}
+	var wayPtName string
+	err = wayPtRows.Scan(&wayPtName)
+	if err != nil {
+		return "", fmt.Errorf("Error scanning waypoint row: %v", err)
+	}
+	return wayPtName, nil
+}
+
+func (ctx *ParserContext) GetTCNumByMissionID(missionID int) (string, error) {
+	query := `CALL uspGetTCNumByMissionID($1)`
+	missionRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		strconv.Itoa(missionID),
+	)
+	if err != nil {
+		return "", fmt.Errorf("Error querying MySQL for tcnum: %v", err)
+	}
+	var tcNum string
+	err = missionRow.Scan(&tcNum)
+	if err != nil {
+		return "", fmt.Errorf("Error scanning tcnum row: %v", err)
+	}
+	return tcNum, nil
+}
+
 // AddNewMission adds a new mission object to the database
 func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) error {
 	query := `CALL uspAddNewMission($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`

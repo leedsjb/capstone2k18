@@ -24,18 +24,20 @@ type personDetailRow struct {
 	FName          string
 	LName          string
 	PersonnelTitle string
-	Email          string
 	// Will we still have UWNetID in the DB if we're using UW Groups?
 	// UWNetID        string
-	SMS string
+	SMS             string
+	Email           string
+	MemberGroupID   int
+	MemberGroupName string
 	// Infer?
 	// SpecialQuals   string
 }
 
-type peopleAndGroups struct {
-	People []*messages.Person
-	Groups []*messages.ClientGroup
-}
+// type peopleAndGroups struct {
+// 	People []*messages.Person
+// 	Groups []*messages.ClientGroup
+// }
 
 // IndexPerson
 func IndexPerson(trie *indexes.Trie, person *messages.Person) error {
@@ -216,28 +218,37 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 			}
 
 			personDetailRow := &personDetailRow{}
+			memberGroups := []*messages.PersonGroup{}
 			for personDetailRows.Next() {
 				err = personDetailRows.Scan(
 					&personDetailRow.PersonnelID,
 					&personDetailRow.FName,
 					&personDetailRow.LName,
 					&personDetailRow.PersonnelTitle,
-					&personDetailRow.Email,
 					&personDetailRow.SMS,
+					&personDetailRow.Email,
+					&personDetailRow.MemberGroupID,
+					&personDetailRow.MemberGroupName,
 				)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning person details: %v", err), http.StatusInternalServerError)
 					return
 				}
-				personDetail = &messages.PersonDetail{
-					ID:       personDetailRow.PersonnelID,
-					FName:    personDetailRow.FName,
-					LName:    personDetailRow.LName,
-					Position: personDetailRow.PersonnelTitle,
-					Email:    personDetailRow.Email,
-					Mobile:   personDetailRow.SMS,
+				personGroup := &messages.PersonGroup{
+					ID:   personDetailRow.MemberGroupID,
+					Name: personDetailRow.MemberGroupName,
 				}
 
+				memberGroups = append(memberGroups, personGroup)
+				personDetail = &messages.PersonDetail{
+					ID:           personDetailRow.PersonnelID,
+					FName:        personDetailRow.FName,
+					LName:        personDetailRow.LName,
+					Position:     personDetailRow.PersonnelTitle,
+					Mobile:       personDetailRow.SMS,
+					Email:        personDetailRow.Email,
+					MemberGroups: memberGroups,
+				}
 			}
 			respond(w, personDetail)
 		} else if id == "people" {

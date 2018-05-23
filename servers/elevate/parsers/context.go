@@ -9,16 +9,17 @@ import (
 
 //HandlerContext provides handlers with extra information
 type ParserContext struct {
-	AircraftTrie  *indexes.Trie
-	PersonnelTrie *indexes.Trie
-	DB            *sql.DB
-	Notifier      *handlers.Notifier
+	AircraftTrie *indexes.Trie
+	GroupsTrie   *indexes.Trie
+	PeopleTrie   *indexes.Trie
+	DB           *sql.DB
+	Notifier     *handlers.Notifier
 }
 
 //NewHandlerContext creates a new HandlerContext
-func NewParserContext(aircraftTrie *indexes.Trie, personnelTrie *indexes.Trie, db *sql.DB, notifier *handlers.Notifier) *ParserContext {
-	if aircraftTrie == nil || personnelTrie == nil || db == nil || notifier == nil {
-		panic("Missing aircraft trie, personnel trie, db, or notifier")
+func NewParserContext(aircraftTrie *indexes.Trie, groupsTrie *indexes.Trie, peopleTrie *indexes.Trie, db *sql.DB, notifier *handlers.Notifier) *ParserContext {
+	if aircraftTrie == nil || groupsTrie == nil || peopleTrie == nil || db == nil || notifier == nil {
+		panic("Missing aircraft trie, groups trie, peopleTrie, db, or notifier")
 	}
-	return &ParserContext{aircraftTrie, personnelTrie, db, notifier}
+	return &ParserContext{aircraftTrie, groupsTrie, peopleTrie, db, notifier}
 }

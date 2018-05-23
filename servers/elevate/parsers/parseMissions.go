@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 	"strings"
 
 	"cloud.google.com/go/pubsub"
@@ -53,34 +51,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			// retrieve member first and last name
-			var fName string
-			var lName string
-			// TODO: factor out
-			fName, lName, err := ctx.GetCrewMemberByID(memberID)
+			person, err := ctx.getPersonSummary(memberID)
 			if err != nil {
-				return fmt.Errorf("Could not retrieve crew member by given ID: %v", memberID)
-			}
-
-			// retrieve member role
-			roleTitle := ""
-			// TODO: factor out
-			roleRow, err := ctx.DB.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + strconv.Itoa(memberID))
-			if err != nil {
-				fmt.Printf("Error querying MySQL for member: %v", err)
-			}
-			err = roleRow.Scan(&roleTitle)
-			if err != nil {
-				fmt.Printf("Error scanning role row: %v", err)
-				os.Exit(1)
-			}
-
-			// fill Person object with crew member info
-			person := &messages.Person{
-				ID:       memberID,
-				FName:    fName,
-				LName:    lName,
-				Position: roleTitle,
+				return fmt.Errorf("Couldn't retrieve person summary: %v", err)
 			}
 			people = append(people, person)
 		}
@@ -90,27 +63,23 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	nextWaypointETE := ""
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			// TODO: factor out
-			wayPtRow, err := ctx.DB.Query("SELECT waypoint FROM Waypoints WHERE waypointID=" + strconv.Itoa(waypoint.ID))
+			waypointName, err := ctx.GetWaypointNameByID(waypoint.ID)
 			if err != nil {
-				fmt.Printf("Error querying MySQL for waypoint: %v", err)
-			}
-			var wayPtName string
-			err = wayPtRow.Scan(&wayPtName)
-			if err != nil {
-				fmt.Printf("Error scanning waypoint row: %v", err)
-				os.Exit(1)
+				fmt.Printf("Couldn't get waypoint name with given ID: %v, %v", waypoint.ID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name:        wayPtName,
+				Name:        waypointName,
 				ETE:         waypoint.ETE,
 				ETT:         waypoint.ETT,
 				Active:      waypoint.Active,
 				FlightRules: waypoint.FlightRules,
+				Completed:   "false",
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
 				nextWaypointETE = tempWayPt.ETE
 			}
+			// TODO: calculate ETE/ETT
+			waypoints = append(waypoints, tempWayPt)
 		}
 	}
 
@@ -180,19 +149,12 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			// TODO: factor out
-			wayPtRow, err := ctx.DB.Query("SELECT waypoint_title FROM tblWAYPOINT WHERE waypoint_id=" + strconv.Itoa(waypoint.ID))
+			waypointName, err := ctx.GetWaypointNameByID(waypoint.ID)
 			if err != nil {
-				fmt.Printf("Error querying MySQL for waypoint: %v", err)
-			}
-			var wayPtName string
-			err = wayPtRow.Scan(&wayPtName)
-			if err != nil {
-				fmt.Printf("Error scanning waypoint row: %v", err)
-				os.Exit(1)
+				return fmt.Errorf("Couldn't get waypoint name with given ID: %v, %v", waypoint.ID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name:        wayPtName,
+				Name:        waypointName,
 				ETE:         waypoint.ETE,
 				ETT:         waypoint.ETT,
 				Active:      waypoint.Active,
@@ -215,8 +177,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	// get mission from db using missionID
 	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.MissionID)
 	if err != nil {
-		fmt.Printf("Error getting aircraftCallsign: %v", err)
-		// TODO: continue with empty aircraft callsign?
+		return fmt.Errorf("Error getting aircraftCallsign: %v", err)
 	}
 
 	mission := &messages.Mission{
@@ -232,16 +193,9 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	// [END format aircraft]
 
 	// [START format aircraftDetail]
-	// TODO: factor out
-	missionRow, err := ctx.DB.Query("SELECT tc_number FROM tblMISSION WHERE mission_id=" + strconv.Itoa(msg.MissionID))
+	tcNum, err := ctx.GetTCNumByMissionID(msg.MissionID)
 	if err != nil {
-		fmt.Printf("Error querying MySQL for mission: %v", err)
-	}
-	var tcNum string
-	err = missionRow.Scan(&tcNum)
-	if err != nil {
-		fmt.Printf("Error scanning mission row: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("Couldnt get tcNum with given mission ID: %v, %v", msg.MissionID, err)
 	}
 
 	missionDetail := &messages.MissionDetail{
@@ -293,39 +247,9 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 
 	if len(msg.CrewMemberID) > 0 {
 		for _, memberID := range msg.CrewMemberID {
-			// retrieve member first and last name
-			var fName string
-			var lName string
-			// TODO: factor out
-			memRow, err := ctx.DB.Query("SELECT personnel_F_Name, personnel_L_Name FROM tblPERSONNEL WHERE personnel_id=" + strconv.Itoa(memberID))
+			person, err := ctx.getPersonSummary(memberID)
 			if err != nil {
-				fmt.Printf("Error querying MySQL for member: %v", err)
-			}
-			err = memRow.Scan(&fName, &lName)
-			if err != nil {
-				fmt.Printf("Error scanning member row: %v", err)
-				os.Exit(1)
-			}
-
-			// retrieve member role
-			roleTitle := ""
-			// TODO: factor out
-			roleRow, err := ctx.DB.Query("SELECT role_title FROM tblROLES JOIN tblASSIGNED_PERSONNEL_ROLES ON tblASSIGNED_PERSONNEL_ROLES.role_id = tblROLES.role_id JOIN tblPERSONNEL ON tblPERSONNEL.personnel_id = tblASSIGNED_PERSONNEL_ROLES.missionpersonnel_id WHERE tblPERSONNEL.personnel_id = " + strconv.Itoa(memberID))
-			if err != nil {
-				fmt.Printf("Error querying MySQL for member: %v", err)
-			}
-			err = roleRow.Scan(&roleTitle)
-			if err != nil {
-				fmt.Printf("Error scanning role row: %v", err)
-				os.Exit(1)
-			}
-
-			// fill Person object with crew member info
-			person := &messages.Person{
-				ID:       memberID,
-				FName:    fName,
-				LName:    lName,
-				Position: roleTitle,
+				return fmt.Errorf("Couldn't retrieve person summary: %v", err)
 			}
 			people = append(people, person)
 		}
@@ -348,4 +272,27 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	// }
 
 	return nil
+}
+
+func (ctx *ParserContext) getPersonSummary(memberID int) (*messages.Person, error) {
+	// retrieve member first and last name
+	fName, lName, err := ctx.GetCrewMemberByID(memberID)
+	if err != nil {
+		return nil, fmt.Errorf("Could not retrieve crew member by given ID: %v", memberID)
+	}
+
+	// retrieve member role
+	roleTitle, err := ctx.GetRoleByMemberID(memberID)
+	if err != nil {
+		return nil, fmt.Errorf("Could not retrieve roleTitle with given ID: %v, %v", memberID, err)
+	}
+
+	// fill Person object with crew member info
+	person := &messages.Person{
+		ID:       memberID,
+		FName:    fName,
+		LName:    lName,
+		Position: roleTitle,
+	}
+	return person, nil
 }
