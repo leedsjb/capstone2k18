@@ -17,6 +17,7 @@ import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
+import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
 import Span from "../../components/Span";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
@@ -178,7 +179,9 @@ class AircraftPage extends Component {
                 </Box>
 
                 <Divider />
-                {this.renderAircraft(this.props.aircraft)}
+                <ScrollView>
+                    {this.renderAircraft(this.props.aircraft)}
+                </ScrollView>
             </OutsideClickHandler>
         );
     };
