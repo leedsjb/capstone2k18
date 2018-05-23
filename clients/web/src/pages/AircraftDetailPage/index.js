@@ -44,7 +44,7 @@ class AircraftDetailPage extends Component {
                             <AccordionSection title="Radio Report">
                                 {mission.radioReport &&
                                 mission.radioReport.shortReport ? (
-                                    <Box>
+                                    <Box mb={3}>
                                         <Box mt={4}>
                                             <Span fontWeight="bold">
                                                 Patient Summary
