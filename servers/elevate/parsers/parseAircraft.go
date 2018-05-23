@@ -30,7 +30,7 @@ func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	// TODO: parse and write to sql sproc
 
 	// type Aircraft_Create struct {
-	// 	ID                string   `json:"ID"`
+	// 	ID                int   `json:"ID"`
 	// 	NNum              string   `json:"nNum"`
 	// 	SatPhone          string   `json:"satPhone"`
 	// 	CellPhone         string   `json:"cellPhone"`
