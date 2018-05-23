@@ -23,7 +23,6 @@ import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
-import Card from "../../components/Card";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchPeople } from "../../actions/people/actions";
