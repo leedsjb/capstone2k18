@@ -62,13 +62,9 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 	currentRow.GroupID = -1
 	currentGroupID := -1
 	currentGroup := &messages.Group{}
-	var rowID int
-	var rowName string
-	var rowFName string
-	var rowLName string
 
 	for groupRows.Next() {
-		err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
+		err = groupRows.Scan(&currentRow.GroupID, &currentRow.GroupName, &currentRow.FName, &currentRow.LName)
 		if err != nil {
 			return fmt.Errorf("Error scanning group row: %v", err)
 		}
@@ -77,26 +73,20 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 
 		if currentGroupID == -1 {
 			fmt.Println("[GROUP HANDLER] currentGroupID was first")
-			currentGroupID = rowID
+			currentGroupID = currentRow.GroupID
 		}
-		fmt.Printf("[GROUP HANDLER] Current RowID is: [%v], GroupID is: [%v]\n", rowID, currentGroupID)
-		if rowID != currentGroupID {
-			fmt.Printf("[GROUP HANDLER] Non-matching rowID [%v] and groupID [%v]\n", rowID, currentGroupID)
+		fmt.Printf("[GROUP HANDLER] Current RowID is: [%v], GroupID is: [%v]\n", currentRow.GroupID, currentGroupID)
+		if currentRow.GroupID != currentGroupID {
+			fmt.Printf("[GROUP HANDLER] Non-matching rowID [%v] and groupID [%v]\n", currentRow.GroupID, currentGroupID)
 			if err := IndexGroup(trie, currentGroup); err != nil {
 				return fmt.Errorf("Error loading trie: %v", err)
 			}
 			// empty out the current group being built
 			currentGroup = &messages.Group{}
 			// update current groupID
-			currentGroupID = rowID
+			currentGroupID = currentRow.GroupID
 		}
 		// otherwise, continue as usual and assign values to the receiving struct
-		currentRow = &groupRow{
-			GroupID:   rowID,
-			GroupName: rowName,
-			FName:     rowFName,
-			LName:     rowLName,
-		}
 		// TODO: maybe optimize to actually check if these already exist
 		currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
 		if err != nil {
@@ -121,24 +111,14 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 			return nil, fmt.Errorf("Error retrieving groups by ID: %v", err)
 		}
 		currentRow := &groupRow{}
-		var rowID int
-		var rowName string
-		var rowFName string
-		var rowLName string
 		for groupRows.Next() {
-			err = groupRows.Scan(&rowID, &rowName, &rowFName, &rowLName)
+			err = groupRows.Scan(&currentRow.GroupID, &currentRow.GroupName, &currentRow.FName, &currentRow.LName)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning group row: %v", err)
 			}
 			// for each matching row, re-define
 			// groupID and groupName, which should stay the same
 			// and append members until there are no more
-			currentRow = &groupRow{
-				GroupID:   rowID,
-				GroupName: rowName,
-				FName:     rowFName,
-				LName:     rowLName,
-			}
 			currentGroup, err = ctx.GetGroupSummary(currentRow, currentGroup)
 			if err != nil {
 				return nil, fmt.Errorf("Error populating group for trie: %v", err)
