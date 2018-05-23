@@ -98,9 +98,8 @@ func main() {
 	var peopleTrie = indexes.NewTrie()
 	notifier := handlers.NewNotifier()
 
-	// handlerCtx := handlers.NewHandlerContext(aircraftTrie, personnelTrie, db)
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
-	// parserCtx := parsers.NewParserContext(aircraftTrie, personnelTrie, db, notifier)
+	// parserCtx := parsers.NewParserContext(aircraftTrie, groupsTrie, peopleTrie, db, notifier)
 	// if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 	// 	log.Fatalf("Error loading aircraft trie")
 	// }
