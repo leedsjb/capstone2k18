@@ -83,7 +83,7 @@ class PeoplePage extends Component {
                 return (
                     <Link to={`/people/${person.id}`} key={person.id}>
                         <PeopleListItem
-                            active={this.props.id == person.id ? 1 : 0}
+                            active={Number(this.props.id) === person.id ? 1 : 0}
                             person={person}
                         />
                     </Link>
@@ -109,7 +109,9 @@ class PeoplePage extends Component {
                 return (
                     <Link to={`/groups/${group.id}`} key={group.id}>
                         <GroupsListItem
-                            active={this.props.groupID == group.id ? 1 : 0}
+                            active={
+                                Number(this.props.groupID) === group.id ? 1 : 0
+                            }
                             group={group}
                         />
                     </Link>

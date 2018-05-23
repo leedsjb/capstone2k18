@@ -79,7 +79,9 @@ class AircraftPage extends Component {
                                 }}
                             >
                                 <AircraftListItem
-                                    active={this.props.id == a.id ? 1 : 0}
+                                    active={
+                                        Number(this.props.id) === a.id ? 1 : 0
+                                    }
                                     aircraft={a}
                                 />
                             </Clickable>

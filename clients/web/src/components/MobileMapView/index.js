@@ -31,7 +31,7 @@ class MobileMapView extends Component {
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
             let selected = aircraft.data.find(air => {
-                return air.id == this.props.aircraftID;
+                return air.id === Number(this.props.aircraftID);
             });
 
             if (selected) {

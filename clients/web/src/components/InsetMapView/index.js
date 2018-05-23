@@ -74,7 +74,7 @@ class InsetMapView extends Component {
             this.props.aircraft.data.length > 0
         ) {
             let selected = this.props.aircraft.data.find(air => {
-                return air.id == this.props.id;
+                return air.id === Number(this.props.id);
             });
             if (selected) {
                 return (
