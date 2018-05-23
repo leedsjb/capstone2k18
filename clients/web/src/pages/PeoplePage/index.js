@@ -121,7 +121,7 @@ class PeoplePage extends Component {
                         this.setState({ isSearchingPeople: true });
                     }}
                 />
-                {this.renderPeopleList()}
+                <ScrollView>{this.renderPeopleList()}</ScrollView>
             </OutsideClickHandler>
         );
     }

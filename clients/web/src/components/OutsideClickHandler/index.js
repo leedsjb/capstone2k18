@@ -27,7 +27,14 @@ class OutsideClickHandler extends Component {
     }
 
     render() {
-        return <div ref={this.setWrapperRef}>{this.props.children}</div>;
+        return (
+            <div
+                ref={this.setWrapperRef}
+                style={{ display: "flex", flexDirection: "column", flex: 1 }}
+            >
+                {this.props.children}
+            </div>
+        );
     }
 }
 
