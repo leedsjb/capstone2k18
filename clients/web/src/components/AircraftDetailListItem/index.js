@@ -137,7 +137,6 @@ class AircraftDetailListItem extends Component {
                             ) : null}
                         </div>
                     ) : null}
-
                     {this.props.aircraftDetail.data.crew ? (
                         <Box>
                             <Heading is="h2" fontSize={4} mt={8}>

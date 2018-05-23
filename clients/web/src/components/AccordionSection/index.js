@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { Flex } from "grid-styled";
 
+import Box from "../Box";
 import Clickable from "../Clickable";
 import DisplayWhenOpen from "../DisplayWhenOpen";
-import Box from "../Box";
+import Icon from "../Icon";
 import Span from "../Span";
 
 class AccordionSection extends Component {
@@ -23,18 +25,19 @@ class AccordionSection extends Component {
         return (
             <div>
                 <Clickable onClick={this.toggleisopen}>
-                    <Box
-                        borderTop={
-                            this.props.id === 0 ? "1px solid black" : "none"
-                        }
-                        borderBottom="1px solid black"
-                        px={3}
-                    >
-                        <Span fontWeight="bold"> {this.props.title}</Span>
+                    <Box borderBottom="1px solid black" p={3}>
+                        <Flex justifyContent="space-between">
+                            <Span fontWeight="bold"> {this.props.title}</Span>
+                            <Icon
+                                glyph="triangleDown"
+                                size={16}
+                                color="black"
+                            />
+                        </Flex>
                     </Box>
                 </Clickable>
                 <DisplayWhenOpen
-                    isopen={this.state.isopen}
+                    isopen={this.state.isopen ? 1 : 0}
                     borderBottom={
                         this.state.isopen ? "1px solid black" : "none"
                     }
