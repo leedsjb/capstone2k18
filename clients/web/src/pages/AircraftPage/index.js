@@ -187,7 +187,7 @@ class AircraftPage extends Component {
                 {this.props.aircraftDetail.error.toString()}
             </div>
         ) : (
-            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
+            this.renderAircraftDetail(this.props.aircraftDetail)
         );
     };
 

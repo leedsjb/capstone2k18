@@ -151,11 +151,10 @@ class AircraftDetailListItem extends Component {
                                 {this.props.aircraftDetail.data.crew.people.map(
                                     c => {
                                         return (
-                                            <Box w="calc(50% - 8px)">
+                                            <Box key={c.id} w="calc(50% - 8px)">
                                                 <Link to={`/people/${c.id}`}>
                                                     <CrewDetailListItem
                                                         crewDetail={c}
-                                                        key={c.id}
                                                     />
                                                 </Link>
                                             </Box>
