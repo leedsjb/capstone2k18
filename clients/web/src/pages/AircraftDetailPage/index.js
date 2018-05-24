@@ -245,7 +245,7 @@ class AircraftDetailPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <FlexFillVH flexDirection="column">
-                        <Container mb={3}>
+                        <Container my={3}>
                             <AircraftIdentifier
                                 callsign={
                                     this.props.aircraftDetail.data.callsign
