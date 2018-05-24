@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_AIRCRAFT_PENDING,
     FETCH_AIRCRAFT_SUCCESS,
@@ -13,7 +15,7 @@ export function fetchAircraft(term, status) {
                 type: FETCH_AIRCRAFT_PENDING
             });
 
-            let url = "http://localhost:4000/aircraft";
+            let url = `${PROD_API_URL_V1}/aircraft`;
 
             if (term) {
                 url = `${url}?q=${term}`;

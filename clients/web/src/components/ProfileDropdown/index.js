@@ -35,7 +35,7 @@ const ProfileDropdown = () => {
                             return (
                                 <div>
                                     <Clickable onClick={toggleMenu}>
-                                        <ColoredAvatar fName="David" />
+                                        <ColoredAvatar fName="Brian" />
                                     </Clickable>
                                     {isOpen ? (
                                         <Relative>
