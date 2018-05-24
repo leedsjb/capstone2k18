@@ -100,9 +100,9 @@ func main() {
 
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
 	// parserCtx := parsers.NewParserContext(aircraftTrie, groupsTrie, peopleTrie, db, notifier)
-	// if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
-	// 	log.Fatalf("Error loading aircraft trie")
-	// }
+	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
+		log.Fatalf("Error loading aircraft trie")
+	}
 	if err := handlerCtx.LoadGroupsTrie(groupsTrie); err != nil {
 		log.Fatalf("Error loading groups trie")
 	}
@@ -200,8 +200,8 @@ func main() {
 	wsh := handlers.NewWebSocketsHandler(notifier)
 	mux.HandleFunc("/", HealthCheckHandler)
 	mux.Handle("/v1/ws", wsh)
-	// mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
-	// mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
+	mux.HandleFunc("/v1/aircraft", handlerCtx.AircraftHandler)
+	mux.HandleFunc("/v1/aircraft/", handlerCtx.AircraftDetailHandler)
 	mux.HandleFunc("/v1/people", handlerCtx.PeopleHandler)
 	mux.HandleFunc("/v1/people/", handlerCtx.PersonDetailHandler)
 	// TODO: write peopleMeHandler for auth
