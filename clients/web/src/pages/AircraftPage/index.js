@@ -19,7 +19,6 @@ import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
 import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
-import Span from "../../components/Span";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
