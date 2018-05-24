@@ -244,8 +244,8 @@ class AircraftDetailPage extends Component {
                         {this.props.aircraftDetail.error.toString()}
                     </FlexFillVH>
                 ) : (
-                    <FlexFillVH flexDirection="column">
-                        <Container mb={3}>
+                    <ScrollView>
+                        <Container my={3}>
                             <AircraftIdentifier
                                 callsign={
                                     this.props.aircraftDetail.data.callsign
@@ -269,12 +269,8 @@ class AircraftDetailPage extends Component {
                         </Container>
 
                         <Divider />
-                        <ScrollView>
-                            {this.renderAircraftDetail(
-                                this.props.aircraftDetail
-                            )}
-                        </ScrollView>
-                    </FlexFillVH>
+                        {this.renderAircraftDetail(this.props.aircraftDetail)}
+                    </ScrollView>
                 )}
                 <TabBar />
             </FlexFillVH>
