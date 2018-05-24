@@ -1,7 +1,7 @@
 /*
     ddl.sql
     Created: Thursday May 17, 2018
-    Modified: Monday May 21, 2018
+    Modified: Wednesday May 23, 2018
     Authors: J. Benjamin Leeds
     License: None
 
@@ -15,9 +15,9 @@ DROP TABLE IF EXISTS `tblMISSION_WAYPOINT`;
 DROP TABLE IF EXISTS `tblWAYPOINT`;
 DROP TABLE IF EXISTS `tblWAYPOINT_TYPE`;
 CREATE TABLE tblWAYPOINT_TYPE (
-    waypointtype_id INTEGER,
-    waypointtype_name NVARCHAR(50),
-    PRIMARY KEY (waypointtype_id)
+    waypoint_type_id INTEGER,
+    waypoint_type_name NVARCHAR(50),
+    PRIMARY KEY (waypoint_type_id)
 );
 
 CREATE TABLE `tblWAYPOINT` (
@@ -27,7 +27,7 @@ CREATE TABLE `tblWAYPOINT` (
     `longitude` DECIMAL(9,6),
     `waypoint_type` INTEGER,
     PRIMARY KEY (`waypoint_id`),
-    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypointtype_id)
+    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypoint_type_id)
 );
 
 CREATE TABLE `tblHOSPITAL` (
@@ -35,6 +35,7 @@ CREATE TABLE `tblHOSPITAL` (
     `hospital_notes` NVARCHAR(500),
     `pad_time` NVARCHAR(4),
     `frequencies` NVARCHAR(3),
+    -- add FK to hospital agency table here! 
     PRIMARY KEY (`waypoint_id`),
     FOREIGN KEY (waypoint_id) REFERENCES tblWAYPOINT(waypoint_id)
 );
@@ -61,8 +62,8 @@ DROP TABLE IF EXISTS `tblAGENCY`;
 DROP TABLE IF EXISTS `tblADDRESS`;
 CREATE TABLE `tblADDRESS` (
     `address_id` INTEGER,
-    `address_street` NVARCHAR(100),
     `address_street_1` NVARCHAR(100),
+    `address_street_2` NVARCHAR(100),
     `address_city` NVARCHAR(50),
     `address_state` NVARCHAR(20),
     `address_zip` INTEGER,
@@ -133,12 +134,12 @@ CREATE TABLE `tblASSIGNED_STATUS` (
 );
 
 CREATE TABLE `tblAIRCRAFT_SCHED_SERVICE` (
-  `acSchedServiceID` INTEGER,
+  `ac_sched_service_id` INTEGER,
   `ac_id` INTEGER,
-  `acSchedServiceReason` NVARCHAR(100),
-  `OOSStartTime` DATETIME,
-  `OOSEndTime` DATETIME,
-  PRIMARY KEY (`acSchedServiceID`),
+  `ac_sched_service_reason` NVARCHAR(100),
+  `OOS_start_time` TIMESTAMP NULL,
+  `OOS_end_time` TIMESTAMP NULL,
+  PRIMARY KEY (`ac_sched_service_id`),
   FOREIGN KEY(ac_id) REFERENCES tblAIRCRAFT(ac_id)
 );
 
@@ -153,7 +154,7 @@ CREATE TABLE `tblMISSION`(
     `mission_type_id` INTEGER,
     `requestor_id` INTEGER,
     `receiver_id` INTEGER,
-    `mission_date` TIMESTAMP,
+    `mission_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `tc_number` VARCHAR(10),
     PRIMARY KEY (`mission_id`),
     FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id),
@@ -187,6 +188,8 @@ CREATE TABLE `tblMISSION_WAYPOINT` (
     `waypoint_id` INTEGER,
     -- `mission_ETE` TIMESTAMP, -- calculated value: ETA - NOW()
     `mission_ETA` TIMESTAMP NULL, -- do not want auto initialization here
+    `waypoint_active` BOOLEAN,
+    `flight_rules` NVARCHAR(25),
     PRIMARY KEY (`missionwaypoint_id`),
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
     FOREIGN KEY(waypoint_id) REFERENCES tblWAYPOINT(waypoint_id)
@@ -194,14 +197,14 @@ CREATE TABLE `tblMISSION_WAYPOINT` (
 
 DROP TABLE IF EXISTS tblGENDER;
 CREATE TABLE `tblGENDER` (
-    `GENDER_id` INTEGER,
-    `GENDER_name` NVARCHAR(50),
-    PRIMARY KEY (`GENDER_id`)
+    `gender_id` INTEGER,
+    `gender_name` NVARCHAR(50),
+    PRIMARY KEY (`gender_id`)
 );
 
 CREATE TABLE `tblPATIENT` (
     `mission_id` INTEGER,
-    `patient_GENDER` INTEGER,
+    `patient_gender_id` INTEGER,
     `patient_short_report` NVARCHAR(500),
     `patient_intubated` BOOLEAN,
     `patient_drips` TINYINT,
@@ -212,7 +215,7 @@ CREATE TABLE `tblPATIENT` (
     `patient_OB` BOOLEAN,
     PRIMARY KEY(mission_id),
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
-    FOREIGN KEY(patient_GENDER) REFERENCES tblGENDER(GENDER_id)
+    FOREIGN KEY(patient_gender_id) REFERENCES tblGENDER(gender_id)
 );
 
 DROP TABLE IF EXISTS tblPERSONNEL_CREW_TYPE;
@@ -282,5 +285,3 @@ CREATE TABLE `tblRESOURCE_LINKS` (
     `resource_url` NVARCHAR(100) NOT NULL, 
     `resource_thumbnail_photo_url` NVARCHAR(200) NOT NULL
 );
-
-SHOW TABLES;

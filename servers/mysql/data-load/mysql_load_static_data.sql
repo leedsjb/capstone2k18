@@ -1,7 +1,7 @@
 /*
     mysql_load_csv_data.sql
     Created: Saturday May 12, 2018
-    Modified: Monday May 21, 2018
+    Modified: Monday May 23, 2018
     Authors: J. Benjamin Leeds
     License: None
 
@@ -21,19 +21,44 @@
     ./cloud_sql_proxy -instances=airliftnw-uw:us-west1:alnw-elevate-test=tcp:3306
 */
 
-/* Important: before executing import necessary data from CSV in Cloud Console
+-- Insert this lookup table prior to importing waypoints from Flight Vector CSV
+-- These values are reference via foreign keys. Import will fail without them.
+INSERT INTO tblWAYPOINT_TYPE(waypoint_type_id, waypoint_type_name)
+VALUES
+(0, "Unused"),
+(1, "Base"),
+(2, "Unused"),
+(3, "Airport"),
+(4, "Unused"),
+(5, "Hospital"),
+(6, "Agency"),
+(7, "Unused"),
+(8, "Landing Zone")
+
+/* Important: before executing static data load, import necessary data from CSV in Cloud Console
+
 Current CSV Import Tables:
-    tblGROUP;
+    tblGROUP:
     SELECT * FROM tblGROUP;
     UPDATE tblGROUP -- ISSUE TO BE RESOLVED WHERE 1st IMPORTED ROW HAS id=0
     SET group_id=1
     WHERE group_id=0
 
-    tblMISSION_TYPE;
+    tblMISSION_TYPE:
     SELECT * FROM tblMISSION_TYPE;
     UPDATE tblMISSION_TYPE
     SET mission_type_id=1
-    WHERE mission_type_id=0
+    WHERE mission_type_id=0;
+
+    tblWAYPOINT:
+    SELECT * FROM tblWAYPOINT;
+    UPDATE tblWAYPOINT
+    SET waypoint_id=118
+    WHERE waypoint_id=0
+
+    DESCRIBE tblWAYPOINT;
+    SHOW TABLES;
+    SELECT * FROM tblWAYPOINT_TYPE;
 */
 
 INSERT INTO tblCREW_TYPE (crew_type_id, crew_type_name, crew_type_role)
@@ -56,14 +81,21 @@ VALUES(1,'Male'), (2,'Female'), (3,'Other');
 INSERT INTO tblPERSONNEL(personnel_id, personnel_f_name, personnel_l_name, personnel_title, personnel_sms_num, personnel_email)
 VALUES
 (1,"Tiffany","Chen","Developer","5555555555","tzc@uw.edu"),
-(2,"Benjamin","Leeds","Developer","7777777777","jbl@uw.edu");
+(2,"Benjamin","Leeds","Developer","7777777777","jbl@uw.edu"),
+(3,"Vincent","Van Der Meulen","Designer/Developer","1111111111","vmvdm@uw.edu"),
+(4, "Jessica","Basa","Developer","3333333333","jdb@uw.edu"),
+(5,"Brian","Crownhart","Developer","2222222222","bcrownhart@uw.edu");
 
 INSERT INTO tblPERSONNEL_GROUP(personnelGroupID,personnel_id,group_id)
 VALUES
 (1,1,20),
 (2,1,18),
 (3,2,12),
-(4,2,18);
+(4,2,18),
+(5,3,20),
+(6,3,18),
+(7,4,12),
+(8,4,17);
 
 INSERT INTO tblAIRCRAFT_TYPE(
     aircraft_type_id, aircraft_type_title, aircraft_type_desc,
@@ -104,6 +136,13 @@ VALUES
 (6,1,6),
 (7,2,7);
 
+INSERT INTO tblAIRCRAFT_SCHED_SERVICE(
+    ac_sched_service_id, ac_id, ac_sched_service_reason, OOS_start_time, OOS_end_time
+)
+VALUES
+(1, 2, "100 Hour Maintenance", '2018-05-21', '2018-05-24'),
+(2, 7, "Pitot/Static Check", '2018-05-23', '2018-05-24');
+
 INSERT INTO tblPERSONNEL_CREW_TYPE(personnel_crew_type_id, personnel_id, crew_type_id)
 VALUES
 (1,1,1),
@@ -117,7 +156,7 @@ VALUES
 (4,"Police");
 
 INSERT INTO tblADDRESS(
-    address_id, address_street, address_city, address_state, address_zip, address_zip_plus4
+    address_id, address_street_1, address_city, address_state, address_zip, address_zip_plus4
 )
 VALUES
 (1, "325 9th Ave", "Seattle", "WA", 98104, NULL), -- HMC
@@ -132,16 +171,35 @@ VALUES
 (2, "King County Sheriff", 206, 2963311, 2, 4),
 (3, "Seattle Fire Department", 206, 3861400, 3, 3);
 
-DESCRIBE tblMISSION
-SELECT * FROM tblMISSION
-SELECT * FROM tblMISSION_TYPE
 INSERT INTO tblMISSION(
     mission_id, aircraft_id, mission_type_id, requestor_id, receiver_id, tc_number
 )
 VALUES
 (1, 5, 16, 3, 1, "18-0045"),
 (2, 1, 6, 2, 1, "18-0036"),
-(3, 7, 6, 3, 1, "18-0028");
+(3, 7, 6, 3, 1, "18-0028"),
+(4, 5, 16, 3, 1, "18-0045"); -- testing second mission with same aircraft
+
+-- TODO add AUTO_INCREMENT to tblMISSION_PERSONNEL
+-- TODO change missionpersonnel_id to mission_personnel_id
+INSERT INTO tblMISSION_PERSONNEL(missionpersonnel_id, mission_id, personnel_crew_type_id)
+VALUES
+(1,4,1),
+(2,4,2);
+
+INSERT INTO tblPATIENT(
+    mission_id, patient_gender_id, patient_short_report, patient_intubated, patient_drips, patient_age,
+    patient_weight, patient_cardiac, patient_gi_bleed, patient_OB
+)
+VALUES
+(
+    1, 1, "Patient impacted tree while skiing. Head bleed and broken femur.", 1, 1, 40,
+    135, 0, 0, 0
+),
+(
+    4, 2, "Patient injured foot while boating. Partial amputation of left foot.", 1, 1, 23,
+    170, 0, 0, 0
+);
 
 INSERT INTO tblMISSION_STATUS(m_status_id, m_status_title, m_status_long_desc, m_status_short_desc)
 VALUES
@@ -168,11 +226,24 @@ VALUES
 ("ALNW","Airlift Northwest Website", "https://airliftnw.org", "https://pbs.twimg.com/profile_images/948624469043511296/pD2bNKBA_400x400.jpg"),
 ("OCCAM","UW Medicine OCCAM", "https://occam.uw.edu", "https://is4-ssl.mzstatic.com/image/thumb/Purple62/v4/db/ed/93/dbed9341-a3c6-597c-9755-8170e871fca7/mzl.pomnvbtr.jpg/1200x630bb.jpg");
 
-
+INSERT INTO tblMISSION_WAYPOINT(
+    missionwaypoint_id, mission_id, waypoint_id, mission_ETA, waypoint_active, flight_rules
+)
+VALUES
+(1, 1, 22822, '2018-05-24 02:30:30', TRUE, "VFR"), -- Crystal Ski Mountain
+(2, 1, 18518, '2018-05-24 03:30:30', FALSE, "VFR"), -- Harborview
+(3, 1, 20070, '2018-05-24 04:30:30', FALSE, "IFR"), -- Olympia
+(4, 4, 23964, '2018-05-25 02:30:30', TRUE, "VFR"), -- Fall City Park
+(5, 4, 24431, '2018-05-25 03:30:30', TRUE, "VFR"), -- Forks Hospital
+(6, 4, 25712, '2018-05-25 04:30:30', FALSE, "IFR"); -- Bremerton Base
 
 /* 
-
 -- SELECT STATEMENTS
+-- mission waypoints
+SELECT * FROM tblWAYPOINT_TYPE;
+SELECT * FROM tblMISSION_WAYPOINT;
+SELECT * FROM tblWAYPOINT;
+
 SELECT * FROM tblMISSION;
 SELECT * FROM tblAIRCRAFT;
 SELECT * FROM tblAGENCY
@@ -187,5 +258,4 @@ SELECT * FROM tblMISSION_STATUS;
 SELECT * FROM tblASSIGNED_MISSION_STATUS;
 
 -- resource links
-DESCRIBE tblRESOURCE_LINKS;
 SELECT * FROM tblRESOURCE_LINKS;

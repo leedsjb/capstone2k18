@@ -32,6 +32,8 @@ gsutil cp [filename.ext] gs://elevate-test-flight-vector-import
  FV T-SQL Query: SELECT TOP(50) ID, CallType FROM [Call Types]
  */
 
+ -- Handle 1st row 0 issues
+
 -- Possible Method to load data: 
 LOAD DATA INFILE 'Crew_Export_test.csv' INTO TABLE tblPERSONNEL_CSV_TEST
 FIELDS TERMINATED BY ','
