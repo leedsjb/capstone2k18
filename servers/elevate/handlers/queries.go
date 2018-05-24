@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strconv"
 )
+
+// empty, no-time-out context for sql queries
+var sqlCtx = context.Background()
 
 // [AIRCRAFT QUERIES]
 
@@ -27,7 +31,14 @@ func (ctx *HandlerContext) GetAllAircraft() (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetAircraftByStatus(status string) (*sql.Rows, error) {
-	aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByStatus(" + status + ")")
+	query := `CALL uspGetAircraftByStatus(?)`
+	aircraftRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		status,
+	)
+
+	// aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByStatus(\"" + status + "\")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for aircraft: %v", err)
 	}

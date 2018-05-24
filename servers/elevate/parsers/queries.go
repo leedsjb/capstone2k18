@@ -43,7 +43,7 @@ func (ctx *ParserContext) GetAircraftByID(ID int) (*sql.Rows, error) {
 
 // AddNewAircraft adds a new aircraft object to the database
 func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create) error {
-	query := `CALL uspAddNewAircraft($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
+	query := `CALL uspAddNewAircraft(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
@@ -307,7 +307,7 @@ func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) er
 		missionInfo.CrewMemberID,
 		strconv.Itoa(missionInfo.MissionID),
 		missionInfo.Patient,
-		missionInfo.Priority,
+		// missionInfo.Priority,
 		strconv.Itoa(missionInfo.ReceiverID),
 		strconv.Itoa(missionInfo.RequestorID),
 		missionInfo.TCNum,

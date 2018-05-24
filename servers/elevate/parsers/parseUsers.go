@@ -14,7 +14,7 @@ import (
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[USER CREATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -54,7 +54,7 @@ func (ctx *ParserContext) ParseUserCreate(msg *messages.User,
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[USER UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -94,7 +94,7 @@ func (ctx *ParserContext) ParseUserUpdate(msg *messages.User,
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseUserDelete(msg *messages.User_Delete,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[USER DELETE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)

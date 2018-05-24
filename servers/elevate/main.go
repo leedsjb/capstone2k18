@@ -93,13 +93,12 @@ func main() {
 
 	// [LOAD TRIES]
 	var aircraftTrie = indexes.NewTrie()
-	// var personnelTrie = indexes.NewTrie()
 	var groupsTrie = indexes.NewTrie()
 	var peopleTrie = indexes.NewTrie()
 	notifier := handlers.NewNotifier()
 
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
-	// parserCtx := parsers.NewParserContext(aircraftTrie, groupsTrie, peopleTrie, db, notifier)
+	parserCtx := parsers.NewParserContext(aircraftTrie, groupsTrie, peopleTrie, db, notifier)
 	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
 		log.Fatalf("Error loading aircraft trie")
 	}
@@ -121,8 +120,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	testTopicNames := [17]string{
+	testTopicNames := [18]string{
 		"test_mission_create",
+		"test_mission_complete",
 		"test_mission_waypoints_update",
 		"test_mission_crew_update",
 		"test_waypoint_create",
@@ -141,8 +141,9 @@ func main() {
 		"test_group_delete",
 	}
 
-	testSubNames := [17]string{
+	testSubNames := [18]string{
 		"test_mission_create_sub",
+		"test_mission_complete",
 		"test_mission_waypoints_update_sub",
 		"test_mission_crew_update_sub",
 		"test_waypoint_create_sub",
@@ -188,7 +189,11 @@ func main() {
 				log.Fatalf("Failed to create subscription: %v", err)
 			}
 		}
-		// go subscribe(subscription, notifier, parserCtx)
+
+		subName := subscription.ID()
+		log.Printf("subscribed: [%v]", subName)
+
+		go subscribe(subscription, notifier, parserCtx)
 	}
 
 	// [HTTPS]
@@ -254,6 +259,10 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, p
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
 			parserCtx.ParseMissionCreate(msg, pulledMsg, msgType)
+		case "test_mission_complete":
+			msg := &messages.Mission_Complete{}
+			msgType := "mission-complete"
+			parserCtx.ParseMissionComplete(msg, pulledMsg, msgType)
 		case "test_mission_waypoints_update_sub":
 			msg := &messages.Mission_Waypoint_Update{}
 			msgType := "mission-waypoints-update"
@@ -344,7 +353,7 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, p
 		// countMu.Unlock()
 
 		pulledMsg.Ack()
-		log.Printf("Message Acknowledged")
+		log.Printf("Message Acknowledged: [%v]", subName)
 	})
 	if err != nil {
 		log.Fatalf("Could not receive subscription: %v", err)

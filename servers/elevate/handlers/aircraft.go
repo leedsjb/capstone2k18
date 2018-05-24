@@ -589,6 +589,9 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				// TODO: SQL sproc for aircraft by status
 				// map status to statusID
 				aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
+				if err != nil {
+					fmt.Printf("Couldn't get aircraft by status: %v", err)
+				}
 
 				currentRow := &aircraftRow{}
 				for aircraftRows.Next() {

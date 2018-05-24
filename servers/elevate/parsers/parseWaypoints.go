@@ -14,7 +14,7 @@ import (
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseWaypointCreate(msg *messages.Waypoint,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[WAYPOINT CREATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -105,7 +105,7 @@ func (ctx *ParserContext) ParseWaypointCreate(msg *messages.Waypoint,
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseWaypointUpdate(msg *messages.Waypoint,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[WAYPOINT UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -153,7 +153,7 @@ func (ctx *ParserContext) ParseWaypointUpdate(msg *messages.Waypoint,
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseWaypointDelete(msg *messages.Waypoint_Delete,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[WAYPOINT DELETE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)

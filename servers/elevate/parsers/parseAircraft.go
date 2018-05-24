@@ -16,7 +16,7 @@ import (
 
 func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[AIRCRAFT CREATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -111,7 +111,7 @@ func (ctx *ParserContext) ParseAircraftPropsUpdate(msg *messages.Aircraft_Props_
 // does not notify client, writes new info to db
 func (ctx *ParserContext) ParseAircraftCrewUpdate(msg *messages.Aircraft_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[AIRCRAFT CREW UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
@@ -178,7 +178,7 @@ func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Se
 // notifies client, writes new info to db
 func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[AIRCRAFT POSITION UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)

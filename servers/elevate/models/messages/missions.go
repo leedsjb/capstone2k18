@@ -29,17 +29,21 @@ type MissionWaypoint struct {
 }
 
 type Mission_Create struct {
-	MissionID    int                `json:"missionID"`
-	TCNum        string             `json:"TCNum"`
-	Asset        string             `json:"asset"`
-	RequestorID  int                `json:"requestorID"`
-	ReceiverID   int                `json:"receiverID"`
-	Priority     string             `json:"priority"`
+	MissionID   int    `json:"missionID"`
+	TCNum       string `json:"TCNum"`
+	Asset       string `json:"asset"`
+	RequestorID int    `json:"requestorID"`
+	ReceiverID  int    `json:"receiverID"`
+	// Priority     string             `json:"priority"`
 	CallType     string             `json:"callType"`
 	Vision       string             `json:"vision"`
 	Patient      *Patient           `json:"patient"`
 	CrewMemberID []int              `json:"crewMemberID"`
 	Waypoints    []*MissionWaypoint `json:"waypoints"`
+}
+
+type Mission_Complete struct {
+	MissionID int `json:"missionID"`
 }
 
 /*

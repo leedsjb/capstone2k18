@@ -17,7 +17,7 @@ import (
 func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[MISSION CREATE] before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
@@ -125,6 +125,12 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	return nil
 }
 
+func (ctx *ParserContext) ParseMissionComplete(msg *messages.Mission_Complete,
+	pulledMsg *pubsub.Message, msgType string) error {
+	fmt.Printf("[MISSION COMPLETE]\n")
+	return nil
+}
+
 // ParseMissionWaypointsUpdate handles changes to a mission's
 // waypoints, including ETA, ETT, friendly names,
 // and modifications to the route
@@ -132,7 +138,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[MISSION WAYPOINT UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
@@ -227,7 +233,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
-	log.Printf("before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[MISSION CREW UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
