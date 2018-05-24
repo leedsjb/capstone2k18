@@ -24,7 +24,9 @@ import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import Container from "../../components/Container";
+import FlexGrid from "../../components/FlexGrid";
 import Card from "../../components/Card";
+import ColoredBox from "../../components/ColoredBox";
 import TitleBar from "../../components/TitleBar";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
@@ -345,13 +347,22 @@ class PeoplePage extends Component {
                             mt={6}
                         />
                         {person.memberGroups.length > 0 ? (
-                            <Box>
+                            <Box mt={12}>
                                 <Heading fontSize={4}>Member of</Heading>
-                                <Flex flexWrap="wrap">
-                                    {person.memberGroups.map(group => {
+                                <Flex flexWrap="wrap" mt={6}>
+                                    {person.memberGroups.map((group, i) => {
                                         return (
-                                            <Card>
-                                                <div>{group.name}</div>
+                                            <Card flex={1}>
+                                                <ColoredBox
+                                                    word={group.name}
+                                                    w={1}
+                                                    height={64}
+                                                />
+                                                <Box px={4} py={3}>
+                                                    <Span fontWeight="bold">
+                                                        {group.name}
+                                                    </Span>
+                                                </Box>
                                             </Card>
                                         );
                                     })}
