@@ -12,7 +12,7 @@ import symbol from "../../images/symbol.svg";
 const Footer = () => {
     return (
         <div>
-            <Box py={5}>
+            <Box py={8}>
                 <Container width={[1, 1 / 2, 1 / 2, 1 / 3]}>
                     <Flex flexDirection="column" justifyContent="center">
                         <Box mb={4}>
@@ -40,7 +40,7 @@ const Footer = () => {
                     </Flex>
                 </Container>
             </Box>
-            <Box px={5} py={4}>
+            <Box pb={4} pt={[0, 0, 4]} px={5}>
                 <Flex
                     flexDirection={["column", "row"]}
                     justifyContent="space-between"
