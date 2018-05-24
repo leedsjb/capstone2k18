@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_PEOPLEDETAIL_PENDING,
     FETCH_PEOPLEDETAIL_SUCCESS,
@@ -13,9 +15,7 @@ export function fetchPeopleDetail(id) {
                 type: FETCH_PEOPLEDETAIL_PENDING
             });
 
-            const { data } = await axios.get(
-                `http://localhost:4000/people/${id}`
-            );
+            const { data } = await axios.get(`${PROD_API_URL_V1}/people/${id}`);
 
             dispatch({
                 type: FETCH_PEOPLEDETAIL_SUCCESS,

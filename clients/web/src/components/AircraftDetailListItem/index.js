@@ -147,19 +147,17 @@ class AircraftDetailListItem extends Component {
                                 justifyContent="space-between"
                                 mt={6}
                             >
-                                {this.props.aircraftDetail.data.crew.people.map(
-                                    c => {
-                                        return (
-                                            <Box key={c.id} w="calc(50% - 8px)">
-                                                <Link to={`/people/${c.id}`}>
-                                                    <CrewDetailListItem
-                                                        crewDetail={c}
-                                                    />
-                                                </Link>
-                                            </Box>
-                                        );
-                                    }
-                                )}
+                                {this.props.aircraftDetail.data.crew.map(c => {
+                                    return (
+                                        <Box key={c.id} w="calc(50% - 8px)">
+                                            <Link to={`/people/${c.id}`}>
+                                                <CrewDetailListItem
+                                                    crewDetail={c}
+                                                />
+                                            </Link>
+                                        </Box>
+                                    );
+                                })}
                             </Flex>
                         </Box>
                     ) : null}

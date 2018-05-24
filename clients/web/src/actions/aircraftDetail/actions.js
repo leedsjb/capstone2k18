@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_AIRCRAFTDETAIL_PENDING,
     FETCH_AIRCRAFTDETAIL_SUCCESS,
@@ -14,7 +16,7 @@ export function fetchAircraftDetail(id) {
             });
 
             const { data } = await axios.get(
-                `http://localhost:4000/aircraft/${id}`
+                `${PROD_API_URL_V1}/aircraft/${id}`
             );
 
             dispatch({
