@@ -88,9 +88,9 @@ func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) 
 	return crewRows, nil
 }
 
-func (ctx *HandlerContext) GetMissionDetailsByAircraft(aircraftID int) (*sql.Rows, error) {
+func (ctx *HandlerContext) GetMissionDetailByAircraft(aircraftID int) (*sql.Rows, error) {
 	// TODO sql sproc
-	mdRows, err := ctx.DB.Query("CALL uspGetMissionDetailsByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	mdRows, err := ctx.DB.Query("CALL uspGetMissionDetailByAircraft(" + strconv.Itoa(aircraftID) + ")")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for mission details: %v", err)
 	}

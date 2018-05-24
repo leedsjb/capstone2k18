@@ -60,7 +60,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	var waypoints []*messages.ClientMissionWaypoint
-	nextWaypointETE := ""
+	nextWaypointETA := ""
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
 			waypointName, err := ctx.GetWaypointNameByID(waypoint.ID)
@@ -69,14 +69,13 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
 				Name:        waypointName,
-				ETE:         waypoint.ETE,
-				ETT:         waypoint.ETT,
+				ETA:         waypoint.ETA,
 				Active:      waypoint.Active,
 				FlightRules: waypoint.FlightRules,
-				Completed:   "false",
+				// Completed:   "false",
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
-				nextWaypointETE = tempWayPt.ETE
+				nextWaypointETA = tempWayPt.ETA
 			}
 			// TODO: calculate ETE/ETT
 			waypoints = append(waypoints, tempWayPt)
@@ -84,9 +83,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	mission := &messages.Mission{
-		Type:            msg.CallType,
-		Vision:          msg.Vision,
-		NextWaypointETE: nextWaypointETE,
+		Type: msg.CallType,
+		// Vision:          msg.Vision,
+		NextWaypointETA: nextWaypointETA,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
 	}
@@ -98,9 +97,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	missionDetail := &messages.MissionDetail{
-		Type:            msg.CallType,
-		Vision:          msg.Vision,
-		NextWaypointETE: nextWaypointETE,
+		Type: msg.CallType,
+		// Vision:          msg.Vision,
+		NextWaypointETA: nextWaypointETA,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
 		RadioReport:     msg.Patient,
@@ -127,7 +126,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 }
 
 // ParseMissionWaypointsUpdate handles changes to a mission's
-// waypoints, including ETE, ETT, friendly names,
+// waypoints, including ETA, ETT, friendly names,
 // and modifications to the route
 // notifies client and writes new info to db
 func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Waypoint_Update,
@@ -144,7 +143,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	// parse pubsub message for client
 
 	waypoints := []*messages.ClientMissionWaypoint{}
-	nextWaypointETE := ""
+	nextWaypointETA := ""
 	aircraftStatus := "available" // assume if waypoints are updated and none are active, mission complete
 
 	if len(msg.Waypoints) > 0 {
@@ -154,14 +153,14 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 				return fmt.Errorf("Couldn't get waypoint name with given ID: %v, %v", waypoint.ID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name:        waypointName,
-				ETE:         waypoint.ETE,
-				ETT:         waypoint.ETT,
+				Name: waypointName,
+				ETA:  waypoint.ETA,
+				// ETT:         waypoint.ETT,
 				Active:      waypoint.Active,
 				FlightRules: waypoint.FlightRules,
 			}
 			if strings.ToLower(tempWayPt.Active) == "true" {
-				nextWaypointETE = tempWayPt.ETE
+				nextWaypointETA = tempWayPt.ETA
 				aircraftStatus = "on a mission" // if any waypoints active, mission must be active
 			}
 			waypoints = append(waypoints, tempWayPt)
@@ -181,7 +180,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	}
 
 	mission := &messages.Mission{
-		NextWaypointETE: nextWaypointETE,
+		NextWaypointETA: nextWaypointETA,
 		Waypoints:       waypoints,
 	}
 
@@ -199,7 +198,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	}
 
 	missionDetail := &messages.MissionDetail{
-		NextWaypointETE: nextWaypointETE,
+		NextWaypointETA: nextWaypointETA,
 		Waypoints:       waypoints,
 		FlightNum:       tcNum,
 	}

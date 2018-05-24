@@ -20,12 +20,12 @@ type Patient struct {
 }
 
 type MissionWaypoint struct {
-	ID          int    `json:"ID"`
-	ETE         string `json:"ETE"`    // time to next point
-	ETT         string `json:"ETT"`    // cumulative mission time
-	Active      string `json:"active"` // denotes active waypoint
-	FlightRules string `json:"flightRules"`
-	Complete    string `json:"complete"`
+	ID int `json:"ID"`
+	// Name        string `json:"name"`
+	ETA         string `json:"ETA"`         // time to next point
+	Active      string `json:"active"`      // cumulative mission time
+	FlightRules string `json:"flightRules"` // denotes active waypoint
+	// Completed   string `json:"completed"`
 }
 
 type Mission_Create struct {
@@ -68,18 +68,18 @@ type Mission_Crew_Update struct {
 
 // Mission ...
 type Mission struct {
-	Type            string                   `json:"type"`
-	Vision          string                   `json:"vision"`
-	NextWaypointETE string                   `json:"nextWaypointETE"`
+	Type string `json:"type"`
+	// Vision          string                   `json:"vision"`
+	NextWaypointETA string                   `json:"nextWaypointETA"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 }
 
 // MissionDetail ...
 type MissionDetail struct {
-	Type            string                   `json:"type"`
-	Vision          string                   `json:"vision"`
-	NextWaypointETE string                   `json:"nextWaypointETE"`
+	Type string `json:"type"`
+	// Vision          string                   `json:"vision"`
+	NextWaypointETA string                   `json:"nextWaypointETA"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 	RadioReport     *Patient                 `json:"radioReport"`
