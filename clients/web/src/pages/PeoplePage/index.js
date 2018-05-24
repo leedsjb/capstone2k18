@@ -19,9 +19,12 @@ import Span from "../../components/Span";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
+import ProfileSnippet from "../../components/ProfileSnippet";
 import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
+import Container from "../../components/Container";
+import Card from "../../components/Card";
 import TitleBar from "../../components/TitleBar";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
@@ -224,6 +227,12 @@ class PeoplePage extends Component {
     }
 
     renderGroupsDetail() {
+        return (
+            <div>
+                <div>Group detail</div>
+            </div>
+        );
+        /*
         if (!this.props.groupID) {
             return (
                 <DetailView>
@@ -268,17 +277,97 @@ class PeoplePage extends Component {
         } else if (this.props.groupsDetail.pending) {
             return <div>Loading...</div>;
         }
+        */
     }
 
-    renderPeopleDetail(person) {
+    renderPeopleDetail() {
         if (!this.props.id && !this.props.groupID) {
             return <Box bg="gray" height="100%" />;
         } else if (
-            (!this.props.peopleDetail.pending &&
-                !Array.isArray(this.props.peopleDetail.data)) ||
-            this.isGroupDetailView()
+            !this.props.peopleDetail.pending &&
+            !Array.isArray(this.props.peopleDetail.data)
         ) {
-            let mx = this.isGroupDetailView() ? 20 : 0;
+            const person = this.props.peopleDetail.data;
+            console.log(person);
+
+            return (
+                <Box py={12}>
+                    <Container>
+                        <Flex flexDirection="column" alignItems="center">
+                            <Box>
+                                <ColoredAvatar fName={person.fName} size={72} />
+                            </Box>
+                            <Heading
+                                children={`${person.fName} ${person.lName}`}
+                                is="h1"
+                                fontSize={4}
+                                fontWeight="bold"
+                                textAlign="center"
+                                mt={6}
+                            />
+                            <Box mt={2}>
+                                <Span
+                                    children={person.position}
+                                    fontWeight="normal"
+                                    fontSize={3}
+                                />
+                            </Box>
+                        </Flex>
+                        <Flex mt={6} justifyContent="center">
+                            <Box>
+                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            </Box>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <Box>
+                                <ButtonIcon glyph="email">Mail</ButtonIcon>
+                            </Box>
+                        </Flex>
+                        <ProfileSnippet
+                            label="Email"
+                            value={person.email}
+                            mt={12}
+                        />
+                        <ProfileSnippet
+                            label="First name"
+                            value={person.fName}
+                            mt={6}
+                        />
+                        <ProfileSnippet
+                            label="Last name"
+                            value={person.lName}
+                            mt={6}
+                        />
+                        <ProfileSnippet
+                            label="Phone"
+                            value={person.mobile}
+                            mt={6}
+                        />
+                        {person.memberGroups.length > 0 ? (
+                            <Box>
+                                <Heading fontSize={4}>Member of</Heading>
+                                <Flex flexWrap="wrap">
+                                    {person.memberGroups.map(group => {
+                                        return (
+                                            <Card>
+                                                <div>{group.name}</div>
+                                            </Card>
+                                        );
+                                    })}
+                                </Flex>
+                            </Box>
+                        ) : null}
+                    </Container>
+                </Box>
+            );
+        } else {
+            return null;
+        }
+    }
+
+    /*
+   let mx = this.isGroupDetailView() ? 20 : 0;
             let mb = this.isGroupDetailView() ? 8 : 0;
             let flex = this.isGroupDetailView()
                 ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 100%", "0 1 33%"]
@@ -329,10 +418,7 @@ class PeoplePage extends Component {
                     </Flex>
                 </Flex>
             );
-        } else {
-            return null;
-        }
-    }
+    */
 
     renderMasterView() {
         if (this.props.people.error || this.props.groups.error) {
@@ -342,10 +428,6 @@ class PeoplePage extends Component {
                 </MasterView>
             );
         } else {
-            let list = this.isPeopleTab()
-                ? this.renderPeople()
-                : this.renderGroups();
-
             return (
                 <MasterView>
                     <Flex>
@@ -365,19 +447,21 @@ class PeoplePage extends Component {
                         </Tab>
                     </Flex>
                     <Divider />
-                    {list}
+                    {this.isPeopleTab()
+                        ? this.renderPeople()
+                        : this.renderGroups()}
                 </MasterView>
             );
         }
     }
 
     renderDetailView() {
-        return this.isPeopleTab() ? (
+        return (
             <DetailView>
-                {this.renderPeopleDetail(this.props.peopleDetail.data)}
+                {this.isPeopleTab()
+                    ? this.renderPeopleDetail()
+                    : this.renderGroupsDetail()}
             </DetailView>
-        ) : (
-            this.renderGroupsDetail()
         );
     }
 

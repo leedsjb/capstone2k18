@@ -14,7 +14,7 @@ export function fetchPeopleDetail(id) {
             });
 
             const { data } = await axios.get(
-                `http://localhost:4000/people/${id}`
+                `http://api.test.elevate.airliftnw.org/v1/people/${id}`
             );
 
             dispatch({
