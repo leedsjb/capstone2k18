@@ -12,6 +12,7 @@ RUN apk --update add ca-certificates
 FROM scratch
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY crewjam-saml crewjam-saml
+COPY ./build build
 EXPOSE 80
 EXPOSE 443
 ENTRYPOINT ["/crewjam-saml"]

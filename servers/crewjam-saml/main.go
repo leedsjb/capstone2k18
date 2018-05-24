@@ -1,7 +1,7 @@
 /*
 Filename: main.go
 Created:
-Modified: Monday May 21, 2018
+Modified: Thursday May 24, 2018
 Author: J. Benjamin Leeds
 License: None
 Purpose: This Go program serves as the HTTPS web server for ALNW elevate. It serves the Elevate
@@ -246,7 +246,7 @@ func main() {
 
 	if ENV == "kubernetes" {
 		log.Println("K8S: setting url to https://test.elevate.airliftnw.org")
-		rootURL, err = url.Parse("https://test.elevate.airliftnw.org") // TODO: change to https
+		rootURL, err = url.Parse("https://test.elevate.airliftnw.org")
 		if err != nil {
 			panic(err)
 		}
@@ -271,7 +271,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", RootPathHandler)
+	// mux.HandleFunc("/", RootPathHandler)
+	mux.Handle("/", http.FileServer(http.Dir("./build")))
 
 	mux.HandleFunc("/testing/", testPathHandler)
 
@@ -291,7 +292,8 @@ func main() {
 
 	} else {
 		fmt.Println("crewjam listening at: " + addr)
-		listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, mux)
+		// listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, mux)
+		listenServeErr = http.ListenAndServe(addr, mux)
 	}
 
 	if listenServeErr != nil {

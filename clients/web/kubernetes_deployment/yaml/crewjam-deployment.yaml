@@ -35,7 +35,7 @@ spec:
     spec:
       containers: # inside spec -> containers list
         - name: crewjam-saml-image # 1st element in a list inside containers
-          image: us.gcr.io/airliftnw-uw/go-webclient:0.24
+          image: us.gcr.io/airliftnw-uw/go-webclient:0.27
           ports:
             - containerPort: 80
               protocol: TCP

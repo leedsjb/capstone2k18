@@ -10,15 +10,15 @@
 
 docker stop crewjam-saml
 docker rm crewjam-saml
-docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.24
+docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.27
 GOOS=linux go build
-docker build -t us.gcr.io/airliftnw-uw/go-webclient:0.24 .
+docker build -t us.gcr.io/airliftnw-uw/go-webclient:0.27 .
 
 # Stop here for local testing. 
 # For Kubernetes deployment only:
 go clean
-docker push us.gcr.io/airliftnw-uw/go-webclient:0.24
-docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.24
+docker push us.gcr.io/airliftnw-uw/go-webclient:0.27
+docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.27
 kubectl apply -f ../../clients/web/kubernetes_deployment/yaml/crewjam-deployment.yaml --record
 kubectl rollout status deployment/go-saml-web-server-deployment
 
