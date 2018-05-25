@@ -14,7 +14,7 @@ Description: Waypoint updated in waypoint catalog
 Waypoint types: airport, hospital, landing zone, base
 */
 type Waypoint struct {
-	ID                int      `json:"ID"`
+	ID                string   `json:"ID"`
 	Notes             string   `json:"notes"`
 	Name              string   `json:"name"`
 	Type              string   `json:"type"`
@@ -44,5 +44,5 @@ Description: Waypoint deleted from waypoint catalog
 Waypoint types: airport, hospital, landing zone, base
 */
 type Waypoint_Delete struct {
-	ID int `json:"ID"`
+	ID string `json:"ID"`
 }

@@ -15,7 +15,7 @@ Description: Add or delete member, change group name
 FV Table: UserGroup/GroupOfUsers/PagableGroups?
 */
 type Group struct {
-	ID      int      `json:"ID"`
+	ID      string   `json:"ID"`
 	Name    string   `json:"Name"`
 	Members []string `json:"members"`
 }
@@ -28,7 +28,7 @@ Description: Delete existing group
 FV Table: UserGroup/GroupOfUsers/PagableGroups?
 */
 type Group_Delete struct {
-	ID int `json:"ID"`
+	ID string `json:"ID"`
 }
 
 // [Client Messages]

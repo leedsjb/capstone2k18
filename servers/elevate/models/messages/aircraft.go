@@ -10,7 +10,7 @@ Description: New aircraft added
 FV Table: Vendor
 */
 type Aircraft_Create struct {
-	ID                int      `json:"ID"`
+	ID                string   `json:"ID"`
 	NNum              string   `json:"nNum"`
 	SatPhone          string   `json:"satPhone"`
 	CellPhone         string   `json:"cellPhone"`
@@ -35,7 +35,7 @@ Topic Name: ac_properties_update
 Description: Aircraft persistent properties updated
 */
 type Aircraft_Props_Update struct {
-	ID               int    `json:"ID"`
+	ID               string `json:"ID"`
 	SatPhone         string `json:"satPhone"`
 	CellPhone        string `json:"cellPhone"`
 	Base             string `json:"base"`
@@ -54,7 +54,7 @@ Topic Name: ac_crew_update
 Description: Aircraft crew reassigned
 */
 type Aircraft_Crew_Update struct {
-	ID          int    `json:"ID"`
+	ID          string `json:"ID"`
 	PIC         string `json:"PIC"`
 	AdultRN     string `json:"adultRN"`
 	PediatricRN string `json:"pediatricRN"`
@@ -67,7 +67,7 @@ Topic Name: ac_service_schedule
 Description: Aircraft service scheduled
 */
 type Aircraft_Service_Schedule struct {
-	ID        int    `json:"ID"`
+	ID        string `json:"ID"`
 	OosReason string `json:"oosReason"`
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`
@@ -81,7 +81,7 @@ Topic Name: ac_position_update
 Description: Aircraft position updated
 */
 type Aircraft_Pos_Update struct {
-	ID              int    `json:"ID"`
+	ID              string `json:"ID"`
 	PosLat          string `json:"posLat"`
 	PosLong         string `json:"posLong"`
 	PosFriendlyName string `json:"posFriendlyName"`

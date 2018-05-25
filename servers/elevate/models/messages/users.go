@@ -14,7 +14,7 @@ Topic Name: user_update
 Description: Update existing user
 */
 type User struct {
-	ID         int    `json:"ID"`
+	ID         string `json:"ID"`
 	UserName   string `json:"userName"`
 	FirstName  string `json:"firstName"`
 	MiddleName string `json:"middleName"`
@@ -36,7 +36,7 @@ Description: Delete existing user
 FV Table: Users
 */
 type User_Delete struct {
-	ID int `json:"ID"`
+	ID string `json:"ID"`
 }
 
 // [Client Messages]
