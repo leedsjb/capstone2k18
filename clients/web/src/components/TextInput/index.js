@@ -28,7 +28,7 @@ const TextInput = sys(
             boxShadow: `inset 0 0 0 1px ${theme("colors.blue")(props)}`
         },
         "&:disabled": {
-            opacity: 1 / 4
+            opacity: 1 / 2
         }
     })
 );

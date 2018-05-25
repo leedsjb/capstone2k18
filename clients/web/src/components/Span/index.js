@@ -10,7 +10,8 @@ export const Span = sys(
     "fontSize",
     "fontWeight",
     "textAlign",
-    "lineHeight"
+    "lineHeight",
+    "display"
 );
 
 Span.displayName = "Span";

@@ -9,7 +9,8 @@ const Heading = sys(
         fontSize: 5,
         fontWeight: "bold",
         lineHeight: 1.25,
-        m: 0
+        m: 0,
+        color: "#313847"
     },
     "color",
     "textAlign"

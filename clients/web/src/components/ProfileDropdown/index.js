@@ -2,9 +2,12 @@ import React from "react";
 import Downshift from "downshift";
 import { Link } from "react-router-dom";
 
-import ProfileAvatar from "../ProfileAvatar";
+import ColoredAvatar from "../ColoredAvatar";
 import Absolute from "../Absolute";
 import Relative from "../Relative";
+import BoxHiddenOverflow from "../BoxHiddenOverflow";
+import DropdownItem from "../DropdownItem";
+import Clickable from "../Clickable";
 
 import ResourcesProvider from "../../containers/ResourcesProvider";
 
@@ -31,24 +34,35 @@ const ProfileDropdown = () => {
                         }) => {
                             return (
                                 <div>
-                                    <Relative>
-                                        <ProfileAvatar
-                                            fName="Dave"
-                                            onClick={toggleMenu}
-                                        />
-                                        {isOpen ? (
+                                    <Clickable onClick={toggleMenu}>
+                                        <ColoredAvatar fName="Brian" />
+                                    </Clickable>
+                                    {isOpen ? (
+                                        <Relative>
                                             <Absolute
-                                                bg="white"
                                                 right={0}
                                                 zIndex={1}
+                                                top={8}
+                                                minWidth={120}
                                             >
-                                                <Link to="/profile">
-                                                    Profile...
-                                                </Link>
-                                                <div>Sign out</div>
+                                                <BoxHiddenOverflow
+                                                    bg="white"
+                                                    borderRadius={4}
+                                                    w={1}
+                                                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
+                                                >
+                                                    <Link to="/profile">
+                                                        <DropdownItem>
+                                                            My profile
+                                                        </DropdownItem>
+                                                    </Link>
+                                                    <DropdownItem>
+                                                        Sign out
+                                                    </DropdownItem>
+                                                </BoxHiddenOverflow>
                                             </Absolute>
-                                        ) : null}
-                                    </Relative>
+                                        </Relative>
+                                    ) : null}
                                 </div>
                             );
                         }}

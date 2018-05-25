@@ -3,7 +3,7 @@ import StyledBox from "./StyledBox";
 
 const MasterListItem = ({ children, active }) => {
     return (
-        <StyledBox p={3} active={active}>
+        <StyledBox px={4} py={3} active={active}>
             {children}
         </StyledBox>
     );

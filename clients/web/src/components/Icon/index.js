@@ -8,10 +8,15 @@ import Glyph from "./Glyph";
 
 class Icon extends Component {
     render() {
-        const { size, onClick, glyph } = this.props;
+        const { size, onClick, glyph, color } = this.props;
 
         return (
-            <SVGWrapper size={size} className={"icon"} onClick={onClick}>
+            <SVGWrapper
+                size={size}
+                className={"icon"}
+                onClick={onClick}
+                color={color}
+            >
                 <InlineSVG
                     xmlns="http://www.w3.org/2000/svg"
                     aria-labelledby="title"

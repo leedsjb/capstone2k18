@@ -9,7 +9,7 @@ const Divider = sys(
         my: 0,
         border: 0,
         borderBottom: 1,
-        borderColor: "wireframe"
+        borderColor: "border"
     },
     "space",
     "color"

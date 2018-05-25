@@ -8,7 +8,7 @@ type HandlerContext struct {
 }
 
 //NewHandlerContext creates a new HandlerContext
-func NewHandlerContext(aircraftTrie *indexes.Trie) *HandlerContext {
+func NewHandlerContext(aircraftTrie *indexes.Trie, signingKey string) *HandlerContext {
 	if aircraftTrie == nil {
 		panic("Missing aircraft trie")
 	}

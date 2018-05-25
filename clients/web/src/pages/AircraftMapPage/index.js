@@ -15,7 +15,7 @@ class AircraftMapPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar title="Aircraft" showMap={true} link="/aircraft" />
+                <TitleBar title="Aircraft" showMap link="/aircraft" />
                 <NavBar />
                 <MobileMapView aircraftID={this.props.aircraftID} />
                 <TabBar />

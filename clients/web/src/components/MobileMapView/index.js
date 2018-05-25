@@ -4,23 +4,13 @@ import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
 
 import AircraftListItem from "../../components/AircraftListItem";
-import Box from "../../components/Box";
-import Heading from "../../components/Heading";
 import MapView from "../MapView";
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";
-import Text from "../../components/Text";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 
 class MobileMapView extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selAircraft: null
-        };
-    }
-
     componentDidMount() {
         if (this.props.aircraftID) {
             this.props
@@ -34,14 +24,14 @@ class MobileMapView extends Component {
             nextProps.aircraftID &&
             nextProps.aircraftID !== this.props.aircraftID
         ) {
-            this.renderAircraft(this.props.aircraft);
+            this.renderAircraft(nextProps.aircraft);
         }
     }
 
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
             let selected = aircraft.data.find(air => {
-                return air.id == this.props.aircraftID;
+                return air.id === Number(this.props.aircraftID);
             });
 
             if (selected) {
@@ -55,6 +45,7 @@ class MobileMapView extends Component {
                 );
             }
         }
+        return <div>Loading...</div>;
     }
 
     render() {
@@ -66,7 +57,7 @@ class MobileMapView extends Component {
                         flexDirection="column"
                         flexWrap="wrap"
                     >
-                        <MapView />
+                        <MapView id={this.props.aircraftID} />
                         {this.props.aircraftID
                             ? this.renderAircraft(this.props.aircraft)
                             : null}

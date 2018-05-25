@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 import Heading from "../../components/Heading";
 import Text from "../../components/Text";
-import Container from "../../components/Container";
 import Box from "../../components/Box";
 import Logo from "../../components/Logo";
 
@@ -33,12 +32,19 @@ class SignInPage extends Component {
                     </Flex>
                 </Box>
 
-                <Flex flexDirection="column" flex={1} justifyContent="center">
-                    <Container>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Box maxWidth="30em" w={1}>
                         <Heading>AirliftNW Elevate</Heading>
                         <Text>Sign in with your AMC account</Text>
-                        <SignInForm onSubmit={signIn} />
-                    </Container>
+                        <Box mt={4}>
+                            <SignInForm onSubmit={signIn} />
+                        </Box>
+                    </Box>
                 </Flex>
             </Flex>
         );
