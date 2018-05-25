@@ -364,7 +364,7 @@ class PeoplePage extends Component {
                                 textAlign="center"
                                 mt={6}
                             />
-                            <Box mt={3}>
+                            <Box mt={2}>
                                 <Span
                                     children={person.position}
                                     fontWeight="normal"
