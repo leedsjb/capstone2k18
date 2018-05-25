@@ -250,14 +250,14 @@ class PeoplePage extends Component {
                             <Heading is="h2" fontSize={4}>
                                 Members
                             </Heading>
-                            <Flex
-                                flexWrap="wrap"
-                                justifyContent="space-between"
-                            >
+                            <Flex flexWrap="wrap" justifyContent="center">
                                 {this.props.groupsDetail.data.people.map(
                                     person => {
                                         return (
-                                            <Card p={4}>
+                                            <Card
+                                                p={4}
+                                                w="calc(100% / 3 - 8px)"
+                                            >
                                                 <Flex
                                                     flexDirection="column"
                                                     alignItems="center"
