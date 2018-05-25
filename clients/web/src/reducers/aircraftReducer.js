@@ -1,6 +1,7 @@
 import {
     FETCH_AIRCRAFT_PENDING,
-    FETCH_AIRCRAFT_SUCCESS
+    FETCH_AIRCRAFT_SUCCESS,
+    FETCH_AIRCRAFT_ERROR
 } from "../actions/aircraft/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const aircraftReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_AIRCRAFT_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

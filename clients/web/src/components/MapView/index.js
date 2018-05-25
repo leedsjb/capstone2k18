@@ -12,10 +12,7 @@ import Span from "../../components/Span";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-import airplane from "../../images/airplane.svg";
-
-const image = new Image(32, 32);
-image.src = airplane;
+import mapStyle from "../../utils/mapbox/style.json";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -26,6 +23,7 @@ class MapView extends Component {
         super(props);
         this.state = {
             center: [-122.4821475, 47.6129432],
+            userPos: null,
             map: null
         };
     }
@@ -60,14 +58,46 @@ class MapView extends Component {
                     ]
                 });
             }
-
             this.state.map.resize();
-            this.state.map.setCenter(this.mapCenter());
+            this.state.map.flyTo(this.mapCenter());
+        }
+    }
+
+    getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    if (this.refs.aircraftPage) {
+                        this.setState({
+                            userPos: [
+                                position.coords.longitude,
+                                position.coords.latitude
+                            ]
+                        });
+                        if (!this.props.id) {
+                            this.setState({
+                                center: [
+                                    position.coords.longitude,
+                                    position.coords.latitude
+                                ]
+                            });
+                            this.state.map.setCenter([
+                                position.coords.longitude,
+                                position.coords.latitude
+                            ]);
+                            this.state.map.setZoom(11);
+                        }
+                    }
+                },
+                null,
+                { enableHighAccuracy: true }
+            );
         }
     }
 
     mapCenter = () => {
         if (
+            !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
             !Array.isArray(this.props.aircraftDetail.data)
         ) {
@@ -82,12 +112,12 @@ class MapView extends Component {
     renderMapView = () => {
         if (
             !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
             return (
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
-                        const images = [aircraft.callsign, image];
                         return (
                             <Box key={aircraft.id}>
                                 <Layer
@@ -104,24 +134,73 @@ class MapView extends Component {
                                         ]}
                                     />
                                 </Layer>
-                                {this.props.id ? (
+                                {this.state.userPos ? (
                                     <Layer
                                         type="symbol"
                                         layout={{
                                             "icon-image": "circle-15",
-                                            "text-field": "Squaxin Ballfields",
-                                            "text-anchor": "top",
-                                            "text-offset": [0, 0.5],
-                                            "text-transform": "uppercase"
+                                            "icon-allow-overlap": true
                                         }}
                                     >
                                         <Feature
-                                            coordinates={[
-                                                -122.28567,
-                                                47.552965
-                                            ]}
+                                            coordinates={this.state.userPos}
                                         />
                                     </Layer>
+                                ) : null}
+                                {this.props.id ? (
+                                    <Box>
+                                        <Layer
+                                            type="symbol"
+                                            layout={{
+                                                "icon-image": "circle-15",
+                                                "icon-allow-overlap": true,
+                                                "text-field":
+                                                    "Squaxin Ballfields",
+                                                "text-allow-overlap": true,
+                                                "text-anchor": "top",
+                                                "text-offset": [0, 0.5],
+                                                "text-transform": "uppercase"
+                                            }}
+                                        >
+                                            <Feature
+                                                coordinates={[
+                                                    -122.28567,
+                                                    47.552965
+                                                ]}
+                                            />
+                                        </Layer>
+                                        <Layer
+                                            type="symbol"
+                                            layout={{
+                                                "icon-image": "circle-15",
+                                                "icon-allow-overlap": true,
+                                                "text-field": "West Seattle",
+                                                "text-allow-overlap": true,
+                                                "text-anchor": "top",
+                                                "text-offset": [0, 0.5],
+                                                "text-transform": "uppercase"
+                                            }}
+                                        >
+                                            <Feature
+                                                coordinates={[
+                                                    -122.3868,
+                                                    47.5667
+                                                ]}
+                                            />
+                                        </Layer>
+                                        <Layer type="line">
+                                            <Feature
+                                                coordinates={[
+                                                    [
+                                                        aircraft.long,
+                                                        aircraft.lat
+                                                    ],
+                                                    [-122.28567, 47.552965],
+                                                    [-122.3868, 47.5667]
+                                                ]}
+                                            />
+                                        </Layer>
+                                    </Box>
                                 ) : null}
                             </Box>
                         );
@@ -192,10 +271,14 @@ class MapView extends Component {
 
     render() {
         return (
-            <Flex flex={1}>
+            <Flex flex={1} ref="aircraftPage">
                 <Map
-                    onStyleLoad={map => this.setState({ map })}
-                    style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
+                    onStyleLoad={map =>
+                        this.setState({ map }, () => {
+                            this.getUserLocation();
+                        })
+                    }
+                    style={mapStyle}
                     containerStyle={{
                         width: "100%",
                         height: "100%"

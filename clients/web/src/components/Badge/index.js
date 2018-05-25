@@ -7,7 +7,7 @@ const Badge = sys(
         fontSize: 0,
         px: 2,
         py: 1,
-        mx: 1,
+        mx: 0,
         color: "white",
         bg: "blue",
         fontWeight: "bold",

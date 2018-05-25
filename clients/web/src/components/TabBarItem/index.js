@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import Box from "../Box";
 import Icon from "../Icon";
 import Link from "../Link";
+import Span from "../Span";
 
 import RouterProvider from "../../containers/RouterProvider";
 
@@ -22,7 +23,7 @@ const TabBarItem = ({ title, glyph, path }) => {
                 const { pathname } = location;
 
                 return (
-                    <Box bg="wireframe" flex={1}>
+                    <Box flex={1}>
                         <Link is={NavLink} to={path}>
                             <Flex
                                 flexDirection="column"
@@ -36,8 +37,9 @@ const TabBarItem = ({ title, glyph, path }) => {
                                             : `${glyph}Line`
                                     }
                                     size={24}
+                                    color="black"
                                 />
-                                {title}
+                                <Span color="black">{title}</Span>
                             </Flex>
                         </Link>
                     </Box>

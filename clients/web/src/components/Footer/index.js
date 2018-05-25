@@ -8,12 +8,11 @@ import Span from "../Span";
 
 import collab from "../../images/collab.svg";
 import symbol from "../../images/symbol.svg";
-import placeholder from "../../images/placeholder-image.jpg";
 
 const Footer = () => {
     return (
         <div>
-            <Box py={5}>
+            <Box py={8}>
                 <Container width={[1, 1 / 2, 1 / 2, 1 / 3]}>
                     <Flex flexDirection="column" justifyContent="center">
                         <Box mb={4}>
@@ -41,7 +40,7 @@ const Footer = () => {
                     </Flex>
                 </Container>
             </Box>
-            <Box px={5} py={4}>
+            <Box pb={4} pt={[0, 0, 4]} px={5}>
                 <Flex
                     flexDirection={["column", "row"]}
                     justifyContent="space-between"
@@ -61,25 +60,35 @@ const Footer = () => {
                         </Box>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <Span
-                            fontSize={1}
-                            fontWeight="bold"
-                            lineHeight={2}
-                            mr={4}
+                        <a href="mailto:alnw@airliftnw.org">
+                            <Span
+                                fontSize={1}
+                                fontWeight="bold"
+                                lineHeight={2}
+                                mr={4}
+                            >
+                                Contact us
+                            </Span>
+                        </a>
+                        <a href="https://www.uwmedicine.org/about/compliance/privacy">
+                            <Span
+                                fontSize={1}
+                                fontWeight="bold"
+                                lineHeight={2}
+                                mr={4}
+                            >
+                                Privacy
+                            </Span>
+                        </a>
+                        <a
+                            href="https://www.washington.edu/online/terms/"
+                            rel="noopener noreferrer"
+                            target="_blank"
                         >
-                            Contact us
-                        </Span>
-                        <Span
-                            fontSize={1}
-                            fontWeight="bold"
-                            lineHeight={2}
-                            mr={4}
-                        >
-                            Privacy
-                        </Span>
-                        <Span fontSize={1} fontWeight="bold" lineHeight={2}>
-                            Terms
-                        </Span>
+                            <Span fontSize={1} fontWeight="bold" lineHeight={2}>
+                                Terms
+                            </Span>
+                        </a>
                     </Flex>
                 </Flex>
             </Box>

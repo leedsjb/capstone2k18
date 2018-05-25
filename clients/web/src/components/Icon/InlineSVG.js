@@ -7,7 +7,9 @@ const InlineSVG = sys({
     right: 0,
     bottom: 0,
     left: 0,
-    size: "100%"
+    size: "100%",
+    color: "inherit",
+    fill: "red"
 });
 
 InlineSVG.displayName = "InlineSVG";

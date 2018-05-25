@@ -1,6 +1,7 @@
 import {
     FETCH_GROUPS_PENDING,
-    FETCH_GROUPS_SUCCESS
+    FETCH_GROUPS_SUCCESS,
+    FETCH_GROUPS_ERROR
 } from "../actions/groups/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const groupsReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_GROUPS_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

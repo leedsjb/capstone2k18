@@ -5,9 +5,10 @@ import sys from "system-components";
 const Label = sys(
     {
         is: "label",
-        fontSize: 1,
+        fontSize: 2,
         mb: 1,
-        align: "center"
+        align: "center",
+        fontWeight: "bold"
     },
     {
         display: "flex"

@@ -11,18 +11,19 @@ import Divider from "../../components/Divider";
 import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
 import Heading from "../../components/Heading";
-import Icon from "../../components/Icon";
 import MasterView from "../../components/MasterView";
 import MasterDetailView from "../../components/MasterDetailView";
-import MasterListItem from "../../components/MasterListItem";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
-import ProfileAvatar from "../../components/ProfileAvatar";
 import Span from "../../components/Span";
+import ColoredAvatar from "../../components/ColoredAvatar";
+import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
+import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
@@ -33,6 +34,15 @@ import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
 import matchPath from "../../utils/matchPath";
 
 class PeoplePage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            queryPeople: "",
+            isSearchingPeople: false,
+            queryGroups: "",
+            isSearchingGroups: false
+        };
+    }
     componentDidMount() {
         this.props.fetchPeople();
         this.props.fetchGroups();
@@ -44,16 +54,24 @@ class PeoplePage extends Component {
         if (this.props.groupID) {
             this.props.fetchGroupsDetail(this.props.groupID);
         }
+
+        if (this.isGroupPeopleDetail()) {
+            this.props.fetchGroupsDetail(this.getGroupID());
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.id && !(nextProps.id === this.props.id)) {
+        if (nextProps.id && nextProps.id !== this.props.id) {
             this.props.fetchPeopleDetail(nextProps.id);
         }
 
-        if (nextProps.groupId && nextProps.groupId !== this.props.groupId) {
-            this.props.fetchGroupsDetail(nextProps.groupId);
+        if (nextProps.groupID && nextProps.groupID !== this.props.groupID) {
+            this.props.fetchGroupsDetail(nextProps.groupID);
         }
+    }
+
+    getGroupID() {
+        return new URLSearchParams(window.location.search).get("id");
     }
 
     isPeopleTab() {
@@ -61,7 +79,54 @@ class PeoplePage extends Component {
     }
 
     isGroupDetailView() {
-        return matchPath(this.props.location.pathname, "/groups/:groupId");
+        return matchPath(this.props.location.pathname, "/groups/:groupID");
+    }
+
+    isGroupPeopleDetail() {
+        return (
+            new URLSearchParams(window.location.search).get("source") ===
+            "groups"
+        );
+    }
+
+    renderPeople() {
+        return (
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearchingPeople) {
+                        this.setState({
+                            queryPeople: "",
+                            isSearchingPeople: false
+                        });
+                        this.props.fetchPeople();
+                    }
+                }}
+            >
+                <Box py={3} px={4}>
+                    <SearchBox
+                        placeholder="Search all people"
+                        handleChange={queryPeople => {
+                            this.setState({ queryPeople }, () => {
+                                this.props.fetchPeople(this.state.queryPeople);
+                            });
+                        }}
+                        isSearching={this.state.isSearchingPeople}
+                        query={this.state.queryPeople}
+                        handleClear={() => {
+                            this.setState({
+                                queryPeople: "",
+                                isSearchingPeople: false
+                            });
+                            this.props.fetchPeople();
+                        }}
+                        handleFocus={() => {
+                            this.setState({ isSearchingPeople: true });
+                        }}
+                    />
+                </Box>
+                <ScrollView>{this.renderPeopleList()}</ScrollView>
+            </OutsideClickHandler>
+        );
     }
 
     renderPeopleList() {
@@ -69,7 +134,10 @@ class PeoplePage extends Component {
             return this.props.people.data.map(person => {
                 return (
                     <Link to={`/people/${person.id}`} key={person.id}>
-                        <PeopleListItem person={person} />
+                        <PeopleListItem
+                            active={Number(this.props.id) === person.id ? 1 : 0}
+                            person={person}
+                        />
                     </Link>
                 );
             });
@@ -87,12 +155,57 @@ class PeoplePage extends Component {
         }
     }
 
-    renderGroupsList() {
+    renderGroups() {
+        return (
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearchingGroups) {
+                        this.setState({
+                            queryGroups: "",
+                            isSearchingGroups: false
+                        });
+                        this.props.fetchGroups();
+                    }
+                }}
+            >
+                <Box py={3} px={4}>
+                    <SearchBox
+                        placeholder="Search all groups"
+                        handleChange={queryGroups => {
+                            this.setState({ queryGroups }, () => {
+                                this.props.fetchGroups(this.state.queryGroups);
+                            });
+                        }}
+                        isSearching={this.state.isSearchingGroups}
+                        query={this.state.queryGroups}
+                        handleClear={() => {
+                            this.setState({
+                                queryGroups: "",
+                                isSearchingGroups: false
+                            });
+                            this.props.fetchGroups();
+                        }}
+                        handleFocus={() => {
+                            this.setState({ isSearchingGroups: true });
+                        }}
+                    />
+                </Box>
+                <ScrollView>{this.renderGroupList()}</ScrollView>
+            </OutsideClickHandler>
+        );
+    }
+
+    renderGroupList() {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
             return this.props.groups.data.map(group => {
                 return (
                     <Link to={`/groups/${group.id}`} key={group.id}>
-                        <GroupsListItem group={group} />
+                        <GroupsListItem
+                            active={
+                                Number(this.props.groupID) === group.id ? 1 : 0
+                            }
+                            group={group}
+                        />
                     </Link>
                 );
             });
@@ -110,22 +223,39 @@ class PeoplePage extends Component {
         }
     }
 
-    renderGroupsDetailList() {
-        if (
+    renderGroupsDetail() {
+        if (!this.props.groupID) {
+            return (
+                <DetailView>
+                    <Box bg="gray" height="100%" />
+                </DetailView>
+            );
+        } else if (
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
-            const { id } = this.props.groupsDetail.data;
-
-            return this.props.groupsDetail.data.people.map(person => {
-                return (
-                    <Link to={`/groups/${id}/${person.id}`} key={person.id}>
-                        <MasterListItem>
-                            <div>{person.fName}</div>
-                        </MasterListItem>
-                    </Link>
-                );
-            });
+            return (
+                <DetailView>
+                    <Span fontWeight="bold" py={3} textAlign="center">
+                        {this.props.groupsDetail.data.name}
+                    </Span>
+                    <Divider />
+                    <ScrollView>
+                        <Flex justifyContent="center" mt={5}>
+                            <Flex
+                                flexWrap="wrap"
+                                justifyContent="space-between"
+                            >
+                                {this.props.groupsDetail.data.people.map(
+                                    person => {
+                                        return this.renderPeopleDetail(person);
+                                    }
+                                )}
+                            </Flex>
+                        </Flex>
+                    </ScrollView>
+                </DetailView>
+            );
         } else if (!this.props.groupsDetail.pending) {
             return (
                 <Box mt={4}>
@@ -140,99 +270,125 @@ class PeoplePage extends Component {
         }
     }
 
-    renderMasterView() {
-        let list;
-        if (this.isPeopleTab()) {
-            list = this.renderPeopleList();
-        } else if (!this.isGroupDetailView()) {
-            list = this.renderGroupsList();
-        } else {
-            list = this.renderGroupsDetailList();
-        }
-
-        let controller = !this.isGroupDetailView() ? (
-            <Flex>
-                <Tab active={this.isPeopleTab()} is={Link} to="/people">
-                    People
-                </Tab>
-                <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
-                    Groups
-                </Tab>
-            </Flex>
-        ) : (
-            <Flex
-                alignItems="center"
-                justifyContent="space-between"
-                py={2}
-                px={3}
-            >
-                <Link to="/groups">
-                    <Icon glyph="chevronLeft" size={16} />
-                </Link>
-                <Span fontWeight="bold">
-                    {this.props.groupsDetail.data.name}
-                </Span>
-                <Box size={16} />
-            </Flex>
-        );
-
-        return (
-            <MasterView>
-                {controller}
-                <Divider />
-                {list}
-            </MasterView>
-        );
-    }
-
-    renderDetailView() {
-        let content = "Loading...";
-
-        if (
-            !this.props.peopleDetail.pending &&
-            !Array.isArray(this.props.peopleDetail.data)
+    renderPeopleDetail(person) {
+        if (!this.props.id && !this.props.groupID) {
+            return <Box bg="gray" height="100%" />;
+        } else if (
+            (!this.props.peopleDetail.pending &&
+                !Array.isArray(this.props.peopleDetail.data)) ||
+            this.isGroupDetailView()
         ) {
-            let person = this.props.peopleDetail.data;
-
-            content = (
-                <Flex flexDirection="column" alignItems="center">
-                    <Box mt={4}>
-                        <ProfileAvatar fName={person.fName} size={72} />
-                    </Box>
-                    <Heading
-                        children={`${person.fName} ${person.lName}`}
-                        is="h2"
-                        fontSize={4}
-                        mt={3}
-                    />
-                    <Heading
-                        children={`${person.position}`}
-                        is="h3"
-                        fontWeight="normal"
-                        fontSize={2}
-                    />
-                    <Flex mt={3}>
-                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <Box mx={3}>
-                            <ButtonIcon glyph="phone">Call</ButtonIcon>
-                        </Box>
-                        <ButtonIcon glyph="email">Mail</ButtonIcon>
+            let mx = this.isGroupDetailView() ? 20 : 0;
+            let mb = this.isGroupDetailView() ? 8 : 0;
+            let flex = this.isGroupDetailView()
+                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 100%", "0 1 33%"]
+                : "0 1 auto";
+            return (
+                <Flex flex={flex} justifyContent="center" key={person.id}>
+                    <Flex
+                        alignItems="center"
+                        flexDirection="column"
+                        justifyContent="center"
+                        mb={mb}
+                        mx={mx}
+                    >
+                        <Link to={`/people/${person.id}`}>
+                            <Flex
+                                alignItems="center"
+                                flexDirection="column"
+                                justifyContent="center"
+                            >
+                                <Box mt={4}>
+                                    <ColoredAvatar
+                                        fName={person.fName}
+                                        size={72}
+                                    />
+                                </Box>
+                                <Span
+                                    children={`${person.fName} ${person.lName}`}
+                                    fontSize={4}
+                                    fontWeight="bold"
+                                    mt={3}
+                                    textAlign="center"
+                                />
+                                <Span
+                                    children={`${person.position}`}
+                                    fontWeight="normal"
+                                    fontSize={2}
+                                />
+                            </Flex>
+                            <Flex mt={3}>
+                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                                <Box mx={3}>
+                                    <ButtonIcon glyph="phone">Call</ButtonIcon>
+                                </Box>
+                                <ButtonIcon glyph="email">Mail</ButtonIcon>
+                            </Flex>
+                        </Link>
                     </Flex>
                 </Flex>
             );
+        } else {
+            return null;
         }
+    }
 
-        return <DetailView>{content}</DetailView>;
+    renderMasterView() {
+        if (this.props.people.error || this.props.groups.error) {
+            return (
+                <MasterView>
+                    An error has occurred: {this.props.people.error.toString()}
+                </MasterView>
+            );
+        } else {
+            let list = this.isPeopleTab()
+                ? this.renderPeople()
+                : this.renderGroups();
+
+            return (
+                <MasterView>
+                    <Flex>
+                        <Tab
+                            active={this.isPeopleTab() ? 1 : 0}
+                            is={Link}
+                            to="/people"
+                        >
+                            People
+                        </Tab>
+                        <Tab
+                            active={!this.isPeopleTab() ? 1 : 0}
+                            is={Link}
+                            to="/groups"
+                        >
+                            Groups
+                        </Tab>
+                    </Flex>
+                    <Divider />
+                    {list}
+                </MasterView>
+            );
+        }
+    }
+
+    renderDetailView() {
+        return this.isPeopleTab() ? (
+            <DetailView>
+                {this.renderPeopleDetail(this.props.peopleDetail.data)}
+            </DetailView>
+        ) : (
+            this.renderGroupsDetail()
+        );
     }
 
     render() {
+        let title = this.isPeopleTab() ? "People" : "Groups";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
 
-                <TitleBar title="People" />
+                <TitleBar title={title} />
                 <NavBar />
 
                 <MasterDetailView>
