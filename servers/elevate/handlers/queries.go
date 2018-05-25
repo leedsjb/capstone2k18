@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"strconv"
 )
 
 // empty, no-time-out context for sql queries
@@ -46,8 +45,12 @@ func (ctx *HandlerContext) GetAircraftByStatus(status string) (*sql.Rows, error)
 }
 
 func (ctx *HandlerContext) GetAircraftByID(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByID(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetAircraftByID(?)`
+	aircraftRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for aircraft: %v", err)
 	}
@@ -55,8 +58,12 @@ func (ctx *HandlerContext) GetAircraftByID(aircraftID int) (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetMissionByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	missionRows, err := ctx.DB.Query("CALL uspGetMissionByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetMissionByAircraft(?)`
+	missionRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for missions: %v", err)
 	}
@@ -64,8 +71,12 @@ func (ctx *HandlerContext) GetMissionByAircraft(aircraftID int) (*sql.Rows, erro
 }
 
 func (ctx *HandlerContext) GetWaypointsByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	waypointRows, err := ctx.DB.Query("CALL uspGetWaypointsByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetWaypointsByAircraft(?)`
+	waypointRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for waypoint: %v", err)
 	}
@@ -73,8 +84,12 @@ func (ctx *HandlerContext) GetWaypointsByAircraft(aircraftID int) (*sql.Rows, er
 }
 
 func (ctx *HandlerContext) GetOOSByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	oosRows, err := ctx.DB.Query("CALL uspGetOOSByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetOOSByAircraft(?)`
+	oosRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for OOS status: %v", err)
 	}
@@ -82,8 +97,12 @@ func (ctx *HandlerContext) GetOOSByAircraft(aircraftID int) (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetAircraftDetailByID(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	acDetailRows, err := ctx.DB.Query("CALL uspGetAircraftDetailByID(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetAircraftDetailByID`
+	acDetailRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for aircraft details: %v", err)
 	}
@@ -91,8 +110,12 @@ func (ctx *HandlerContext) GetAircraftDetailByID(aircraftID int) (*sql.Rows, err
 }
 
 func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	crewRows, err := ctx.DB.Query("CALL uspGetCrewByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := "CALL uspGetCrewByAircraft(?)"
+	crewRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for crew: %v", err)
 	}
@@ -100,8 +123,12 @@ func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) 
 }
 
 func (ctx *HandlerContext) GetMissionDetailByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	mdRows, err := ctx.DB.Query("CALL uspGetMissionDetailByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetMissionDetailByAircraft(?)`
+	mdRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for mission details: %v", err)
 	}
@@ -109,8 +136,12 @@ func (ctx *HandlerContext) GetMissionDetailByAircraft(aircraftID int) (*sql.Rows
 }
 
 func (ctx *HandlerContext) GetPatientByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	patientRows, err := ctx.DB.Query("CALL uspGetPatientByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetPatientByAircraft(?)`
+	patientRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for patient info: %v", err)
 	}
@@ -118,8 +149,12 @@ func (ctx *HandlerContext) GetPatientByAircraft(aircraftID int) (*sql.Rows, erro
 }
 
 func (ctx *HandlerContext) GetOOSDetailByAircraft(aircraftID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	OOSDetailRows, err := ctx.DB.Query("CALL uspGetOOSDetailByAircraft(" + strconv.Itoa(aircraftID) + ")")
+	query := `CALL uspGetOOSDetailByAircraft(?)`
+	OOSDetailRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for OOS details: %v", err)
 	}
@@ -129,7 +164,6 @@ func (ctx *HandlerContext) GetOOSDetailByAircraft(aircraftID int) (*sql.Rows, er
 // [GROUP GUERIES]
 
 func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
-	// TODO sql sproc
 	groupRows, err := ctx.DB.Query("CALL uspGetAllGroups()")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
@@ -138,8 +172,12 @@ func (ctx *HandlerContext) GetAllGroups() (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetGroupDetailByID(groupID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	gdRows, err := ctx.DB.Query("CALL uspGetGroupDetailByID(" + strconv.Itoa(groupID) + ")")
+	query := `CALL uspGetGroupDetailByID(?)`
+	gdRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		groupID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for groups: %v", err)
 	}
@@ -147,8 +185,12 @@ func (ctx *HandlerContext) GetGroupDetailByID(groupID int) (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetGroupByID(groupID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	groupRows, err := ctx.DB.Query("CALL uspGetGroupByID(" + strconv.Itoa(groupID) + ")")
+	query := `CALL uspGetGroupByID(?)`
+	groupRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		groupID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for group: %v", err)
 	}
@@ -161,7 +203,6 @@ func (ctx *HandlerContext) GetGroupByID(groupID int) (*sql.Rows, error) {
 	SELECT personnel_id, personnel_F_Name, personnel_L_Name, role_title
 */
 func (ctx *HandlerContext) GetAllPeople() (*sql.Rows, error) {
-	// TODO sql sproc
 	peopleRows, err := ctx.DB.Query("CALL uspGetAllPeople()")
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
@@ -170,8 +211,12 @@ func (ctx *HandlerContext) GetAllPeople() (*sql.Rows, error) {
 }
 
 func (ctx *HandlerContext) GetPersonDetailByID(personID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	pdRows, err := ctx.DB.Query("CALL uspGetPersonDetailByID(" + strconv.Itoa(personID) + ")")
+	query := `CALL uspGetPersonDetailByID(?)`
+	pdRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		personID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
 	}
@@ -179,8 +224,12 @@ func (ctx *HandlerContext) GetPersonDetailByID(personID int) (*sql.Rows, error) 
 }
 
 func (ctx *HandlerContext) GetPersonByID(personID int) (*sql.Rows, error) {
-	// TODO sql sproc
-	personRows, err := ctx.DB.Query("CALL uspGetPersonByID(" + strconv.Itoa(personID) + ")")
+	query := `CALL uspGetPersonByID(?)`
+	personRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		personID,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
 	}
