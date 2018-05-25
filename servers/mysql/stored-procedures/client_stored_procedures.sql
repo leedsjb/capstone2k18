@@ -292,7 +292,8 @@ CREATE PROCEDURE uspGetWaypointsByAircraft(
 BEGIN
     DECLARE active_mission_id INTEGER;
     CALL uspGetMissionIDByAircraft(aid, active_mission_id);
-    SELECT missionwaypoint_id, waypoint_title, mission_ETA, waypoint_active, flight_rules
+    SELECT missionwaypoint_id, waypoint_title, mission_ETA, waypoint_active, flight_rules,
+    latitude, longitude
     FROM tblMISSION_WAYPOINT
     INNER JOIN tblWAYPOINT ON tblMISSION_WAYPOINT.waypoint_id = tblWAYPOINT.waypoint_id
     WHERE tblMISSION_WAYPOINT.mission_id = active_mission_id;
