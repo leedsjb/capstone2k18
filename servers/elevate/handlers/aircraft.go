@@ -302,6 +302,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 		}
 
 		waypoint := &messages.ClientMissionWaypoint{
+			ID:          waypointRow.ID,
 			Name:        waypointRow.Name,
 			FlightRules: waypointRow.FlightRules,
 			Lat:         waypointRow.Lat,
@@ -463,6 +464,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
 		}
 		waypoint := &messages.ClientMissionWaypoint{
+			ID:          waypointRow.ID,
 			Name:        waypointRow.Name,
 			FlightRules: waypointRow.FlightRules,
 			Lat:         waypointRow.Lat,
