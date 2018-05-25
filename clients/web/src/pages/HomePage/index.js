@@ -30,7 +30,7 @@ import vincent from "../../images/vincent.png";
 const HomePage = () => {
     return (
         <div>
-            <Box bg="#F7F9FC">
+            <Box bg="#F7F9FA">
                 <Container>
                     <Box mx="auto" width={["100%", 488, "100%"]}>
                         <Flex justifyContent="space-between" pt={4}>
@@ -187,7 +187,7 @@ const HomePage = () => {
                 </Container>
             </RedBox>
 
-            <Box bg="#F7F9FC">
+            <Box bg="#F7F9FA">
                 <Container px={5} py={5}>
                     <Box mx="auto" width={["100%", 488, "100%"]}>
                         <Flex
@@ -382,7 +382,7 @@ const HomePage = () => {
                 </Container>
             </RedBox>
 
-            <Box bg="#F7F9FC" pt={5}>
+            <Box bg="#F7F9FA" pt={5}>
                 <Container width={1 / 2}>
                     <Image src={heli} width={1} />
                 </Container>

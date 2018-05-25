@@ -1,0 +1,41 @@
+# Filename: go-client-server-deployment.yaml.yaml
+# Created: Wednesday May 23, 2018
+# Modified: Thursday May 24, 2018
+# Last Change: Renamed from gowebclient-deployment.yaml to go-client-server-deployment.yaml
+# Author: J. Benjamin Leeds
+# License: None
+# Purpose: Kubernetes Deployment YAML for Go Client Web Server
+
+# Deployment Instructions
+# Create and update deployment: kubectl apply -f go-client-server-deployment.yaml.yaml --record
+
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "go-client-server-deployment"
+  namespace: "default"
+  labels:
+    app: "go-client-server-app"
+    tier: frontend
+    environment: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "go-client-server-app"
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: "go-client-server-app"
+    spec:
+      containers: # inside spec -> containers list
+        - name: go-client-server-image # 1st element in a list inside containers
+          image: us.gcr.io/airliftnw-uw/go-client-server-image:0.1
+          ports:
+            - containerPort: 80
+              protocol: TCP

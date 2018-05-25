@@ -145,14 +145,18 @@ class AircraftDetailListItem extends Component {
                             <Flex
                                 flexWrap="wrap"
                                 justifyContent="space-between"
-                                mt={6}
                             >
                                 {this.props.aircraftDetail.data.crew.map(c => {
                                     return (
-                                        <Box key={c.id} w="calc(50% - 8px)">
+                                        <Box
+                                            key={c.id}
+                                            w="calc(50% - 8px)"
+                                            mt={6}
+                                        >
                                             <Link to={`/people/${c.id}`}>
                                                 <CrewDetailListItem
                                                     crewDetail={c}
+                                                    p={4}
                                                 />
                                             </Link>
                                         </Box>
