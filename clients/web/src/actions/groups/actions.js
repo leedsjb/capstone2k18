@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_GROUPS_PENDING,
     FETCH_GROUPS_SUCCESS,
@@ -13,7 +15,7 @@ export function fetchGroups(term) {
                 type: FETCH_GROUPS_PENDING
             });
 
-            let url = "http://api.test.elevate.airliftnw.org/v1/groups";
+            let url = `${PROD_API_URL_V1}/groups`;
 
             if (term) {
                 url = `${url}?q=${term}`;
@@ -33,5 +35,3 @@ export function fetchGroups(term) {
         }
     };
 }
-
-// http://api.test.elevate.airliftnw.org/v1/groups?q=dEr

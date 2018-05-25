@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_PEOPLE_PENDING,
     FETCH_PEOPLE_SUCCESS,
@@ -13,7 +15,7 @@ export function fetchPeople(term) {
                 type: FETCH_PEOPLE_PENDING
             });
 
-            let url = "http://api.test.elevate.airliftnw.org/v1/people";
+            let url = `${PROD_API_URL_V1}/people`;
 
             if (term) {
                 url = `${url}?q=${term}`;

@@ -8,18 +8,20 @@
 # Purpose: This script builds and pushes test Golang web server image to Google Container Registry
 #   for deployment on Kubernetes
 
-docker stop crewjam-saml
-docker rm crewjam-saml
-docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.27
+yarn build
+
+# docker stop crewjam-saml
+# docker rm crewjam-saml
+docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.33
 GOOS=linux go build
-docker build -t us.gcr.io/airliftnw-uw/go-webclient:0.27 .
+docker build -t us.gcr.io/airliftnw-uw/go-webclient:0.33 .
 
 # Stop here for local testing. 
 # For Kubernetes deployment only:
 go clean
-docker push us.gcr.io/airliftnw-uw/go-webclient:0.27
-docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.27
-kubectl apply -f ../../clients/web/kubernetes_deployment/yaml/crewjam-deployment.yaml --record
+docker push us.gcr.io/airliftnw-uw/go-webclient:0.33
+docker rmi us.gcr.io/airliftnw-uw/go-webclient:0.33
+kubectl apply -f ../../deployment/yaml/go-saml-web-server-deployment.yaml --record
 kubectl rollout status deployment/go-saml-web-server-deployment
 
 # export environment=local-dev
