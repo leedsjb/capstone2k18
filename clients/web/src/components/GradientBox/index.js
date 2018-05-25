@@ -3,9 +3,10 @@ import styled from "styled-components";
 import Box from "../Box";
 
 const GradientBox = styled(Box)`
-    background: linear-gradient(
-        ${props => props.theme.colors.primaryLight},
-        ${props => props.theme.colors.primary}
+    background: radial-gradient(
+        circle at top left,
+        ${props => props.firstcolor},
+        ${props => props.secondcolor}
     );
 `;
 

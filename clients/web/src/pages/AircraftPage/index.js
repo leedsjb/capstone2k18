@@ -41,7 +41,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
-        // this.props.openSocket();
+        this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -122,7 +122,7 @@ class AircraftPage extends Component {
                     }
                 }}
             >
-                <Box bg="#F7F8FC" px={3} py={3}>
+                <Box bg="#F7F9FA" px={3} py={3}>
                     <SearchBox
                         handleChange={query => {
                             this.setState({ query }, () => {

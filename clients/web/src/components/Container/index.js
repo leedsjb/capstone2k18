@@ -6,7 +6,7 @@ import { Box } from "grid-styled";
 const Container = sys(
     {
         is: Box,
-        px: 3,
+        px: 4,
         mx: "auto",
         maxWidth: 1024,
         w: 1

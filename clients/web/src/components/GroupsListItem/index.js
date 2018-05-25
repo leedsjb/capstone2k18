@@ -3,15 +3,15 @@ import { Flex } from "grid-styled";
 
 import MasterListItem from "../MasterListItem";
 import Span from "../Span";
-import Circle from "../Circle";
 import Box from "../Box";
+import ColoredAvatar from "../ColoredAvatar";
 
 const GroupsListItem = ({ active, group }) => {
     return (
         <MasterListItem active={active}>
             <Flex alignItems="center" justifyContent="space-between">
                 <Flex alignItems="center">
-                    <Circle size={40} />
+                    <ColoredAvatar size={40} fName={group.name} />
                     <Box ml={3}>
                         <Span fontWeight="bold">{group.name}</Span>
                         <br />
