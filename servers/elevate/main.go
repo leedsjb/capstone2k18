@@ -78,10 +78,10 @@ func main() {
 	// [CloudSQL]
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
-	sqlUser := os.Getenv("SQLUSER")
+	// sqlUser := os.Getenv("SQLUSER")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
-	cfg := mysql.Cfg(sqlInstance, sqlUser, "123")
+	cfg := mysql.Cfg(sqlInstance, "proxyuser", "")
 	cfg.DBName = sqlDbName
 	db, err := mysql.DialCfg(cfg)
 	if err != nil {
