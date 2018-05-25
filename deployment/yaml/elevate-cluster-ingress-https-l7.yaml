@@ -1,7 +1,7 @@
-# Filename: elevate-deployment-ingress.yaml
+# Filename: elevate-cluster-ingress-https-l7.yaml
 # Created: May 10, 2018
-# Modified: Tuesday May 15, 2018
-# Last Change: Added HTTPS and Static IP
+# Modified: Thursday May 24, 2018
+# Last Change: Renamed from elevate-deployment-ingress.yaml to elevate-cluster-ingress-https-l7.yaml
 # Author: J. Benjamin Leeds
 # License: None
 

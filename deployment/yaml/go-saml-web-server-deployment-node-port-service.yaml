@@ -1,6 +1,8 @@
-# Filename: crewjam-deployment-nodeport.yaml
+# Filename: go-saml-web-server-deployment-node-port-service.yaml
 # Created: May 10, 2018
-# Modified: May 11, 2018
+# Modified: Thursday May 24, 2018
+# Last Change: Renamed from crewjam-deployment-nodeport.yaml to 
+#   go-saml-web-server-deployment-node-port-service.yaml
 # Author: J. Benjamin Leeds
 # License: None
 # NodePort for elevate HTTP(S) Ingress controlled GCP Load Balancer
