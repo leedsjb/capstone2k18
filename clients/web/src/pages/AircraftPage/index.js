@@ -167,6 +167,8 @@ class AircraftPage extends Component {
                                         case OOS:
                                             status = "oos";
                                             break;
+                                        default:
+                                            break;
                                     }
 
                                     this.props.fetchAircraft(null, status);
