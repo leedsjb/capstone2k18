@@ -41,7 +41,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
-        // this.props.openSocket();
+        this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {

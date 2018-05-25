@@ -577,6 +577,10 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 		term := query.Get("q")
 
+		statusFilter := query.Get("status")
+
+		category := query.Get("category")
+
 		// TODO: refactor to be cleaner
 		if len(term) > 0 {
 			// search query non-empty
@@ -587,79 +591,88 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				return
 			}
 			respond(w, aircraftList)
-		} else {
-			// search query empty
-			statusFilter := query.Get("status")
+		} else if len(statusFilter) > 0 {
+			// search by status
 
 			aircraftList := []*messages.Aircraft{}
 
-			if len(statusFilter) > 0 {
-				// filter by status
+			// filter by status
 
-				// TODO: SQL sproc for aircraft by status
-				// map status to statusID
-				aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
-				if err != nil {
-					fmt.Printf("Couldn't get aircraft by status: %v", err)
-				}
-
-				currentRow := &aircraftRow{}
-				for aircraftRows.Next() {
-					err = aircraftRows.Scan(
-						&currentRow.ID,
-						&currentRow.Callsign,
-						&currentRow.Nnum,
-						&currentRow.Manufacturer,
-						&currentRow.Title,
-						&currentRow.Class,
-						&currentRow.Lat,
-						&currentRow.Long,
-						&currentRow.LocationName,
-						&currentRow.Status,
-					)
-					if err != nil {
-						fmt.Printf("Error scanning aircraft row: %v", err)
-						return
-					}
-					aircraft, err := ctx.GetAircraftSummary(currentRow)
-					if err != nil {
-						fmt.Printf("Error populating aircraft: %v", err)
-						return
-					}
-					aircraftList = append(aircraftList, aircraft)
-				}
-			} else {
-				// no filter, return all
-				aircraftRows, err := ctx.GetAllAircraft()
-				currentRow := &aircraftRow{}
-				for aircraftRows.Next() {
-					err = aircraftRows.Scan(
-						&currentRow.ID,
-						&currentRow.Callsign,
-						&currentRow.Nnum,
-						&currentRow.Manufacturer,
-						&currentRow.Title,
-						&currentRow.Class,
-						&currentRow.Lat,
-						&currentRow.Long,
-						&currentRow.LocationName,
-						&currentRow.Status,
-					)
-					if err != nil {
-						fmt.Printf("Error scanning aircraft row: %v", err)
-						return
-					}
-					aircraft, err := ctx.GetAircraftSummary(currentRow)
-					if err != nil {
-						fmt.Printf("Error populating aircraft: %v", err)
-						return
-					}
-					aircraftList = append(aircraftList, aircraft)
-				}
+			// TODO: SQL sproc for aircraft by status
+			// map status to statusID
+			aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
+			if err != nil {
+				fmt.Printf("Couldn't get aircraft by status: %v", err)
 			}
 
+			currentRow := &aircraftRow{}
+			for aircraftRows.Next() {
+				err = aircraftRows.Scan(
+					&currentRow.ID,
+					&currentRow.Callsign,
+					&currentRow.Nnum,
+					&currentRow.Manufacturer,
+					&currentRow.Title,
+					&currentRow.Class,
+					&currentRow.Lat,
+					&currentRow.Long,
+					&currentRow.LocationName,
+					&currentRow.Status,
+				)
+				if err != nil {
+					fmt.Printf("Error scanning aircraft row: %v", err)
+					return
+				}
+				aircraft, err := ctx.GetAircraftSummary(currentRow)
+				if err != nil {
+					fmt.Printf("Error populating aircraft: %v", err)
+					return
+				}
+				aircraftList = append(aircraftList, aircraft)
+			}
+			respond(w, aircraftList)
+
+		} else if len(category) > 0 {
+			fmt.Printf("wowowowow filter by category")
+
+			aircraftList := []*messages.Aircraft{}
+
+			// ctx.GetAircraftByType(category)
+
+			respond(w, aircraftList)
+		} else {
+			aircraftList := []*messages.Aircraft{}
+
+			// no filter, return all
+			aircraftRows, err := ctx.GetAllAircraft()
+			currentRow := &aircraftRow{}
+			for aircraftRows.Next() {
+				err = aircraftRows.Scan(
+					&currentRow.ID,
+					&currentRow.Callsign,
+					&currentRow.Nnum,
+					&currentRow.Manufacturer,
+					&currentRow.Title,
+					&currentRow.Class,
+					&currentRow.Lat,
+					&currentRow.Long,
+					&currentRow.LocationName,
+					&currentRow.Status,
+				)
+				if err != nil {
+					fmt.Printf("Error scanning aircraft row: %v", err)
+					return
+				}
+				aircraft, err := ctx.GetAircraftSummary(currentRow)
+				if err != nil {
+					fmt.Printf("Error populating aircraft: %v", err)
+					return
+				}
+				aircraftList = append(aircraftList, aircraft)
+			}
 			respond(w, aircraftList)
 		}
+
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
 		return
