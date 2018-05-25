@@ -351,7 +351,7 @@ class PeoplePage extends Component {
 
             return (
                 <Box py={12}>
-                    <Container>
+                    <Container px={8}>
                         <Flex flexDirection="column" alignItems="center">
                             <Box>
                                 <ColoredAvatar fName={person.fName} size={72} />
@@ -403,13 +403,28 @@ class PeoplePage extends Component {
                             value={person.mobile}
                             mt={6}
                         />
-                        {person.memberGroups.length > 0 ? (
-                            <Box mt={12}>
-                                <Heading fontSize={4}>Member of</Heading>
-                                <Flex flexWrap="wrap" mt={6}>
+                    </Container>
+                    {person.memberGroups.length > 0 ? (
+                        <div>
+                            <Container px={8}>
+                                <Heading fontSize={4} mt={6}>
+                                    Groups
+                                </Heading>
+                            </Container>
+                            <Box maxWidth={1024} px={4} mx="auto">
+                                <Flex flexWrap="wrap">
                                     {person.memberGroups.map((group, i) => {
                                         return (
-                                            <Card flex={1}>
+                                            <Card
+                                                mx={4}
+                                                w={[
+                                                    "calc(100% / 2 - 32px)",
+                                                    "calc(100% - 32px)",
+                                                    "calc(100% - 32px)",
+                                                    "calc(100% / 3 - 32px)"
+                                                ]}
+                                                mt={4}
+                                            >
                                                 <ColoredBox
                                                     word={group.name}
                                                     w={1}
@@ -425,8 +440,8 @@ class PeoplePage extends Component {
                                     })}
                                 </Flex>
                             </Box>
-                        ) : null}
-                    </Container>
+                        </div>
+                    ) : null}
                 </Box>
             );
         } else {
