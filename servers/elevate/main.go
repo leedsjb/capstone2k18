@@ -78,7 +78,6 @@ func main() {
 	// [CloudSQL]
 
 	sqlInstance := os.Getenv("SQLINSTANCE")
-	// sqlUser := os.Getenv("SQLUSER")
 	sqlDbName := os.Getenv("SQLDBNAME")
 
 	cfg := mysql.Cfg(sqlInstance, "proxyuser", "")
