@@ -7,7 +7,7 @@ import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
-import ProfileAvatar from "../../components/ProfileAvatar";
+import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
@@ -29,7 +29,7 @@ class PeopleDetailPage extends Component {
             return (
                 <Flex flexDirection="column" alignItems="center">
                     <Box mt={4}>
-                        <ProfileAvatar fName={person.fName} size={72} />
+                        <ColoredAvatar fName={person.fName} size={72} />
                     </Box>
                     <Heading
                         children={`${person.fName} ${person.lName}`}
@@ -71,9 +71,17 @@ class PeopleDetailPage extends Component {
                     <title>People</title>
                 </Helmet>
                 <TitleBar back backPath={backPath} title="People" />
-                <ScrollView>
-                    {this.renderPeopleDetail(this.props.peopleDetail.data)}
-                </ScrollView>
+                {this.props.peopleDetail.error ? (
+                    <FlexFillVH>
+                        An error has occurred:{" "}
+                        {this.props.peopleDetail.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <ScrollView>
+                        {this.renderPeopleDetail(this.props.peopleDetail.data)}
+                    </ScrollView>
+                )}
+
                 <TabBar />
             </FlexFillVH>
         );

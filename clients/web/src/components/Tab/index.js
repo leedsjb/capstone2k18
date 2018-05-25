@@ -7,7 +7,7 @@ const Tab = sys(
         is: "a",
         fontSize: 1,
         fontWeight: "bold",
-        py: 2,
+        py: 3,
         color: "inherit",
         flex: 1,
         borderBottom: 2,

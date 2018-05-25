@@ -1,6 +1,7 @@
 import {
     FETCH_PEOPLE_PENDING,
-    FETCH_PEOPLE_SUCCESS
+    FETCH_PEOPLE_SUCCESS,
+    FETCH_PEOPLE_ERROR
 } from "../actions/people/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const peopleReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_PEOPLE_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

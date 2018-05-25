@@ -14,13 +14,18 @@ export function fetchGroupsDetail(id) {
             });
 
             const { data } = await axios.get(
-                `http://localhost:4000/groups/${id}`
+                `http://api.test.elevate.airliftnw.org/v1/groups/${id}`
             );
 
             dispatch({
                 type: FETCH_GROUPSDETAIL_SUCCESS,
                 payload: data
             });
-        } catch (e) {}
+        } catch (e) {
+            dispatch({
+                type: FETCH_GROUPSDETAIL_ERROR,
+                error: e
+            });
+        }
     };
 }

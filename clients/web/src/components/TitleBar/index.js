@@ -7,35 +7,23 @@ import { withTheme } from "styled-components";
 import Box from "../Box";
 import Icon from "../Icon";
 import Heading from "../Heading";
-import ProfileAvatar from "../ProfileAvatar";
-import GradientBox from "../GradientBox";
 
 class TitleBar extends Component {
     renderIconLeft = () => {
         if (this.props.back) {
             return (
                 <Link to={this.props.backPath}>
-                    <Icon glyph="chevronLeft" size={16} color="white" />
+                    <Icon glyph="chevronLeft" size={16} color="black" />
                 </Link>
             );
         }
-
-        return <Box w={24} />;
-    };
-
-    renderIconRight = () => {
-        return (
-            <Flex alignItems="center">
-                <Icon glyph="grid" size={16} color="white" />
-                <ProfileAvatar fName="Dave" />
-            </Flex>
-        );
+        return <Box w={16} />;
     };
 
     renderMapIcon = () => {
         return (
             <Flex alignItems="center">
-                <Icon glyph="map" size={16} color="white" />
+                <Icon glyph="map" size={16} color="black" />
             </Flex>
         );
     };
@@ -45,7 +33,7 @@ class TitleBar extends Component {
             <Media query={`(min-width: ${this.props.theme.breakpoints[1]})`}>
                 {matches =>
                     matches ? null : this.props.showMap ? (
-                        <GradientBox p={3}>
+                        <Box bg="white" p={3} borderBottom="1px solid gray">
                             <Flex justifyContent="flex-start" align="center">
                                 <Box width={1 / 3}>
                                     <Link to={this.props.link}>
@@ -57,23 +45,23 @@ class TitleBar extends Component {
                                         is="h3"
                                         fontSize={2}
                                         textAlign="center"
-                                        color="white"
+                                        color="black"
                                     >
                                         {this.props.title}
                                     </Heading>
                                 </Box>
                             </Flex>
-                        </GradientBox>
+                        </Box>
                     ) : (
-                        <GradientBox p={3}>
+                        <Box bg="white" p={3} borderBottom="1px solid gray">
                             <Flex justifyContent="space-between" align="center">
                                 {this.renderIconLeft()}
-                                <Heading is="h3" fontSize={2}>
+                                <Heading is="h3" fontSize={2} color="black">
                                     {this.props.title}
                                 </Heading>
-                                {this.renderIconRight()}
+                                <Box w={16} />
                             </Flex>
-                        </GradientBox>
+                        </Box>
                     )
                 }
             </Media>

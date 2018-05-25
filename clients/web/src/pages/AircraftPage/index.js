@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
 import AircraftDetailListItem from "../../components/AircraftDetailListItem";
 import Box from "../../components/Box";
+import Clickable from "../../components/Clickable";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
@@ -17,8 +17,9 @@ import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
 import Text from "../../components/Text";
+import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
-import Span from "../../components/Span";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -30,6 +31,7 @@ class AircraftPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            query: "",
             isSearching: false
         };
     }
@@ -39,7 +41,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
-        this.props.openSocket();
+        // this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -50,16 +52,36 @@ class AircraftPage extends Component {
 
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
-            return aircraft.data.map(a => {
-                return (
-                    <Link to={`/aircraft/${a.id}`} key={a.id}>
-                        <AircraftListItem
-                            aircraft={a}
-                            active={this.props.id == a.id}
-                        />
-                    </Link>
-                );
-            });
+            return (
+                <div>
+                    {aircraft.data.map(a => {
+                        return (
+                            <Clickable
+                                key={a.id}
+                                onClick={() => {
+                                    if (this.state.isSearching) {
+                                        if (this.state.isSearching) {
+                                            this.setState({
+                                                query: "",
+                                                isSearching: false
+                                            });
+                                            this.props.fetchAircraft();
+                                        }
+                                    }
+                                    this.props.push(`/aircraft/${a.id}`);
+                                }}
+                            >
+                                <AircraftListItem
+                                    active={
+                                        Number(this.props.id) === a.id ? 1 : 0
+                                    }
+                                    aircraft={a}
+                                />
+                            </Clickable>
+                        );
+                    })}
+                </div>
+            );
         } else if (!aircraft.pending) {
             return (
                 <Box mt={4}>
@@ -86,38 +108,44 @@ class AircraftPage extends Component {
         return <div>Loading...</div>;
     }
 
-    /*
-        <SearchBox
-            handleChange={query =>
-                this.props.fetchAircraft(query, null)
-            }
-            handleClear={() => this.props.fetchAircraft()}
-        />
-    */
-
     renderMasterView = () => {
         return this.props.aircraft.error ? (
             <div>
                 An error has occurred: {this.props.aircraft.error.toString()}
             </div>
         ) : (
-            <div>
-                <Box bg="#F7F8FC" px={3} py={6}>
-                    <Heading is="h1" fontSize={4}>
-                        Aircraft
-                    </Heading>
+            <OutsideClickHandler
+                handleClickOutside={() => {
+                    if (this.state.isSearching) {
+                        this.setState({ query: "", isSearching: false });
+                        this.props.fetchAircraft();
+                    }
+                }}
+            >
+                <Box bg="#F7F8FC" px={3} py={3}>
+                    <SearchBox
+                        handleChange={query => {
+                            this.setState({ query }, () => {
+                                this.props.fetchAircraft(
+                                    this.state.query,
+                                    null
+                                );
+                            });
+                        }}
+                        isSearching={this.state.isSearching}
+                        query={this.state.query}
+                        handleClear={() => {
+                            this.setState({ query: "", isSearching: false });
+                            this.props.fetchAircraft();
+                        }}
+                        placeholder="Search all aircraft"
+                        handleFocus={() => {
+                            this.setState({ isSearching: true });
+                        }}
+                    />
 
-                    <Flex alignItems="center" mt={4}>
-                        <DropdownSelect
-                            items={statusFilters}
-                            onChange={status => {
-                                if (status === "Any status") {
-                                    status = null;
-                                }
-                                this.props.fetchAircraft(null, status);
-                            }}
-                        />
-                        <Box ml={3}>
+                    {!this.state.isSearching ? (
+                        <Flex alignItems="center" mt={2}>
                             <DropdownSelect
                                 items={statusFilters}
                                 onChange={status => {
@@ -127,13 +155,26 @@ class AircraftPage extends Component {
                                     this.props.fetchAircraft(null, status);
                                 }}
                             />
-                        </Box>
-                    </Flex>
+                            <Box ml={3}>
+                                <DropdownSelect
+                                    items={statusFilters}
+                                    onChange={status => {
+                                        if (status === "Any status") {
+                                            status = null;
+                                        }
+                                        this.props.fetchAircraft(null, status);
+                                    }}
+                                />
+                            </Box>
+                        </Flex>
+                    ) : null}
                 </Box>
 
                 <Divider />
-                {this.renderAircraft(this.props.aircraft)}
-            </div>
+                <ScrollView>
+                    {this.renderAircraft(this.props.aircraft)}
+                </ScrollView>
+            </OutsideClickHandler>
         );
     };
 
@@ -144,7 +185,7 @@ class AircraftPage extends Component {
                 {this.props.aircraftDetail.error.toString()}
             </div>
         ) : (
-            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
+            this.renderAircraftDetail(this.props.aircraftDetail)
         );
     };
 

@@ -1,6 +1,7 @@
 import {
     FETCH_PROFILE_PENDING,
-    FETCH_PROFILE_SUCCESS
+    FETCH_PROFILE_SUCCESS,
+    FETCH_PROFILE_ERROR
 } from "../actions/profile/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const profileReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_PROFILE_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

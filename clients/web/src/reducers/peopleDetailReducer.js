@@ -1,6 +1,7 @@
 import {
     FETCH_PEOPLEDETAIL_PENDING,
-    FETCH_PEOPLEDETAIL_SUCCESS
+    FETCH_PEOPLEDETAIL_SUCCESS,
+    FETCH_PEOPLEDETAIL_ERROR
 } from "../actions/peopleDetail/types";
 
 const initialState = {
@@ -21,6 +22,10 @@ const peopleDetailReducer = (state = initialState, action) => {
                 ...state,
                 pending: false,
                 data: action.payload
+            };
+        case FETCH_PEOPLEDETAIL_ERROR:
+            return {
+                error: action.error
             };
         default:
             return state;

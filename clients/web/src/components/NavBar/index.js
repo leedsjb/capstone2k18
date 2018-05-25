@@ -8,7 +8,6 @@ import Box from "../Box";
 import ProfileDropdown from "../ProfileDropdown";
 import ResourcesDropdown from "../ResourcesDropdown";
 import NavBarItem from "../NavBarItem";
-import GradientBox from "../GradientBox";
 import Image from "../Image";
 
 import logo from "../../images/logo.svg";
@@ -18,7 +17,12 @@ const NavBar = ({ theme: { breakpoints } }) => {
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
                 matches ? (
-                    <GradientBox py={3} px={4}>
+                    <Box
+                        py={3}
+                        px={4}
+                        bg="white"
+                        borderBottom="1px solid #e5e5e4"
+                    >
                         <Flex
                             justifyContent="space-between"
                             alignItems="center"
@@ -49,7 +53,7 @@ const NavBar = ({ theme: { breakpoints } }) => {
                                 </Box>
                             </Flex>
                         </Flex>
-                    </GradientBox>
+                    </Box>
                 ) : null
             }
         </Media>

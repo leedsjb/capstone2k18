@@ -4,7 +4,7 @@ import Media from "react-media";
 import { withTheme } from "styled-components";
 
 import TabBarItem from "../TabBarItem";
-import GradientBox from "../GradientBox";
+import Box from "../Box";
 
 const TabBar = ({ theme: { breakpoints } }) => {
     return (
@@ -12,7 +12,7 @@ const TabBar = ({ theme: { breakpoints } }) => {
             query={`(max-width: ${breakpoints[1]})`}
             render={() => {
                 return (
-                    <GradientBox>
+                    <Box bg="white" borderTop="1px solid gray">
                         <Flex>
                             <TabBarItem
                                 title="Aircraft"
@@ -35,7 +35,7 @@ const TabBar = ({ theme: { breakpoints } }) => {
                                 path="/profile"
                             />
                         </Flex>
-                    </GradientBox>
+                    </Box>
                 );
             }}
         />

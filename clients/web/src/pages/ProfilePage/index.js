@@ -1,56 +1,153 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
+import { Flex } from "grid-styled";
 
-import TitleBar from "../../components/TitleBar";
-import NavBar from "../../components/NavBar";
+import Box from "../../components/Box";
+import Checkbox from "../../components/Checkbox";
+import ColoredAvatar from "../../components/ColoredAvatar";
 import Container from "../../components/Container";
-import TabBar from "../../components/TabBar";
 import FlexFillVH from "../../components/FlexFillVH";
+import Heading from "../../components/Heading";
+import Label from "../../components/Label";
+import NavBar from "../../components/NavBar";
 import ScrollView from "../../components/ScrollView";
-import ProfileAvatar from "../../components/ProfileAvatar";
-import ButtonIcon from "../../components/ButtonIcon";
+import Span from "../../components/Span";
+import TabBar from "../../components/TabBar";
+import TextInput from "../../components/TextInput";
+import TitleBar from "../../components/TitleBar";
 
-import ProfileProvider from "../../containers/ProfileProvider";
+import { fetchProfile } from "../../actions/profile/actions";
 
-const ProfilePage = () => {
-    return (
-        <FlexFillVH flexDirection="column">
-            <Helmet>
-                <title>Profile</title>
-            </Helmet>
+class ProfilePage extends Component {
+    componentDidMount() {
+        this.props.fetchProfile();
+    }
 
-            <TitleBar title="People" />
-            <NavBar />
+    renderProfile() {
+        let currUser = this.props.profile;
 
-            <ScrollView>
-                <Container>
-                    <ProfileProvider
-                        render={({ profile: { pending, data } }) => {
-                            if (pending || Array.isArray(data)) {
-                                return <div>Loading...</div>;
-                            }
-
-                            return (
-                                <div>
-                                    <ProfileAvatar
-                                        fName={data.fName}
-                                        size={96}
-                                    />
-                                    <div>{`${data.fName} ${data.lName}`}</div>
-                                    <div>{data.position}</div>
-                                    <ButtonIcon />
-                                    <ButtonIcon />
-                                    <ButtonIcon />
-                                </div>
-                            );
-                        }}
-                    />
+        if (
+            !this.props.profile.pending &&
+            !Array.isArray(this.props.profile.data)
+        ) {
+            return (
+                <Container py={12}>
+                    <Flex alignItems="center" flexDirection="column">
+                        <ColoredAvatar fName={currUser.data.fName} size={96} />
+                        <Box maxWidth="30em" w={1}>
+                            <Heading is="h2" mt={6}>
+                                Account
+                            </Heading>
+                            <Box mt={2}>
+                                <Span>
+                                    Contact Chris Bishop if you'd like to update
+                                    your information
+                                </Span>
+                            </Box>
+                            <Box mt={8}>
+                                <Label>UW NetID</Label>
+                                <TextInput
+                                    value={currUser.data.uwNetID}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>First name</Label>
+                                <TextInput
+                                    value={currUser.data.fName}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Last name</Label>
+                                <TextInput
+                                    value={currUser.data.lName}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Email</Label>
+                                <TextInput
+                                    value={currUser.data.email}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Phone</Label>
+                                <TextInput
+                                    value={currUser.data.mobile}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Position</Label>
+                                <TextInput
+                                    value={currUser.data.position}
+                                    disabled
+                                />
+                            </Box>
+                            <Box mt={3}>
+                                <Label>Special quals</Label>
+                                <TextInput
+                                    value={
+                                        currUser.data.specialQuals
+                                            ? currUser.data.specialQuals
+                                            : "N/A"
+                                    }
+                                    disabled
+                                />
+                            </Box>
+                            <Heading is="h2" mt={6}>
+                                Notification preferences
+                            </Heading>
+                            <Flex alignItems="baseline" mt={4}>
+                                <Checkbox defaultChecked />
+                                <Span>
+                                    Text me when I get assigned to a mission
+                                </Span>
+                            </Flex>
+                        </Box>
+                    </Flex>
                 </Container>
-            </ScrollView>
+            );
+        }
+        return <div>Loading...</div>;
+    }
 
-            <TabBar />
-        </FlexFillVH>
-    );
+    render() {
+        return (
+            <FlexFillVH flexDirection="column">
+                <Helmet>
+                    <title>Profile</title>
+                </Helmet>
+
+                <TitleBar title="Profile" />
+                <NavBar />
+                {this.props.profile.error ? (
+                    <FlexFillVH>
+                        An error has occurred:{" "}
+                        {this.props.profile.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <ScrollView>
+                        <Container>{this.renderProfile()}</Container>
+                    </ScrollView>
+                )}
+                <TabBar />
+            </FlexFillVH>
+        );
+    }
+}
+
+function mapStateToProps(state, ownProps) {
+    return {
+        profile: state.profile
+    };
+}
+
+const mapDispatchToProps = {
+    fetchProfile
 };
 
-export default ProfilePage;
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

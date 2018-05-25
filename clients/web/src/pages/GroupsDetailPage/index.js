@@ -64,13 +64,22 @@ class GroupsDetailPage extends Component {
                     <title>Groups</title>
                 </Helmet>
                 <TitleBar back backPath="/groups" title="Groups" />
-                <Flex justifyContent="center" py={2} px={3}>
-                    <Span fontWeight="bold">
-                        {this.props.groupsDetail.data.name}
-                    </Span>
-                </Flex>
-                <Divider />
-                <ScrollView>{this.renderGroupsDetail()}</ScrollView>
+                {this.props.groupsDetail.error ? (
+                    <FlexFillVH>
+                        An error has occurred:{" "}
+                        {this.props.groupsDetail.error.toString()}
+                    </FlexFillVH>
+                ) : (
+                    <FlexFillVH flexDirection="column">
+                        <Flex justifyContent="center" py={2} px={3}>
+                            <Span fontWeight="bold">
+                                {this.props.groupsDetail.data.name}
+                            </Span>
+                        </Flex>
+                        <Divider />
+                        <ScrollView>{this.renderGroupsDetail()}</ScrollView>
+                    </FlexFillVH>
+                )}
                 <TabBar />
             </FlexFillVH>
         );

@@ -1,13 +1,16 @@
 // Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Card.js
 
 import sys from "system-components";
+import Box from "../Box";
 
 const Card = sys(
     {
-        p: 2,
+        p: 4,
         bg: "white",
-        borderRadius: 2,
-        boxShadow: 2
+        borderRadius: 4,
+        border: "1px solid",
+        borderColor: "gray",
+        is: Box
     },
     {
         overflow: "hidden"

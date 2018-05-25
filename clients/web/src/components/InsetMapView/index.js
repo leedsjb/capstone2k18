@@ -9,10 +9,7 @@ import Box from "../../components/Box";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-import airplane from "../../images/airplane.svg";
-
-const image = new Image(32, 32);
-image.src = airplane;
+import mapStyle from "../../utils/mapbox/style.json";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX,
@@ -79,10 +76,9 @@ class InsetMapView extends Component {
             this.props.aircraft.data.length > 0
         ) {
             let selected = this.props.aircraft.data.find(air => {
-                return air.id == this.props.id;
+                return air.id === Number(this.props.id);
             });
             if (selected) {
-                const images = [selected.callsign, image];
                 return (
                     <div>
                         <Box key={selected.id}>
@@ -125,17 +121,16 @@ class InsetMapView extends Component {
             <Map
                 animationOptions={{ animate: false }}
                 containerStyle={{
-                    width: "80%",
-                    height: "25%",
-                    borderRadius: "8px",
-                    margin: "0 auto"
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "8px"
                 }}
                 center={this.mapCenter()}
                 onClick={() =>
                     this.props.push(`/aircraft/map/${this.props.id}`)
                 }
                 onStyleLoad={map => this.setState({ map })}
-                style="mapbox://styles/vincentmvdm/cjga7b9nz28b82st2j6jhwu91"
+                style={mapStyle}
             >
                 {this.renderMapView()}
             </Map>
