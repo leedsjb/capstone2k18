@@ -17,7 +17,6 @@ import Span from "../../components/Span";
 import benjamin from "../../images/benjamin.png";
 import heli from "../../images/heli.png";
 import logotext from "../../images/logotext.svg";
-import logo from "../../images/logo.svg";
 import jessica from "../../images/jessica.png";
 import partner from "../../images/partner.png";
 import phone from "../../images/phone.png";

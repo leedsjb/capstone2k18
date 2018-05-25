@@ -158,7 +158,7 @@ class AircraftDetailPage extends Component {
                                         justifyContent="space-between"
                                         mt={3}
                                     >
-                                        {this.props.aircraftDetail.data.crew.people.map(
+                                        {this.props.aircraftDetail.data.crew.map(
                                             c => {
                                                 return (
                                                     <Box
