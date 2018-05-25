@@ -275,7 +275,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			FlightNum: missionRow.FlightNum,
 		}
 	}
-	nextETA := ""
+	nextETE := ""
 
 	// [Waypoint]
 	waypoints := []*messages.ClientMissionWaypoint{}
@@ -309,7 +309,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			waypoint.ETA = waypointRow.ETA.Time.String()
 
 			if strings.ToLower(waypointRow.Active) == "true" {
-				nextETA = waypointRow.ETA.Time.String()
+				nextETE = time.Until(waypointRow.ETA.Time).String()
 			}
 		}
 
@@ -317,7 +317,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 	// add waypoints to mission
 	mission.Waypoints = waypoints
-	mission.NextWaypointETA = nextETA
+	mission.NextWaypointETE = nextETE
 
 	// [OOS]
 	// TODO: SQL sproc for finding OOS status by aircraftID
@@ -435,7 +435,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		}
 	}
 	// [Waypoint]
-	nextETA := ""
+	nextETE := ""
 	waypoints := []*messages.ClientMissionWaypoint{}
 	// TODO: SQL sproc for finding waypoints by missionID
 	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
@@ -467,7 +467,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			waypoint.ETA = waypointRow.ETA.Time.String()
 
 			if strings.ToLower(waypointRow.Active) == "1" {
-				nextETA = waypointRow.ETA.Time.String()
+				nextETE = time.Until(waypointRow.ETA.Time).String()
 			}
 		}
 
@@ -475,7 +475,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	}
 	// add waypoints to mission
 	missionDetail.Waypoints = waypoints
-	missionDetail.NextWaypointETA = nextETA
+	missionDetail.NextWaypointETE = nextETE
 	// [RADIO REPORT]
 	report := &messages.Patient{}
 	// TODO: GetPatientByMission

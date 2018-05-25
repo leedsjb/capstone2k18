@@ -306,7 +306,8 @@ func (ctx *ParserContext) GetRoleByMemberID(memberID int) (string, error) {
 }
 
 func (ctx *ParserContext) GetWaypointNameByID(waypointID int) (string, error) {
-	query := `CALL uspGetWaypointNameByID(?)`
+	// query := `CALL uspGetWaypointNameByID(?)`
+	query := `SELECT waypoint_title FROM tblWAYPOINT WHERE waypoint_id=?`
 	wayPtRows, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,

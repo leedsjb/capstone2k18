@@ -74,7 +74,7 @@ type Mission_Crew_Update struct {
 type Mission struct {
 	Type string `json:"type"`
 	// Vision          string                   `json:"vision"`
-	NextWaypointETA string                   `json:"nextWaypointETA"`
+	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 }
@@ -83,7 +83,7 @@ type Mission struct {
 type MissionDetail struct {
 	Type string `json:"type"`
 	// Vision          string                   `json:"vision"`
-	NextWaypointETA string                   `json:"nextWaypointETA"`
+	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 	RadioReport     *Patient                 `json:"radioReport"`
