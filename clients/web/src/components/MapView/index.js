@@ -17,7 +17,7 @@ import Span from "../../components/Span";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
-import mapStyle from "../../utils/mapbox/style.json";
+// import mapStyle from "../../utils/mapbox/style.json";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX
@@ -115,19 +115,6 @@ class MapView extends Component {
     };
 
     renderMapView = () => {
-        if (
-            this.props.aircraftDetail.data.mission &&
-            this.props.aircraftDetail.data.mission.waypoints.length > 0
-        ) {
-            let test = this.props.aircraftDetail.data.mission.waypoints.map(
-                point => {
-                    return [point.long, point.lat];
-                }
-            );
-
-            console.log(test);
-        }
-
         if (
             !this.props.aircraft.pending &&
             this.props.aircraft.data &&
@@ -301,7 +288,8 @@ class MapView extends Component {
                             this.getUserLocation();
                         })
                     }
-                    style={mapStyle}
+                    // style={mapStyle}
+                    style="mapbox://styles/tzchen/cjhl4cawj17o92rlazjfvmmmg"
                     containerStyle={{
                         width: "100%",
                         height: "100%"

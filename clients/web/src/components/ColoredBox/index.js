@@ -6,7 +6,6 @@ import generateGradient from "../../utils/generateGradient";
 
 const ColoredBox = ({ word, ...props }) => {
     const gradient = generateGradient(word);
-    console.log(gradient);
     return (
         <GradientBox
             firstcolor={gradient[0]}
