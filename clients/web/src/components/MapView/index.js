@@ -3,7 +3,12 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import Media from "react-media";
 import { push } from "react-router-redux";
-import ReactMapboxGl, { Layer, Feature, Popup } from "react-mapbox-gl";
+import ReactMapboxGl, {
+    Layer,
+    Feature,
+    Popup,
+    ZoomControl
+} from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
 import Box from "../../components/Box";
@@ -24,7 +29,8 @@ class MapView extends Component {
         this.state = {
             center: [-122.4821475, 47.6129432],
             userPos: null,
-            map: null
+            map: null,
+            zoom: [11]
         };
     }
 
@@ -85,7 +91,6 @@ class MapView extends Component {
                                 position.coords.longitude,
                                 position.coords.latitude
                             ]);
-                            this.state.map.setZoom(11);
                         }
                     }
                 },
@@ -111,10 +116,26 @@ class MapView extends Component {
 
     renderMapView = () => {
         if (
+            this.props.aircraftDetail.data.mission &&
+            this.props.aircraftDetail.data.mission.waypoints.length > 0
+        ) {
+            let test = this.props.aircraftDetail.data.mission.waypoints.map(
+                point => {
+                    return [point.long, point.lat];
+                }
+            );
+
+            console.log(test);
+        }
+
+        if (
             !this.props.aircraft.pending &&
             this.props.aircraft.data &&
             this.props.aircraft.data.length > 0
         ) {
+            let selected = this.props.aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
             return (
                 <div>
                     {this.props.aircraft.data.map(aircraft => {
@@ -147,56 +168,58 @@ class MapView extends Component {
                                         />
                                     </Layer>
                                 ) : null}
-                                {this.props.id ? (
+                                {this.props.aircraftDetail.data.mission &&
+                                this.props.aircraftDetail.data.mission.waypoints
+                                    .length > 0 &&
+                                selected ? (
                                     <Box>
-                                        <Layer
-                                            type="symbol"
-                                            layout={{
-                                                "icon-image": "circle-15",
-                                                "icon-allow-overlap": true,
-                                                "text-field":
-                                                    "Squaxin Ballfields",
-                                                "text-allow-overlap": true,
-                                                "text-anchor": "top",
-                                                "text-offset": [0, 0.5],
-                                                "text-transform": "uppercase"
-                                            }}
-                                        >
-                                            <Feature
-                                                coordinates={[
-                                                    -122.28567,
-                                                    47.552965
-                                                ]}
-                                            />
-                                        </Layer>
-                                        <Layer
-                                            type="symbol"
-                                            layout={{
-                                                "icon-image": "circle-15",
-                                                "icon-allow-overlap": true,
-                                                "text-field": "West Seattle",
-                                                "text-allow-overlap": true,
-                                                "text-anchor": "top",
-                                                "text-offset": [0, 0.5],
-                                                "text-transform": "uppercase"
-                                            }}
-                                        >
-                                            <Feature
-                                                coordinates={[
-                                                    -122.3868,
-                                                    47.5667
-                                                ]}
-                                            />
-                                        </Layer>
+                                        {this.props.aircraftDetail.data.mission.waypoints.map(
+                                            point => {
+                                                return (
+                                                    <Layer
+                                                        type="symbol"
+                                                        layout={{
+                                                            "icon-image":
+                                                                "circle-15",
+                                                            "icon-allow-overlap": true,
+                                                            "text-field":
+                                                                point.name,
+                                                            "text-allow-overlap": true,
+                                                            "text-anchor":
+                                                                "top",
+                                                            "text-offset": [
+                                                                0,
+                                                                0.5
+                                                            ],
+                                                            "text-transform":
+                                                                "uppercase"
+                                                        }}
+                                                    >
+                                                        <Feature
+                                                            coordinates={[
+                                                                point.long,
+                                                                point.lat
+                                                            ]}
+                                                        />
+                                                    </Layer>
+                                                );
+                                            }
+                                        )}
                                         <Layer type="line">
                                             <Feature
                                                 coordinates={[
                                                     [
-                                                        aircraft.long,
-                                                        aircraft.lat
+                                                        selected.long,
+                                                        selected.lat
                                                     ],
-                                                    [-122.28567, 47.552965],
-                                                    [-122.3868, 47.5667]
+                                                    ...this.props.aircraftDetail.data.mission.waypoints.map(
+                                                        point => {
+                                                            return [
+                                                                point.long,
+                                                                point.lat
+                                                            ];
+                                                        }
+                                                    )
                                                 ]}
                                             />
                                         </Layer>
@@ -284,8 +307,16 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
+                    zoom={[this.state.zoom]}
                 >
                     {this.renderMapView()}
+
+                    <ZoomControl
+                        zoomDiff={1}
+                        onControlClick={(map, zoomDiff) => {
+                            this.setState({ zoom: map.getZoom() + zoomDiff });
+                        }}
+                    />
                 </Map>
             </Flex>
         );
