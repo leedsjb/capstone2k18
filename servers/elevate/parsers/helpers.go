@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/leedsjb/capstone2k18/servers/elevate/handlers"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
@@ -28,7 +27,9 @@ func parse(msg interface{}, pulledMsg *pubsub.Message, msgType string) {
 }
 
 // send message to client
-func clientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message, notifier *handlers.Notifier) {
+func (ctx *ParserContext) ClientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message) {
+	fmt.Printf("[CLIENT NOTIFY] In method")
+
 	// TODO: parse pubsub message into client struct
 	toClient := &messages.ClientMsg{
 		Type:    msgType,
@@ -42,7 +43,8 @@ func clientNotify(msg interface{}, msgType string, pulledMsg *pubsub.Message, no
 		pulledMsg.Ack()
 		return
 	}
-	notifier.Notify(send)
+	fmt.Printf("[WEBSOCKET] Printing message: %v", toClient)
+	ctx.Notifier.Notify(send)
 }
 
 func getAircraftCallsign(ID int, db *sql.DB) (string, error) {

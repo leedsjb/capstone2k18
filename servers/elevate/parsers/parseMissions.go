@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"cloud.google.com/go/pubsub"
@@ -17,7 +18,7 @@ import (
 func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
-	log.Printf("[MISSION CREATE] before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[MISSION CREATE] before unmarshaling: %v\n", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
 		log.Printf("PROBLEM contents of decoded json: %#v", msg)
 		log.Printf("Could not decode message data: %#v", pulledMsg)
@@ -25,23 +26,38 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		return fmt.Errorf("Error unmarshaling message data in Mission-Create: %v", err)
 	}
 
+	log.Printf("[MISSION CREATE] after unmarshaling: %+v\n", msg)
+
 	// parse pubsub message for client
 
 	requestor := ""
 	receiver := ""
+
+	fmt.Printf("[MISSION CREATE] requestor ID: %v\n", msg.RequestorID)
+	fmt.Printf("[MISSION CREATE] receiver ID: %v\n", msg.ReceiverID)
+	requestorID, err := strconv.Atoi(msg.RequestorID)
+	if err != nil {
+		return fmt.Errorf("could not convert string to int: %v", err)
+	}
+	receiverID, err := strconv.Atoi(msg.ReceiverID)
+	if err != nil {
+		return fmt.Errorf("could not convert string to int: %v", err)
+	}
 	aircraftStatus := "on a mission" // assume aircraft assigned to mission is on that mission
 
-	if msg.RequestorID != 0 {
-		req, err := ctx.GetRequestorByID(msg.RequestorID)
+	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
+	if requestorID != 0 {
+		req, err := ctx.GetRequestorByID(requestorID)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve requestor by given ID: %v", msg.RequestorID)
+			return fmt.Errorf("Could not retrieve requestor by given ID: %v, error is: %v\n", requestorID, err)
 		}
 		requestor = req
 	}
-	if msg.ReceiverID != 0 {
-		rec, err := ctx.GetReceiverByID(msg.ReceiverID)
+	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
+	if receiverID != 0 {
+		rec, err := ctx.GetReceiverByID(receiverID)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve requestor by given ID: %v", msg.ReceiverID)
+			return fmt.Errorf("Could not retrieve receiver by given ID: %v, error is: %v\n", receiverID, err)
 		}
 		receiver = rec
 	}
@@ -50,10 +66,14 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	people := []*messages.Person{}
 
 	if len(msg.CrewMemberID) > 0 {
-		for _, memberID := range msg.CrewMemberID {
-			person, err := ctx.getPersonSummary(memberID)
+		intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
+		if err != nil {
+			return fmt.Errorf("Could not convert crew member IDs to int: %v", err)
+		}
+		for _, memberID := range intCrewMemberIDs {
+			person, err := ctx.GetPersonByID(memberID)
 			if err != nil {
-				return fmt.Errorf("Couldn't retrieve person summary: %v", err)
+				return fmt.Errorf("Could not retrieve person summary: %v", err)
 			}
 			people = append(people, person)
 		}
@@ -63,9 +83,13 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	nextWaypointETA := ""
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			waypointName, err := ctx.GetWaypointNameByID(waypoint.ID)
+			waypointID, err := strconv.Atoi(waypoint.ID)
 			if err != nil {
-				fmt.Printf("Couldn't get waypoint name with given ID: %v, %v", waypoint.ID, err)
+				return fmt.Errorf("Could not convert waypoint ID from string to int: %v", err)
+			}
+			waypointName, err := ctx.GetWaypointNameByID(waypointID)
+			if err != nil {
+				fmt.Printf("Couldn't get waypoint name with given ID: %v, %v", waypointID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
 				Name:        waypointName,
@@ -114,8 +138,10 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		Mission:  missionDetail,
 	}
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
+	log.Printf("[CLIENT NOTIFY] Aircraft: %v", aircraft)
+	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
+	log.Printf("[CLIENT NOTIFY AircraftDetail: %v", aircraftDetail)
+	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// [ADD MISSION TO DB]
 	// if err := ctx.AddNewMission(msg); err != nil {
@@ -154,9 +180,13 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
-			waypointName, err := ctx.GetWaypointNameByID(waypoint.ID)
+			waypointID, err := strconv.Atoi(waypoint.ID)
 			if err != nil {
-				return fmt.Errorf("Couldn't get waypoint name with given ID: %v, %v", waypoint.ID, err)
+				return fmt.Errorf("Could not convert waypoint ID from string to int: %v", err)
+			}
+			waypointName, err := ctx.GetWaypointNameByID(waypointID)
+			if err != nil {
+				return fmt.Errorf("Couldn't get waypoint name with given ID: %v, %v", waypointID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
 				Name: waypointName,
@@ -180,7 +210,11 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	// [START format aircraft]
 	// get mission from db using missionID
-	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.MissionID)
+	missionID, err := strconv.Atoi(msg.MissionID)
+	if err != nil {
+		return fmt.Errorf("Could not convert mission ID from string to int: %v", err)
+	}
+	aircraftCallsign, err := ctx.GetAircraftCallsign(missionID)
 	if err != nil {
 		return fmt.Errorf("Error getting aircraftCallsign: %v", err)
 	}
@@ -198,7 +232,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	// [END format aircraft]
 
 	// [START format aircraftDetail]
-	tcNum, err := ctx.GetTCNumByMissionID(msg.MissionID)
+	tcNum, err := ctx.GetTCNumByMissionID(missionID)
 	if err != nil {
 		return fmt.Errorf("Couldnt get tcNum with given mission ID: %v, %v", msg.MissionID, err)
 	}
@@ -216,8 +250,8 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	}
 	// [END format aircraftDetail]
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
+	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
+	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// [ADD WAYPOINT UPDATE TO DB]
 	// if err := ctx.UpdateMissionWaypoints(msg); err != nil {
@@ -233,12 +267,12 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
 	// unmarshal json into correct struct
-	log.Printf("[MISSION CREW UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[MISSION CREW UPDATE] before unmarshaling: %v\n", string(pulledMsg.Data))
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-		log.Printf("PROBLEM contents of decoded json: %#v", msg)
-		log.Printf("Could not decode message data: %#v", pulledMsg)
+		log.Printf("PROBLEM contents of decoded json: %#v\n", msg)
+		log.Printf("Could not decode message data: %#v\n", pulledMsg)
 		pulledMsg.Ack()
-		return fmt.Errorf("Error unmarshaling message data in Mission-Crew-Update: %v", err)
+		return fmt.Errorf("Error unmarshaling message data in Mission-Crew-Update: %v\n", err)
 	}
 
 	// parse pubsub message for client
@@ -251,25 +285,33 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	people := []*messages.Person{}
 
 	if len(msg.CrewMemberID) > 0 {
-		for _, memberID := range msg.CrewMemberID {
-			person, err := ctx.getPersonSummary(memberID)
+		intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
+		if err != nil {
+			return fmt.Errorf("Could not convert crew member IDs to int: %v\n", err)
+		}
+		for _, memberID := range intCrewMemberIDs {
+			person, err := ctx.GetPersonByID(memberID)
 			if err != nil {
-				return fmt.Errorf("Couldn't retrieve person summary: %v", err)
+				return fmt.Errorf("Could not retrieve person summary: %v", err)
 			}
 			people = append(people, person)
 		}
 	}
 
-	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.MissionID)
+	missionID, err := strconv.Atoi(msg.MissionID)
 	if err != nil {
-		fmt.Printf("Error getting aircraft callsign: %v", err)
+		return fmt.Errorf("Could not convert mission ID from string to int: %v\n", err)
+	}
+	aircraftCallsign, err := ctx.GetAircraftCallsign(missionID)
+	if err != nil {
+		fmt.Printf("Error getting aircraft callsign: %v\n", err)
 	}
 
 	aircraftDetail := &messages.AircraftDetail{
 		Callsign: aircraftCallsign,
 		Crew:     people,
 	}
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
+	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// [ADD CREW UPDATES TO DB]
 	// if err := ctx.UpdateMissionCrew(msg); err != nil {
@@ -279,25 +321,14 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	return nil
 }
 
-func (ctx *ParserContext) getPersonSummary(memberID int) (*messages.Person, error) {
-	// retrieve member first and last name
-	fName, lName, err := ctx.GetCrewMemberByID(memberID)
-	if err != nil {
-		return nil, fmt.Errorf("Could not retrieve crew member by given ID: %v", memberID)
+func convertToInts(toInt []string) ([]int, error) {
+	converted := []int{}
+	for _, str := range toInt {
+		tempInt, err := strconv.Atoi(str)
+		if err != nil {
+			return nil, err
+		}
+		converted = append(converted, tempInt)
 	}
-
-	// retrieve member role
-	roleTitle, err := ctx.GetRoleByMemberID(memberID)
-	if err != nil {
-		return nil, fmt.Errorf("Could not retrieve roleTitle with given ID: %v, %v", memberID, err)
-	}
-
-	// fill Person object with crew member info
-	person := &messages.Person{
-		ID:       memberID,
-		FName:    fName,
-		LName:    lName,
-		Position: roleTitle,
-	}
-	return person, nil
+	return converted, nil
 }

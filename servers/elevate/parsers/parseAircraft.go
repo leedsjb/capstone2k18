@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
@@ -197,9 +198,14 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	aircraftCallsign, err := ctx.GetAircraftCallsign(msg.ID)
+	msgID, err := strconv.Atoi(msg.ID)
 	if err != nil {
-		fmt.Printf("Error getting aircraft callsign: %v", err)
+		return fmt.Errorf("Could not convert message ID from string to int: %v", err)
+	}
+
+	aircraftCallsign, err := ctx.GetAircraftCallsign(msgID)
+	if err != nil {
+		return fmt.Errorf("Error getting aircraft callsign: %v", err)
 	}
 
 	aircraft := &messages.Aircraft{
@@ -216,8 +222,8 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 		Area:     msg.PosFriendlyName,
 	}
 
-	clientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg, ctx.Notifier)
-	clientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg, ctx.Notifier)
+	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
+	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// ADD POSITION UPDATE TO DB
 	// if err := ctx.UpdateAircraftPosition(msg); err != nil {

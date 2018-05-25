@@ -258,7 +258,9 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, p
 			msgType := "mission-create"
 			// parses information into structs formatted for front-end
 			// and delivers via websocket
-			parserCtx.ParseMissionCreate(msg, pulledMsg, msgType)
+			if err := parserCtx.ParseMissionCreate(msg, pulledMsg, msgType); err != nil {
+				fmt.Printf("[MISSION CREATE] ERROR: %v", err)
+			}
 		case "test_mission_complete":
 			msg := &messages.Mission_Complete{}
 			msgType := "mission-complete"

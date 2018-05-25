@@ -33,14 +33,20 @@ type groupDetailRow struct {
 
 // IndexGroup ...
 func IndexGroup(trie *indexes.Trie, group *messages.Group) error {
-	if err := trie.AddEntity(strings.ToLower(group.Name), group.ID); err != nil {
+
+	groupID, err := strconv.Atoi(group.ID)
+	if err != nil {
+		return fmt.Errorf("Could not convert group ID to int: %v", err)
+	}
+
+	if err := trie.AddEntity(strings.ToLower(group.Name), groupID); err != nil {
 		return fmt.Errorf("Error adding group to trie: %v", err)
 	}
 
 	for _, member := range group.Members {
 		nameParts := strings.Fields(member)
 		for _, namePart := range nameParts {
-			if err := trie.AddEntity(strings.ToLower(namePart), group.ID); err != nil {
+			if err := trie.AddEntity(strings.ToLower(namePart), groupID); err != nil {
 				return fmt.Errorf("Error adding group to trie: %v", err)
 			}
 		}
@@ -127,13 +133,16 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 		// after getting all the members, add the group
 		// to the list of returned groups
 		fmt.Printf("[GROUP HANDLER TRIE] Add group to return groups: %#v\n", currentGroup)
-		clientGroup := GroupToClientGroup(currentGroup)
+		clientGroup, err := GroupToClientGroup(currentGroup)
+		if err != nil {
+			return nil, fmt.Errorf("Could not parse Group to ClientGroup: %v", err)
+		}
 		groups = append(groups, clientGroup)
 	}
 	return groups, nil
 }
 
-func GroupToClientGroup(group *messages.Group) *messages.ClientGroup {
+func GroupToClientGroup(group *messages.Group) (*messages.ClientGroup, error) {
 	var preview string
 	var firstMember string
 	var count int
@@ -157,12 +166,17 @@ func GroupToClientGroup(group *messages.Group) *messages.ClientGroup {
 		otherMembers := strconv.Itoa(count)
 		preview = firstMember + " and " + otherMembers + " others"
 	}
+
+	groupID, err := strconv.Atoi(group.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Could not convert group ID to int: %v", err)
+	}
 	client := &messages.ClientGroup{
-		ID:            group.ID,
+		ID:            groupID,
 		Name:          group.Name,
 		PeoplePreview: preview,
 	}
-	return client
+	return client, nil
 }
 
 func PeopleToPreview(people []*messages.Person) string {
@@ -194,8 +208,10 @@ func (ctx *HandlerContext) GetGroupSummary(currentRow *groupRow, group *messages
 	person := currentRow.FName + " " + currentRow.LName
 	people := append(group.Members, person)
 
+	groupID := strconv.Itoa(currentRow.GroupID)
+
 	group = &messages.Group{
-		ID:      currentRow.GroupID,
+		ID:      groupID,
 		Name:    currentRow.GroupName,
 		Members: people,
 	}
@@ -260,7 +276,10 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 					currentGroupID = currentRow.GroupID
 				}
 				if currentRow.GroupID != currentGroupID {
-					clientGroup := GroupToClientGroup(currentGroup)
+					clientGroup, err := GroupToClientGroup(currentGroup)
+					if err != nil {
+						http.Error(w, fmt.Sprintf("Error parsing group to client group: %v", err), http.StatusInternalServerError)
+					}
 					groups = append(groups, clientGroup)
 					// empty out the current group being built
 					currentGroup = &messages.Group{}
@@ -276,7 +295,10 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 				}
 			}
 			// add last group to the list of groups
-			clientGroup := GroupToClientGroup(currentGroup)
+			clientGroup, err := GroupToClientGroup(currentGroup)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error parsing group to client group: %v", err), http.StatusInternalServerError)
+			}
 			groups = append(groups, clientGroup)
 
 			respond(w, groups)
