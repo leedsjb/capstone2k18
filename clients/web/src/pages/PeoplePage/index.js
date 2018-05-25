@@ -229,12 +229,6 @@ class PeoplePage extends Component {
     }
 
     renderGroupsDetail() {
-        return (
-            <div>
-                <div>Group detail</div>
-            </div>
-        );
-        /*
         if (!this.props.groupID) {
             return (
                 <DetailView>
@@ -252,14 +246,67 @@ class PeoplePage extends Component {
                     </Span>
                     <Divider />
                     <ScrollView>
-                        <Flex justifyContent="center" mt={5}>
+                        <Flex flexDirection="column" alignItems="center" mt={5}>
+                            <Heading is="h2" fontSize={4}>
+                                Members
+                            </Heading>
                             <Flex
                                 flexWrap="wrap"
                                 justifyContent="space-between"
                             >
                                 {this.props.groupsDetail.data.people.map(
                                     person => {
-                                        return this.renderPeopleDetail(person);
+                                        return (
+                                            <Card p={4}>
+                                                <Flex
+                                                    flexDirection="column"
+                                                    alignItems="center"
+                                                >
+                                                    <ColoredAvatar
+                                                        fName={person.fName}
+                                                        size={72}
+                                                    />
+                                                    <Flex
+                                                        flexDirection="column"
+                                                        alignItem="center"
+                                                        mt={4}
+                                                    >
+                                                        <Span
+                                                            fontWeight="bold"
+                                                            textAlign="center"
+                                                        >
+                                                            {`${person.fName} ${
+                                                                person.lName
+                                                            }`}
+                                                        </Span>
+                                                        <Flex
+                                                            flexDirection="column"
+                                                            alignItem="center"
+                                                            mt={1}
+                                                        >
+                                                            <Span textAlign="center">
+                                                                {
+                                                                    person.position
+                                                                }
+                                                            </Span>
+                                                        </Flex>
+                                                    </Flex>
+                                                    <Flex mt={4}>
+                                                        <ButtonIcon glyph="bubbleChat">
+                                                            Text
+                                                        </ButtonIcon>
+                                                        <Box mx={3}>
+                                                            <ButtonIcon glyph="phone">
+                                                                Call
+                                                            </ButtonIcon>
+                                                        </Box>
+                                                        <ButtonIcon glyph="email">
+                                                            Mail
+                                                        </ButtonIcon>
+                                                    </Flex>
+                                                </Flex>
+                                            </Card>
+                                        );
                                     }
                                 )}
                             </Flex>
@@ -279,7 +326,6 @@ class PeoplePage extends Component {
         } else if (this.props.groupsDetail.pending) {
             return <div>Loading...</div>;
         }
-        */
     }
 
     renderPeopleDetail() {
@@ -376,60 +422,6 @@ class PeoplePage extends Component {
             return null;
         }
     }
-
-    /*
-   let mx = this.isGroupDetailView() ? 20 : 0;
-            let mb = this.isGroupDetailView() ? 8 : 0;
-            let flex = this.isGroupDetailView()
-                ? ["0 1 100%", "0 1 100%", "0 1 100%", "0 1 100%", "0 1 33%"]
-                : "0 1 auto";
-            return (
-                <Flex flex={flex} justifyContent="center" key={person.id}>
-                    <Flex
-                        alignItems="center"
-                        flexDirection="column"
-                        justifyContent="center"
-                        mb={mb}
-                        mx={mx}
-                    >
-                        <Link to={`/people/${person.id}`}>
-                            <Flex
-                                alignItems="center"
-                                flexDirection="column"
-                                justifyContent="center"
-                            >
-                                <Box mt={4}>
-                                    <ColoredAvatar
-                                        fName={person.fName}
-                                        size={72}
-                                    />
-                                </Box>
-                                <Span
-                                    children={`${person.fName} ${person.lName}`}
-                                    fontSize={4}
-                                    fontWeight="bold"
-                                    mt={3}
-                                    textAlign="center"
-                                />
-                                <Span
-                                    children={`${person.position}`}
-                                    fontWeight="normal"
-                                    fontSize={2}
-                                />
-                            </Flex>
-                            <Flex mt={3}>
-                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                                <Box mx={3}>
-                                    <ButtonIcon glyph="phone">Call</ButtonIcon>
-                                </Box>
-                                <ButtonIcon glyph="email">Mail</ButtonIcon>
-                            </Flex>
-                        </Link>
-                        <Heading>Placeholder</Heading>
-                    </Flex>
-                </Flex>
-            );
-    */
 
     renderMasterView() {
         if (this.props.people.error || this.props.groups.error) {
