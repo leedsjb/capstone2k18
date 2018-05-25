@@ -1,10 +1,10 @@
 /*
 client_stored_procedures.sql
 Created: Thursday May 17, 2018
-Modified: Wednesday May 23, 2018
+Modified: Wednesday May 25, 2018
+Last Change: return aircraft status_short_desc instead of status_title to uspGetAircraftByStatus()
 Author(s): J. Benjamin Leeds
 License: None
-
 Use the stored procedures in this file to retrieve data in MySQL to send to clients
 
 */
@@ -104,12 +104,12 @@ CREATE PROCEDURE uspGetAircraftByStatus(
 )
 BEGIN
     SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
-    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_title
+    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_short_desc
     FROM tblAIRCRAFT
     JOIN tblASSIGNED_STATUS ON tblAIRCRAFT.ac_id = tblASSIGNED_STATUS.aircraft_id
     JOIN tblAIRCRAFT_STATUS ON tblASSIGNED_STATUS.status_id = tblAIRCRAFT_STATUS.status_id
     JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
-    WHERE tblAIRCRAFT_STATUS.status_title = statusTitleQuery;
+    WHERE tblAIRCRAFT_STATUS.status_short_desc = statusTitleQuery;
 END;
 
 -- endpoint: /v1/aircraft/{id}
