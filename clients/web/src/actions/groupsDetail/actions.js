@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { PROD_API_URL_V1 } from "../../constants/constants.js";
+
 import {
     FETCH_GROUPSDETAIL_PENDING,
     FETCH_GROUPSDETAIL_SUCCESS,
@@ -13,9 +15,7 @@ export function fetchGroupsDetail(id) {
                 type: FETCH_GROUPSDETAIL_PENDING
             });
 
-            const { data } = await axios.get(
-                `http://api.test.elevate.airliftnw.org/v1/groups/${id}`
-            );
+            const { data } = await axios.get(`${PROD_API_URL_V1}/groups/${id}`);
 
             dispatch({
                 type: FETCH_GROUPSDETAIL_SUCCESS,
