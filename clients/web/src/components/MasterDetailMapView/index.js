@@ -1,6 +1,5 @@
 import React from "react";
 import { Flex } from "grid-styled";
-import ReactMapboxGl from "react-mapbox-gl";
 
 import Box from "../Box";
 import DetailView from "../DetailView";
@@ -8,10 +7,6 @@ import MapView from "../MapView";
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";
 import ScrollView from "../ScrollView";
-
-const Map = ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX
-});
 
 const MasterDetailMapView = ({
     renderMasterView,
@@ -28,10 +23,10 @@ const MasterDetailMapView = ({
                 >
                     {showDetail ? (
                         <ScrollView
-                            maxWidth={[null, null, null, 320]}
+                            maxWidth={[null, null, null, 400]}
                             height={[null, null, "50%", "100%"]}
                         >
-                            <Box p={3}>{renderDetailView()}</Box>
+                            <Box>{renderDetailView()}</Box>
                         </ScrollView>
                     ) : null}
 

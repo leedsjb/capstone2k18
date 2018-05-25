@@ -4,9 +4,6 @@ import { withTheme } from "styled-components";
 
 import TextInput from "../TextInput";
 import Icon from "../Icon";
-import Relative from "../Relative";
-import Absolute from "../Absolute";
-import FlexFillHeight from "../FlexFillHeight";
 import Box from "../Box";
 import Clickable from "../Clickable";
 
@@ -36,7 +33,7 @@ class SearchBox extends Component {
             <div>
                 <Box
                     borderRadius={32}
-                    border={`1px solid ${this.props.theme.colors.wireframe}`}
+                    border={`1px solid ${this.props.theme.colors.border}`}
                 >
                     <Flex alignItems="center">
                         <Box px={2}>
@@ -58,6 +55,7 @@ class SearchBox extends Component {
                                     }
                                 )
                             }
+                            py={0}
                             value={this.state.query}
                         />
                         <div>

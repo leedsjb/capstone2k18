@@ -1,27 +1,28 @@
 import React, { Component } from "react";
-import { Helmet } from "react-helmet";
-import { Flex } from "grid-styled";
 import { connect } from "react-redux";
+import { Flex } from "grid-styled";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
-import FlexFillVH from "../../components/FlexFillVH";
-import TitleBar from "../../components/TitleBar";
-import TabBar from "../../components/TabBar";
-import MasterDetailView from "../../components/MasterDetailView";
-import MasterView from "../../components/MasterView";
-import DetailView from "../../components/DetailView";
-import Heading from "../../components/Heading";
-import ButtonIcon from "../../components/ButtonIcon";
-import NavBar from "../../components/NavBar";
-import ProfileAvatar from "../../components/ProfileAvatar";
-import MasterListItem from "../../components/MasterListItem";
 import Box from "../../components/Box";
-import PeopleListItem from "../../components/PeopleListItem";
-import Tab from "../../components/Tab";
+import ButtonIcon from "../../components/ButtonIcon";
+import DetailView from "../../components/DetailView";
 import Divider from "../../components/Divider";
-import Icon from "../../components/Icon";
+import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
+import Heading from "../../components/Heading";
+import Icon from "../../components/Icon";
+import MasterView from "../../components/MasterView";
+import MasterDetailView from "../../components/MasterDetailView";
+import MasterListItem from "../../components/MasterListItem";
+import NavBar from "../../components/NavBar";
+import PeopleListItem from "../../components/PeopleListItem";
+import ProfileAvatar from "../../components/ProfileAvatar";
 import Span from "../../components/Span";
+import Tab from "../../components/Tab";
+import TabBar from "../../components/TabBar";
+import Text from "../../components/Text";
+import TitleBar from "../../components/TitleBar";
 
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
@@ -50,8 +51,8 @@ class PeoplePage extends Component {
             this.props.fetchPeopleDetail(nextProps.id);
         }
 
-        if (nextProps.groupId && nextProps.groupId !== this.props.groupId) {
-            this.props.fetchGroupsDetail(nextProps.groupId);
+        if (nextProps.groupID && nextProps.groupID !== this.props.groupID) {
+            this.props.fetchGroupsDetail(nextProps.groupID);
         }
     }
 
@@ -60,7 +61,7 @@ class PeoplePage extends Component {
     }
 
     isGroupDetailView() {
-        return matchPath(this.props.location.pathname, "/groups/:groupId");
+        return matchPath(this.props.location.pathname, "/groups/:groupID");
     }
 
     renderPeopleList() {
@@ -72,6 +73,17 @@ class PeoplePage extends Component {
                     </Link>
                 );
             });
+        } else if (!this.props.people.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No People
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.people.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -84,6 +96,17 @@ class PeoplePage extends Component {
                     </Link>
                 );
             });
+        } else if (!this.props.groups.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Groups
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groups.pending) {
+            return <div>Loading...</div>;
         }
     }
 
@@ -96,51 +119,134 @@ class PeoplePage extends Component {
 
             return this.props.groupsDetail.data.people.map(person => {
                 return (
-                    <Link to={`/groups/${id}/${person.id}`} key={person.id}>
+                    <Link
+                        to={`/people/${person.id}?source=groups`}
+                        key={person.id}
+                    >
                         <MasterListItem>
                             <div>{person.fName}</div>
                         </MasterListItem>
                     </Link>
                 );
             });
+        } else if (!this.props.groupsDetail.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Group Details
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groupsDetail.pending) {
+            return <div>Loading...</div>;
         }
+    }
+
+    renderGroupsDetail() {
+        if (
+            !this.props.groupsDetail.pending &&
+            !Array.isArray(this.props.groupsDetail.data)
+        ) {
+            const { id } = this.props.groupsDetail.data;
+
+            return this.props.groupsDetail.data.people.map(person => {
+                return this.renderPeopleDetail(person);
+            });
+        } else if (!this.props.groupsDetail.pending) {
+            return (
+                <Box mt={4}>
+                    <Heading is="h2" textAlign="center" fontSize={4}>
+                        No Group Details
+                    </Heading>
+                    <Text textAlign="center">Empty State Text</Text>
+                </Box>
+            );
+        } else if (this.props.groupsDetail.pending) {
+            return <div>Loading...</div>;
+        }
+    }
+
+    renderPeopleDetail(person) {
+        if (
+            !this.props.peopleDetail.pending &&
+            !Array.isArray(this.props.peopleDetail.data)
+        ) {
+            return (
+                <DetailView>
+                    <Flex flexDirection="column" alignItems="center">
+                        <Box mt={4}>
+                            <ProfileAvatar fName={person.fName} size={72} />
+                        </Box>
+                        <Heading
+                            children={`${person.fName} ${person.lName}`}
+                            is="h2"
+                            fontSize={4}
+                            mt={3}
+                        />
+                        <Heading
+                            children={`${person.position}`}
+                            is="h3"
+                            fontWeight="normal"
+                            fontSize={2}
+                        />
+                        <Flex mt={3}>
+                            <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <ButtonIcon glyph="email">Mail</ButtonIcon>
+                        </Flex>
+                    </Flex>
+                </DetailView>
+            );
+        }
+
+        return <DetailView />;
     }
 
     renderMasterView() {
         let list;
-        if (this.isPeopleTab()) {
-            list = this.renderPeopleList();
-        } else if (!this.isGroupDetailView()) {
-            list = this.renderGroupsList();
-        } else {
+        if (
+            this.isGroupDetailView() ||
+            new URLSearchParams(window.location.search).get("source") ===
+                "groups"
+        ) {
             list = this.renderGroupsDetailList();
+        } else if (this.isPeopleTab()) {
+            list = this.renderPeopleList();
+        } else {
+            list = this.renderGroupsList();
         }
 
-        let controller = !this.isGroupDetailView() ? (
-            <Flex>
-                <Tab active={this.isPeopleTab()} is={Link} to="/people">
-                    People
-                </Tab>
-                <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
-                    Groups
-                </Tab>
-            </Flex>
-        ) : (
-            <Flex
-                alignItems="center"
-                justifyContent="space-between"
-                py={2}
-                px={3}
-            >
-                <Link to="/groups">
-                    <Icon glyph="chevronLeft" size={16} />
-                </Link>
-                <Span fontWeight="bold">
-                    {this.props.groupsDetail.data.name}
-                </Span>
-                <Box size={16} />
-            </Flex>
-        );
+        let controller =
+            !this.isGroupDetailView() &&
+            new URLSearchParams(window.location.search).get("source") !==
+                "groups" ? (
+                <Flex>
+                    <Tab active={this.isPeopleTab()} is={Link} to="/people">
+                        People
+                    </Tab>
+                    <Tab active={!this.isPeopleTab()} is={Link} to="/groups">
+                        Groups
+                    </Tab>
+                </Flex>
+            ) : (
+                <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    py={2}
+                    px={3}
+                >
+                    <Link to="/groups">
+                        <Icon glyph="chevronLeft" size={16} />
+                    </Link>
+                    <Span fontWeight="bold">
+                        {this.props.groupsDetail.data.name}
+                    </Span>
+                    <Box size={16} />
+                </Flex>
+            );
 
         return (
             <MasterView>
@@ -152,53 +258,22 @@ class PeoplePage extends Component {
     }
 
     renderDetailView() {
-        let content;
-
-        if (
-            !this.props.peopleDetail.pending &&
-            !Array.isArray(this.props.peopleDetail.data)
-        ) {
-            let person = this.props.peopleDetail.data;
-
-            content = (
-                <Flex flexDirection="column" alignItems="center">
-                    <Box mt={4}>
-                        <ProfileAvatar fName={person.fName} size={72} />
-                    </Box>
-                    <Heading
-                        children={`${person.fName} ${person.lName}`}
-                        is="h2"
-                        fontSize={4}
-                        mt={3}
-                    />
-                    <Heading
-                        children={`${person.position}`}
-                        is="h3"
-                        fontWeight="normal"
-                        fontSize={2}
-                    />
-                    <Flex mt={3}>
-                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <Box mx={3}>
-                            <ButtonIcon glyph="phone">Call</ButtonIcon>
-                        </Box>
-                        <ButtonIcon glyph="email">Mail</ButtonIcon>
-                    </Flex>
-                </Flex>
-            );
+        if (this.isGroupDetailView()) {
+            return this.renderGroupsDetail();
+        } else if (this.props.id) {
+            return this.renderPeopleDetail(this.props.peopleDetail.data);
         }
-
-        return <DetailView>{content}</DetailView>;
     }
 
     render() {
+        let title = this.isPeopleTab() ? "People" : "Groups";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Missions</title>
                 </Helmet>
 
-                <TitleBar title="People" />
+                <TitleBar title={title} />
                 <NavBar />
 
                 <MasterDetailView>

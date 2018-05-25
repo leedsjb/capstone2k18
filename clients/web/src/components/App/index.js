@@ -6,15 +6,17 @@ import { withTheme } from "styled-components";
 
 import FlexFillVH from "../FlexFillVH";
 
-import SignInPage from "../../pages/SignInPage";
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
 import AircraftMapPage from "../../pages/AircraftMapPage";
-import PeoplePage from "../../pages/PeoplePage";
-import NotFoundPage from "../../pages/NotFoundPage";
+import GroupsDetailPage from "../../pages/GroupsDetailPage";
 import HomePage from "../../pages/HomePage";
+import NotFoundPage from "../../pages/NotFoundPage";
+import PeoplePage from "../../pages/PeoplePage";
+import PeopleDetailPage from "../../pages/PeopleDetailPage";
 import ProfilePage from "../../pages/ProfilePage";
 import ResourcesPage from "../../pages/ResourcesPage";
+import SignInPage from "../../pages/SignInPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -47,15 +49,14 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/people/:id" component={PeoplePage} />
                             <Route path="/people" component={PeoplePage} />
                             <Route
-                                path="/groups/:groupId/:id"
+                                path="/groups/:groupID/:id"
                                 component={PeoplePage}
                             />
                             <Route
-                                path="/groups/:groupId"
+                                path="/groups/:groupID"
                                 component={PeoplePage}
                             />
                             <Route path="/groups" component={PeoplePage} />
-                            <Route path="/people" component={PeoplePage} />
                             <Route path="/profile" component={ProfilePage} />
                             <Redirect from="/resources" to="/aircraft" />
                             <Route component={NotFoundPage} />
@@ -77,6 +78,15 @@ const App = ({ theme: { breakpoints } }) => {
                                 component={AircraftDetailPage}
                             />
                             <Route path="/aircraft" component={AircraftPage} />
+                            <Route
+                                path="/groups/:groupID"
+                                component={GroupsDetailPage}
+                            />
+                            <Route path="/groups" component={PeoplePage} />
+                            <Route
+                                path="/people/:id"
+                                component={PeopleDetailPage}
+                            />
                             <Route path="/people" component={PeoplePage} />
                             <Route path="/profile" component={ProfilePage} />
                             <Route

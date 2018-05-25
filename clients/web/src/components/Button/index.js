@@ -25,6 +25,7 @@ const Button = sys(
         textAlign: "center",
         textDecoration: "none",
         appearance: "none",
+        background: "radial-gradient(#dc0c2f 0%, rgba(220, 12, 47, 0.74) 100%)",
         "&:hover": {
             boxShadow: `inset 0 0 0 999px ${themeGet("colors.darken.0")(
                 props

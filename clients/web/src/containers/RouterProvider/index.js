@@ -1,7 +1,7 @@
 // TODO: Verify that it is indeed good style to use push
 // with mapDispatchToProps
 
-import React, { Component } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 
 class RouterProvider extends Component {

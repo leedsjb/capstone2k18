@@ -1,10 +1,20 @@
 const colors = {
-    wireframe: "#d8d8d8"
+    wireframe: "#d8d8d8",
+    primary: "#3E50C2",
+    primaryLight: "#4052C7",
+    secondary: "#E31B3D",
+    secondaryLight: "#DB4861",
+    border: "#D4D5D6",
+    gray: "#F7F8FC"
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
 
-const space = [0, 4, 8, 16, 32, 64, 128];
+let space = [];
+
+for (let i = 0; i < 37; i++) {
+    space.push(i * 4);
+}
 
 const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72, 96];
 

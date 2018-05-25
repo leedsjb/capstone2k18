@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Layer, Feature, Popup } from "react-mapbox-gl";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
@@ -23,13 +22,9 @@ import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
-
-import airplane from "../../images/airplane.svg";
+import openSocket from "../../actions/socket/openSocket";
 
 const statusFilters = ["Any status", "On Mission", "OOS"];
-
-const image = new Image(32, 32);
-image.src = airplane;
 
 class AircraftPage extends Component {
     constructor(props) {
@@ -44,6 +39,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
+        this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -68,11 +64,13 @@ class AircraftPage extends Component {
             return (
                 <Box mt={4}>
                     <Heading is="h2" textAlign="center" fontSize={4}>
-                        No aircraft
+                        No Aircraft
                     </Heading>
-                    <Text textAlign="center">Empty state text</Text>
+                    <Text textAlign="center">Empty State Text</Text>
                 </Box>
             );
+        } else {
+            return <div>Loading...</div>;
         }
     }
 
@@ -85,19 +83,31 @@ class AircraftPage extends Component {
                 />
             );
         }
+        return <div>Loading...</div>;
     }
 
+    /*
+        <SearchBox
+            handleChange={query =>
+                this.props.fetchAircraft(query, null)
+            }
+            handleClear={() => this.props.fetchAircraft()}
+        />
+    */
+
     renderMasterView = () => {
-        return (
+        return this.props.aircraft.error ? (
             <div>
-                <Box px={3} py={2}>
-                    <SearchBox
-                        handleChange={query =>
-                            this.props.fetchAircraft(query, null)
-                        }
-                        handleClear={() => this.props.fetchAircraft()}
-                    />
-                    <Flex alignItems="center" mt={2}>
+                An error has occurred: {this.props.aircraft.error.toString()}
+            </div>
+        ) : (
+            <div>
+                <Box bg="#F7F8FC" px={3} py={6}>
+                    <Heading is="h1" fontSize={4}>
+                        Aircraft
+                    </Heading>
+
+                    <Flex alignItems="center" mt={4}>
                         <DropdownSelect
                             items={statusFilters}
                             onChange={status => {
@@ -107,6 +117,17 @@ class AircraftPage extends Component {
                                 this.props.fetchAircraft(null, status);
                             }}
                         />
+                        <Box ml={3}>
+                            <DropdownSelect
+                                items={statusFilters}
+                                onChange={status => {
+                                    if (status === "Any status") {
+                                        status = null;
+                                    }
+                                    this.props.fetchAircraft(null, status);
+                                }}
+                            />
+                        </Box>
                     </Flex>
                 </Box>
 
@@ -117,11 +138,13 @@ class AircraftPage extends Component {
     };
 
     renderDetailView = () => {
-        return (
+        return this.props.aircraftDetail.error ? (
             <div>
-                <Span onClick={() => this.props.push("/aircraft")}>CLOSE</Span>
-                {this.renderAircraftDetail(this.props.aircraftDetail)}
+                An error has occurred:{" "}
+                {this.props.aircraftDetail.error.toString()}
             </div>
+        ) : (
+            <div>{this.renderAircraftDetail(this.props.aircraftDetail)}</div>
         );
     };
 
@@ -131,11 +154,7 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar
-                    title="Aircraft"
-                    showMap={true}
-                    link="/aircraft/map"
-                />
+                <TitleBar title="Aircraft" showMap link="/aircraft/map" />
                 <NavBar />
                 <MasterDetailMapView
                     renderMasterView={this.renderMasterView}
@@ -159,7 +178,8 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
     fetchAircraft,
     fetchAircraftDetail,
-    push
+    push,
+    openSocket
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);

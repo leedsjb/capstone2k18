@@ -36,6 +36,7 @@ const ResourcesDropdown = () => {
                                             glyph="grid"
                                             size={16}
                                             onClick={toggleMenu}
+                                            color="white"
                                         />
                                         {isOpen ? (
                                             <Absolute
