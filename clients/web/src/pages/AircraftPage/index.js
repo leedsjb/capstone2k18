@@ -30,7 +30,12 @@ const OAM = "On a mission";
 const RFM = "Ready for mission";
 const OOS = "OOS";
 
+const AC = "Any category";
+const FW = "Fixed-wing";
+const RC = "Rotorcraft";
+
 const statusFilters = [ANY, RFM, OAM, OOS];
+const categoryFilters = [AC, FW, RC];
 
 class AircraftPage extends Component {
     constructor(props) {
@@ -176,13 +181,8 @@ class AircraftPage extends Component {
                             />
                             <Box ml={3}>
                                 <DropdownSelect
-                                    items={statusFilters}
-                                    onChange={status => {
-                                        if (status === "Any status") {
-                                            status = null;
-                                        }
-                                        this.props.fetchAircraft(null, status);
-                                    }}
+                                    items={categoryFilters}
+                                    onChange={category => {}}
                                 />
                             </Box>
                         </Flex>
