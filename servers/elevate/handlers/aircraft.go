@@ -32,12 +32,13 @@ type missionDetailRow struct {
 }
 
 type waypointRow struct {
-	ID   int
-	Name string
-	ETA  mysql.NullTime
-	// ETT         time.Time
-	Active      string
+	ID          int
+	Name        string
+	ETA         mysql.NullTime
 	FlightRules string
+	Lat         string
+	Long        string
+	Active      string
 	// Completed   string
 }
 
@@ -292,6 +293,8 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			&waypointRow.ETA,
 			&waypointRow.Active,
 			&waypointRow.FlightRules,
+			&waypointRow.Lat,
+			&waypointRow.Long,
 			// &waypointRow.Completed,
 		)
 		if err != nil {
@@ -300,8 +303,10 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 
 		waypoint := &messages.ClientMissionWaypoint{
 			Name:        waypointRow.Name,
-			Active:      waypointRow.Active,
 			FlightRules: waypointRow.FlightRules,
+			Lat:         waypointRow.Lat,
+			Long:        waypointRow.Long,
+			Active:      waypointRow.Active,
 			// Completed:   waypointRow.Completed,
 		}
 
@@ -448,9 +453,10 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			&waypointRow.ID,
 			&waypointRow.Name,
 			&waypointRow.ETA,
-			// &waypointRow.ETT,
 			&waypointRow.Active,
 			&waypointRow.FlightRules,
+			&waypointRow.Lat,
+			&waypointRow.Long,
 			// &waypointRow.Completed,
 		)
 		if err != nil {
@@ -458,8 +464,10 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		}
 		waypoint := &messages.ClientMissionWaypoint{
 			Name:        waypointRow.Name,
-			Active:      waypointRow.Active,
 			FlightRules: waypointRow.FlightRules,
+			Lat:         waypointRow.Lat,
+			Long:        waypointRow.Long,
+			Active:      waypointRow.Active,
 			// Completed:   waypointRow.Completed,
 		}
 

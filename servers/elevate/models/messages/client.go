@@ -7,8 +7,10 @@ type ClientMsg struct {
 
 type ClientMissionWaypoint struct {
 	Name        string `json:"name"`
-	ETA         string `json:"ETA"`         // time to next point
-	Active      string `json:"active"`      // cumulative mission time
-	FlightRules string `json:"flightRules"` // denotes active waypoint
+	ETA         string `json:"ETA"`
+	FlightRules string `json:"flightRules"`
+	Lat         string `json:"lat"`
+	Long        string `json:"long"`
+	Active      string `json:"active"` // denotes active waypoint
 	// Completed   string `json:"completed"`
 }

@@ -104,33 +104,33 @@ type OOSDetail struct {
 
 // Aircraft ...
 type Aircraft struct {
-	ID          int      `json:"id"`
-	Status      string   `json:"status"`
-	Type        string   `json:"type"`
-	Callsign    string   `json:"callsign"`
-	LevelOfCare string   `json:"levelOfCare"`
-	Class       string   `json:"class"`
-	Lat         string   `json:"lat"`
-	Long        string   `json:"long"`
-	Area        string   `json:"area"`
-	NNum        string   `json:"nNum"`
-	Mission     *Mission `json:"mission"`
-	OOS         *OOS     `json:"OOS"`
+	ID       int    `json:"id"`
+	Status   string `json:"status"`
+	Type     string `json:"type"`
+	Callsign string `json:"callsign"`
+	// LevelOfCare string   `json:"levelOfCare"`
+	Class   string   `json:"class"`
+	Lat     string   `json:"lat"`
+	Long    string   `json:"long"`
+	Area    string   `json:"area"`
+	NNum    string   `json:"nNum"`
+	Mission *Mission `json:"mission"`
+	OOS     *OOS     `json:"OOS"`
 }
 
 // AircraftDetail ...
 type AircraftDetail struct {
-	ID          int            `json:"id"`
-	Status      string         `json:"status"`
-	Type        string         `json:"type"`
-	Callsign    string         `json:"callsign"`
-	Crew        []*Person      `json:"crew"`
-	LevelOfCare string         `json:"levelOfCare"`
-	Class       string         `json:"class"`
-	Lat         string         `json:"lat"`
-	Long        string         `json:"long"`
-	Area        string         `json:"area"`
-	NNum        string         `json:"nNum"`
-	Mission     *MissionDetail `json:"mission"`
-	OOS         *OOSDetail     `json:"OOS"`
+	ID       int       `json:"id"`
+	Status   string    `json:"status"`
+	Type     string    `json:"type"`
+	Callsign string    `json:"callsign"`
+	Crew     []*Person `json:"crew"`
+	// LevelOfCare string         `json:"levelOfCare"`
+	Class   string         `json:"class"`
+	Lat     string         `json:"lat"`
+	Long    string         `json:"long"`
+	Area    string         `json:"area"`
+	NNum    string         `json:"nNum"`
+	Mission *MissionDetail `json:"mission"`
+	OOS     *OOSDetail     `json:"OOS"`
 }
