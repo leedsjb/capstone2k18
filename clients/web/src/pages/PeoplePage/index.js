@@ -245,73 +245,84 @@ class PeoplePage extends Component {
                         {this.props.groupsDetail.data.name}
                     </Span>
                     <Divider />
-                    <ScrollView>
-                        <Flex flexDirection="column" alignItems="center" mt={5}>
-                            <Heading is="h2" fontSize={4}>
-                                Members
-                            </Heading>
-                            <Flex flexWrap="wrap" justifyContent="center">
-                                {this.props.groupsDetail.data.people.map(
-                                    person => {
-                                        return (
-                                            <Card
-                                                p={4}
-                                                w="calc(100% / 3 - 8px)"
+                    <Container px={8} mt={6}>
+                        <Heading is="h2" fontSize={4}>
+                            Group members
+                        </Heading>
+                    </Container>
+                    <Box maxWidth={1024} mx="auto" w={1} px={4}>
+                        <Flex flexWrap="wrap" justifyContent="flex-start">
+                            {this.props.groupsDetail.data.people.map(person => {
+                                return (
+                                    <Card
+                                        p={4}
+                                        mx={4}
+                                        w={[
+                                            "calc(100% / 2 - 32px)",
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
+                                            "calc(100% / 3 - 32px)"
+                                        ]}
+                                        mt={4}
+                                    >
+                                        <Flex
+                                            flexDirection="column"
+                                            alignItems="center"
+                                        >
+                                            <ColoredAvatar
+                                                fName={person.fName}
+                                                size={72}
+                                            />
+                                            <Flex
+                                                flexDirection="column"
+                                                alignItem="center"
+                                                mt={4}
                                             >
+                                                <Span
+                                                    fontWeight="bold"
+                                                    textAlign="center"
+                                                >
+                                                    {`${person.fName} ${
+                                                        person.lName
+                                                    }`}
+                                                </Span>
                                                 <Flex
                                                     flexDirection="column"
-                                                    alignItems="center"
+                                                    alignItem="center"
+                                                    mt={1}
                                                 >
-                                                    <ColoredAvatar
-                                                        fName={person.fName}
-                                                        size={72}
-                                                    />
-                                                    <Flex
-                                                        flexDirection="column"
-                                                        alignItem="center"
-                                                        mt={4}
-                                                    >
-                                                        <Span
-                                                            fontWeight="bold"
-                                                            textAlign="center"
-                                                        >
-                                                            {`${person.fName} ${
-                                                                person.lName
-                                                            }`}
-                                                        </Span>
-                                                        <Flex
-                                                            flexDirection="column"
-                                                            alignItem="center"
-                                                            mt={1}
-                                                        >
-                                                            <Span textAlign="center">
-                                                                {
-                                                                    person.position
-                                                                }
-                                                            </Span>
-                                                        </Flex>
-                                                    </Flex>
-                                                    <Flex mt={4}>
-                                                        <ButtonIcon glyph="bubbleChat">
-                                                            Text
-                                                        </ButtonIcon>
-                                                        <Box mx={3}>
-                                                            <ButtonIcon glyph="phone">
-                                                                Call
-                                                            </ButtonIcon>
-                                                        </Box>
-                                                        <ButtonIcon glyph="email">
-                                                            Mail
-                                                        </ButtonIcon>
-                                                    </Flex>
+                                                    <Span textAlign="center">
+                                                        {person.position}
+                                                    </Span>
                                                 </Flex>
-                                            </Card>
-                                        );
-                                    }
-                                )}
-                            </Flex>
+                                            </Flex>
+                                            <Flex
+                                                flexWrap="wrap"
+                                                justifyContent="center"
+                                                mt={2}
+                                            >
+                                                <Box mt={4}>
+                                                    <ButtonIcon glyph="bubbleChat">
+                                                        Text
+                                                    </ButtonIcon>
+                                                </Box>
+                                                <Box mx={3} mt={4}>
+                                                    <ButtonIcon glyph="phone">
+                                                        Call
+                                                    </ButtonIcon>
+                                                </Box>
+                                                <Box mt={4}>
+                                                    <ButtonIcon glyph="email">
+                                                        Mail
+                                                    </ButtonIcon>
+                                                </Box>
+                                            </Flex>
+                                        </Flex>
+                                    </Card>
+                                );
+                            })}
                         </Flex>
-                    </ScrollView>
+                    </Box>
                 </DetailView>
             );
         } else if (!this.props.groupsDetail.pending) {
@@ -353,7 +364,7 @@ class PeoplePage extends Component {
                                 textAlign="center"
                                 mt={6}
                             />
-                            <Box mt={2}>
+                            <Box mt={3}>
                                 <Span
                                     children={person.position}
                                     fontWeight="normal"
