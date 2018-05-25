@@ -9,7 +9,6 @@
 
 # dependencies
 /clients/web/node_modules
-/servers/mockserver/node_modules
 
 # testing
 /coverage
@@ -23,9 +22,6 @@
 *.csr
 *.key
 
-# IDE Specific
-.vscode
-
 # misc
 .DS_Store
 .env
@@ -34,9 +30,13 @@
 .env.test.local
 .env.production.local
 
+# IDE specific
+.vscode/
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
 /servers/mockserver/yarn-error.log
 
 k8s-gcr-auth-ro.json
