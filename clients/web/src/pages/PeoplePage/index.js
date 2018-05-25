@@ -24,7 +24,6 @@ import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import Container from "../../components/Container";
-import FlexGrid from "../../components/FlexGrid";
 import Card from "../../components/Card";
 import ColoredBox from "../../components/ColoredBox";
 import TitleBar from "../../components/TitleBar";
@@ -275,7 +274,7 @@ class PeoplePage extends Component {
                                             />
                                             <Flex
                                                 flexDirection="column"
-                                                alignItem="center"
+                                                alignItems="center"
                                                 mt={4}
                                             >
                                                 <Span

@@ -8,7 +8,7 @@ const Card = sys(
         bg: "white",
         borderRadius: 4,
         border: "1px solid",
-        borderColor: "gray",
+        borderColor: "border",
         is: Box
     },
     {

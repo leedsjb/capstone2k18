@@ -9,16 +9,16 @@ import Box from "../Box";
 const CrewDetailListItem = ({ crewDetail, ...props }) => {
     return (
         <Card {...props}>
-            <Flex flexDirection="column" alignItems="center">
+            <Flex flexDirection="column" alignItems="center" flex={1}>
                 <ColoredAvatar fName={crewDetail.fName} size={48} />
-                <Flex mt={3} justifyContent="center">
-                    <Span fontWeight="bold" textAlign="center">{`${
-                        crewDetail.fName
-                    } ${crewDetail.lName}`}</Span>
-                </Flex>
-                <Box mt={1}>
+                <Flex mt={3} alignItems="center" flexDirection="column">
+                    <Box mb={1}>
+                        <Span fontWeight="bold" textAlign="center">{`${
+                            crewDetail.fName
+                        } ${crewDetail.lName}`}</Span>
+                    </Box>
                     <Span textAlign="center">{crewDetail.position}</Span>
-                </Box>
+                </Flex>
             </Flex>
         </Card>
     );
