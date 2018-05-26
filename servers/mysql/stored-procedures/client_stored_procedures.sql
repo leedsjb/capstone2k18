@@ -1,8 +1,8 @@
 /*
 client_stored_procedures.sql
 Created: Thursday May 17, 2018
-Modified: Wednesday May 25, 2018
-Last Change: return aircraft status_short_desc instead of status_title to uspGetAircraftByStatus()
+Modified: Saturday May 26, 2018
+Last Change: add uspGetAircraftByCategory()
 Author(s): J. Benjamin Leeds
 License: None
 Use the stored procedures in this file to retrieve data in MySQL to send to clients
@@ -112,6 +112,22 @@ BEGIN
     WHERE tblAIRCRAFT_STATUS.status_short_desc = statusTitleQuery;
 END;
 
+-- endpoint: /v1/aircraft?category="{Rotorcraft, Fixed-wing}"
+-- CALL uspGetAircraftByCategory("Fixed-wing");
+DROP PROCEDURE IF EXISTS `uspGetAircraftByCategory`;
+CREATE PROCEDURE uspGetAircraftByCategory(
+    IN categoryQuery NVARCHAR(25)
+)
+BEGIN
+    SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
+    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_short_desc
+    FROM tblAIRCRAFT
+    JOIN tblASSIGNED_STATUS ON tblAIRCRAFT.ac_id = tblASSIGNED_STATUS.aircraft_id
+    JOIN tblAIRCRAFT_STATUS ON tblASSIGNED_STATUS.status_id = tblAIRCRAFT_STATUS.status_id
+    JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
+    WHERE tblAIRCRAFT_TYPE.aircraft_type_category = categoryQuery;
+END;
+
 -- endpoint: /v1/aircraft/{id}
 -- CALL uspGetAircraftByID(7);
 DROP PROCEDURE IF EXISTS `uspGetAircraftByID`;
@@ -119,7 +135,7 @@ CREATE PROCEDURE uspGetAircraftByID(
     IN aid INTEGER
 )
 BEGIN
- SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
+    SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
     aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_title
     FROM tblAIRCRAFT
     JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
