@@ -43,6 +43,18 @@ class MapView extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.id && nextProps.id !== this.props.id) {
             this.props.fetchAircraftDetail(nextProps.id);
+            if (
+                !this.props.aircraftDetail.error &&
+                !this.props.aircraftDetail.pending &&
+                !Array.isArray(this.props.aircraftDetail.data)
+            ) {
+                this.setState({
+                    center: [
+                        nextProps.aircraftDetail.data.long,
+                        nextProps.aircraftDetail.data.lat
+                    ]
+                });
+            }
         }
     }
 
@@ -97,7 +109,6 @@ class MapView extends Component {
                                 position.coords.longitude,
                                 position.coords.latitude
                             ]);
-                            this.state.map.setZoom(11);
                         }
                     }
                 },
@@ -107,13 +118,13 @@ class MapView extends Component {
         }
     }
 
-    isSelAirWithWaypoints(selected) {
+    isSelAirWithWaypoints() {
         return (
             !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
             !Array.isArray(this.props.aircraftDetail.data) &&
-            this.props.aircraftDetail.data.mission.waypoints.length > 0 &&
-            selected
+            this.props.aircraftDetail.data.mission &&
+            this.props.aircraftDetail.data.mission.waypoints.length > 0
         );
     }
 
@@ -122,7 +133,10 @@ class MapView extends Component {
             !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
             !Array.isArray(this.props.aircraftDetail.data) &&
-            this.props.aircraftDetail.data.mission.waypoints.length === 0
+            (!this.props.aircraftDetail.data.mission ||
+                (this.props.aircraftDetail.data.mission &&
+                    this.props.aircraftDetail.data.mission.waypoints.length ===
+                        0))
         ) {
             return [
                 this.props.aircraftDetail.data.long,
@@ -141,7 +155,7 @@ class MapView extends Component {
             let selected = this.props.aircraft.data.find(aircraft => {
                 return aircraft.id === Number(this.props.id);
             });
-            if (this.isSelAirWithWaypoints(selected) && this.state.map) {
+            if (this.isSelAirWithWaypoints() && this.state.map) {
                 this.fitMapBounds(selected);
             }
             return (
@@ -176,7 +190,7 @@ class MapView extends Component {
                                         />
                                     </Layer>
                                 ) : null}
-                                {this.isSelAirWithWaypoints(selected) ? (
+                                {this.isSelAirWithWaypoints() ? (
                                     <Box>
                                         {this.props.aircraftDetail.data.mission.waypoints.map(
                                             point => {
@@ -321,6 +335,7 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
+                    zoom={!this.isSelAirWithWaypoints() ? [10] : null}
                 >
                     {this.renderMapView()}
 
