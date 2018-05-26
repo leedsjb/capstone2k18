@@ -26,7 +26,7 @@ const MasterDetailMapView = ({
                             maxWidth={[null, null, null, 400]}
                             height={[null, null, "50%", "100%"]}
                         >
-                            <Box>{renderDetailView()}</Box>
+                            {renderDetailView()}
                         </ScrollView>
                     ) : null}
 
