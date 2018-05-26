@@ -306,8 +306,13 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			FlightRules: waypointRow.FlightRules,
 			Lat:         waypointRow.Lat,
 			Long:        waypointRow.Long,
-			Active:      waypointRow.Active,
 			// Completed:   waypointRow.Completed,
+		}
+
+		if waypointRow.Active == "0" {
+			waypoint.Active = false
+		} else {
+			waypoint.Active = true
 		}
 
 		if waypointRow.ETA.Valid {
@@ -466,8 +471,13 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			FlightRules: waypointRow.FlightRules,
 			Lat:         waypointRow.Lat,
 			Long:        waypointRow.Long,
-			Active:      waypointRow.Active,
 			// Completed:   waypointRow.Completed,
+		}
+
+		if waypointRow.Active == "0" {
+			waypoint.Active = false
+		} else {
+			waypoint.Active = true
 		}
 
 		if waypointRow.ETA.Valid {

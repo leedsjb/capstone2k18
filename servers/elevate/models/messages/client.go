@@ -8,10 +8,11 @@ type ClientMsg struct {
 type ClientMissionWaypoint struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
-	ETA         string `json:"ETA"`
+	ETA         string `json:"ete"`
+	ETE         string `json:"eta"`
 	FlightRules string `json:"flightRules"`
 	Lat         string `json:"lat"`
 	Long        string `json:"long"`
-	Active      string `json:"active"` // denotes active waypoint
+	Active      bool   `json:"active"` // denotes active waypoint
 	// Completed   string `json:"completed"`
 }
