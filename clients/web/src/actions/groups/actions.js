@@ -35,5 +35,3 @@ export function fetchGroups(term) {
         }
     };
 }
-
-// http://api.test.elevate.airliftnw.org/v1/groups?q=dEr
