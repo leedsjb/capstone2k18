@@ -18,7 +18,7 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-version = $1
+version=$1
 
 yarn build
 
