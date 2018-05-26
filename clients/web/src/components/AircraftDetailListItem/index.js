@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Box from "../Box";
 import CrewDetailListItem from "../CrewDetailListItem";
 import Heading from "../Heading";
+import ScrollView from "../ScrollView";
 import Route from "../Route";
 import Text from "../Text";
 import Divider from "../Divider";
@@ -20,7 +21,7 @@ class AircraftDetailListItem extends Component {
         const { mission } = this.props.aircraftDetail.data;
 
         return (
-            <Box>
+            <Flex flexDirection="column" flex={1}>
                 <Flex
                     py={3}
                     justifyContent="space-between"
@@ -38,164 +39,183 @@ class AircraftDetailListItem extends Component {
                     </Clickable>
                 </Flex>
                 <Divider />
-                <Box mx={6} my={6}>
-                    {mission ? (
-                        <div>
-                            <Heading is="h2" fontSize={4}>
-                                ETA
-                            </Heading>
-                            <Box mt={6}>
-                                <Route waypoints={mission.waypoints} />
-                            </Box>
-                            <Heading is="h2" fontSize={4} mt={8}>
-                                Patient
-                            </Heading>
-                            <Box mt={2} mb={6}>
-                                <Span>{mission.flightNum}</Span>
-                            </Box>
-                            {mission.radioReport &&
-                            mission.radioReport.shortReport ? (
-                                <div>
-                                    <Box mt={4}>
-                                        <Span fontWeight="bold">
-                                            Short report
-                                        </Span>
-                                        <Text mt={1}>
-                                            {mission.radioReport.shortReport}
-                                        </Text>
-                                    </Box>
-                                    {mission.radioReport.gender ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">Sex: </Span>
-                                            <Span>
-                                                {mission.radioReport.gender}
-                                            </Span>
-                                        </Box>
-                                    ) : null}
-                                    {mission.radioReport.age ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">Age: </Span>
-                                            <Span>
-                                                {mission.radioReport.age}
-                                            </Span>
-                                        </Box>
-                                    ) : null}
-                                    {mission.radioReport.weight ? (
+                <ScrollView>
+                    <Box mx={6} my={6}>
+                        {mission ? (
+                            <div>
+                                <Heading is="h2" fontSize={4}>
+                                    ETA
+                                </Heading>
+                                <Box mt={6}>
+                                    <Route waypoints={mission.waypoints} />
+                                </Box>
+                                <Heading is="h2" fontSize={4} mt={8}>
+                                    Patient
+                                </Heading>
+                                <Box mt={2} mb={6}>
+                                    <Span>{mission.flightNum}</Span>
+                                </Box>
+                                {mission.radioReport &&
+                                mission.radioReport.shortReport ? (
+                                    <div>
                                         <Box mt={4}>
                                             <Span fontWeight="bold">
-                                                Weight:{" "}
-                                            </Span>
-                                            <Span>
-                                                {`${
-                                                    mission.radioReport.weight
-                                                } kg`}
-                                            </Span>
-                                        </Box>
-                                    ) : null}
-                                    {mission.radioReport.GIBleed ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">
-                                                Placeholder
+                                                Short report
                                             </Span>
                                             <Text mt={1}>
-                                                {`${
-                                                    mission.radioReport.GIBleed
-                                                } kg`}
+                                                {
+                                                    mission.radioReport
+                                                        .shortReport
+                                                }
                                             </Text>
                                         </Box>
-                                    ) : null}
-                                    {mission.radioReport.cardiac ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">
-                                                Placeholder
-                                            </Span>
-                                            <Text mt={1}>
-                                                {`${
-                                                    mission.radioReport.cardiac
-                                                } kg`}
-                                            </Text>
-                                        </Box>
-                                    ) : null}
-                                    {mission.radioReport.intubated ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">
-                                                Intubated:{" "}
-                                            </Span>
-                                            <Span>
-                                                {mission.radioReport.intubated}
-                                            </Span>
-                                        </Box>
-                                    ) : null}
-                                    {mission.radioReport.drips ? (
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">
-                                                Drips:{" "}
-                                            </Span>
-                                            <Span>
-                                                {mission.radioReport.drips}
-                                            </Span>
-                                        </Box>
-                                    ) : null}
-                                </div>
-                            ) : null}
-                        </div>
-                    ) : null}
-                    {this.props.aircraftDetail.data.crew ? (
-                        <Box>
-                            <Heading is="h2" fontSize={4} mt={8}>
-                                Assigned Crew
-                            </Heading>
-                            <Flex
-                                flexWrap="wrap"
-                                justifyContent="space-between"
-                            >
-                                {this.props.aircraftDetail.data.crew.map(c => {
-                                    return (
-                                        <Box
-                                            key={c.id}
-                                            w="calc(50% - 8px)"
-                                            mt={6}
-                                        >
-                                            <Link to={`/people/${c.id}`}>
-                                                <CrewDetailListItem
-                                                    crewDetail={c}
-                                                    p={4}
-                                                />
-                                            </Link>
-                                        </Box>
-                                    );
-                                })}
-                            </Flex>
-                        </Box>
-                    ) : null}
-                    {this.props.aircraftDetail.data.mission ? (
-                        <Box>
-                            <Heading is="h6" fontSize={3} mt={8}>
-                                Requestor
-                            </Heading>
-                            <Text mt={2}>
-                                {
-                                    this.props.aircraftDetail.data.mission
-                                        .requestor
-                                }
-                            </Text>
-                        </Box>
-                    ) : null}
-                    {this.props.aircraftDetail.data.mission ? (
-                        <Box>
-                            <Heading is="h6" fontSize={3} mt={8}>
-                                Receiver
-                            </Heading>
-                            <Text mt={2}>
-                                {
-                                    this.props.aircraftDetail.data.mission
-                                        .receiver
-                                }
-                            </Text>
-                        </Box>
-                    ) : null}
-                </Box>
-            </Box>
+                                        {mission.radioReport.gender ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Sex:{" "}
+                                                </Span>
+                                                <Span>
+                                                    {mission.radioReport.gender}
+                                                </Span>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.age ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Age:{" "}
+                                                </Span>
+                                                <Span>
+                                                    {mission.radioReport.age}
+                                                </Span>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.weight ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Weight:{" "}
+                                                </Span>
+                                                <Span>
+                                                    {`${
+                                                        mission.radioReport
+                                                            .weight
+                                                    } kg`}
+                                                </Span>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.GIBleed ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Placeholder
+                                                </Span>
+                                                <Text mt={1}>
+                                                    {`${
+                                                        mission.radioReport
+                                                            .GIBleed
+                                                    } kg`}
+                                                </Text>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.cardiac ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Placeholder
+                                                </Span>
+                                                <Text mt={1}>
+                                                    {`${
+                                                        mission.radioReport
+                                                            .cardiac
+                                                    } kg`}
+                                                </Text>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.intubated ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Intubated:{" "}
+                                                </Span>
+                                                <Span>
+                                                    {
+                                                        mission.radioReport
+                                                            .intubated
+                                                    }
+                                                </Span>
+                                            </Box>
+                                        ) : null}
+                                        {mission.radioReport.drips ? (
+                                            <Box mt={4}>
+                                                <Span fontWeight="bold">
+                                                    Drips:{" "}
+                                                </Span>
+                                                <Span>
+                                                    {mission.radioReport.drips}
+                                                </Span>
+                                            </Box>
+                                        ) : null}
+                                    </div>
+                                ) : null}
+                            </div>
+                        ) : null}
+                        {this.props.aircraftDetail.data.crew ? (
+                            <Box>
+                                <Heading is="h2" fontSize={4} mt={8}>
+                                    Assigned Crew
+                                </Heading>
+                                <Flex
+                                    flexWrap="wrap"
+                                    justifyContent="space-between"
+                                >
+                                    {this.props.aircraftDetail.data.crew.map(
+                                        c => {
+                                            return (
+                                                <Box
+                                                    key={c.id}
+                                                    w="calc(50% - 8px)"
+                                                    mt={6}
+                                                >
+                                                    <Link
+                                                        to={`/people/${c.id}`}
+                                                    >
+                                                        <CrewDetailListItem
+                                                            crewDetail={c}
+                                                            p={4}
+                                                        />
+                                                    </Link>
+                                                </Box>
+                                            );
+                                        }
+                                    )}
+                                </Flex>
+                            </Box>
+                        ) : null}
+                        {this.props.aircraftDetail.data.mission ? (
+                            <Box>
+                                <Heading is="h6" fontSize={3} mt={8}>
+                                    Requestor
+                                </Heading>
+                                <Text mt={2}>
+                                    {
+                                        this.props.aircraftDetail.data.mission
+                                            .requestor
+                                    }
+                                </Text>
+                            </Box>
+                        ) : null}
+                        {this.props.aircraftDetail.data.mission ? (
+                            <Box>
+                                <Heading is="h6" fontSize={3} mt={8}>
+                                    Receiver
+                                </Heading>
+                                <Text mt={2}>
+                                    {
+                                        this.props.aircraftDetail.data.mission
+                                            .receiver
+                                    }
+                                </Text>
+                            </Box>
+                        ) : null}
+                    </Box>
+                </ScrollView>
+            </Flex>
         );
     }
 }

@@ -6,7 +6,6 @@ import DetailView from "../DetailView";
 import MapView from "../MapView";
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";
-import ScrollView from "../ScrollView";
 
 const MasterDetailMapView = ({
     renderMasterView,
@@ -22,12 +21,17 @@ const MasterDetailMapView = ({
                     flexDirection={[null, null, "column", "row"]}
                 >
                     {showDetail ? (
-                        <ScrollView
+                        <Box
                             maxWidth={[null, null, null, 400]}
+                            width={1}
                             height={[null, null, "50%", "100%"]}
+                            style={{
+                                display: "flex",
+                                flexDirection: "column"
+                            }}
                         >
                             {renderDetailView()}
-                        </ScrollView>
+                        </Box>
                     ) : null}
 
                     <MapView id={showDetail} />

@@ -227,13 +227,17 @@ class AircraftPage extends Component {
     };
 
     renderDetailView = () => {
-        return this.props.aircraftDetail.error ? (
-            <div>
-                An error has occurred:{" "}
-                {this.props.aircraftDetail.error.toString()}
-            </div>
-        ) : (
-            this.renderAircraftDetail(this.props.aircraftDetail)
+        return (
+            <Flex flexDirection="column" flex={1}>
+                {this.props.aircraftDetail.error ? (
+                    <div>
+                        An error has occurred:{" "}
+                        {this.props.aircraftDetail.error.toString()}
+                    </div>
+                ) : (
+                    this.renderAircraftDetail(this.props.aircraftDetail)
+                )}
+            </Flex>
         );
     };
 
