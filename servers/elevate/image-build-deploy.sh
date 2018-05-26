@@ -2,11 +2,11 @@
 
 GOOS=linux go build
 
-docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.26 .
+docker build -t us.gcr.io/airliftnw-uw/go-apiserver:0.27 .
 
 go clean
 
-docker push us.gcr.io/airliftnw-uw/go-apiserver:0.26
+docker push us.gcr.io/airliftnw-uw/go-apiserver:0.27
 
 ## [WARNING]: ensure YAML spec updated to current version number
 ## (elevate-apiserver-deployment.yaml)
