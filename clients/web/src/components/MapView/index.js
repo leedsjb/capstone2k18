@@ -335,7 +335,7 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
-                    zoom={!this.isSelAirWithWaypoints() ? [10] : null}
+                    zoom={!this.isSelAirWithWaypoints() ? [10] : undefined}
                 >
                     {this.renderMapView()}
 
