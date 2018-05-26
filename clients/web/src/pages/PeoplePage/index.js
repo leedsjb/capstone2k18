@@ -317,7 +317,7 @@ class PeoplePage extends Component {
                                                 </Span>
                                                 <Flex
                                                     flexDirection="column"
-                                                    alignItem="center"
+                                                    alignItems="center"
                                                     mt={1}
                                                 >
                                                     <Span textAlign="center">
@@ -453,6 +453,7 @@ class PeoplePage extends Component {
                                                 ]}
                                                 mt={4}
                                                 groupName={group.name}
+                                                to={`/groups/${group.id}`}
                                             />
                                         );
                                     })}
