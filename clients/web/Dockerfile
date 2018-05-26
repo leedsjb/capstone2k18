@@ -11,8 +11,8 @@ RUN apk --update add ca-certificates
 
 FROM scratch
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY go-saml-web-server go-saml-web-server
+COPY web /web
 COPY ./build build
 EXPOSE 80
 EXPOSE 443
-ENTRYPOINT ["/go-saml-web-server"]
+ENTRYPOINT ["/web"]
