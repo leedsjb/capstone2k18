@@ -13,6 +13,7 @@ import Label from "../../components/Label";
 import NavBar from "../../components/NavBar";
 import ScrollView from "../../components/ScrollView";
 import Span from "../../components/Span";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import TabBar from "../../components/TabBar";
 import TextInput from "../../components/TextInput";
 import TitleBar from "../../components/TitleBar";
@@ -112,7 +113,7 @@ class ProfilePage extends Component {
                 </Container>
             );
         }
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {
@@ -130,9 +131,7 @@ class ProfilePage extends Component {
                         {this.props.profile.error.toString()}
                     </FlexFillVH>
                 ) : (
-                    <ScrollView>
-                        <Container>{this.renderProfile()}</Container>
-                    </ScrollView>
+                    <ScrollView>{this.renderProfile()}</ScrollView>
                 )}
                 <TabBar />
             </FlexFillVH>
