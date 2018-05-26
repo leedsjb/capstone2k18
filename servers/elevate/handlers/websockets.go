@@ -39,6 +39,7 @@ func NewWebSocketsHandler(notifier *Notifier) *WebSocketsHandler {
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true },
 	}
+
 	return wsh
 }
 
@@ -60,6 +61,7 @@ func (wsh *WebSocketsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	//Add the new websock.Conn to the Notifier
+	fmt.Printf("[WEBSOCKET] New client added")
 	wsh.notifier.AddClient(conn)
 }
 

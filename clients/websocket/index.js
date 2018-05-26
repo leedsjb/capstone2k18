@@ -11,7 +11,7 @@ const errors = document.querySelector("#errors");
 
 // refreshLocalUser();
 
-const websocket = new WebSocket("ws://" + host + "/v1/ws");
+const websocket = new WebSocket("wss://" + host + "/v1/ws");
 websocket.addEventListener("error", function (err) {
     errors.textContent = err.message;
 });
