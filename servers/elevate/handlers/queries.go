@@ -36,10 +36,21 @@ func (ctx *HandlerContext) GetAircraftByStatus(status string) (*sql.Rows, error)
 		query,
 		status,
 	)
-
-	// aircraftRows, err := ctx.DB.Query("CALL uspGetAircraftByStatus(\"" + status + "\")")
 	if err != nil {
-		return nil, fmt.Errorf("Error querying MySQL for aircraft: %v", err)
+		return nil, fmt.Errorf("Error querying MySQL for aircraft by status: %v", err)
+	}
+	return aircraftRows, nil
+}
+
+func (ctx *HandlerContext) GetAircraftByCategory(category string) (*sql.Rows, error) {
+	query := `CALL uspGetAircraftByCategory(?)`
+	aircraftRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		category,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for aircraft by category: %v", err)
 	}
 	return aircraftRows, nil
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"path"
@@ -254,7 +255,6 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 
 	// [MISSION]
 	mission := &messages.Mission{}
-	// TODO: SQL sproc for finding mission by aircraftID
 	missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving missions for aircraft [%v]: %v", currentRow.Callsign, err)
@@ -280,7 +280,6 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 
 	// [Waypoint]
 	waypoints := []*messages.ClientMissionWaypoint{}
-	// TODO: SQL sproc for finding waypoints by missionID
 	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
@@ -326,7 +325,6 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	mission.NextWaypointETE = nextETE
 
 	// [OOS]
-	// TODO: SQL sproc for finding OOS status by aircraftID
 	oos := &messages.OOS{}
 	oosRows, err := ctx.GetOOSByAircraft(currentRow.ID)
 	if err != nil {
@@ -443,7 +441,6 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	// [Waypoint]
 	nextETE := ""
 	waypoints := []*messages.ClientMissionWaypoint{}
-	// TODO: SQL sproc for finding waypoints by missionID
 	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
@@ -488,7 +485,6 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	missionDetail.NextWaypointETE = nextETE
 	// [RADIO REPORT]
 	report := &messages.Patient{}
-	// TODO: GetPatientByMission
 	reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)
@@ -528,7 +524,6 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	aircraftDetail.Mission = missionDetail
 
 	// [OOS]
-	// TODO: SQL sproc for finding OOS status by aircraftID
 	oosDetail := &messages.OOSDetail{}
 	oosDetailRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
 	if err != nil {
@@ -569,6 +564,34 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	return aircraftDetail, nil
 }
 
+func (ctx *HandlerContext) getAircraftList(aircraftRows *sql.Rows) ([]*messages.Aircraft, error) {
+	aircraftList := []*messages.Aircraft{}
+	currentRow := &aircraftRow{}
+	for aircraftRows.Next() {
+		err := aircraftRows.Scan(
+			&currentRow.ID,
+			&currentRow.Callsign,
+			&currentRow.Nnum,
+			&currentRow.Manufacturer,
+			&currentRow.Title,
+			&currentRow.Class,
+			&currentRow.Lat,
+			&currentRow.Long,
+			&currentRow.LocationName,
+			&currentRow.Status,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("Error scanning aircraft row: %v", err)
+		}
+		aircraft, err := ctx.GetAircraftSummary(currentRow)
+		if err != nil {
+			return nil, fmt.Errorf("Error populating aircraft: %v", err)
+		}
+		aircraftList = append(aircraftList, aircraft)
+	}
+	return aircraftList, nil
+}
+
 // AircraftHandler ...
 func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -581,9 +604,8 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 		category := query.Get("category")
 
-		// TODO: refactor to be cleaner
 		if len(term) > 0 {
-			// search query non-empty
+			// filter by user query
 			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
 			aircraftList, err := ctx.GetTrieAircraft(aircraftIDS)
 			if err != nil {
@@ -592,84 +614,49 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 			}
 			respond(w, aircraftList)
 		} else if len(statusFilter) > 0 {
-			// search by status
-
-			aircraftList := []*messages.Aircraft{}
-
-			// filter by status
-
-			// TODO: SQL sproc for aircraft by status
-			// map status to statusID
+			// filter by aircraft status: OAM (On Mission), RFM (Ready for Mission), OOS (Out of Service)
 			aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
 			if err != nil {
-				fmt.Printf("Couldn't get aircraft by status: %v", err)
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft by status: %v", err), http.StatusInternalServerError)
+				return
 			}
 
-			currentRow := &aircraftRow{}
-			for aircraftRows.Next() {
-				err = aircraftRows.Scan(
-					&currentRow.ID,
-					&currentRow.Callsign,
-					&currentRow.Nnum,
-					&currentRow.Manufacturer,
-					&currentRow.Title,
-					&currentRow.Class,
-					&currentRow.Lat,
-					&currentRow.Long,
-					&currentRow.LocationName,
-					&currentRow.Status,
-				)
-				if err != nil {
-					fmt.Printf("Error scanning aircraft row: %v", err)
-					return
-				}
-				aircraft, err := ctx.GetAircraftSummary(currentRow)
-				if err != nil {
-					fmt.Printf("Error populating aircraft: %v", err)
-					return
-				}
-				aircraftList = append(aircraftList, aircraft)
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
 			}
+
 			respond(w, aircraftList)
 
 		} else if len(category) > 0 {
-			fmt.Printf("wowowowow filter by category")
+			// filter by aircraft category: rotorcraft, fixed-wing
+			aircraftRows, err := ctx.GetAircraftByCategory(category)
+			if err != nil {
+				fmt.Printf("Couldn't get aircraft by category: %v", err)
+			}
 
-			aircraftList := []*messages.Aircraft{}
-
-			// ctx.GetAircraftByType(category)
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
 
 			respond(w, aircraftList)
 		} else {
-			aircraftList := []*messages.Aircraft{}
-
 			// no filter, return all
 			aircraftRows, err := ctx.GetAllAircraft()
-			currentRow := &aircraftRow{}
-			for aircraftRows.Next() {
-				err = aircraftRows.Scan(
-					&currentRow.ID,
-					&currentRow.Callsign,
-					&currentRow.Nnum,
-					&currentRow.Manufacturer,
-					&currentRow.Title,
-					&currentRow.Class,
-					&currentRow.Lat,
-					&currentRow.Long,
-					&currentRow.LocationName,
-					&currentRow.Status,
-				)
-				if err != nil {
-					fmt.Printf("Error scanning aircraft row: %v", err)
-					return
-				}
-				aircraft, err := ctx.GetAircraftSummary(currentRow)
-				if err != nil {
-					fmt.Printf("Error populating aircraft: %v", err)
-					return
-				}
-				aircraftList = append(aircraftList, aircraft)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get all aircraft: %v", err), http.StatusInternalServerError)
+				return
 			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
 			respond(w, aircraftList)
 		}
 
