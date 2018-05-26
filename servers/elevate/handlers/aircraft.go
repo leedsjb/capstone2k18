@@ -152,6 +152,36 @@ type aircraftDetailRow struct {
 	// OOSEndTime   string
 }
 
+// // checkNullSql ...
+// func checkNullMissionRow(check *missionRow) *missionRow {
+
+// }
+// //
+// func checkMissionDetailRow  (check *missionDetailRow) *missionDetailRow {
+
+// }
+// func checkWaypointRow (check *waypointRow) *waypointRow {
+
+// }
+// func checkOosRow (check *oosRow) *oosRow {
+
+// }
+// func checkOosDetailRow (check *oosDetailRow) *oosDetailRow {
+
+// }
+// func checkCrewRow (check *crewRow) *crewRow {
+
+// }
+// func checkReportRow (check *reportRow) *reportRow {
+
+// }
+// func checkAircraftRow (check *aircraftRow) *aircraftRow {
+
+// }
+// func checkAircraftDetailRow (check *aircraftDetailRow) *aircraftDetailRow {
+
+// }
+
 // IndexAircraft ...
 func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
@@ -254,115 +284,118 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 
 	// [MISSION]
-	mission := &messages.Mission{}
-	missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving missions for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	missionRow := &missionRow{}
-	for missionRows.Next() {
-		err = missionRows.Scan(
-			&missionRow.Type,
-			// &missionRow.FlightRules,
-			&missionRow.FlightNum,
-			&missionRow.MissionDate,
-		)
+	if strings.ToLower(aircraft.Status) == "on mission" {
+		mission := &messages.Mission{}
+		missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Error scanning mission row: %v", err)
+			return nil, fmt.Errorf("Error retrieving missions for aircraft [%v]: %v", currentRow.Callsign, err)
 		}
-		mission = &messages.Mission{
-			Type: missionRow.Type,
-			// Vision:    missionRow.FlightRules,
-			FlightNum: missionRow.FlightNum,
+		missionRow := &missionRow{}
+		for missionRows.Next() {
+			err = missionRows.Scan(
+				&missionRow.Type,
+				// &missionRow.FlightRules,
+				&missionRow.FlightNum,
+				&missionRow.MissionDate,
+			)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning mission row: %v", err)
+			}
+			mission = &messages.Mission{
+				Type: missionRow.Type,
+				// Vision:    missionRow.FlightRules,
+				FlightNum: missionRow.FlightNum,
+			}
 		}
-	}
-	nextETE := ""
+		nextETE := ""
 
-	// [Waypoint]
-	waypoints := []*messages.ClientMissionWaypoint{}
-	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	waypointRow := &waypointRow{}
-	for waypointRows.Next() {
-		err = waypointRows.Scan(
-			&waypointRow.ID,
-			&waypointRow.Name,
-			&waypointRow.ETA,
-			&waypointRow.Active,
-			&waypointRow.FlightRules,
-			&waypointRow.Lat,
-			&waypointRow.Long,
-			// &waypointRow.Completed,
-		)
+		// [Waypoint]
+		waypoints := []*messages.ClientMissionWaypoint{}
+		waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
 		if err != nil {
-			fmt.Printf("Error scanning waypoint row: %v", err)
+			return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
 		}
+		waypointRow := &waypointRow{}
+		for waypointRows.Next() {
+			err = waypointRows.Scan(
+				&waypointRow.ID,
+				&waypointRow.Name,
+				&waypointRow.ETA,
+				&waypointRow.Active,
+				&waypointRow.FlightRules,
+				&waypointRow.Lat,
+				&waypointRow.Long,
+				// &waypointRow.Completed,
+			)
+			if err != nil {
+				fmt.Printf("Error scanning waypoint row: %v", err)
+			}
 
-		waypoint := &messages.ClientMissionWaypoint{
-			ID:          waypointRow.ID,
-			Name:        waypointRow.Name,
-			FlightRules: waypointRow.FlightRules,
-			Lat:         waypointRow.Lat,
-			Long:        waypointRow.Long,
-			// Completed:   waypointRow.Completed,
+			waypoint := &messages.ClientMissionWaypoint{
+				ID:          waypointRow.ID,
+				Name:        waypointRow.Name,
+				FlightRules: waypointRow.FlightRules,
+				Lat:         waypointRow.Lat,
+				Long:        waypointRow.Long,
+				// Completed:   waypointRow.Completed,
+			}
+
+			if waypointRow.Active == "0" {
+				waypoint.Active = false
+			} else {
+				waypoint.Active = true
+			}
+
+			if waypointRow.ETA.Valid {
+				waypoint.ETA = waypointRow.ETA.Time.String()
+
+				if strings.ToLower(waypointRow.Active) == "true" {
+					nextETE = time.Until(waypointRow.ETA.Time).String()
+				}
+			}
+
+			waypoints = append(waypoints, waypoint)
 		}
+		// add waypoints to mission
+		mission.Waypoints = waypoints
+		mission.NextWaypointETE = nextETE
 
-		if waypointRow.Active == "0" {
-			waypoint.Active = false
-		} else {
-			waypoint.Active = true
+		// add mission to aircraft
+		aircraft.Mission = mission
+	}
+
+	// [OOS]
+	if strings.ToLower(aircraft.Status) == "out of service" {
+		oos := &messages.OOS{}
+		oosRows, err := ctx.GetOOSByAircraft(currentRow.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving OOS for aircraft [%v]: %v", currentRow.Callsign, err)
 		}
+		oosRow := &oosRow{}
+		for oosRows.Next() {
+			err = oosRows.Scan(
+				&oosRow.Reason,
+				&oosRow.EndTime,
+			)
+			if err != nil {
+				fmt.Printf("Error scanning OOS row: %v", err)
+			}
 
-		if waypointRow.ETA.Valid {
-			waypoint.ETA = waypointRow.ETA.Time.String()
+			remaining := ""
+			if oosRow.EndTime.Valid {
+				oosFinishTime := time.Until(oosRow.EndTime.Time)
+				remaining = oosFinishTime.String()
+			}
 
-			if strings.ToLower(waypointRow.Active) == "true" {
-				nextETE = time.Until(waypointRow.ETA.Time).String()
+			oos = &messages.OOS{
+				Reason:    oosRow.Reason,
+				Remaining: remaining,
 			}
 		}
 
-		waypoints = append(waypoints, waypoint)
+		// add OOS to aircraft
+		aircraft.OOS = oos
 	}
-	// add waypoints to mission
-	mission.Waypoints = waypoints
-	mission.NextWaypointETE = nextETE
-
-	// [OOS]
-	oos := &messages.OOS{}
-	oosRows, err := ctx.GetOOSByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving OOS for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	oosRow := &oosRow{}
-	for oosRows.Next() {
-		err = oosRows.Scan(
-			&oosRow.Reason,
-			&oosRow.EndTime,
-		)
-		if err != nil {
-			fmt.Printf("Error scanning OOS row: %v", err)
-		}
-
-		remaining := ""
-		if oosRow.EndTime.Valid {
-			oosFinishTime := time.Until(oosRow.EndTime.Time)
-			remaining = oosFinishTime.String()
-		}
-
-		oos = &messages.OOS{
-			Reason:    oosRow.Reason,
-			Remaining: remaining,
-		}
-	}
-
-	// []
-
-	// add mission to aircraft
-	aircraft.Mission = mission
-	// add OOS to aircraft
-	aircraft.OOS = oos
 	return aircraft, nil
 }
 
@@ -415,161 +448,165 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	aircraftDetail.Crew = crew
 
 	// [MISSION]
-	missionDetail := &messages.MissionDetail{}
-	missionDetailRows, err := ctx.GetMissionDetailByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving MissionDetails for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	missionDetailRow := &missionDetailRow{}
-	for missionDetailRows.Next() {
-		err = missionDetailRows.Scan(
-			&missionDetailRow.Type,
-			// &missionDetailRow.FlightRules,
-			&missionDetailRow.FlightNum,
-			&missionDetailRow.Requestor,
-			&missionDetailRow.Receiver,
-		)
+	if strings.ToLower(aircraftDetail.Status) == "on mission" {
+		missionDetail := &messages.MissionDetail{}
+		missionDetailRows, err := ctx.GetMissionDetailByAircraft(currentRow.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Error scanning mission row: %v", err)
+			return nil, fmt.Errorf("Error retrieving MissionDetails for aircraft [%v]: %v", currentRow.Callsign, err)
 		}
-		missionDetail = &messages.MissionDetail{
-			Type: missionDetailRow.Type,
-			// Vision: missionDetailRow.FlightRules,
-			// NextWaypointETE
-			// Waypoints
-			FlightNum: missionDetailRow.FlightNum,
-			// RadioReport
-			Requestor: missionDetailRow.Requestor,
-			Receiver:  missionDetailRow.Receiver,
-		}
-	}
-	// [Waypoint]
-	nextETE := ""
-	waypoints := []*messages.ClientMissionWaypoint{}
-	waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	waypointRow := &waypointRow{}
-	for waypointRows.Next() {
-		err = waypointRows.Scan(
-			&waypointRow.ID,
-			&waypointRow.Name,
-			&waypointRow.ETA,
-			&waypointRow.Active,
-			&waypointRow.FlightRules,
-			&waypointRow.Lat,
-			&waypointRow.Long,
-			// &waypointRow.Completed,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
-		}
-		waypoint := &messages.ClientMissionWaypoint{
-			ID:          waypointRow.ID,
-			Name:        waypointRow.Name,
-			FlightRules: waypointRow.FlightRules,
-			Lat:         waypointRow.Lat,
-			Long:        waypointRow.Long,
-			// Completed:   waypointRow.Completed,
-		}
-
-		if waypointRow.Active == "0" {
-			waypoint.Active = false
-		} else {
-			waypoint.Active = true
-		}
-
-		if waypointRow.ETA.Valid {
-			waypoint.ETA = waypointRow.ETA.Time.String()
-
-			if strings.ToLower(waypointRow.Active) == "1" {
-				nextETE = time.Until(waypointRow.ETA.Time).String()
+		missionDetailRow := &missionDetailRow{}
+		for missionDetailRows.Next() {
+			err = missionDetailRows.Scan(
+				&missionDetailRow.Type,
+				// &missionDetailRow.FlightRules,
+				&missionDetailRow.FlightNum,
+				&missionDetailRow.Requestor,
+				&missionDetailRow.Receiver,
+			)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning mission row: %v", err)
+			}
+			missionDetail = &messages.MissionDetail{
+				Type: missionDetailRow.Type,
+				// Vision: missionDetailRow.FlightRules,
+				// NextWaypointETE
+				// Waypoints
+				FlightNum: missionDetailRow.FlightNum,
+				// RadioReport
+				Requestor: missionDetailRow.Requestor,
+				Receiver:  missionDetailRow.Receiver,
 			}
 		}
-
-		waypoints = append(waypoints, waypoint)
-	}
-	// add waypoints to mission
-	missionDetail.Waypoints = waypoints
-	missionDetail.NextWaypointETE = nextETE
-	// [RADIO REPORT]
-	report := &messages.Patient{}
-	reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)
-	}
-	reportRow := &reportRow{}
-	for reportRows.Next() {
-		err = reportRows.Scan(
-			&reportRow.MissionID,
-			&reportRow.ShortReport,
-			&reportRow.Intubated,
-			&reportRow.Drips,
-			&reportRow.Age,
-			&reportRow.Weight,
-			&reportRow.Sex,
-			&reportRow.Cardiac,
-			&reportRow.GIBleed,
-			&reportRow.OB,
-		)
+		// [Waypoint]
+		nextETE := ""
+		waypoints := []*messages.ClientMissionWaypoint{}
+		waypointRows, err := ctx.GetWaypointsByAircraft(currentRow.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Error scanning report row: %v", err)
+			return nil, fmt.Errorf("Error retrieving waypoints for aircraft [%v]: %v", currentRow.Callsign, err)
 		}
-		report = &messages.Patient{
-			ShortReport: reportRow.ShortReport,
-			Intubated:   reportRow.Intubated,
-			Drips:       reportRow.Drips,
-			Age:         reportRow.Age,
-			Weight:      reportRow.Weight,
-			Gender:      reportRow.Sex,
-			Cardiac:     reportRow.Cardiac,
-			GIBleed:     reportRow.GIBleed,
-			OB:          reportRow.OB,
+		waypointRow := &waypointRow{}
+		for waypointRows.Next() {
+			err = waypointRows.Scan(
+				&waypointRow.ID,
+				&waypointRow.Name,
+				&waypointRow.ETA,
+				&waypointRow.Active,
+				&waypointRow.FlightRules,
+				&waypointRow.Lat,
+				&waypointRow.Long,
+				// &waypointRow.Completed,
+			)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
+			}
+			waypoint := &messages.ClientMissionWaypoint{
+				ID:          waypointRow.ID,
+				Name:        waypointRow.Name,
+				FlightRules: waypointRow.FlightRules,
+				Lat:         waypointRow.Lat,
+				Long:        waypointRow.Long,
+				// Completed:   waypointRow.Completed,
+			}
+
+			if waypointRow.Active == "0" {
+				waypoint.Active = false
+			} else {
+				waypoint.Active = true
+			}
+
+			if waypointRow.ETA.Valid {
+				waypoint.ETA = waypointRow.ETA.Time.String()
+
+				if strings.ToLower(waypointRow.Active) == "1" {
+					nextETE = time.Until(waypointRow.ETA.Time).String()
+				}
+			}
+
+			waypoints = append(waypoints, waypoint)
 		}
+		// add waypoints to mission
+		missionDetail.Waypoints = waypoints
+		missionDetail.NextWaypointETE = nextETE
+		// [RADIO REPORT]
+		report := &messages.Patient{}
+		reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)
+		}
+		reportRow := &reportRow{}
+		for reportRows.Next() {
+			err = reportRows.Scan(
+				&reportRow.MissionID,
+				&reportRow.ShortReport,
+				&reportRow.Intubated,
+				&reportRow.Drips,
+				&reportRow.Age,
+				&reportRow.Weight,
+				&reportRow.Sex,
+				&reportRow.Cardiac,
+				&reportRow.GIBleed,
+				&reportRow.OB,
+			)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning report row: %v", err)
+			}
+			report = &messages.Patient{
+				ShortReport: reportRow.ShortReport,
+				Intubated:   reportRow.Intubated,
+				Drips:       reportRow.Drips,
+				Age:         reportRow.Age,
+				Weight:      reportRow.Weight,
+				Gender:      reportRow.Sex,
+				Cardiac:     reportRow.Cardiac,
+				GIBleed:     reportRow.GIBleed,
+				OB:          reportRow.OB,
+			}
+		}
+		// add patient information to mission
+		missionDetail.RadioReport = report
+		// add mission, waypoints, and radio report to aircraft detail
+		aircraftDetail.Mission = missionDetail
 	}
-	// add patient information to mission
-	missionDetail.RadioReport = report
-	// add mission, waypoints, and radio report to aircraft detail
-	aircraftDetail.Mission = missionDetail
 
 	// [OOS]
-	oosDetail := &messages.OOSDetail{}
-	oosDetailRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Error returning OOS details: %v", err)
-	}
-	oosDetailRow := &oosDetailRow{}
-	for oosDetailRows.Next() {
-		err = oosDetailRows.Scan(
-			&oosDetailRow.Reason,
-			&oosDetailRow.StartTime,
-			&oosDetailRow.EndTime,
-		)
+	if strings.ToLower(aircraftDetail.Status) == "out of service" {
+		oosDetail := &messages.OOSDetail{}
+		oosDetailRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
 		if err != nil {
-			fmt.Printf("Error scanning OOS row: %v", err)
+			return nil, fmt.Errorf("Error returning OOS details: %v", err)
 		}
+		oosDetailRow := &oosDetailRow{}
+		for oosDetailRows.Next() {
+			err = oosDetailRows.Scan(
+				&oosDetailRow.Reason,
+				&oosDetailRow.StartTime,
+				&oosDetailRow.EndTime,
+			)
+			if err != nil {
+				fmt.Printf("Error scanning OOS row: %v", err)
+			}
 
-		remaining := ""
-		if oosDetailRow.EndTime.Valid {
-			oosFinishTime := time.Until(oosDetailRow.EndTime.Time)
-			remaining = oosFinishTime.String()
-		}
+			remaining := ""
+			if oosDetailRow.EndTime.Valid {
+				oosFinishTime := time.Until(oosDetailRow.EndTime.Time)
+				remaining = oosFinishTime.String()
+			}
 
-		duration := ""
-		if oosDetailRow.StartTime.Valid {
-			oosElapsedTime := time.Since(oosDetailRow.StartTime.Time)
-			duration = oosElapsedTime.String()
-		}
+			duration := ""
+			if oosDetailRow.StartTime.Valid {
+				oosElapsedTime := time.Since(oosDetailRow.StartTime.Time)
+				duration = oosElapsedTime.String()
+			}
 
-		oosDetail = &messages.OOSDetail{
-			Reason:    oosDetailRow.Reason,
-			Remaining: remaining,
-			Duration:  duration,
+			oosDetail = &messages.OOSDetail{
+				Reason:    oosDetailRow.Reason,
+				Remaining: remaining,
+				Duration:  duration,
+			}
 		}
+		// add OOS to aircraft
+		aircraftDetail.OOS = oosDetail
 	}
-	// add OOS to aircraft
-	aircraftDetail.OOS = oosDetail
 
 	return aircraftDetail, nil
 }

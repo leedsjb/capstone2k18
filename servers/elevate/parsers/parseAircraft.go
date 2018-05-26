@@ -49,6 +49,24 @@ func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	// 	CallTypes         []string `json:"callTypes"`
 	// }
 
+	// TODO: parse data
+	// var status string
+	// var shortStatus string
+	// if strings.ToLower(msg.Status) == "inservice" {
+	// 	status = "ready for mission"
+	// 	shortStatus = "RFM"
+	// }
+	// if strings.ToLower(msg.Status) == "assigned" {
+	// 	status = "on mission"
+	// 	shortStatus = "OAM"
+	// 	// } else if strings.ToLower(msg.Status) == "weathercheck" {
+	// 	// 	status = "out of service"
+	// 	// 	shortStatus = "OOS"
+	// 	// }
+	// }
+	// status = "out of service"
+	// shortStatus = "OOS"
+
 	// [ADD AIRCRAFT TO DB]
 	// if err := ctx.AddNewAircraft(msg); err != nil {
 	// 	return fmt.Errorf("Error adding new aircraft to DB: %v", err)
