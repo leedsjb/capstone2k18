@@ -14,7 +14,7 @@ import matchPath from "../../utils/matchPath";
 // TODO: Consider cleaning up this component and
 // revisiting the technique used to detect
 // the active route
-const NavBarItem = ({ title, glyph, path }) => {
+const NavBarItem = ({ title, glyph, path, pathSecond }) => {
     return (
         <RouterProvider
             render={({ router: { location } }) => {
@@ -25,7 +25,9 @@ const NavBarItem = ({ title, glyph, path }) => {
                         <Flex alignItems="center">
                             <Icon
                                 glyph={
-                                    matchPath(pathname, path)
+                                    matchPath(pathname, path) ||
+                                    (pathSecond &&
+                                        matchPath(pathname, pathSecond))
                                         ? `${glyph}Filled`
                                         : `${glyph}Line`
                                 }

@@ -16,7 +16,7 @@ import matchPath from "../../utils/matchPath";
 // the active route
 
 // TODO: implement alt path
-const TabBarItem = ({ title, glyph, path }) => {
+const TabBarItem = ({ title, glyph, path, pathSecond }) => {
     return (
         <RouterProvider
             render={({ router: { location } }) => {
@@ -32,7 +32,9 @@ const TabBarItem = ({ title, glyph, path }) => {
                             >
                                 <Icon
                                     glyph={
-                                        matchPath(pathname, path)
+                                        matchPath(pathname, path) ||
+                                        (pathSecond &&
+                                            matchPath(pathname, pathSecond))
                                             ? `${glyph}Filled`
                                             : `${glyph}Line`
                                     }
