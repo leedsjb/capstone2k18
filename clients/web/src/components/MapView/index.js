@@ -124,8 +124,6 @@ class MapView extends Component {
                     return [point.long, point.lat];
                 }
             );
-
-            console.log(test);
         }
 
         if (

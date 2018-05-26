@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Box from "../Box";
 import CrewDetailListItem from "../CrewDetailListItem";
 import Heading from "../Heading";
+import Route from "../Route";
 import Text from "../Text";
 import Divider from "../Divider";
 import AircraftIdentifier from "../AircraftIdentifier";
@@ -43,7 +44,9 @@ class AircraftDetailListItem extends Component {
                             <Heading is="h2" fontSize={4}>
                                 ETA
                             </Heading>
-                            <Text mt={2}>Route component goes here</Text>
+                            <Box mt={6}>
+                                <Route waypoints={mission.waypoints} />
+                            </Box>
                             <Heading is="h2" fontSize={4} mt={8}>
                                 Patient
                             </Heading>

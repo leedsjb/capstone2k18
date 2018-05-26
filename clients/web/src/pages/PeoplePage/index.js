@@ -346,7 +346,6 @@ class PeoplePage extends Component {
             !Array.isArray(this.props.peopleDetail.data)
         ) {
             const person = this.props.peopleDetail.data;
-            console.log(person);
 
             return (
                 <Box py={12}>
