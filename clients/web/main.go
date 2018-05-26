@@ -2,6 +2,7 @@
 Filename: main.go
 Created:
 Modified: Saturday May 26, 2018
+Last Change: HTTPS redirect no longer applies to load balancer
 Author: J. Benjamin Leeds
 License: None
 Purpose: This Go program serves as the HTTPS web server for ALNW elevate. It serves the Elevate
@@ -138,7 +139,7 @@ func main() {
 	} else {
 		fmt.Println("client server listening at: " + addr)
 		// listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, mux)
-		listenServeErr = srv.ListenAndServe()
+		listenServeErr = http.ListenAndServe(addr, mux)
 	}
 
 	if listenServeErr != nil {
@@ -151,26 +152,35 @@ type EnsureHTTPS struct {
 	handler http.Handler
 }
 
+// Ensures requests to client web server are HTTPS only
+// with the exception of internal Google Cloud Load Balancer health checks
 func (ea *EnsureHTTPS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// check for HTTPS here!
-	// user, err := GetAuthenticatedUser(r)
-	// if err != nil {
-	// 	http.Error(w, "please sign-in", http.StatusUnauthorized)
-	// 	return
-	// }
+	// Google Cloud Load Balancer is between client and this server. Therefore, all TLS
+	// connections are terminated at the load balancer. We must check whether the client
+	// connected via HTTP or HTTPS using the X-Forwarded-Proto header the load balancer sets.
 
-	reqConnType := r.Header.Get("http_x_forwarded_proto")
+	// print entire request to log
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	log.Println(string(requestDump))
 
-	if reqConnType != "https" {
-		log.Println("Non-https connectiond detected. Redirecting.")
+	reqConnType := r.Header.Get("X-Forwarded-Proto")
+
+	// empty string allows for health checks to bypass HTTPS redirect
+	if reqConnType != "https" && reqConnType != "" {
+		log.Printf("Non-https connection detected. Redirecting. ReqConnType: %v", reqConnType)
+
 		w.Header().Set("Connection", "close")
 		url := "https://" + r.Host + r.URL.String()
 		http.Redirect(w, r, url, http.StatusMovedPermanently)
 		return // critical: must return to prevent access to app via HTTP
 	}
 
-	log.Println("HTTPS Connection Detected, continuing")
+	log.Println("not redirecting")
+
 	ea.handler.ServeHTTP(w, r)
 }
 
@@ -210,6 +220,7 @@ func testPathHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("request Method:" + r.Method)
 	fmt.Println("request URL:" + r.URL.String())
 	fmt.Println(r)
+	fmt.Printf("http_x_forwarded_proto header: %v \n", r.Header.Get("X-Forwarded-Proto"))
 	fmt.Println("************")
 
 	requestDump, err := httputil.DumpRequest(r, true)
@@ -224,6 +235,7 @@ func testPathHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("request Method:" + r.Method + "\n"))
 	w.Write([]byte("request URL:" + r.URL.String() + "\n"))
 	w.Write([]byte("request raw: " + string(requestDump) + "\n"))
+	w.Write([]byte("http_x_forwarded_proto header: " + r.Header.Get("X-Forwarded-Proto") + "\n"))
 	w.Write([]byte("Google Cloud HTTPS L7 Load Balancer Health Check"))
 
 	if r.Method != "GET" {
