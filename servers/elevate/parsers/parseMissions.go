@@ -68,11 +68,11 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	// separate crewIDs to build crew members into related groups
 	people := []*messages.Person{}
 
+	intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
+	if err != nil {
+		return fmt.Errorf("Could not convert crew member IDs to int: %v", err)
+	}
 	if len(msg.CrewMemberID) > 0 {
-		intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
-		if err != nil {
-			return fmt.Errorf("Could not convert crew member IDs to int: %v", err)
-		}
 		for _, memberID := range intCrewMemberIDs {
 			person, err := ctx.GetPersonByID(memberID)
 			if err != nil {
@@ -114,6 +114,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		}
 	}
 
+	aircraftCallsign := msg.Asset
+
 	mission := &messages.Mission{
 		Type: msg.CallType,
 		// Vision:          msg.Vision,
@@ -124,7 +126,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 	aircraft := &messages.Aircraft{
 		Status:   aircraftStatus,
-		Callsign: msg.Asset,
+		Callsign: aircraftCallsign,
 		Mission:  mission,
 	}
 
@@ -141,7 +143,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 	aircraftDetail := &messages.AircraftDetail{
 		Status:   aircraftStatus,
-		Callsign: msg.Asset,
+		Callsign: aircraftCallsign,
 		Crew:     people,
 		Mission:  missionDetail,
 	}
@@ -150,6 +152,40 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
 	log.Printf("[CLIENT NOTIFY AircraftDetail: %v", aircraftDetail)
 	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
+
+	// Notify crewmembers assigned to mission
+	aircraftID, err := ctx.GetAircraftIDByCallsign(aircraftCallsign)
+	if err != nil {
+		return fmt.Errorf("Could not retrieve aircraft ID from given callsign: %v", err)
+	}
+
+	if len(msg.CrewMemberID) > 0 {
+		for _, memberID := range intCrewMemberIDs {
+			personRows, err := ctx.GetPersonDetailByID(memberID)
+			if err != nil {
+				return fmt.Errorf("Could not retrieve person details: %v\n", err)
+			}
+			person := &messages.PersonDetail{}
+			var unnecessaryGroupID string
+			var unnecessaryGroupName string
+			for personRows.Next() {
+				err = personRows.Scan(
+					&person.ID,
+					&person.FName,
+					&person.LName,
+					&person.Position,
+					&person.Mobile,
+					&person.Email,
+					&unnecessaryGroupID,
+					&unnecessaryGroupName,
+				)
+			}
+			mobile := person.Mobile
+			if err := MissionNotify(aircraftCallsign, aircraftID, mobile); err != nil {
+				return fmt.Errorf("Couldn't send mission notification: %v\n", err)
+			}
+		}
+	}
 
 	// [ADD MISSION TO DB]
 	// if err := ctx.AddNewMission(msg); err != nil {

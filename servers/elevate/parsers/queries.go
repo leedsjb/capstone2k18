@@ -14,6 +14,29 @@ var sqlCtx = context.Background()
 
 // [AIRCRAFT]
 
+// GetAircraftIDByCallsign retrieves an aircraft's ID given its callsign
+// ctx.GetAircraftIDByCallsign("AL3")
+func (ctx *ParserContext) GetAircraftIDByCallsign(aircraftCallsign string) (int, error) {
+	fmt.Printf("[GET AIRCRAFT ID] callsign: %v\n", aircraftCallsign)
+	query := `CALL uspGetAircraftIDByCallsign(?)`
+	aircraftRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		aircraftCallsign,
+	)
+	if err != nil {
+		return -1, fmt.Errorf("Error querying MySQL for aircraft ID: %v\n", err)
+	}
+	var aircraftID int
+	for aircraftRow.Next() {
+		err = aircraftRow.Scan(&aircraftID)
+		if err != nil {
+			return -1, fmt.Errorf("Error retrieving aircraft ID by callsign: %v", err)
+		}
+	}
+	return aircraftID, nil
+}
+
 // GetAircraftCallsign retrieves an aircraft's callsign given the aircraft's ID
 func (ctx *ParserContext) GetAircraftCallsign(aircraftID int) (string, error) {
 	// get callsign from db using aircraftID
@@ -28,7 +51,7 @@ func (ctx *ParserContext) GetAircraftCallsign(aircraftID int) (string, error) {
 		aircraftID,
 	)
 	if err != nil {
-		fmt.Printf("Error querying MySQL for aircraftID: %v", err)
+		return "", fmt.Errorf("Error querying MySQL for aircraft callsign: %v\n", err)
 	}
 	var aircraftCallsign string
 	for aircraftRow.Next() {
@@ -560,4 +583,17 @@ func (ctx *ParserContext) GetPersonByID(personID int) (*messages.Person, error) 
 		}
 	}
 	return person, nil
+}
+
+func (ctx *ParserContext) GetPersonDetailByID(personID int) (*sql.Rows, error) {
+	query := `CALL uspGetPersonDetailByID(?)`
+	pdRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		personID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for person details: %v", err)
+	}
+	return pdRows, nil
 }
