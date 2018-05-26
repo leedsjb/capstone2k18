@@ -1,19 +1,23 @@
 # Filename: go-saml-web-server-deployment-node-port-service.yaml
 # Created: May 10, 2018
 # Modified: Thursday May 24, 2018
-# Last Change: Renamed from crewjam-deployment-nodeport.yaml to 
+# Last Change: Updated Filename from crewjam-deployment-nodeport.yaml to
 #   go-saml-web-server-deployment-node-port-service.yaml
 # Author: J. Benjamin Leeds
 # License: None
 # NodePort for elevate HTTP(S) Ingress controlled GCP Load Balancer
 # note: ClusterIP service automatically created by this NodePort service
 # NodePort points to crewjam GoLang web server
-# Create / Update with: kubectl apply -f crewjam-deployment-nodeport.yaml --record
+# Create / Update with: 
+# kubectl apply -f go-saml-web-server-deployment-node-port-service.yaml --record
 
 apiVersion: v1
 kind: Service
 metadata:
   name: go-saml-web-server-deployment-node-port-service
+  labels:
+    tier: frontend
+    environment: test
 spec:
   type: NodePort
   ports:

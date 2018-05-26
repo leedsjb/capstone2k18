@@ -25,7 +25,17 @@ import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 import openSocket from "../../actions/socket/openSocket";
 
-const statusFilters = ["Any status", "On Mission", "OOS"];
+const ANY = "Any status";
+const OAM = "On a mission";
+const RFM = "Ready for mission";
+const OOS = "OOS";
+
+const AC = "Any category";
+const FW = "Fixed-wing";
+const RC = "Rotorcraft";
+
+const statusFilters = [ANY, RFM, OAM, OOS];
+const categoryFilters = [AC, FW, RC];
 
 class AircraftPage extends Component {
     constructor(props) {
@@ -41,7 +51,7 @@ class AircraftPage extends Component {
         if (this.props.id) {
             this.props.fetchAircraftDetail(this.props.id);
         }
-        this.props.openSocket();
+        // this.props.openSocket();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -149,21 +159,30 @@ class AircraftPage extends Component {
                             <DropdownSelect
                                 items={statusFilters}
                                 onChange={status => {
-                                    if (status === "Any status") {
-                                        status = null;
+                                    switch (status) {
+                                        case ANY:
+                                            status = null;
+                                            break;
+                                        case OAM:
+                                            status = "oam";
+                                            break;
+                                        case RFM:
+                                            status = "rfm";
+                                            break;
+                                        case OOS:
+                                            status = "oos";
+                                            break;
+                                        default:
+                                            break;
                                     }
+
                                     this.props.fetchAircraft(null, status);
                                 }}
                             />
                             <Box ml={3}>
                                 <DropdownSelect
-                                    items={statusFilters}
-                                    onChange={status => {
-                                        if (status === "Any status") {
-                                            status = null;
-                                        }
-                                        this.props.fetchAircraft(null, status);
-                                    }}
+                                    items={categoryFilters}
+                                    onChange={category => {}}
                                 />
                             </Box>
                         </Flex>

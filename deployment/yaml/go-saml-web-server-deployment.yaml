@@ -1,12 +1,14 @@
-# Filename: crewjam-deployment.yaml
+# Filename: go-saml-web-server-deployment.yaml
 # Created: Tuesday May 8, 2018
-# Modified: Friday May 11, 2018
+# Modified: Thursday May 24, 2018
+# Last Change: Updated filename from crewjami-deployment.yaml to go-saml-web-server-deployment.yaml
+#  
 # Author: J. Benjamin Leeds
 # License: None
 # Purpose: Kubernetes Deployment YAML for crewjam SAML Go Web Server
 
 # Deployment Instructions
-# Create and update deployment: kubectl apply -f crewjam-deployment.yaml --record
+# Create and update deployment: kubectl apply -f go-saml-web-server-deployment.yaml --record
 
 apiVersion: "apps/v1"
 kind: "Deployment"
@@ -15,6 +17,8 @@ metadata:
   namespace: "default"
   labels:
     app: "go-saml-web-server-app"
+    tier: frontend
+    environment: test
 spec:
   replicas: 1
   selector:
@@ -32,12 +36,12 @@ spec:
     spec:
       containers: # inside spec -> containers list
         - name: crewjam-saml-image # 1st element in a list inside containers
-          image: us.gcr.io/airliftnw-uw/go-webclient:0.13
+          image: us.gcr.io/airliftnw-uw/go-webclient:0.36
           ports:
             - containerPort: 80
               protocol: TCP
           env:
-            - name: 'environment' 
+            - name: ENVIRONMENT
               value: "kubernetes"
           volumeMounts:
             - name: crewjam-secret-volume # mount volume specified below
