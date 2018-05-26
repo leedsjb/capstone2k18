@@ -235,26 +235,25 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 					http.Error(w, fmt.Sprintf("Error scanning PERSONGROUP person details: %v", err), http.StatusInternalServerError)
 					return
 				}
-				personGroup := &messages.PersonGroup{}
-				if personDetailRow.MemberGroupID.Valid {
-					personGroup.ID = int(personDetailRow.MemberGroupID.Int64)
-				}
-				if personDetailRow.MemberGroupName.Valid {
-					personGroup.Name = personDetailRow.MemberGroupName.String
-				}
-
-				memberGroups = append(memberGroups, personGroup)
 
 				personDetail = &messages.PersonDetail{
-					ID:           personDetailRow.PersonnelID,
-					FName:        personDetailRow.FName,
-					LName:        personDetailRow.LName,
-					Position:     personDetailRow.PersonnelTitle,
-					Mobile:       personDetailRow.SMS,
-					Email:        personDetailRow.Email,
-					MemberGroups: memberGroups,
+					ID:       personDetailRow.PersonnelID,
+					FName:    personDetailRow.FName,
+					LName:    personDetailRow.LName,
+					Position: personDetailRow.PersonnelTitle,
+					Mobile:   personDetailRow.SMS,
+					Email:    personDetailRow.Email,
 				}
+				if personDetailRow.MemberGroupID.Valid && personDetailRow.MemberGroupName.Valid {
+					personGroup := &messages.PersonGroup{
+						ID:   int(personDetailRow.MemberGroupID.Int64),
+						Name: personDetailRow.MemberGroupName.String,
+					}
+					memberGroups = append(memberGroups, personGroup)
+				}
+
 			}
+			personDetail.MemberGroups = memberGroups
 			respond(w, personDetail)
 		} else if id == "people" {
 			ctx.PeopleHandler(w, r)
