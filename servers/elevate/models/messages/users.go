@@ -36,7 +36,7 @@ Description: Delete existing user
 FV Table: Users
 */
 type User_Delete struct {
-	ID string `json:"ID"`
+	ID string `json:"id"`
 }
 
 // [Client Messages]

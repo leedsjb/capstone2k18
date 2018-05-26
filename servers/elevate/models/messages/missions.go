@@ -20,8 +20,7 @@ type Patient struct {
 }
 
 type MissionWaypoint struct {
-	ID string `json:"ID"`
-	// Name        string `json:"name"`
+	ID          string `json:"id"`
 	ETA         string `json:"ETA"`         // time to next point
 	Active      string `json:"active"`      // cumulative mission time
 	FlightRules string `json:"flightRules"` // denotes active waypoint

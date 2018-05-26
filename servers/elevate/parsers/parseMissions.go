@@ -47,7 +47,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	if err != nil {
 		return fmt.Errorf("could not convert string to int: %v", err)
 	}
-	aircraftStatus := "on a mission" // assume aircraft assigned to mission is on that mission
+	aircraftStatus := "On Mission" // assume aircraft assigned to mission is on that mission
 
 	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if requestorID != 0 {
@@ -185,7 +185,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 
 	waypoints := []*messages.ClientMissionWaypoint{}
 	nextWaypointETE := ""
-	aircraftStatus := "available" // assume if waypoints are updated and none are active, mission complete
+	aircraftStatus := "Ready" // assume if waypoints are updated and none are active, mission complete
 
 	if len(msg.Waypoints) > 0 {
 		for _, waypoint := range msg.Waypoints {
@@ -210,7 +210,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 					return fmt.Errorf("Couldn't parse string ETA to time: %v", err)
 				}
 				nextWaypointETE = time.Until(ETA).String()
-				aircraftStatus = "on a mission" // if any waypoints active, mission must be active
+				aircraftStatus = "On Mission" // if any waypoints active, mission must be active
 			}
 			waypoints = append(waypoints, tempWayPt)
 		}

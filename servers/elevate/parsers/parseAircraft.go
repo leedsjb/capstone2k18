@@ -165,6 +165,8 @@ func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Se
 	// 	Status    string `json:"status"`
 	// }
 
+	// TODO: Check Aircraft_Service_Schedule.Status -  is it a status we want?
+
 	// [ADD SERVICE SCHEDULE UPDATE TO DB]
 	// if err := ctx.UpdateAircraftServiceSchedule(msg); err != nil {
 	// 	return fmt.Errorf("Error adding aircraft service schedule updates to DB: %v", err)

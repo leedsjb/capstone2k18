@@ -6,7 +6,7 @@ type ClientMsg struct {
 }
 
 type ClientMissionWaypoint struct {
-	ID          int    `json:"ID"`
+	ID          int    `json:"id"`
 	Name        string `json:"name"`
 	ETA         string `json:"ETA"`
 	FlightRules string `json:"flightRules"`
