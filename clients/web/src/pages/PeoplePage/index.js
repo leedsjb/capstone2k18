@@ -26,6 +26,8 @@ import Text from "../../components/Text";
 import Container from "../../components/Container";
 import Card from "../../components/Card";
 import ColoredBox from "../../components/ColoredBox";
+import GroupsLoader from "../../components/GroupsLoader";
+import PeopleLoader from "../../components/PeopleLoader";
 import TitleBar from "../../components/TitleBar";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 
@@ -155,7 +157,13 @@ class PeoplePage extends Component {
                 </Box>
             );
         } else if (this.props.people.pending) {
-            return <div>Loading...</div>;
+            return (
+                <div>
+                    <PeopleLoader />
+                    <PeopleLoader />
+                    <PeopleLoader />
+                </div>
+            );
         }
     }
 
@@ -223,7 +231,13 @@ class PeoplePage extends Component {
                 </Box>
             );
         } else if (this.props.groups.pending) {
-            return <div>Loading...</div>;
+            return (
+                <div>
+                    <GroupsLoader />
+                    <GroupsLoader />
+                    <GroupsLoader />
+                </div>
+            );
         }
     }
 

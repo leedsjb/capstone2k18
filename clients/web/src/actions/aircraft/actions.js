@@ -8,7 +8,7 @@ import {
     FETCH_AIRCRAFT_ERROR
 } from "./types";
 
-export function fetchAircraft(term, status) {
+export function fetchAircraft(term, status, category) {
     return async dispatch => {
         try {
             dispatch({
@@ -21,6 +21,8 @@ export function fetchAircraft(term, status) {
                 url = `${url}?q=${term}`;
             } else if (status) {
                 url = `${url}?status=${status}`;
+            } else if (category) {
+                url = `${url}?category=${category}`;
             }
 
             const { data } = await axios.get(url);

@@ -13,6 +13,7 @@ import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
+import AircraftLoader from "../../components/AircraftLoader";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
@@ -20,12 +21,13 @@ import Text from "../../components/Text";
 import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 import openSocket from "../../actions/socket/openSocket";
 
-const ANY = "Any status";
+const AS = "Any status";
 const OAM = "On a mission";
 const RFM = "Ready for mission";
 const OOS = "OOS";
@@ -34,7 +36,7 @@ const AC = "Any category";
 const FW = "Fixed-wing";
 const RC = "Rotorcraft";
 
-const statusFilters = [ANY, RFM, OAM, OOS];
+const statusFilters = [AS, RFM, OAM, OOS];
 const categoryFilters = [AC, FW, RC];
 
 class AircraftPage extends Component {
@@ -102,7 +104,13 @@ class AircraftPage extends Component {
                 </Box>
             );
         } else {
-            return <div>Loading...</div>;
+            return (
+                <div>
+                    <AircraftLoader />
+                    <AircraftLoader />
+                    <AircraftLoader />
+                </div>
+            );
         }
     }
 
@@ -115,7 +123,7 @@ class AircraftPage extends Component {
                 />
             );
         }
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     renderMasterView = () => {
@@ -138,6 +146,7 @@ class AircraftPage extends Component {
                             this.setState({ query }, () => {
                                 this.props.fetchAircraft(
                                     this.state.query,
+                                    null,
                                     null
                                 );
                             });
@@ -160,9 +169,6 @@ class AircraftPage extends Component {
                                 items={statusFilters}
                                 onChange={status => {
                                     switch (status) {
-                                        case ANY:
-                                            status = null;
-                                            break;
                                         case OAM:
                                             status = "oam";
                                             break;
@@ -173,16 +179,39 @@ class AircraftPage extends Component {
                                             status = "oos";
                                             break;
                                         default:
+                                            status = null;
                                             break;
                                     }
 
-                                    this.props.fetchAircraft(null, status);
+                                    this.props.fetchAircraft(
+                                        null,
+                                        status,
+                                        null
+                                    );
                                 }}
                             />
                             <Box ml={3}>
                                 <DropdownSelect
                                     items={categoryFilters}
-                                    onChange={category => {}}
+                                    onChange={category => {
+                                        switch (category) {
+                                            case FW:
+                                                category = "fixed-wing";
+                                                break;
+                                            case RC:
+                                                category = "rotorcraft";
+                                                break;
+                                            default:
+                                                category = "";
+                                                break;
+                                        }
+
+                                        this.props.fetchAircraft(
+                                            null,
+                                            null,
+                                            category
+                                        );
+                                    }}
                                 />
                             </Box>
                         </Flex>

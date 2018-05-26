@@ -4,6 +4,11 @@ import { injectGlobal } from "styled-components";
 injectGlobal`
     body {
         font-family: sans-serif;
+        line-height: 1.5;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        line-height: 1.25;
     }
 
     #root {
@@ -21,4 +26,6 @@ injectGlobal`
     .mapboxgl-popup-content {
         padding: 4px 12px;
     }
+
+    
 `;
