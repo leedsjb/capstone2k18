@@ -113,7 +113,7 @@ class ResourcesDropdown extends Component {
                                     <Relative>
                                         <Absolute
                                             right={0}
-                                            zIndex={1}
+                                            zIndex={42}
                                             top={8}
                                             w={320}
                                         >

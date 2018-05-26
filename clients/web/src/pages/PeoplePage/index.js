@@ -12,9 +12,11 @@ import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
 import Heading from "../../components/Heading";
 import MasterView from "../../components/MasterView";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
 import PeopleListItem from "../../components/PeopleListItem";
+import GroupCard from "../../components/GroupCard";
 import Span from "../../components/Span";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
@@ -266,11 +268,11 @@ class PeoplePage extends Component {
         ) {
             return (
                 <Box>
-                    <Box py={3}>
+                    <Flex py={3} justifyContent="center">
                         <Span fontWeight="bold" textAlign="center">
                             {this.props.groupsDetail.data.name}
                         </Span>
-                    </Box>
+                    </Flex>
                     <Divider />
                     <Container px={8} mt={6}>
                         <Heading is="h2" fontSize={4}>
@@ -362,7 +364,7 @@ class PeoplePage extends Component {
                 </Box>
             );
         } else if (this.props.groupsDetail.pending) {
-            return <div>Loading...</div>;
+            return <LoadingSpinner />;
         }
     }
 
@@ -441,7 +443,7 @@ class PeoplePage extends Component {
                                 <Flex flexWrap="wrap">
                                     {person.memberGroups.map((group, i) => {
                                         return (
-                                            <Card
+                                            <GroupCard
                                                 mx={4}
                                                 w={[
                                                     "calc(100% / 2 - 32px)",
@@ -450,18 +452,8 @@ class PeoplePage extends Component {
                                                     "calc(100% / 3 - 32px)"
                                                 ]}
                                                 mt={4}
-                                            >
-                                                <ColoredBox
-                                                    word={group.name}
-                                                    w={1}
-                                                    height={64}
-                                                />
-                                                <Box px={4} py={3}>
-                                                    <Span fontWeight="bold">
-                                                        {group.name}
-                                                    </Span>
-                                                </Box>
-                                            </Card>
+                                                groupName={group.name}
+                                            />
                                         );
                                     })}
                                 </Flex>
