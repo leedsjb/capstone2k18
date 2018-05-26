@@ -347,10 +347,10 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				waypoint.Active = true
 			}
 
-			if strings.ToLower(waypointRow.Completed) == "complete" {
-				waypoint.Completed = true
-			} else {
+			if strings.ToLower(waypointRow.Completed) == "0" {
 				waypoint.Completed = false
+			} else {
+				waypoint.Completed = true
 			}
 
 			if waypointRow.ETA.Valid {
@@ -500,10 +500,10 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				&waypointRow.Name,
 				&waypointRow.ETA,
 				&waypointRow.Active,
+				&waypointRow.Completed,
 				&waypointRow.FlightRules,
 				&waypointRow.Lat,
 				&waypointRow.Long,
-				&waypointRow.Completed,
 			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
@@ -522,10 +522,10 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				waypoint.Active = true
 			}
 
-			if strings.ToLower(waypointRow.Completed) == "complete" {
-				waypoint.Completed = true
-			} else {
+			if strings.ToLower(waypointRow.Completed) == "0" {
 				waypoint.Completed = false
+			} else {
+				waypoint.Completed = true
 			}
 
 			if waypointRow.ETA.Valid {
