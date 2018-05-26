@@ -13,6 +13,7 @@ import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
+import AircraftLoader from "../../components/AircraftLoader";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
@@ -103,7 +104,13 @@ class AircraftPage extends Component {
                 </Box>
             );
         } else {
-            return <div>Loading...</div>;
+            return (
+                <div>
+                    <AircraftLoader />
+                    <AircraftLoader />
+                    <AircraftLoader />
+                </div>
+            );
         }
     }
 
