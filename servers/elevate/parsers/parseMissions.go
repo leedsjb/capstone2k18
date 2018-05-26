@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -98,19 +97,19 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 			tempWayPt := &messages.ClientMissionWaypoint{
 				Name:        waypointName,
 				ETA:         waypoint.ETA,
-				Active:      waypoint.Active,
 				FlightRules: waypoint.FlightRules,
 				// Completed:   "false",
 			}
-			if tempWayPt.Active == "1" {
-				// nextWaypointETA = tempWayPt.ETA
+			if waypoint.Active == "1" {
+				tempWayPt.Active = true
 				ETA, err := time.Parse(layout, tempWayPt.ETA)
 				if err != nil {
 					return fmt.Errorf("Couldn't parse string ETA to time: %v", err)
 				}
 				nextWaypointETE = time.Until(ETA).String()
+			} else {
+				tempWayPt.Active = false
 			}
-			// TODO: calculate ETE/ETT
 			waypoints = append(waypoints, tempWayPt)
 		}
 	}
@@ -198,20 +197,22 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 				return fmt.Errorf("Couldn't get waypoint name with given ID: %v, %v", waypointID, err)
 			}
 			tempWayPt := &messages.ClientMissionWaypoint{
-				Name: waypointName,
-				ETA:  waypoint.ETA,
-				// ETT:         waypoint.ETT,
-				Active:      waypoint.Active,
+				Name:        waypointName,
+				ETA:         waypoint.ETA,
 				FlightRules: waypoint.FlightRules,
 			}
-			if strings.ToLower(tempWayPt.Active) == "true" {
+			if waypoint.Active == "1" {
+				tempWayPt.Active = true
 				ETA, err := time.Parse(layout, tempWayPt.ETA)
 				if err != nil {
 					return fmt.Errorf("Couldn't parse string ETA to time: %v", err)
 				}
 				nextWaypointETE = time.Until(ETA).String()
-				aircraftStatus = "On Mission" // if any waypoints active, mission must be active
+				aircraftStatus = "On Mission"
+			} else {
+				tempWayPt.Active = false
 			}
+
 			waypoints = append(waypoints, tempWayPt)
 		}
 	}
