@@ -39,9 +39,25 @@ const TabBarItem = ({ title, glyph, path, pathSecond }) => {
                                             : `${glyph}Line`
                                     }
                                     size={24}
-                                    color="black"
+                                    color={
+                                        matchPath(pathname, path) ||
+                                        (pathSecond &&
+                                            matchPath(pathname, pathSecond))
+                                            ? "airlift"
+                                            : "black"
+                                    }
                                 />
-                                <Span color="black">{title}</Span>
+                                <Span
+                                    color={
+                                        matchPath(pathname, path) ||
+                                        (pathSecond &&
+                                            matchPath(pathname, pathSecond))
+                                            ? "airlift"
+                                            : "black"
+                                    }
+                                >
+                                    {title}
+                                </Span>
                             </Flex>
                         </Link>
                     </Box>

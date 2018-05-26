@@ -21,7 +21,7 @@ const Tab = sys(
         textDecoration: "none"
     },
     props => ({
-        borderColor: props.active ? "secondary" : "transparent"
+        borderColor: props.active ? "black" : "transparent"
     })
 );
 

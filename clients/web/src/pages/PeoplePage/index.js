@@ -137,14 +137,22 @@ class PeoplePage extends Component {
 
     renderPeopleList() {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
-            return this.props.people.data.map(person => {
+            return this.props.people.data.map((person, i) => {
                 return (
-                    <Link to={`/people/${person.id}`} key={person.id}>
-                        <PeopleListItem
-                            active={Number(this.props.id) === person.id ? 1 : 0}
-                            person={person}
-                        />
-                    </Link>
+                    <div>
+                        <Link to={`/people/${person.id}`} key={person.id}>
+                            <PeopleListItem
+                                active={
+                                    Number(this.props.id) === person.id ? 1 : 0
+                                }
+                                person={person}
+                            />
+                        </Link>
+                        {this.props.people.data.length === 1 ||
+                        i !== this.props.people.data.length - 1 ? (
+                            <Divider />
+                        ) : null}
+                    </div>
                 );
             });
         } else if (!this.props.people.pending) {
@@ -209,16 +217,24 @@ class PeoplePage extends Component {
 
     renderGroupList() {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
-            return this.props.groups.data.map(group => {
+            return this.props.groups.data.map((group, i) => {
                 return (
-                    <Link to={`/groups/${group.id}`} key={group.id}>
-                        <GroupsListItem
-                            active={
-                                Number(this.props.groupID) === group.id ? 1 : 0
-                            }
-                            group={group}
-                        />
-                    </Link>
+                    <div>
+                        <Link to={`/groups/${group.id}`} key={group.id}>
+                            <GroupsListItem
+                                active={
+                                    Number(this.props.groupID) === group.id
+                                        ? 1
+                                        : 0
+                                }
+                                group={group}
+                            />
+                        </Link>
+                        {this.props.groups.data.length === 1 ||
+                        i !== this.props.groups.data.length - 1 ? (
+                            <Divider />
+                        ) : null}
+                    </div>
                 );
             });
         } else if (!this.props.groups.pending) {
@@ -243,20 +259,18 @@ class PeoplePage extends Component {
 
     renderGroupsDetail() {
         if (!this.props.groupID) {
-            return (
-                <DetailView>
-                    <Box bg="gray" height="100%" />
-                </DetailView>
-            );
+            return <Box bg="gray" height="100%" />;
         } else if (
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
             return (
-                <DetailView>
-                    <Span fontWeight="bold" py={3} textAlign="center">
-                        {this.props.groupsDetail.data.name}
-                    </Span>
+                <Box>
+                    <Box py={3}>
+                        <Span fontWeight="bold" textAlign="center">
+                            {this.props.groupsDetail.data.name}
+                        </Span>
+                    </Box>
                     <Divider />
                     <Container px={8} mt={6}>
                         <Heading is="h2" fontSize={4}>
@@ -336,7 +350,7 @@ class PeoplePage extends Component {
                             })}
                         </Flex>
                     </Box>
-                </DetailView>
+                </Box>
             );
         } else if (!this.props.groupsDetail.pending) {
             return (

@@ -66,30 +66,38 @@ class AircraftPage extends Component {
         if (!aircraft.pending && aircraft.data.length > 0) {
             return (
                 <div>
-                    {aircraft.data.map(a => {
+                    {aircraft.data.map((a, i) => {
                         return (
-                            <Clickable
-                                key={a.id}
-                                onClick={() => {
-                                    if (this.state.isSearching) {
+                            <div>
+                                <Clickable
+                                    key={a.id}
+                                    onClick={() => {
                                         if (this.state.isSearching) {
-                                            this.setState({
-                                                query: "",
-                                                isSearching: false
-                                            });
-                                            this.props.fetchAircraft();
+                                            if (this.state.isSearching) {
+                                                this.setState({
+                                                    query: "",
+                                                    isSearching: false
+                                                });
+                                                this.props.fetchAircraft();
+                                            }
                                         }
-                                    }
-                                    this.props.push(`/aircraft/${a.id}`);
-                                }}
-                            >
-                                <AircraftListItem
-                                    active={
-                                        Number(this.props.id) === a.id ? 1 : 0
-                                    }
-                                    aircraft={a}
-                                />
-                            </Clickable>
+                                        this.props.push(`/aircraft/${a.id}`);
+                                    }}
+                                >
+                                    <AircraftListItem
+                                        active={
+                                            Number(this.props.id) === a.id
+                                                ? 1
+                                                : 0
+                                        }
+                                        aircraft={a}
+                                    />
+                                </Clickable>
+                                {aircraft.data.length === 1 ||
+                                i !== aircraft.data.length - 1 ? (
+                                    <Divider />
+                                ) : null}
+                            </div>
                         );
                     })}
                 </div>

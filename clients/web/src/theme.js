@@ -6,7 +6,8 @@ const colors = {
     secondaryLight: "#DB4861",
     border: "#D4D5D6",
     gray: "#F7F9FA",
-    darkGray: "#333333"
+    darkGray: "#333333",
+    airlift: "#E4002B"
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
