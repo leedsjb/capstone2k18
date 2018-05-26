@@ -15,7 +15,8 @@ const Card = sys(
         overflow: "hidden"
     },
     "space",
-    "color"
+    "color",
+    "height"
 );
 
 Card.displayName = "Card";

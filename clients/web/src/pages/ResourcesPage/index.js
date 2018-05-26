@@ -35,7 +35,7 @@ class ResourcesPage extends Component {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                 >
-                                    <Card>
+                                    <Card height="100%">
                                         <Relative pt="50%" w={1}>
                                             <Absolute
                                                 top={0}
