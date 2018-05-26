@@ -14,5 +14,5 @@ type ClientMissionWaypoint struct {
 	Lat         string `json:"lat"`
 	Long        string `json:"long"`
 	Active      bool   `json:"active"` // denotes active waypoint
-	// Completed   string `json:"completed"`
+	Completed   bool   `json:"completed"`
 }

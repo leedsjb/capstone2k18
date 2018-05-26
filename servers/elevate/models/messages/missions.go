@@ -24,18 +24,16 @@ type MissionWaypoint struct {
 	ETA         string `json:"ETA"`         // time to next point
 	Active      string `json:"active"`      // cumulative mission time
 	FlightRules string `json:"flightRules"` // denotes active waypoint
-	// Completed   string `json:"completed"`
+	Completed   string `json:"completed"`
 }
 
 type Mission_Create struct {
-	MissionID   string `json:"missionID"`
-	TCNum       string `json:"TCNum"`
-	Asset       string `json:"asset"`
-	RequestorID string `json:"reqID"`
-	ReceiverID  string `json:"recID"`
-	// Priority     string             `json:"priority"`
-	CallType string `json:"callType"`
-	// Vision       string             `json:"vision"`
+	MissionID    string             `json:"missionID"`
+	TCNum        string             `json:"TCNum"`
+	Asset        string             `json:"asset"`
+	RequestorID  string             `json:"reqID"`
+	ReceiverID   string             `json:"recID"`
+	CallType     string             `json:"callType"`
 	Patient      *Patient           `json:"patient"`
 	CrewMemberID []string           `json:"crewMemberID"`
 	Waypoints    []*MissionWaypoint `json:"waypoints"`
@@ -71,21 +69,21 @@ type Mission_Crew_Update struct {
 
 // Mission ...
 type Mission struct {
-	Type string `json:"type"`
-	// Vision          string                   `json:"vision"`
+	Type            string                   `json:"type"`
 	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
+	Completed       string                   `json:"completed"`
 }
 
 // MissionDetail ...
 type MissionDetail struct {
-	Type string `json:"type"`
-	// Vision          string                   `json:"vision"`
+	Type            string                   `json:"type"`
 	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 	RadioReport     *Patient                 `json:"radioReport"`
 	Requestor       string                   `json:"requestor"`
 	Receiver        string                   `json:"receiver"`
+	Completed       string                   `json:"completed"`
 }

@@ -22,6 +22,7 @@ type missionRow struct {
 	Type        string
 	FlightNum   string
 	MissionDate mysql.NullTime
+	Completed   string
 }
 
 type missionDetailRow struct {
@@ -30,6 +31,7 @@ type missionDetailRow struct {
 	FlightNum   string
 	Requestor   string
 	Receiver    string
+	Completed   string
 }
 
 type waypointRow struct {
@@ -40,7 +42,7 @@ type waypointRow struct {
 	Lat         string
 	Long        string
 	Active      string
-	// Completed   string
+	Completed   string
 }
 
 type oosRow struct {
@@ -294,17 +296,17 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 		for missionRows.Next() {
 			err = missionRows.Scan(
 				&missionRow.Type,
-				// &missionRow.FlightRules,
 				&missionRow.FlightNum,
 				&missionRow.MissionDate,
+				&missionRow.Completed,
 			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning mission row: %v", err)
 			}
 			mission = &messages.Mission{
-				Type: missionRow.Type,
-				// Vision:    missionRow.FlightRules,
+				Type:      missionRow.Type,
 				FlightNum: missionRow.FlightNum,
+				Completed: missionRow.Completed,
 			}
 		}
 		nextETE := ""
@@ -322,10 +324,10 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				&waypointRow.Name,
 				&waypointRow.ETA,
 				&waypointRow.Active,
+				&waypointRow.Completed,
 				&waypointRow.FlightRules,
 				&waypointRow.Lat,
 				&waypointRow.Long,
-				// &waypointRow.Completed,
 			)
 			if err != nil {
 				fmt.Printf("Error scanning waypoint row: %v", err)
@@ -337,13 +339,18 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				FlightRules: waypointRow.FlightRules,
 				Lat:         waypointRow.Lat,
 				Long:        waypointRow.Long,
-				// Completed:   waypointRow.Completed,
 			}
 
 			if waypointRow.Active == "0" {
 				waypoint.Active = false
 			} else {
 				waypoint.Active = true
+			}
+
+			if strings.ToLower(waypointRow.Completed) == "complete" {
+				waypoint.Completed = true
+			} else {
+				waypoint.Completed = false
 			}
 
 			if waypointRow.ETA.Valid {
@@ -462,9 +469,10 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				&missionDetailRow.FlightNum,
 				&missionDetailRow.Requestor,
 				&missionDetailRow.Receiver,
+				&missionDetailRow.Completed,
 			)
 			if err != nil {
-				return nil, fmt.Errorf("Error scanning mission row: %v", err)
+				return nil, fmt.Errorf("Error scanning mission detail row: %v", err)
 			}
 			missionDetail = &messages.MissionDetail{
 				Type: missionDetailRow.Type,
@@ -475,6 +483,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				// RadioReport
 				Requestor: missionDetailRow.Requestor,
 				Receiver:  missionDetailRow.Receiver,
+				Completed: missionDetailRow.Completed,
 			}
 		}
 		// [Waypoint]
@@ -494,7 +503,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				&waypointRow.FlightRules,
 				&waypointRow.Lat,
 				&waypointRow.Long,
-				// &waypointRow.Completed,
+				&waypointRow.Completed,
 			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning waypoint row: %v", err)
@@ -505,13 +514,18 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				FlightRules: waypointRow.FlightRules,
 				Lat:         waypointRow.Lat,
 				Long:        waypointRow.Long,
-				// Completed:   waypointRow.Completed,
 			}
 
 			if waypointRow.Active == "0" {
 				waypoint.Active = false
 			} else {
 				waypoint.Active = true
+			}
+
+			if strings.ToLower(waypointRow.Completed) == "complete" {
+				waypoint.Completed = true
+			} else {
+				waypoint.Completed = false
 			}
 
 			if waypointRow.ETA.Valid {

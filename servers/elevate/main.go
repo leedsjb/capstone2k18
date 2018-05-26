@@ -99,13 +99,13 @@ func main() {
 	handlerCtx := handlers.NewHandlerContext(aircraftTrie, groupsTrie, peopleTrie, db)
 	parserCtx := parsers.NewParserContext(aircraftTrie, groupsTrie, peopleTrie, db, notifier)
 	if err := handlerCtx.LoadAircraftTrie(aircraftTrie); err != nil {
-		log.Fatalf("Error loading aircraft trie")
+		log.Fatalf("Error loading aircraft trie: %v", err)
 	}
 	if err := handlerCtx.LoadGroupsTrie(groupsTrie); err != nil {
-		log.Fatalf("Error loading groups trie")
+		log.Fatalf("Error loading groups trie: %v", err)
 	}
 	if err := handlerCtx.LoadPeopleTrie(peopleTrie); err != nil {
-		log.Fatalf("Error loading people trie")
+		log.Fatalf("Error loading people trie: %v", err)
 	}
 
 	// [PUB/SUB]
