@@ -106,7 +106,12 @@ func main() {
 		IDPMetadataURL: idpMetadataURL,
 	})
 
-	mux := http.NewServeMux()                             // create new mux instead of using default
+	type HTTPRedir struct {
+		handler http.Handler
+	}
+
+	mux := http.NewServeMux() // create new mux instead of using default
+
 	mux.Handle("/", http.FileServer(http.Dir("./build"))) // serve application
 
 	// UW NetID Auth Components:
@@ -118,18 +123,59 @@ func main() {
 	addr := host + ":" + port
 	var listenServeErr error
 
+	wrappedMux := NewEnsureHTTPS(mux)
+
+	srv := &http.Server{
+		// ReadTimeout:  5 * time.Second,
+		// WriteTimeout: 5 * time.Second,
+		Addr:    addr,
+		Handler: wrappedMux,
+	}
+
 	if ENV == "kubernetes" {
 		fmt.Println("client server listening at: " + addr)
-		listenServeErr = http.ListenAndServe(addr, mux)
+		listenServeErr = srv.ListenAndServe()
 	} else {
 		fmt.Println("client server listening at: " + addr)
 		// listenServeErr = http.ListenAndServeTLS(addr, tlscert, tlskey, mux)
-		listenServeErr = http.ListenAndServe(addr, mux)
+		listenServeErr = srv.ListenAndServe()
 	}
 
 	if listenServeErr != nil {
 		log.Fatalf("Unable to listen and serve: %v", listenServeErr)
 	}
+}
+
+// create middleware handler
+type EnsureHTTPS struct {
+	handler http.Handler
+}
+
+func (ea *EnsureHTTPS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	// check for HTTPS here!
+	// user, err := GetAuthenticatedUser(r)
+	// if err != nil {
+	// 	http.Error(w, "please sign-in", http.StatusUnauthorized)
+	// 	return
+	// }
+
+	reqConnType := r.Header.Get("http_x_forwarded_proto")
+
+	if reqConnType != "https" {
+		log.Println("Non-https connectiond detected. Redirecting.")
+		w.Header().Set("Connection", "close")
+		url := "https://" + r.Host + r.URL.String()
+		http.Redirect(w, r, url, http.StatusMovedPermanently)
+		return // critical: must return to prevent access to app via HTTP
+	}
+
+	log.Println("HTTPS Connection Detected, continuing")
+	ea.handler.ServeHTTP(w, r)
+}
+
+func NewEnsureHTTPS(handlerToWrap http.Handler) *EnsureHTTPS {
+	return &EnsureHTTPS{handlerToWrap}
 }
 
 // trivial protected page resource must be signed in via SAML SSO to access
