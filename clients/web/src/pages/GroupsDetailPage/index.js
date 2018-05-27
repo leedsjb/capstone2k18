@@ -8,7 +8,8 @@ import Box from "../../components/Box";
 import Divider from "../../components/Divider";
 import Heading from "../../components/Heading";
 import FlexFillVH from "../../components/FlexFillVH";
-import MasterListItem from "../../components/MasterListItem";
+import PeopleListItem from "../../components/PeopleListItem";
+import PeopleLoader from "../../components/PeopleLoader";
 import ScrollView from "../../components/ScrollView";
 import Span from "../../components/Span";
 import TabBar from "../../components/TabBar";
@@ -29,18 +30,26 @@ class GroupsDetailPage extends Component {
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
         ) {
-            return this.props.groupsDetail.data.people.map(person => {
+            return this.props.groupsDetail.data.people.map((person, i) => {
                 return (
-                    <Link
-                        to={`/people/${person.id}?source=groups&id=${
-                            this.props.id
-                        }`}
-                        key={person.id}
-                    >
-                        <MasterListItem>
-                            <div>{person.fName}</div>
-                        </MasterListItem>
-                    </Link>
+                    <div key={person.id}>
+                        <Link
+                            to={`/people/${person.id}?source=groups&id=${
+                                this.props.id
+                            }`}
+                        >
+                            <PeopleListItem
+                                active={
+                                    Number(this.props.id) === person.id ? 1 : 0
+                                }
+                                person={person}
+                            />
+                        </Link>
+                        {this.props.groupsDetail.data.length === 1 ||
+                        i !== this.props.groupsDetail.data.length - 1 ? (
+                            <Divider />
+                        ) : null}
+                    </div>
                 );
             });
         } else if (!this.props.groupsDetail.pending) {
@@ -53,7 +62,13 @@ class GroupsDetailPage extends Component {
                 </Box>
             );
         } else if (this.props.groupsDetail.pending) {
-            return <div>Loading...</div>;
+            return (
+                <div>
+                    <PeopleLoader />
+                    <PeopleLoader />
+                    <PeopleLoader />
+                </div>
+            );
         }
     }
 
