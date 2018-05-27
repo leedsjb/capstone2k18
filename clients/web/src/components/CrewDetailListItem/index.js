@@ -8,7 +8,7 @@ import Box from "../Box";
 
 const CrewDetailListItem = ({ crewDetail, ...props }) => {
     return (
-        <Card {...props} height="100%">
+        <Card {...props} height="100%" p={5}>
             <Flex flexDirection="column" alignItems="center" flex={1}>
                 <ColoredAvatar fName={crewDetail.fName} size={48} />
                 <Flex mt={3} alignItems="center" flexDirection="column">
