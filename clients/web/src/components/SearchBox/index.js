@@ -21,9 +21,9 @@ class SearchBox extends Component {
                 py={1}
             >
                 <Flex alignItems="center">
-                    <Box px={2}>
+                    <Flex alignItems="center" flexDirection="column" px={2}>
                         <Icon glyph="search" size={16} />
-                    </Box>
+                    </Flex>
                     <TextInput
                         placeholder={this.props.placeholder}
                         onFocus={this.handleFocus}
@@ -33,19 +33,21 @@ class SearchBox extends Component {
                         py={0}
                         value={this.props.query}
                     />
-                    <div>
-                        <Box px={2}>
-                            {this.props.isSearching ? (
-                                <Clickable
-                                    onClick={() => {
-                                        this.props.handleClear();
-                                    }}
-                                >
-                                    <Icon glyph="closeCircle" size={16} />
-                                </Clickable>
-                            ) : null}
-                        </Box>
-                    </div>
+                    {this.props.isSearching ? (
+                        <Clickable
+                            onClick={() => {
+                                this.props.handleClear();
+                            }}
+                        >
+                            <Flex
+                                alignItems="center"
+                                flexDirection="column"
+                                px={2}
+                            >
+                                <Icon glyph="closeCircle" size={16} />
+                            </Flex>
+                        </Clickable>
+                    ) : null}
                 </Flex>
             </Box>
         );

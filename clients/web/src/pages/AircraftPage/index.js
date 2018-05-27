@@ -136,9 +136,14 @@ class AircraftPage extends Component {
 
     renderMasterView = () => {
         return this.props.aircraft.error ? (
-            <div>
+            <Flex
+                flexDirection="column"
+                flex={1}
+                justifyContent="center"
+                px={4}
+            >
                 An error has occurred: {this.props.aircraft.error.toString()}
-            </div>
+            </Flex>
         ) : (
             <OutsideClickHandler
                 handleClickOutside={() => {

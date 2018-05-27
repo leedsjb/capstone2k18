@@ -14,7 +14,8 @@ const Absolute = sys(
     "bottom",
     "left",
     "minWidth",
-    "width"
+    "width",
+    "borders"
 );
 
 Absolute.displayName = "Absolute";
