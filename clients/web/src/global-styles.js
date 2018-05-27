@@ -14,8 +14,7 @@ injectGlobal`
         text-rendering: optimizeLegibility;
         -webkit-appearance: none;
         -moz-appearance: none;
-        min-height: 0;
-    }
+     }
     
     html {
         display: flex;
