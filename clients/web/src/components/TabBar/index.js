@@ -6,13 +6,13 @@ import { withTheme } from "styled-components";
 import TabBarItem from "../TabBarItem";
 import Box from "../Box";
 
-const TabBar = ({ theme: { breakpoints } }) => {
+const TabBar = ({ theme: { colors, breakpoints } }) => {
     return (
         <Media
             query={`(max-width: ${breakpoints[1]})`}
             render={() => {
                 return (
-                    <Box bg="white" borderTop="1px solid gray">
+                    <Box bg="white" borderTop={`1px solid ${colors.border}`}>
                         <Flex>
                             <TabBarItem
                                 title="Aircraft"

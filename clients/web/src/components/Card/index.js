@@ -12,11 +12,17 @@ const Card = sys(
         is: Box
     },
     {
-        overflow: "hidden"
+        overflow: "hidden",
+        cursor: "pointer"
     },
     "space",
     "color",
-    "height"
+    "height",
+    props => ({
+        "&:hover": {
+            backgroundColor: "cyan"
+        }
+    })
 );
 
 Card.displayName = "Card";
