@@ -65,15 +65,15 @@ type crewRow struct {
 
 type reportRow struct {
 	MissionID   int
-	ShortReport string
-	Intubated   string
-	Drips       string
-	Age         string
-	Weight      string
-	Sex         string
-	Cardiac     string
-	GIBleed     string
-	OB          string
+	ShortReport sql.NullString
+	Intubated   sql.NullBool
+	Drips       sql.NullInt64
+	Age         sql.NullInt64
+	Weight      sql.NullInt64
+	Sex         sql.NullString
+	Cardiac     sql.NullBool
+	GIBleed     sql.NullBool
+	OB          sql.NullBool
 }
 
 const (
@@ -564,20 +564,54 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning report row: %v", err)
 			}
-			report = &messages.Patient{
-				ShortReport: reportRow.ShortReport,
-				Intubated:   reportRow.Intubated,
-				Drips:       reportRow.Drips,
-				Age:         reportRow.Age,
-				Weight:      reportRow.Weight,
-				Gender:      reportRow.Sex,
-				Cardiac:     reportRow.Cardiac,
-				GIBleed:     reportRow.GIBleed,
-				OB:          reportRow.OB,
+
+			report = &messages.Patient{}
+
+			if reportRow.ShortReport.Valid {
+				report.ShortReport = reportRow.ShortReport.String
+			}
+			if reportRow.Intubated.Valid {
+				report.Intubated = reportRow.Intubated.Bool
+			}
+			if reportRow.Drips.Valid {
+				report.Drips = int(reportRow.Drips.Int64)
+			}
+			if reportRow.Age.Valid {
+				report.Age = int(reportRow.Age.Int64)
+			}
+			if reportRow.Weight.Valid {
+				report.Weight = int(reportRow.Weight.Int64)
+			}
+			if reportRow.Sex.Valid {
+				report.Gender = reportRow.Sex.String
+			}
+			if reportRow.Cardiac.Valid {
+				if reportRow.Cardiac.Bool {
+					report.Cardiac = true
+				} else {
+					report.Cardiac = false
+				}
+			}
+			if reportRow.GIBleed.Valid {
+				if reportRow.GIBleed.Bool {
+					report.GIBleed = true
+				} else {
+					report.GIBleed = false
+				}
+			}
+			if reportRow.OB.Valid {
+				if reportRow.OB.Bool {
+					report.OB = true
+				} else {
+					report.OB = false
+				}
 			}
 		}
-		// add patient information to mission
-		missionDetail.RadioReport = report
+		// if a patient report exists
+		if reportRow.MissionID != 0 {
+			// add patient information to mission
+			missionDetail.RadioReport = report
+		}
 		// add mission, waypoints, and radio report to aircraft detail
 		aircraftDetail.Mission = missionDetail
 	}

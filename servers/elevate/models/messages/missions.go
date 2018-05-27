@@ -9,14 +9,14 @@ Description: New mission created
 */
 type Patient struct {
 	ShortReport string `json:"shortReport"`
-	Intubated   string `json:"intubated"`
-	Drips       string `json:"drips"`
-	Age         string `json:"age"`
-	Weight      string `json:"weight"`
+	Intubated   bool   `json:"intubated"`
+	Drips       int    `json:"drips"`
+	Age         int    `json:"age"`
+	Weight      int    `json:"weight"`
 	Gender      string `json:"gender"`
-	Cardiac     string `json:"cardiac"`
-	GIBleed     string `json:"GIBleed"`
-	OB          string `json:"OB"`
+	Cardiac     bool   `json:"cardiac"`
+	GIBleed     bool   `json:"GIBleed"`
+	OB          bool   `json:"OB"`
 }
 
 type MissionWaypoint struct {

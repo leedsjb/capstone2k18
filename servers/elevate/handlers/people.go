@@ -253,7 +253,9 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 				}
 
 			}
-			personDetail.MemberGroups = memberGroups
+			if len(memberGroups) > 0 {
+				personDetail.MemberGroups = memberGroups
+			}
 			respond(w, personDetail)
 		} else if id == "people" {
 			ctx.PeopleHandler(w, r)
