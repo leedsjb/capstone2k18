@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PROD_API_URL_V1 } from "../../constants/constants.js";
+import { API_URI } from "../../constants/constants.js";
 
 import {
     FETCH_GROUPSDETAIL_PENDING,
@@ -15,7 +15,7 @@ export function fetchGroupsDetail(id) {
                 type: FETCH_GROUPSDETAIL_PENDING
             });
 
-            const { data } = await axios.get(`${PROD_API_URL_V1}/groups/${id}`);
+            const { data } = await axios.get(`${API_URI}/groups/${id}`);
 
             dispatch({
                 type: FETCH_GROUPSDETAIL_SUCCESS,

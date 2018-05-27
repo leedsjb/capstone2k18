@@ -381,7 +381,9 @@ class PeoplePage extends Component {
         if (this.props.people.error || this.props.groups.error) {
             return (
                 <MasterView>
-                    An error has occurred: {this.props.people.error.toString()}
+                    An error has occurred:{" "}
+                    {this.props.people.error.toString() ||
+                        this.props.groups.error.toString()}
                 </MasterView>
             );
         } else {

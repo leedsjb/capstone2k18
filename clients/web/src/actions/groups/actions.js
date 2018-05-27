@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PROD_API_URL_V1 } from "../../constants/constants.js";
+import { API_URI } from "../../constants/constants.js";
 
 import {
     FETCH_GROUPS_PENDING,
@@ -15,7 +15,7 @@ export function fetchGroups(term) {
                 type: FETCH_GROUPS_PENDING
             });
 
-            let url = `${PROD_API_URL_V1}/groups`;
+            let url = `${API_URI}/groups`;
 
             if (term) {
                 url = `${url}?q=${term}`;

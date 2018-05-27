@@ -9,7 +9,6 @@ const Badge = sys(
         py: 1,
         mx: 0,
         color: "white",
-        bg: "blue",
         fontWeight: "bold",
         borderRadius: 2
     },
@@ -17,7 +16,10 @@ const Badge = sys(
         WebkitFontSmoothing: "antialiased",
         display: "inline-block",
         verticalAlign: "middle"
-    }
+    },
+    props => ({
+        background: props.statusbg
+    })
 );
 
 Badge.displayName = "Badge";
