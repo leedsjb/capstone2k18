@@ -32,7 +32,7 @@ class InsetMapView extends Component {
     }
 
     componentDidUpdate() {
-        if (this.isSelAirWithWaypoints()) {
+        if (this.isAircraftWithWaypoints()) {
             let active = this.props.aircraftDetail.data.mission.waypoints.find(
                 point => {
                     return point.active;
@@ -60,7 +60,7 @@ class InsetMapView extends Component {
         }
     }
 
-    isSelAirWithWaypoints() {
+    isAircraftWithWaypoints() {
         return (
             !this.props.aircraftDetail.error &&
             !this.props.aircraftDetail.pending &&
@@ -91,7 +91,7 @@ class InsetMapView extends Component {
             this.props.aircraft.data.length > 0
         ) {
             let active;
-            if (this.isSelAirWithWaypoints()) {
+            if (this.isAircraftWithWaypoints()) {
                 active = this.props.aircraftDetail.data.mission.waypoints.find(
                     point => {
                         return point.active;
