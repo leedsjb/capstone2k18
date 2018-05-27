@@ -80,22 +80,22 @@ VALUES(1,'Male'), (2,'Female'), (3,'Other');
 
 INSERT INTO tblPERSONNEL(personnel_id, personnel_f_name, personnel_l_name, personnel_title, personnel_sms_num, personnel_email)
 VALUES
-(1,"Tiffany","Chen","Developer","5555555555","tzc@uw.edu"),
-(2,"Benjamin","Leeds","Developer","7777777777","jbl@uw.edu"),
+(1,"Tiffany","Chen","Developer","4258941368","tzc@uw.edu"),
+(2,"Benjamin","Leeds","Developer","7204804092","jbl@uw.edu"),
 (3,"Vincent","Van Der Meulen","Designer/Developer","1111111111","vmvdm@uw.edu"),
-(4, "Jessica","Basa","Developer","3333333333","jdb@uw.edu"),
+(4,"Jessica","Basa","Developer","3333333333","jdb@uw.edu"),
 (5,"Brian","Crownhart","Developer","2222222222","bcrownhart@uw.edu");
 
-INSERT INTO tblPERSONNEL_GROUP(personnelGroupID,personnel_id,group_id)
+INSERT INTO tblPERSONNEL_GROUP(personnel_group_ID,personnel_id,group_id)
 VALUES
-(1,1,20),
-(2,1,18),
-(3,2,12),
-(4,2,18),
-(5,3,20),
-(6,3,18),
-(7,4,12),
-(8,4,17);
+(1,1,20), -- Tiffany, RW OOS Mechanical
+(2,1,18), -- Tiffany, PAIP
+(3,2,12), -- Benjamin, JNU Lear
+(4,2,18), -- Benjamin, PAIP
+(5,3,20), -- Vincent, RW OOS Mechanical
+(6,3,18), -- Vincent, PAIP
+(7,4,12), -- Jessica, JNU Lear
+(8,4,17); -- Jessica, OOS Group
 
 INSERT INTO tblAIRCRAFT_TYPE(
     aircraft_type_id, aircraft_type_title, aircraft_type_desc,
@@ -112,13 +112,13 @@ INSERT INTO tblAIRCRAFT(
     ac_cell_phone, ac_sat_phone
 )
 VALUES
-(1, "AL2", "N123AL", "1", "47.4441", "-122.3249", "Bremerton Base", "5555555555","4444444444"),
-(2, "AL3", "N124AL", "1", "45.5653", "-122.6448", "Seattle Children's", "5555555555","4444444444"),
-(3, "AL5", "N125AL", "2", "47.1042", "-122.87", "Harborview Medical Center", "5555555555","4444444444"),
-(4, "AL6", "N126AL", "2", "47.6849", "-122.2968", "UW Medical Center", "5555555555","4444444444"),
-(5, "AL7", "N127AL", "3", "45.5653", "-122.6448", "Yakima Base", "5555555555","4444444444"),
-(6, "AL8", "N128AL", "3", "45.5287", "-122.6363", "Boeing Field Base", "5555555555","4444444444"),
-(7, "AL9", "N129AL", "4", "47.4441", "-122.3249", "Bremerton Base", "5555555555","4444444444");
+(1, "AL2", "N123AL", "1", "47.4441", "-122.3249", "Bremerton Base", "5555555555","4444444444"), -- Lear 31-A
+(2, "AL3", "N124AL", "1", "45.5653", "-122.6448", "Seattle Children's", "5555555555","4444444444"), -- Lear 31-A
+(3, "AL5", "N125AL", "2", "47.1042", "-122.87", "Harborview Medical Center", "5555555555","4444444444"), -- Pilatus PC-12
+(4, "AL6", "N126AL", "2", "47.6849", "-122.2968", "UW Medical Center", "5555555555","4444444444"), -- Pilatus PC-12
+(5, "AL7", "N127AL", "3", "45.5653", "-122.6448", "Yakima Base", "5555555555","4444444444"), -- Airbus H-125
+(6, "AL8", "N128AL", "3", "45.5287", "-122.6363", "Boeing Field Base", "5555555555","4444444444"), -- Airbus H-135
+(7, "AL9", "N129AL", "4", "47.4441", "-122.3249", "Bremerton Base", "5555555555","4444444444"); -- Augusta A109-E
 
 INSERT INTO tblAIRCRAFT_STATUS(status_id, status_title, status_long_desc, status_short_desc)
 VALUES
@@ -126,15 +126,16 @@ VALUES
 (2, "Out Of Service", "Aircraft out of service", "OOS"),
 (3, "On a Mission", "Aircraft on a mission", "OAM");
 
+-- Aircraft Status: [1:Ready, 2: Out of Service, 3: On a Mission]
 INSERT INTO tblASSIGNED_STATUS(aircraftstatus_id,status_id, aircraft_id)
 VALUES
-(1,1,1),
-(2,2,2),
-(3,3,3),
-(4,3,4),
-(5,3,5),
-(6,1,6),
-(7,2,7);
+(1,3,1), -- RFM / AL2
+(2,1,2), -- RFM
+(3,1,3), -- RFM
+(4,1,4), -- RFM
+(5,3,5), -- OAM
+(6,1,6), -- RFM
+(7,2,7); -- OOS
 
 INSERT INTO tblAIRCRAFT_SCHED_SERVICE(
     ac_sched_service_id, ac_id, ac_sched_service_reason, OOS_start_time, OOS_end_time
@@ -143,12 +144,24 @@ VALUES
 (1, 2, "100 Hour Maintenance", '2018-05-21', '2018-05-24'),
 (2, 7, "Pitot/Static Check", '2018-05-23', '2018-05-24');
 
+-- crew_type_id	crew_type_name	        crew_type_role
+-- 1	        Pilot PIC	            Pilot in Command
+-- 2	        Pilot SIC	            Second in Command
+-- 3	        Pediatric RN	        Medical
+-- 4	        Adult RN	            Medical
+-- 5	        MD	                    Medical
+-- 6	        Observer	            Other
+-- 7	        ECMO	                Medical
+-- 8	        RT	                    Other
+-- 9	        Other	                Other
+-- 10	        Family Member Rider	    None
+-- 11	        Ambulance Driver	    Driver
 INSERT INTO tblPERSONNEL_CREW_TYPE(personnel_crew_type_id, personnel_id, crew_type_id)
 VALUES
 (1,1,1),
 (2,2,2);
 
-INSERT INTO tblAGENCY_TYPE(agencytype_id, agencytype_name)
+INSERT INTO tblAGENCY_TYPE(agency_type_id, agency_type_name)
 VALUES
 (1,"Hospital"),
 (2,"EMS Agency"),
@@ -164,7 +177,7 @@ VALUES
 (3, "301 2nd Ave S", "Seattle", "WA", 98104, NULL); -- Seattle Fire Department
 
 INSERT INTO tblAGENCY(
-    agency_id, agency_name, agency_area_code, agency_phone, address_id, agencytype_id
+    agency_id, agency_name, agency_area_code, agency_phone, address_id, agency_type_id
 )
 VALUES
 (1, "Harborview Medical Center", 206, 7443000, 1, 1),
@@ -175,17 +188,15 @@ INSERT INTO tblMISSION(
     mission_id, aircraft_id, mission_type_id, requestor_id, receiver_id, tc_number
 )
 VALUES
-(1, 5, 16, 3, 1, "18-0045"),
-(2, 1, 6, 2, 1, "18-0036"),
-(3, 7, 6, 3, 1, "18-0028"),
+(1, 5, 16, 1, 1, "18-0056"), -- AL7, RW-SCENE, on a mission
+-- (2, 1, null, null, null, null), -- AL2, ready
+(3, 7, null, null, null, null), -- AL9, out of service
 (4, 5, 16, 3, 1, "18-0045"); -- testing second mission with same aircraft
 
--- TODO add AUTO_INCREMENT to tblMISSION_PERSONNEL
--- TODO change missionpersonnel_id to mission_personnel_id
-INSERT INTO tblMISSION_PERSONNEL(missionpersonnel_id, mission_id, personnel_crew_type_id)
+INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
 VALUES
-(1,4,1),
-(2,4,2);
+(4,1),
+(4,2);
 
 INSERT INTO tblPATIENT(
     mission_id, patient_gender_id, patient_short_report, patient_intubated, patient_drips, patient_age,
@@ -193,7 +204,7 @@ INSERT INTO tblPATIENT(
 )
 VALUES
 (
-    1, 1, "Patient impacted tree while skiing. Head bleed and broken femur.", 1, 1, 40,
+    2, 1, "Patient impacted tree while skiing. Head bleed and broken femur.", 1, 1, 40,
     135, 0, 0, 0
 ),
 (
@@ -207,13 +218,23 @@ VALUES
 (2, "In-progress", "Mission underway", "IP"),
 (3, "Complete", "Mission complete", "COMPLETE");
 
-INSERT INTO tblASSIGNED_MISSION_STATUS(
-    missionstatus_id, mission_id, m_status_id
-)
+/*
+ac_id	ac_callsign	ac_n_number	ac_type_id	
+1	    AL2	        N123AL	    1
+2	    AL3	        N124AL	    1
+3	    AL5	        N125AL	    2
+4	    AL6	        N126AL	    2
+5	    AL7	        N127AL	    3
+6	    AL8	        N128AL	    3
+7	    AL9	        N129AL      4
+*/
+
+INSERT INTO tblASSIGNED_MISSION_STATUS(mission_status_id, mission_id, m_status_id)
 VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+(1, 1, 3),  -- AC5, AL7, Mission 1, Completed
+(2, 2, 2),  -- AC1, AL2, Mission 2, In-progress 
+(3, 3, 3),  -- AC7, AL9, Mission 3, Completed
+(4, 4, 2)   -- AC5, AL7, Mission 4, In-Progress
 
 INSERT INTO tblRESOURCE_LINKS(
     resource_short_name, resource_long_name, resource_url, resource_thumbnail_photo_url
@@ -227,18 +248,23 @@ VALUES
 ("OCCAM","UW Medicine OCCAM", "https://occam.uw.edu", "https://is4-ssl.mzstatic.com/image/thumb/Purple62/v4/db/ed/93/dbed9341-a3c6-597c-9755-8170e871fca7/mzl.pomnvbtr.jpg/1200x630bb.jpg");
 
 INSERT INTO tblMISSION_WAYPOINT(
-    missionwaypoint_id, mission_id, waypoint_id, mission_ETA, waypoint_active, flight_rules
+    mission_waypoint_id, mission_id, waypoint_id, mission_ETA,
+    waypoint_active, waypoint_completed, flight_rules
 )
 VALUES
-(1, 1, 22822, '2018-05-24 02:30:30', TRUE, "VFR"), -- Crystal Ski Mountain
-(2, 1, 18518, '2018-05-24 03:30:30', FALSE, "VFR"), -- Harborview
-(3, 1, 20070, '2018-05-24 04:30:30', FALSE, "IFR"), -- Olympia
-(4, 4, 23964, '2018-05-25 02:30:30', TRUE, "VFR"), -- Fall City Park
-(5, 4, 24431, '2018-05-25 03:30:30', TRUE, "VFR"), -- Forks Hospital
-(6, 4, 25712, '2018-05-25 04:30:30', FALSE, "IFR"); -- Bremerton Base
+(1, 1, 22822, '2018-05-24 02:30:30', TRUE, FALSE, "VFR"), -- Crystal Ski Mountain
+(2, 1, 18518, '2018-05-24 03:30:30', FALSE, FALSE, "VFR"), -- Harborview
+(3, 1, 20070, '2018-05-24 04:30:30', FALSE, FALSE, "IFR"), -- Olympia
+(4, 4, 23964, '2018-05-25 02:30:30', FALSE, TRUE, "VFR"), -- Fall City Park
+(5, 4, 24431, '2018-05-25 03:30:30', FALSE, TRUE, "VFR"), -- Forks Hospital
+(6, 4, 25712, '2018-05-25 04:30:30', TRUE, FALSE, "IFR"), -- Bremerton Base
+(7, 2, 20467, '2018-05-27 00:10:00', TRUE, FALSE, "IFR"), -- Snoqualmie Pass
+(8, 2, 19867, '2018-05-27 02:00:00', FALSE, FALSE, "IFR"), -- Oregon Health Science University
+(9, 2, 20082, '2018-05-27 04:00:00', FALSE, FALSE, "IFR") -- Boeing Field Base (AL2)
 
 /* 
 -- SELECT STATEMENTS
+
 -- mission waypoints
 SELECT * FROM tblWAYPOINT_TYPE;
 SELECT * FROM tblMISSION_WAYPOINT;

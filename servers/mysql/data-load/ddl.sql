@@ -73,10 +73,10 @@ CREATE TABLE `tblADDRESS` (
 
 DROP TABLE IF EXISTS `tblAGENCY_TYPE`;
 CREATE TABLE `tblAGENCY_TYPE` (
-    `agencytype_id` INTEGER,
-    `agencytype_name` NVARCHAR(50),
-    `agencytype_desc` NVARCHAR(200),
-    PRIMARY KEY (`agencytype_id`)
+    `agency_type_id` INTEGER,
+    `agency_type_name` NVARCHAR(50),
+    `agency_type_desc` NVARCHAR(200),
+    PRIMARY KEY (`agency_type_id`)
 );
 
 CREATE TABLE `tblAGENCY` (
@@ -85,10 +85,10 @@ CREATE TABLE `tblAGENCY` (
     `agency_area_code` INTEGER,
     `agency_phone` INTEGER,
     `address_id` INTEGER,
-    `agencytype_id` INTEGER,
+    `agency_type_id` INTEGER,
     PRIMARY KEY (`agency_id`),
     FOREIGN KEY(address_id) REFERENCES tblADDRESS(address_id),
-    FOREIGN KEY(agencytype_id) REFERENCES tblAGENCY_TYPE(agencytype_id)
+    FOREIGN KEY(agency_type_id) REFERENCES tblAGENCY_TYPE(agency_type_id)
 );
 
 CREATE TABLE `tblAIRCRAFT_STATUS` (
@@ -124,10 +124,10 @@ CREATE TABLE `tblAIRCRAFT` (
 );
 
 CREATE TABLE `tblASSIGNED_STATUS` (
-    `aircraftstatus_id` int,
-    `status_id` int,
-    `aircraft_id` int,
-    `assignedstatus_date` TIMESTAMP,
+    `aircraft_status_id` INTEGER,
+    `status_id` INTEGER,
+    `aircraft_id` INTEGER,
+    `assigned_status_date` TIMESTAMP,
     PRIMARY KEY (`aircraftstatus_id`),
     FOREIGN KEY(status_id) REFERENCES tblAIRCRAFT_STATUS(status_id),
     FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id)
@@ -173,24 +173,25 @@ CREATE TABLE `tblMISSION_STATUS` (
 );
 
 CREATE TABLE `tblASSIGNED_MISSION_STATUS` (
-    `missionstatus_id` int,
-    `mission_id` int,
-    `m_status_id` int,
-    `missionstatus_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`missionstatus_id`),
+    `mission_status_id` INTEGER AUTO_INCREMENT,
+    `mission_id` INTEGER,
+    `m_status_id` INTEGER,
+    `mission_status_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`mission_status_id`),
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
     FOREIGN KEY(m_status_id) REFERENCES tblMISSION_STATUS(m_status_id)
 );
 
 CREATE TABLE `tblMISSION_WAYPOINT` (
-    `missionwaypoint_id` INTEGER,
+    `mission_waypoint_id` INTEGER,
     `mission_id` INTEGER,
     `waypoint_id` INTEGER,
     -- `mission_ETE` TIMESTAMP, -- calculated value: ETA - NOW()
     `mission_ETA` TIMESTAMP NULL, -- do not want auto initialization here
     `waypoint_active` BOOLEAN,
+    `waypoint_completed` BOOLEAN,
     `flight_rules` NVARCHAR(25),
-    PRIMARY KEY (`missionwaypoint_id`),
+    PRIMARY KEY (`mission_waypoint_id`),
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
     FOREIGN KEY(waypoint_id) REFERENCES tblWAYPOINT(waypoint_id)
 );
@@ -260,19 +261,19 @@ CREATE TABLE `tblPERSONNEL_CREW_TYPE` (
 );
 
 CREATE TABLE `tblPERSONNEL_GROUP` (
-    `personnelGroupID` INTEGER,
+    `personnel_group_ID` INTEGER,
     `personnel_id` INTEGER,
     `group_id` INTEGER,
-    PRIMARY KEY (`personnelGroupID`),
+    PRIMARY KEY (`personnel_group_ID`),
     FOREIGN KEY(personnel_id) REFERENCES tblPERSONNEL(personnel_id),
     FOREIGN KEY(group_id) REFERENCES tblGROUP(group_id)
 );
 
 CREATE TABLE `tblMISSION_PERSONNEL` (
-    `missionpersonnel_id` INTEGER,
+    `mission_personnel_id` INTEGER AUTO_INCREMENT,
     `mission_id` INTEGER,
     `personnel_crew_type_id` INTEGER,
-    PRIMARY KEY (`missionpersonnel_id`),
+    PRIMARY KEY (`mission_personnel_id`),
     FOREIGN KEY(mission_id) REFERENCES tblMISSION(mission_id),
     FOREIGN KEY(personnel_crew_type_id) REFERENCES tblPERSONNEL_CREW_TYPE(personnel_crew_type_id)
 );

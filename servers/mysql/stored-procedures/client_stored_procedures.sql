@@ -2,7 +2,8 @@
 client_stored_procedures.sql
 Created: Thursday May 17, 2018
 Modified: Saturday May 26, 2018
-Last Change: add uspGetAircraftByCategory()
+Last Change: add uspGetAircraftIDByCallsign(), 
+update mission_waypoints to add "waypoint_completed"
 Author(s): J. Benjamin Leeds
 License: None
 Use the stored procedures in this file to retrieve data in MySQL to send to clients
@@ -95,7 +96,7 @@ BEGIN
     JOIN tblAIRCRAFT_STATUS ON tblASSIGNED_STATUS.status_id = tblAIRCRAFT_STATUS.status_id;
 END;
 
--- endpoint: /v1/aircraft/???
+-- endpoint: /v1/aircraft?status={OAM,RFM,OOS}
 -- called when q="", status comes from query status field?
 -- CALL uspGetAircraftByStatus("Out of Service");
 DROP PROCEDURE IF EXISTS `uspGetAircraftByStatus`;
@@ -126,6 +127,24 @@ BEGIN
     JOIN tblAIRCRAFT_STATUS ON tblASSIGNED_STATUS.status_id = tblAIRCRAFT_STATUS.status_id
     JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
     WHERE tblAIRCRAFT_TYPE.aircraft_type_category = categoryQuery;
+END;
+
+-- endpoint: /v1/aircraft?category="{Rotorcraft, Fixed-wing}"&status={OAM,RFM,OOS}
+-- CALL uspGetAircraftByStatusAndCategory("OOS", "Rotorcraft")
+DROP PROCEDURE IF EXISTS `uspGetAircraftByStatusAndCategory`;
+CREATE PROCEDURE uspGetAircraftByStatusAndCategory(
+    IN statusTitleQuery NVARCHAR(25),
+    IN categoryQuery NVARCHAR(25)
+)
+BEGIN
+    SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
+    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_short_desc
+    FROM tblAIRCRAFT
+    JOIN tblASSIGNED_STATUS ON tblAIRCRAFT.ac_id = tblASSIGNED_STATUS.aircraft_id
+    JOIN tblAIRCRAFT_STATUS ON tblASSIGNED_STATUS.status_id = tblAIRCRAFT_STATUS.status_id
+    JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
+    WHERE tblAIRCRAFT_STATUS.status_short_desc = statusTitleQuery
+    AND tblAIRCRAFT_TYPE.aircraft_type_category = categoryQuery;
 END;
 
 -- endpoint: /v1/aircraft/{id}
@@ -222,8 +241,22 @@ BEGIN
     );
 END;
 
+-- endpoing: internal to apiserver
+-- CALL uspGetAircraftIDByCallsign("AL5");
+DROP PROCEDURE IF EXISTS `uspGetAircraftIDByCallsign`;
+CREATE PROCEDURE uspGetAircraftIDByCallsign(
+    IN callsignQuery NVARCHAR(50)
+)
+BEGIN
+    SELECT tblAIRCRAFT.ac_id
+    FROM tblAIRCRAFT
+    WHERE tblAIRCRAFT.ac_callsign=callsignQuery;
+END;
+
 -- endpoint: /v1/??/{id}
 -- CALL uspGetMissionByAircraft(5);
+-- Given an aircraft return follwing details about current or most recent mission:
+--      mission_id, mission_type_short_name, tc_number, mission_date, m_status_short_desc
 -- Present issue: returns most recent mission for a given mission. Need to ensure this is the 
 -- correct logic. TODO
 -- Note: edited to return mission type name instead of ID
@@ -232,11 +265,17 @@ CREATE PROCEDURE uspGetMissionByAircraft(
     IN aid INTEGER
 )
 BEGIN
-    SELECT mission_type_short_name, tc_number, mission_date
+
+    DECLARE active_mission_id INTEGER; -- declare resets active_mission_id to null w/ each sproc call
+    CALL uspGetMissionIDByAircraft(aid ,active_mission_id);
+
+    SELECT mission_type_short_name, tc_number, mission_date, tblMISSION_STATUS.m_status_short_desc
     FROM tblMISSION
-    JOIN tblMISSION_TYPE ON tblMISSION.mission_type_id = tblMISSION_TYPE.mission_type_id
-    WHERE tblMISSION.aircraft_id = aid
-    ORDER BY tblMISSION.mission_date DESC LIMIT 1;
+    INNER JOIN tblMISSION_TYPE ON tblMISSION.mission_type_id = tblMISSION_TYPE.mission_type_id
+    INNER JOIN tblASSIGNED_MISSION_STATUS ON tblMISSION.mission_id = tblASSIGNED_MISSION_STATUS.mission_id
+    INNER JOIN tblMISSION_STATUS ON tblASSIGNED_MISSION_STATUS.m_status_id = tblMISSION_STATUS.m_status_id
+    WHERE tblMISSION.mission_id = active_mission_id
+    ORDER BY tblASSIGNED_MISSION_STATUS.missionstatus_date DESC LIMIT 1; -- mission_status_date
 END;
 
 -- endpoint: /v1/????
@@ -248,14 +287,20 @@ CREATE PROCEDURE uspGetMissionDetailByAircraft(
     IN aid INTEGER
 )
 BEGIN
+    DECLARE active_mission_id INTEGER; -- declare resets active_mission_id to null w/ each sproc call
+    CALL uspGetMissionIDByAircraft(aid ,active_mission_id);
+
     SELECT mission_type_short_name, tc_number,
-    req_agency.agency_name AS requestor_agency, rec_agency.agency_name AS receiver_agency
+    req_agency.agency_name AS requestor_agency, rec_agency.agency_name AS receiver_agency,
+    tblMISSION_STATUS.m_status_short_desc
     FROM tblMISSION
     INNER JOIN tblMISSION_TYPE ON tblMISSION.mission_type_id = tblMISSION_TYPE.mission_type_id
     INNER JOIN tblAGENCY req_agency ON tblMISSION.requestor_id = req_agency.agency_id
     INNER JOIN tblAGENCY rec_agency ON tblMISSION.receiver_id = rec_agency.agency_id
-    WHERE tblMISSION.aircraft_id = aid;
-    -- WARNING: TODO: return only most recent mission per aircraft
+    INNER JOIN tblASSIGNED_MISSION_STATUS ON tblMISSION.mission_id = tblASSIGNED_MISSION_STATUS.mission_id
+    INNER JOIN tblMISSION_STATUS ON tblASSIGNED_MISSION_STATUS.m_status_id = tblMISSION_STATUS.m_status_id
+    WHERE tblMISSION.mission_id = active_mission_id
+    ORDER BY tblASSIGNED_MISSION_STATUS.missionstatus_date DESC LIMIT 1; -- mission_status_date
 END;
 
 -- get patient by aircraft
@@ -308,8 +353,8 @@ CREATE PROCEDURE uspGetWaypointsByAircraft(
 BEGIN
     DECLARE active_mission_id INTEGER;
     CALL uspGetMissionIDByAircraft(aid, active_mission_id);
-    SELECT missionwaypoint_id, waypoint_title, mission_ETA, waypoint_active, flight_rules,
-    latitude, longitude
+    SELECT mission_waypoint_id, waypoint_title, mission_ETA, waypoint_active, waypoint_completed,
+    flight_rules,latitude, longitude
     FROM tblMISSION_WAYPOINT
     INNER JOIN tblWAYPOINT ON tblMISSION_WAYPOINT.waypoint_id = tblWAYPOINT.waypoint_id
     WHERE tblMISSION_WAYPOINT.mission_id = active_mission_id;
