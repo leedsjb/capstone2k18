@@ -303,8 +303,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	fmt.Printf("[AIRCRAFT STATUS] %v\n", aircraft.Status)
 
 	// [MISSION]
-	if strings.ToLower(aircraft.Status) == "on mission" ||
-		strings.ToLower(aircraft.Status) == "oam" {
+	if strings.ToLower(aircraft.Status) == "oam" {
 		mission := &messages.Mission{}
 		missionRows, err := ctx.GetMissionByAircraft(currentRow.ID)
 		if err != nil {
@@ -390,8 +389,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	}
 
 	// [OOS]
-	if strings.ToLower(aircraft.Status) == "out of service" ||
-		strings.ToLower(aircraft.Status) == "oos" {
+	if strings.ToLower(aircraft.Status) == "oos" {
 		oos := &messages.OOS{}
 		oosRows, err := ctx.GetOOSByAircraft(currentRow.ID)
 		if err != nil {
@@ -479,8 +477,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	fmt.Printf("[AIRCRAFT DETAIL STATUS] %v", aircraftDetail.Status)
 
 	// [MISSION]
-	if strings.ToLower(aircraftDetail.Status) == "on a mission" ||
-		strings.ToLower(aircraftDetail.Status) == "oam" {
+	if strings.ToLower(aircraftDetail.Status) == "oam" {
 		missionDetail := &messages.MissionDetail{}
 		missionDetailRows, err := ctx.GetMissionDetailByAircraft(currentRow.ID)
 		if err != nil {
@@ -692,8 +689,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	}
 
 	// [OOS]
-	if strings.ToLower(aircraftDetail.Status) == "out of service" ||
-		strings.ToLower(aircraftDetail.Status) == "oos" {
+	if strings.ToLower(aircraftDetail.Status) == "oos" {
 		oosDetail := &messages.OOSDetail{}
 		oosDetailRows, err := ctx.GetOOSDetailByAircraft(currentRow.ID)
 		if err != nil {
