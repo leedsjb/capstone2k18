@@ -68,9 +68,11 @@ class ResourcesDropdown extends Component {
                                                 </FlexFillHeight>
                                             </Absolute>
                                         </Relative>
-                                        <Box mt={2}>
-                                            <Span>{item.name}</Span>
-                                        </Box>
+                                        <Flex mt={2} justifyContent="center">
+                                            <Span textAlign="center">
+                                                {item.name}
+                                            </Span>
+                                        </Flex>
                                     </a>
                                 </Box>
                             );

@@ -5,8 +5,14 @@ import Box from "../Box";
 const GradientBox = styled(Box)`
     background: radial-gradient(
         circle at top left,
-        ${props => props.firstcolor},
-        ${props => props.secondcolor}
+        ${props =>
+            props.firstcolor in props.theme.colors
+                ? props.theme.colors[props.firstcolor]
+                : props.firstcolor},
+        ${props =>
+            props.secondcolor in props.theme.colors
+                ? props.theme.colors[props.secondcolor]
+                : props.secondcolor}
     );
 `;
 

@@ -12,11 +12,11 @@ const CrewDetailListItem = ({ crewDetail, ...props }) => {
             <Flex flexDirection="column" alignItems="center" flex={1}>
                 <ColoredAvatar fName={crewDetail.fName} size={48} />
                 <Flex mt={3} alignItems="center" flexDirection="column">
-                    <Box mb={1}>
+                    <Flex mb={1} justifyContent="center">
                         <Span fontWeight="bold" textAlign="center">{`${
                             crewDetail.fName
                         } ${crewDetail.lName}`}</Span>
-                    </Box>
+                    </Flex>
                     <Span textAlign="center">{crewDetail.position}</Span>
                 </Flex>
             </Flex>

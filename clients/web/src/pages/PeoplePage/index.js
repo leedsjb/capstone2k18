@@ -373,7 +373,7 @@ class PeoplePage extends Component {
         ) {
             return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         } else {
-            return <div>Loading...</div>;
+            return <LoadingSpinner />;
         }
     }
 

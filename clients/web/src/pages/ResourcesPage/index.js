@@ -35,7 +35,7 @@ class ResourcesPage extends Component {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                 >
-                                    <Card height="100%">
+                                    <Card height="100%" p={4}>
                                         <Relative pt="50%" w={1}>
                                             <Absolute
                                                 top={0}
@@ -56,7 +56,10 @@ class ResourcesPage extends Component {
                                             </Absolute>
                                         </Relative>
                                         <Flex mt={4} justifyContent="center">
-                                            <Span fontWeight="bold">
+                                            <Span
+                                                fontWeight="bold"
+                                                textAlign="center"
+                                            >
                                                 {item.name}
                                             </Span>
                                         </Flex>
