@@ -83,7 +83,7 @@ class MapView extends Component {
             selected.long
         );
         this.state.map.fitBounds([[minLong, minLat], [maxLong, maxLat]], {
-            padding: { top: 20, bottom: 20, left: 15, right: 15 }
+            padding: 32
         });
     }
 
@@ -155,7 +155,7 @@ class MapView extends Component {
             let selected = this.props.aircraft.data.find(aircraft => {
                 return aircraft.id === Number(this.props.id);
             });
-            if (this.isSelAirWithWaypoints() && this.state.map) {
+            if (this.isSelAirWithWaypoints() && selected && this.state.map) {
                 this.fitMapBounds(selected);
             }
             return (
@@ -168,6 +168,13 @@ class MapView extends Component {
                                     layout={{
                                         "icon-image": "airplane",
                                         "icon-allow-overlap": true
+                                    }}
+                                    paint={{
+                                        "icon-opacity":
+                                            selected &&
+                                            aircraft.id === selected.id
+                                                ? 1
+                                                : 0.5
                                     }}
                                 >
                                     <Feature
@@ -190,7 +197,7 @@ class MapView extends Component {
                                         />
                                     </Layer>
                                 ) : null}
-                                {this.isSelAirWithWaypoints() ? (
+                                {this.isSelAirWithWaypoints() && selected ? (
                                     <Box>
                                         {this.props.aircraftDetail.data.mission.waypoints.map(
                                             point => {
@@ -335,7 +342,7 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
-                    zoom={!this.isSelAirWithWaypoints() ? [10] : null}
+                    zoom={!this.isSelAirWithWaypoints() ? [10] : undefined}
                 >
                     {this.renderMapView()}
 
