@@ -432,7 +432,7 @@ class PeoplePage extends Component {
                             mt={6}
                         />
                     </Container>
-                    {person.memberGroups.length > 0 ? (
+                    {person.memberGroups ? (
                         <div>
                             <Container px={8}>
                                 <Heading fontSize={4} mt={6}>
