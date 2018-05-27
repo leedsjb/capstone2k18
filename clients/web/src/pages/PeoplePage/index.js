@@ -12,7 +12,6 @@ import Container from "../../components/Container";
 import DetailView from "../../components/DetailView";
 import Divider from "../../components/Divider";
 import FlexFillVH from "../../components/FlexFillVH";
-import GroupCard from "../../components/GroupCard";
 import GroupsListItem from "../../components/GroupsListItem";
 import GroupsLoader from "../../components/GroupsLoader";
 import Heading from "../../components/Heading";
@@ -382,7 +381,9 @@ class PeoplePage extends Component {
         if (this.props.people.error || this.props.groups.error) {
             return (
                 <MasterView>
-                    An error has occurred: {this.props.people.error.toString()}
+                    An error has occurred:{" "}
+                    {this.props.people.error.toString() ||
+                        this.props.groups.error.toString()}
                 </MasterView>
             );
         } else {
