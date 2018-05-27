@@ -2,7 +2,7 @@
 client_stored_procedures.sql
 Created: Thursday May 17, 2018
 Modified: Saturday May 26, 2018
-Last Change: add uspGetAircraftIDByCallsign(), 
+Last Change: add uspGetAgencyDetailsByID() stored procedure
 update mission_waypoints to add "waypoint_completed"
 Author(s): J. Benjamin Leeds
 License: None
@@ -157,7 +157,7 @@ CREATE PROCEDURE uspGetAircraftByID(
 )
 BEGIN
     SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
-    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_title
+    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_short_desc
     FROM tblAIRCRAFT
     JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
     JOIN tblASSIGNED_STATUS ON tblAIRCRAFT.ac_id = tblASSIGNED_STATUS.aircraft_id
@@ -277,7 +277,7 @@ BEGIN
     INNER JOIN tblASSIGNED_MISSION_STATUS ON tblMISSION.mission_id = tblASSIGNED_MISSION_STATUS.mission_id
     INNER JOIN tblMISSION_STATUS ON tblASSIGNED_MISSION_STATUS.m_status_id = tblMISSION_STATUS.m_status_id
     WHERE tblMISSION.mission_id = active_mission_id
-    ORDER BY tblASSIGNED_MISSION_STATUS.missionstatus_date DESC LIMIT 1; -- mission_status_date
+    ORDER BY tblASSIGNED_MISSION_STATUS.mission_status_date DESC LIMIT 1;
 END;
 
 -- endpoint: /v1/????
@@ -325,7 +325,23 @@ BEGIN
     INNER JOIN tblASSIGNED_MISSION_STATUS ON tblMISSION.mission_id = tblASSIGNED_MISSION_STATUS.mission_id
     INNER JOIN tblMISSION_STATUS ON tblASSIGNED_MISSION_STATUS.m_status_id = tblMISSION_STATUS.m_status_id
     WHERE tblMISSION.mission_id = active_mission_id
-    ORDER BY tblASSIGNED_MISSION_STATUS.mission_status_date DESC LIMIT 1; -- mission_status_date
+    ORDER BY tblASSIGNED_MISSION_STATUS.mission_status_date DESC LIMIT 1;
+END;
+
+-- endpoint: API server internal use
+-- CALL uspGetAgencyDetailsByID(1);
+-- Returns agency name, areacode, phone, type, address
+DROP PROCEDURE IF EXISTS `uspGetAgencyDetailsByID`;
+CREATE PROCEDURE uspGetAgencyDetailsByID(
+    IN agency_id_query INTEGER
+)
+BEGIN 
+    SELECT agency_name, agency_area_code, agency_phone, agency_type_name, 
+    address_street_1, address_street_2, address_city, address_state, address_zip
+    FROM tblAGENCY
+    JOIN tblAGENCY_TYPE ON tblAGENCY.agency_type_id = tblAGENCY_TYPE.agency_type_id
+    JOIN tblADDRESS ON tblAGENCY.address_id = tblADDRESS.address_id
+    WHERE tblAGENCY.agency_id = agency_id_query;
 END;
 
 -- get patient by aircraft

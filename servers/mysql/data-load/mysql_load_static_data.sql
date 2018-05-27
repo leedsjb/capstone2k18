@@ -192,7 +192,9 @@ VALUES
 INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
 VALUES
 (4,1),
-(4,2);
+(4,2),
+(1,1),
+(1,2);
 
 INSERT INTO tblPATIENT(
     mission_id, patient_gender_id, patient_short_report, patient_intubated, patient_drips, patient_age,
