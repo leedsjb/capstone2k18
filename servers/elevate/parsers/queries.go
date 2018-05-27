@@ -220,57 +220,87 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 
 // [MISSIONS]
 
-func (ctx *ParserContext) GetRequestorByID(requestorID int) (string, error) {
-	// query := `CALL uspGetRequestorByID(?)`
+func (ctx *ParserContext) GetAgencyByID(agencyID int) (*messages.Agency, error) {
+	// query := `CALL uspGetAgencyByID(?)`
 	// reqRow, err := ctx.DB.QueryContext(
 	// 	sqlCtx,
 	// 	query,
 	// 	requestorID,
 	// )
 	query := `SELECT agency_name FROM tblAGENCY WHERE agency_id=?`
-	reqRow, err := ctx.DB.QueryContext(
+	agencyRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		requestorID,
+		agencyID,
 	)
 	if err != nil {
-		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
+		return nil, fmt.Errorf("Error querying MySQL for agency: %v", err)
 	}
-	var requestor string
-	for reqRow.Next() {
-		err = reqRow.Scan(&requestor)
+	agency := &messages.Agency{}
+	var name string
+	var areaCode string
+	var phone string
+	var agencyType string
+	var street1 string
+	var street2 string
+	var city string
+	var state string
+	var zip string
+	for agencyRow.Next() {
+		err = agencyRow.Scan(
+			&name,
+			&areaCode,
+			&phone,
+			&agencyType,
+			&street1,
+			&street2,
+			&city,
+			&state,
+			&zip,
+		)
 		if err != nil {
-			return "", fmt.Errorf("Error scanning requestor row: %v", err)
+			return nil, fmt.Errorf("Error scanning agency row: %v", err)
+		}
+		phone = areaCode + phone
+		address := street1 + " " + street2
+		agency = &messages.Agency{
+			Name:    name,
+			Phone:   phone,
+			Type:    agencyType,
+			Address: address,
+			City:    city,
+			State:   state,
+			Zip:     zip,
 		}
 	}
-	return requestor, nil
+	return agency, nil
 }
 
-func (ctx *ParserContext) GetReceiverByID(receiverID int) (string, error) {
-	// query := `CALL uspGetReceiverByID(?)`
-	// reqRow, err := ctx.DB.QueryContext(
-	// 	sqlCtx,
-	// 	query,
-	// 	receiverID,
-	// )
-	query := `SELECT agency_name FROM tblAGENCY WHERE agency_id=(?)`
-	recRow, err := ctx.DB.QueryContext(
-		sqlCtx,
-		query,
-		receiverID,
-	)
-	if err != nil {
-		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
-	}
-	var receiver string
-	for recRow.Next() {
-		err = recRow.Scan(&receiver)
-		if err != nil {
-			return "", fmt.Errorf("Error scanning requestor row: %v", err)
-		}
-	}
-	return receiver, nil
-}
+// func (ctx *ParserContext) GetReceiverByID(receiverID int) (string, error) {
+// 	// query := `CALL uspGetReceiverByID(?)`
+// 	// reqRow, err := ctx.DB.QueryContext(
+// 	// 	sqlCtx,
+// 	// 	query,
+// 	// 	receiverID,
+// 	// )
+// 	query := `SELECT agency_name FROM tblAGENCY WHERE agency_id=(?)`
+// 	recRow, err := ctx.DB.QueryContext(
+// 		sqlCtx,
+// 		query,
+// 		receiverID,
+// 	)
+// 	if err != nil {
+// 		return "", fmt.Errorf("Error querying MySQL for requestor: %v", err)
+// 	}
+// 	var receiver string
+// 	for recRow.Next() {
+// 		err = recRow.Scan(&receiver)
+// 		if err != nil {
+// 			return "", fmt.Errorf("Error scanning requestor row: %v", err)
+// 		}
+// 	}
+// 	return receiver, nil
+// }
 
 func (ctx *ParserContext) GetCrewMemberByID(memberID int) (string, string, error) {
 	// query := `CALL uspGetCrewMemberByID(?)`

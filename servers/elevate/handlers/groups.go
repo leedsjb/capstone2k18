@@ -167,14 +167,16 @@ func GroupToClientGroup(group *messages.Group) (*messages.ClientGroup, error) {
 		preview = firstMember + " and " + otherMembers + " others"
 	}
 
-	groupID, err := strconv.Atoi(group.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Could not convert group ID to int: %v", err)
-	}
 	client := &messages.ClientGroup{
-		ID:            groupID,
 		Name:          group.Name,
 		PeoplePreview: preview,
+	}
+	if len(group.ID) > 0 {
+		groupID, err := strconv.Atoi(group.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Could not convert group ID to int: %v", err)
+		}
+		client.ID = groupID
 	}
 	return client, nil
 }

@@ -76,6 +76,16 @@ type Mission struct {
 	Completed       string                   `json:"completed"`
 }
 
+type Agency struct {
+	Name    string `json:"name"`
+	Phone   string `json:"phone"`
+	Type    string `json:"type"`
+	Address string `json:"address"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+	Zip     string `json:"zip"`
+}
+
 // MissionDetail ...
 type MissionDetail struct {
 	Type            string                   `json:"type"`
@@ -83,8 +93,8 @@ type MissionDetail struct {
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
 	RadioReport     *ClientPatient           `json:"radioReport"`
-	Requestor       string                   `json:"requestor"`
-	Receiver        string                   `json:"receiver"`
+	Requestor       *Agency                  `json:"requestor"`
+	Receiver        *Agency                  `json:"receiver"`
 	Completed       string                   `json:"completed"`
 }
 

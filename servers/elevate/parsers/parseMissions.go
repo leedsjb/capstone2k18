@@ -33,8 +33,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 	// parse pubsub message for client
 
-	requestor := ""
-	receiver := ""
+	requestor := &messages.Agency{}
+	receiver := &messages.Agency{}
 
 	fmt.Printf("[MISSION CREATE] requestor ID: %v\n", msg.RequestorID)
 	fmt.Printf("[MISSION CREATE] receiver ID: %v\n", msg.ReceiverID)
@@ -50,7 +50,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 
 	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if requestorID != 0 {
-		req, err := ctx.GetRequestorByID(requestorID)
+		req, err := ctx.GetAgencyByID(requestorID)
 		if err != nil {
 			return fmt.Errorf("Could not retrieve requestor by given ID: %v, error is: %v\n", requestorID, err)
 		}
@@ -58,7 +58,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if receiverID != 0 {
-		rec, err := ctx.GetReceiverByID(receiverID)
+		rec, err := ctx.GetAgencyByID(receiverID)
 		if err != nil {
 			return fmt.Errorf("Could not retrieve receiver by given ID: %v, error is: %v\n", receiverID, err)
 		}

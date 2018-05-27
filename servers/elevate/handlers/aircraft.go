@@ -27,10 +27,25 @@ type missionRow struct {
 
 type missionDetailRow struct {
 	Type        string
-	FlightRules string
 	FlightNum   string
 	Requestor   string
+	ReqAreaCode string
+	ReqPhone    string
+	ReqType     string
+	ReqStreet1  sql.NullString
+	ReqStreet2  sql.NullString
+	ReqCity     string
+	ReqState    string
+	ReqZip      string
 	Receiver    string
+	RecAreaCode string
+	RecPhone    string
+	RecType     string
+	RecStreet1  sql.NullString
+	RecStreet2  sql.NullString
+	RecCity     string
+	RecState    string
+	RecZip      string
 	Completed   string
 }
 
@@ -456,10 +471,15 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		}
 		crew = append(crew, crewMember)
 	}
-	aircraftDetail.Crew = crew
+
+	if len(crew) > 0 {
+		aircraftDetail.Crew = crew
+	}
+
+	fmt.Printf("[AIRCRAFT DETAIL STATUS] %v", aircraftDetail.Status)
 
 	// [MISSION]
-	if strings.ToLower(aircraftDetail.Status) == "on mission" ||
+	if strings.ToLower(aircraftDetail.Status) == "on a mission" ||
 		strings.ToLower(aircraftDetail.Status) == "oam" {
 		missionDetail := &messages.MissionDetail{}
 		missionDetailRows, err := ctx.GetMissionDetailByAircraft(currentRow.ID)
@@ -470,15 +490,66 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		for missionDetailRows.Next() {
 			err = missionDetailRows.Scan(
 				&missionDetailRow.Type,
-				// &missionDetailRow.FlightRules,
 				&missionDetailRow.FlightNum,
 				&missionDetailRow.Requestor,
+				&missionDetailRow.ReqAreaCode,
+				&missionDetailRow.ReqPhone,
+				&missionDetailRow.ReqType,
+				&missionDetailRow.ReqStreet1,
+				&missionDetailRow.ReqStreet2,
+				&missionDetailRow.ReqCity,
+				&missionDetailRow.ReqState,
+				&missionDetailRow.ReqZip,
 				&missionDetailRow.Receiver,
+				&missionDetailRow.RecAreaCode,
+				&missionDetailRow.RecPhone,
+				&missionDetailRow.RecType,
+				&missionDetailRow.RecStreet1,
+				&missionDetailRow.RecStreet2,
+				&missionDetailRow.RecCity,
+				&missionDetailRow.RecState,
+				&missionDetailRow.RecZip,
 				&missionDetailRow.Completed,
 			)
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning mission detail row: %v", err)
 			}
+
+			var reqAddr string
+			if missionDetailRow.ReqStreet1.Valid {
+				reqAddr += missionDetailRow.ReqStreet1.String
+			}
+			if missionDetailRow.ReqStreet2.Valid {
+				reqAddr += missionDetailRow.ReqStreet2.String
+			}
+			var recAddr string
+			if missionDetailRow.RecStreet1.Valid {
+				recAddr += missionDetailRow.RecStreet1.String
+			}
+			if missionDetailRow.RecStreet2.Valid {
+				recAddr += missionDetailRow.RecStreet2.String
+			}
+
+			requestor := &messages.Agency{
+				Name:    missionDetailRow.Requestor,
+				Phone:   missionDetailRow.ReqPhone,
+				Type:    missionDetailRow.ReqType,
+				Address: reqAddr,
+				City:    missionDetailRow.ReqCity,
+				State:   missionDetailRow.ReqState,
+				Zip:     missionDetailRow.ReqZip,
+			}
+
+			receiver := &messages.Agency{
+				Name:    missionDetailRow.Receiver,
+				Phone:   missionDetailRow.RecPhone,
+				Type:    missionDetailRow.RecType,
+				Address: recAddr,
+				City:    missionDetailRow.RecCity,
+				State:   missionDetailRow.RecState,
+				Zip:     missionDetailRow.RecZip,
+			}
+
 			missionDetail = &messages.MissionDetail{
 				Type: missionDetailRow.Type,
 				// Vision: missionDetailRow.FlightRules,
@@ -486,8 +557,8 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				// Waypoints
 				FlightNum: missionDetailRow.FlightNum,
 				// RadioReport
-				Requestor: missionDetailRow.Requestor,
-				Receiver:  missionDetailRow.Receiver,
+				Requestor: requestor,
+				Receiver:  receiver,
 				Completed: missionDetailRow.Completed,
 			}
 		}
@@ -616,6 +687,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			missionDetail.RadioReport = report
 		}
 		// add mission, waypoints, and radio report to aircraft detail
+		fmt.Printf("[ADD MISSION DETAIL TO AIRCRAFT DETAIL] %+v", missionDetail)
 		aircraftDetail.Mission = missionDetail
 	}
 
