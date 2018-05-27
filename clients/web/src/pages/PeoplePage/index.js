@@ -6,36 +6,33 @@ import { Link } from "react-router-dom";
 
 import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
+import Card from "../../components/Card";
+import ColoredAvatar from "../../components/ColoredAvatar";
+import Container from "../../components/Container";
 import DetailView from "../../components/DetailView";
 import Divider from "../../components/Divider";
 import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
+import GroupsLoader from "../../components/GroupsLoader";
 import Heading from "../../components/Heading";
 import MasterView from "../../components/MasterView";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
+import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import PeopleListItem from "../../components/PeopleListItem";
+import PeopleLoader from "../../components/PeopleLoader";
+import SearchBox from "../../components/SearchBox";
 import GroupCard from "../../components/GroupCard";
 import Span from "../../components/Span";
-import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
-import ProfileSnippet from "../../components/ProfileSnippet";
-import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
-import Container from "../../components/Container";
-import Card from "../../components/Card";
-import ColoredBox from "../../components/ColoredBox";
-import GroupsLoader from "../../components/GroupsLoader";
-import PeopleLoader from "../../components/PeopleLoader";
 import TitleBar from "../../components/TitleBar";
-import OutsideClickHandler from "../../components/OutsideClickHandler";
-
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
-
 import { fetchGroups } from "../../actions/groups/actions";
 import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
 
@@ -463,8 +460,9 @@ class PeoplePage extends Component {
                     ) : null}
                 </Box>
             );
+            return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         } else {
-            return null;
+            return <div>Loading...</div>;
         }
     }
 

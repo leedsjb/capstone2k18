@@ -3,16 +3,10 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import Media from "react-media";
 import { push } from "react-router-redux";
-import ReactMapboxGl, {
-    Layer,
-    Feature,
-    Popup,
-    ZoomControl
-} from "react-mapbox-gl";
+import ReactMapboxGl, { Layer, Feature, ZoomControl } from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
 import Box from "../../components/Box";
-import Span from "../../components/Span";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
@@ -163,27 +157,108 @@ class MapView extends Component {
                     {this.props.aircraft.data.map(aircraft => {
                         return (
                             <Box key={aircraft.id}>
-                                <Layer
-                                    type="symbol"
-                                    layout={{
-                                        "icon-image": "airplane",
-                                        "icon-allow-overlap": true
-                                    }}
-                                    paint={{
-                                        "icon-opacity":
-                                            selected &&
-                                            aircraft.id === selected.id
-                                                ? 1
-                                                : 0.5
-                                    }}
+                                <Media
+                                    query={`(min-width: ${
+                                        this.props.theme.breakpoints[1]
+                                    }`}
                                 >
-                                    <Feature
-                                        coordinates={[
-                                            aircraft.long,
-                                            aircraft.lat
-                                        ]}
-                                    />
-                                </Layer>
+                                    {matches =>
+                                        matches ? (
+                                            <Layer
+                                                type="symbol"
+                                                layout={{
+                                                    "icon-image": "airplane",
+                                                    "icon-allow-overlap": true,
+                                                    "text-field":
+                                                        aircraft.callsign,
+                                                    "text-allow-overlap": true,
+                                                    "text-anchor": "bottom",
+                                                    "text-offset": [0, -1],
+                                                    "text-transform":
+                                                        "uppercase"
+                                                }}
+                                                paint={{
+                                                    "icon-opacity":
+                                                        !selected ||
+                                                        (selected &&
+                                                            aircraft.id ===
+                                                                selected.id)
+                                                            ? 1
+                                                            : 0.5
+                                                }}
+                                            >
+                                                <Feature
+                                                    coordinates={[
+                                                        aircraft.long,
+                                                        aircraft.lat
+                                                    ]}
+                                                    onClick={() =>
+                                                        this.props.push(
+                                                            `/aircraft/${
+                                                                aircraft.id
+                                                            }`
+                                                        )
+                                                    }
+                                                    onMouseEnter={map => {
+                                                        this.state.map.getCanvas().style.cursor =
+                                                            "pointer";
+                                                    }}
+                                                    onMouseLeave={map => {
+                                                        this.state.map.getCanvas().style.cursor =
+                                                            "";
+                                                    }}
+                                                />
+                                            </Layer>
+                                        ) : (
+                                            <Layer
+                                                type="symbol"
+                                                layout={{
+                                                    "icon-image": "airplane",
+                                                    "icon-allow-overlap": true,
+                                                    "text-field":
+                                                        aircraft.callsign,
+                                                    "text-allow-overlap": true,
+                                                    "text-anchor": "bottom",
+                                                    "text-offset": [0, -1],
+                                                    "text-transform":
+                                                        "uppercase"
+                                                }}
+                                                paint={{
+                                                    "icon-opacity":
+                                                        !selected ||
+                                                        (selected &&
+                                                            aircraft.id ===
+                                                                selected.id)
+                                                            ? 1
+                                                            : 0.5
+                                                }}
+                                            >
+                                                <Feature
+                                                    coordinates={[
+                                                        aircraft.long,
+                                                        aircraft.lat
+                                                    ]}
+                                                    onClick={() =>
+                                                        this.props.push(
+                                                            `/aircraft/map/${
+                                                                aircraft.id
+                                                            }`
+                                                        )
+                                                    }
+                                                    onMouseEnter={map => {
+                                                        this.state.map.getCanvas().style.cursor =
+                                                            "pointer";
+                                                    }}
+                                                    onMouseLeave={map => {
+                                                        this.state.map.getCanvas().style.cursor =
+                                                            "";
+                                                    }}
+                                                />
+                                            </Layer>
+                                        )
+                                    }
+                                </Media>
+
                                 {this.state.userPos ? (
                                     <Layer
                                         type="symbol"
@@ -221,6 +296,22 @@ class MapView extends Component {
                                                             "text-transform":
                                                                 "uppercase"
                                                         }}
+                                                        paint={{
+                                                            "icon-opacity":
+                                                                !selected ||
+                                                                (selected &&
+                                                                    aircraft.id ===
+                                                                        selected.id)
+                                                                    ? 1
+                                                                    : 0.5,
+                                                            "text-opacity":
+                                                                !selected ||
+                                                                (selected &&
+                                                                    aircraft.id ===
+                                                                        selected.id)
+                                                                    ? 1
+                                                                    : 0.5
+                                                        }}
                                                     >
                                                         <Feature
                                                             coordinates={[
@@ -253,71 +344,6 @@ class MapView extends Component {
                                     </Box>
                                 ) : null}
                             </Box>
-                        );
-                    })}
-                    {this.props.aircraft.data.map(aircraft => {
-                        return (
-                            <Media
-                                query={`(min-width: ${
-                                    this.props.theme.breakpoints[1]
-                                }`}
-                                key={aircraft.id}
-                            >
-                                {matches =>
-                                    matches ? (
-                                        <Popup
-                                            coordinates={[
-                                                aircraft.long,
-                                                aircraft.lat
-                                            ]}
-                                            key={aircraft.id}
-                                            offset={{
-                                                bottom: [0, -24]
-                                            }}
-                                            style={{
-                                                cursor: "pointer",
-                                                zIndex:
-                                                    selected &&
-                                                    aircraft.id === selected.id
-                                                        ? 1
-                                                        : 0
-                                            }}
-                                            onClick={() =>
-                                                this.props.push(
-                                                    `/aircraft/${aircraft.id}`
-                                                )
-                                            }
-                                        >
-                                            <Span fontWeight="bold">
-                                                {aircraft.callsign}
-                                            </Span>
-                                        </Popup>
-                                    ) : (
-                                        <Popup
-                                            coordinates={[
-                                                aircraft.long,
-                                                aircraft.lat
-                                            ]}
-                                            key={aircraft.id}
-                                            offset={{
-                                                bottom: [0, -24]
-                                            }}
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() =>
-                                                this.props.push(
-                                                    `/aircraft/map/${
-                                                        aircraft.id
-                                                    }`
-                                                )
-                                            }
-                                        >
-                                            <Span fontWeight="bold">
-                                                {aircraft.callsign}
-                                            </Span>
-                                        </Popup>
-                                    )
-                                }
-                            </Media>
                         );
                     })}
                 </div>
