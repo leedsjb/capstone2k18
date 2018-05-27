@@ -55,6 +55,20 @@ func (ctx *HandlerContext) GetAircraftByCategory(category string) (*sql.Rows, er
 	return aircraftRows, nil
 }
 
+func (ctx *HandlerContext) GetAircraftByStatusAndCategory(status string, category string) (*sql.Rows, error) {
+	query := `CALL uspGetAircraftByStatusAndCategory(?, ?)`
+	aircraftRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		status,
+		category,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for aircraft by status and category: %v", err)
+	}
+	return aircraftRows, nil
+}
+
 func (ctx *HandlerContext) GetAircraftByID(aircraftID int) (*sql.Rows, error) {
 	query := `CALL uspGetAircraftByID(?)`
 	aircraftRows, err := ctx.DB.QueryContext(

@@ -695,7 +695,7 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 		statusFilter := query.Get("status")
 
-		category := query.Get("category")
+		categoryFilter := query.Get("category")
 
 		if len(term) > 0 {
 			// filter by user query
@@ -705,7 +705,24 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				fmt.Printf("Error pulling aircrafts from trie: %v", err)
 				return
 			}
+
 			respond(w, aircraftList)
+
+		} else if len(statusFilter) > 0 && len(categoryFilter) > 0 {
+			// filter by both aircraft category and aircraft status
+			aircraftRows, err := ctx.GetAircraftByStatusAndCategory(statusFilter, categoryFilter)
+			if err != nil {
+				fmt.Printf("Couldn't get aircraft by category: %v", err)
+			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			respond(w, aircraftList)
+
 		} else if len(statusFilter) > 0 {
 			// filter by aircraft status: OAM (On Mission), RFM (Ready for Mission), OOS (Out of Service)
 			aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
@@ -722,9 +739,9 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 
 			respond(w, aircraftList)
 
-		} else if len(category) > 0 {
+		} else if len(categoryFilter) > 0 {
 			// filter by aircraft category: rotorcraft, fixed-wing
-			aircraftRows, err := ctx.GetAircraftByCategory(category)
+			aircraftRows, err := ctx.GetAircraftByCategory(categoryFilter)
 			if err != nil {
 				fmt.Printf("Couldn't get aircraft by category: %v", err)
 			}
@@ -736,6 +753,7 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 			}
 
 			respond(w, aircraftList)
+
 		} else {
 			// no filter, return all
 			aircraftRows, err := ctx.GetAllAircraft()
