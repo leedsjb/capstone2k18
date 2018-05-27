@@ -128,7 +128,7 @@ CREATE TABLE `tblASSIGNED_STATUS` (
     `status_id` INTEGER,
     `aircraft_id` INTEGER,
     `assigned_status_date` TIMESTAMP,
-    PRIMARY KEY (`aircraftstatus_id`),
+    PRIMARY KEY (`aircraft_status_id`),
     FOREIGN KEY(status_id) REFERENCES tblAIRCRAFT_STATUS(status_id),
     FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id)
 );

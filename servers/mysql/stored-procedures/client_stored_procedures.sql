@@ -84,12 +84,14 @@ BEGIN
     WHERE tblPERSONNEL.personnel_id = pid;
 END;
 
+
 -- endpoint: /v1/aircraft
+-- CALL uspGetAllAircraft()
 DROP PROCEDURE IF EXISTS `uspGetAllAircraft`;
 CREATE PROCEDURE uspGetAllAircraft()
 BEGIN
     SELECT ac_id, ac_callsign, ac_n_number, aircraft_type_manufacturer, aircraft_type_title,
-    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_title
+    aircraft_type_category, ac_lat, ac_long, ac_loc_display_name, status_short_desc
     FROM tblAIRCRAFT
     JOIN tblAIRCRAFT_TYPE ON tblAIRCRAFT.ac_type_id = tblAIRCRAFT_TYPE.aircraft_type_id
     JOIN tblASSIGNED_STATUS ON tblAIRCRAFT.ac_id = tblASSIGNED_STATUS.aircraft_id
@@ -280,7 +282,7 @@ END;
 
 -- endpoint: /v1/????
 -- returns: mission_type, flight rules, TC, req, rec
--- CALL uspGetMissionDetailByAircraft(7);
+-- CALL uspGetMissionDetailByAircraft(1);
 -- Note: no concept of flight rules by mission, by waypoint instead, how to handle?
 DROP PROCEDURE IF EXISTS `uspGetMissionDetailByAircraft`;
 CREATE PROCEDURE uspGetMissionDetailByAircraft(
@@ -290,17 +292,40 @@ BEGIN
     DECLARE active_mission_id INTEGER; -- declare resets active_mission_id to null w/ each sproc call
     CALL uspGetMissionIDByAircraft(aid ,active_mission_id);
 
-    SELECT mission_type_short_name, tc_number,
-    req_agency.agency_name AS requestor_agency, rec_agency.agency_name AS receiver_agency,
+    SELECT
+    mission_type_short_name,
+    tc_number,
+    req_agency.agency_name AS req_agency_name, 
+    req_agency.agency_area_code AS req_agency_area_code,
+    req_agency.agency_phone AS req_agency_phone,
+    req_agency_type.agency_type_name AS req_agency_type_name, 
+    req_address.address_street_1 AS req_agency_address_street_1,
+    req_address.address_street_2 AS req_agency_address_street_2,
+    req_address.address_city AS req_agency_address_city, 
+    req_address.address_state AS req_agency_address_state,
+    req_address.address_zip AS req_agency_address_zip,
+    rec_agency.agency_name AS rec_agency_name,
+    rec_agency.agency_area_code AS rec_agency_area_code,
+    rec_agency.agency_phone AS rec_agency_phone,
+    rec_agency_type.agency_type_name AS rec_agency_type_name,
+    rec_address.address_street_1 AS rec_agency_address_street_1,
+    rec_address.address_street_2 AS rec_agency_address_street_2,
+    rec_address.address_city AS rec_agency_address_city, 
+    rec_address.address_state AS rec_agency_address_state,
+    rec_address.address_zip AS rec_agency_address_zip,
     tblMISSION_STATUS.m_status_short_desc
     FROM tblMISSION
     INNER JOIN tblMISSION_TYPE ON tblMISSION.mission_type_id = tblMISSION_TYPE.mission_type_id
     INNER JOIN tblAGENCY req_agency ON tblMISSION.requestor_id = req_agency.agency_id
     INNER JOIN tblAGENCY rec_agency ON tblMISSION.receiver_id = rec_agency.agency_id
+    INNER JOIN tblAGENCY_TYPE req_agency_type ON req_agency.agency_type_id = req_agency_type.agency_type_id
+    INNER JOIN tblAGENCY_TYPE rec_agency_type ON rec_agency.agency_type_id = rec_agency_type.agency_type_id
+    INNER JOIN tblADDRESS req_address ON req_agency.address_id = req_address.address_id
+    INNER JOIN tblADDRESS rec_address ON rec_agency.address_id = rec_address.address_id
     INNER JOIN tblASSIGNED_MISSION_STATUS ON tblMISSION.mission_id = tblASSIGNED_MISSION_STATUS.mission_id
     INNER JOIN tblMISSION_STATUS ON tblASSIGNED_MISSION_STATUS.m_status_id = tblMISSION_STATUS.m_status_id
     WHERE tblMISSION.mission_id = active_mission_id
-    ORDER BY tblASSIGNED_MISSION_STATUS.missionstatus_date DESC LIMIT 1; -- mission_status_date
+    ORDER BY tblASSIGNED_MISSION_STATUS.mission_status_date DESC LIMIT 1; -- mission_status_date
 END;
 
 -- get patient by aircraft

@@ -55,10 +55,6 @@ Current CSV Import Tables:
     UPDATE tblWAYPOINT
     SET waypoint_id=118
     WHERE waypoint_id=0
-
-    DESCRIBE tblWAYPOINT;
-    SHOW TABLES;
-    SELECT * FROM tblWAYPOINT_TYPE;
 */
 
 INSERT INTO tblCREW_TYPE (crew_type_id, crew_type_name, crew_type_role)
@@ -127,7 +123,7 @@ VALUES
 (3, "On a Mission", "Aircraft on a mission", "OAM");
 
 -- Aircraft Status: [1:Ready, 2: Out of Service, 3: On a Mission]
-INSERT INTO tblASSIGNED_STATUS(aircraftstatus_id,status_id, aircraft_id)
+INSERT INTO tblASSIGNED_STATUS(aircraft_status_id,status_id, aircraft_id)
 VALUES
 (1,3,1), -- RFM / AL2
 (2,1,2), -- RFM
@@ -189,7 +185,7 @@ INSERT INTO tblMISSION(
 )
 VALUES
 (1, 5, 16, 1, 1, "18-0056"), -- AL7, RW-SCENE, on a mission
--- (2, 1, null, null, null, null), -- AL2, ready
+(2, 1, 16, 3, 1, "18-0040"), -- AL2, on a mission
 (3, 7, null, null, null, null), -- AL9, out of service
 (4, 5, 16, 3, 1, "18-0045"); -- testing second mission with same aircraft
 
@@ -234,7 +230,7 @@ VALUES
 (1, 1, 3),  -- AC5, AL7, Mission 1, Completed
 (2, 2, 2),  -- AC1, AL2, Mission 2, In-progress 
 (3, 3, 3),  -- AC7, AL9, Mission 3, Completed
-(4, 4, 2)   -- AC5, AL7, Mission 4, In-Progress
+(4, 4, 2);   -- AC5, AL7, Mission 4, In-Progress
 
 INSERT INTO tblRESOURCE_LINKS(
     resource_short_name, resource_long_name, resource_url, resource_thumbnail_photo_url
@@ -260,7 +256,7 @@ VALUES
 (6, 4, 25712, '2018-05-25 04:30:30', TRUE, FALSE, "IFR"), -- Bremerton Base
 (7, 2, 20467, '2018-05-27 00:10:00', TRUE, FALSE, "IFR"), -- Snoqualmie Pass
 (8, 2, 19867, '2018-05-27 02:00:00', FALSE, FALSE, "IFR"), -- Oregon Health Science University
-(9, 2, 20082, '2018-05-27 04:00:00', FALSE, FALSE, "IFR") -- Boeing Field Base (AL2)
+(9, 2, 20082, '2018-05-27 04:00:00', FALSE, FALSE, "IFR"); -- Boeing Field Base (AL2)
 
 /* 
 -- SELECT STATEMENTS
