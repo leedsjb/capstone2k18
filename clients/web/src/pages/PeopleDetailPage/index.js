@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 
-import Box from "../../components/Box";
-import ButtonIcon from "../../components/ButtonIcon";
 import FlexFillVH from "../../components/FlexFillVH";
-import Heading from "../../components/Heading";
-import ColoredAvatar from "../../components/ColoredAvatar";
+import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
@@ -21,37 +17,12 @@ class PeopleDetailPage extends Component {
         }
     }
 
-    renderPeopleDetail(person) {
+    renderPeopleDetail() {
         if (
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
         ) {
-            return (
-                <Flex flexDirection="column" alignItems="center">
-                    <Box mt={4}>
-                        <ColoredAvatar fName={person.fName} size={72} />
-                    </Box>
-                    <Heading
-                        children={`${person.fName} ${person.lName}`}
-                        is="h2"
-                        fontSize={4}
-                        mt={3}
-                    />
-                    <Heading
-                        children={`${person.position}`}
-                        is="h3"
-                        fontWeight="normal"
-                        fontSize={2}
-                    />
-                    <Flex mt={3}>
-                        <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                        <Box mx={3}>
-                            <ButtonIcon glyph="phone">Call</ButtonIcon>
-                        </Box>
-                        <ButtonIcon glyph="email">Mail</ButtonIcon>
-                    </Flex>
-                </Flex>
-            );
+            return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         }
 
         return <div>Loading...</div>;
@@ -77,9 +48,7 @@ class PeopleDetailPage extends Component {
                         {this.props.peopleDetail.error.toString()}
                     </FlexFillVH>
                 ) : (
-                    <ScrollView>
-                        {this.renderPeopleDetail(this.props.peopleDetail.data)}
-                    </ScrollView>
+                    <ScrollView>{this.renderPeopleDetail()}</ScrollView>
                 )}
 
                 <TabBar />

@@ -6,34 +6,31 @@ import { Link } from "react-router-dom";
 
 import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
+import Card from "../../components/Card";
+import ColoredAvatar from "../../components/ColoredAvatar";
+import Container from "../../components/Container";
 import DetailView from "../../components/DetailView";
 import Divider from "../../components/Divider";
 import FlexFillVH from "../../components/FlexFillVH";
 import GroupsListItem from "../../components/GroupsListItem";
+import GroupsLoader from "../../components/GroupsLoader";
 import Heading from "../../components/Heading";
 import MasterView from "../../components/MasterView";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
+import OutsideClickHandler from "../../components/OutsideClickHandler";
+import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import PeopleListItem from "../../components/PeopleListItem";
+import PeopleLoader from "../../components/PeopleLoader";
+import SearchBox from "../../components/SearchBox";
 import Span from "../../components/Span";
-import ColoredAvatar from "../../components/ColoredAvatar";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
-import ProfileSnippet from "../../components/ProfileSnippet";
-import SearchBox from "../../components/SearchBox";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
-import Container from "../../components/Container";
-import Card from "../../components/Card";
-import ColoredBox from "../../components/ColoredBox";
-import GroupsLoader from "../../components/GroupsLoader";
-import PeopleLoader from "../../components/PeopleLoader";
 import TitleBar from "../../components/TitleBar";
-import OutsideClickHandler from "../../components/OutsideClickHandler";
-
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
-
 import { fetchGroups } from "../../actions/groups/actions";
 import { fetchGroupsDetail } from "../../actions/groupsDetail/actions";
 
@@ -373,105 +370,9 @@ class PeoplePage extends Component {
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
         ) {
-            const person = this.props.peopleDetail.data;
-
-            return (
-                <Box py={12}>
-                    <Container px={8}>
-                        <Flex flexDirection="column" alignItems="center">
-                            <Box>
-                                <ColoredAvatar fName={person.fName} size={72} />
-                            </Box>
-                            <Heading
-                                children={`${person.fName} ${person.lName}`}
-                                is="h1"
-                                fontSize={4}
-                                fontWeight="bold"
-                                textAlign="center"
-                                mt={6}
-                            />
-                            <Box mt={2}>
-                                <Span
-                                    children={person.position}
-                                    fontWeight="normal"
-                                    fontSize={3}
-                                />
-                            </Box>
-                        </Flex>
-                        <Flex mt={6} justifyContent="center">
-                            <Box>
-                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
-                            </Box>
-                            <Box mx={3}>
-                                <ButtonIcon glyph="phone">Call</ButtonIcon>
-                            </Box>
-                            <Box>
-                                <ButtonIcon glyph="email">Mail</ButtonIcon>
-                            </Box>
-                        </Flex>
-                        <ProfileSnippet
-                            label="Email"
-                            value={person.email}
-                            mt={12}
-                        />
-                        <ProfileSnippet
-                            label="First name"
-                            value={person.fName}
-                            mt={6}
-                        />
-                        <ProfileSnippet
-                            label="Last name"
-                            value={person.lName}
-                            mt={6}
-                        />
-                        <ProfileSnippet
-                            label="Phone"
-                            value={person.mobile}
-                            mt={6}
-                        />
-                    </Container>
-                    {person.memberGroups.length > 0 ? (
-                        <div>
-                            <Container px={8}>
-                                <Heading fontSize={4} mt={6}>
-                                    Groups
-                                </Heading>
-                            </Container>
-                            <Box maxWidth={1024} px={4} mx="auto">
-                                <Flex flexWrap="wrap">
-                                    {person.memberGroups.map((group, i) => {
-                                        return (
-                                            <Card
-                                                mx={4}
-                                                w={[
-                                                    "calc(100% / 2 - 32px)",
-                                                    "calc(100% - 32px)",
-                                                    "calc(100% - 32px)",
-                                                    "calc(100% / 3 - 32px)"
-                                                ]}
-                                                mt={4}
-                                            >
-                                                <ColoredBox
-                                                    word={group.name}
-                                                    w={1}
-                                                    height={64}
-                                                />
-                                                <Box px={4} py={3}>
-                                                    <Span fontWeight="bold">
-                                                        {group.name}
-                                                    </Span>
-                                                </Box>
-                                            </Card>
-                                        );
-                                    })}
-                                </Flex>
-                            </Box>
-                        </div>
-                    ) : null}
-                </Box>
-            );
+            return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         } else {
-            return null;
+            return <div>Loading...</div>;
         }
     }
 
