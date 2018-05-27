@@ -16,13 +16,18 @@ import GroupsListItem from "../../components/GroupsListItem";
 import GroupsLoader from "../../components/GroupsLoader";
 import Heading from "../../components/Heading";
 import MasterView from "../../components/MasterView";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import PeopleListItem from "../../components/PeopleListItem";
+<<<<<<< HEAD
 import PeopleLoader from "../../components/PeopleLoader";
 import SearchBox from "../../components/SearchBox";
+=======
+import GroupCard from "../../components/GroupCard";
+>>>>>>> development
 import Span from "../../components/Span";
 import ScrollView from "../../components/ScrollView";
 import Tab from "../../components/Tab";
@@ -263,11 +268,11 @@ class PeoplePage extends Component {
         ) {
             return (
                 <Box>
-                    <Box py={3}>
+                    <Flex py={3} justifyContent="center">
                         <Span fontWeight="bold" textAlign="center">
                             {this.props.groupsDetail.data.name}
                         </Span>
-                    </Box>
+                    </Flex>
                     <Divider />
                     <Container px={8} mt={6}>
                         <Heading is="h2" fontSize={4}>
@@ -312,7 +317,7 @@ class PeoplePage extends Component {
                                                 </Span>
                                                 <Flex
                                                     flexDirection="column"
-                                                    alignItem="center"
+                                                    alignItems="center"
                                                     mt={1}
                                                 >
                                                     <Span textAlign="center">
@@ -359,7 +364,7 @@ class PeoplePage extends Component {
                 </Box>
             );
         } else if (this.props.groupsDetail.pending) {
-            return <div>Loading...</div>;
+            return <LoadingSpinner />;
         }
     }
 
@@ -370,7 +375,98 @@ class PeoplePage extends Component {
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
         ) {
+<<<<<<< HEAD
             return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
+=======
+            const person = this.props.peopleDetail.data;
+
+            return (
+                <Box py={12}>
+                    <Container px={8}>
+                        <Flex flexDirection="column" alignItems="center">
+                            <Box>
+                                <ColoredAvatar fName={person.fName} size={72} />
+                            </Box>
+                            <Heading
+                                children={`${person.fName} ${person.lName}`}
+                                is="h1"
+                                fontSize={4}
+                                fontWeight="bold"
+                                textAlign="center"
+                                mt={6}
+                            />
+                            <Box mt={2}>
+                                <Span
+                                    children={person.position}
+                                    fontWeight="normal"
+                                    fontSize={3}
+                                />
+                            </Box>
+                        </Flex>
+                        <Flex mt={6} justifyContent="center">
+                            <Box>
+                                <ButtonIcon glyph="bubbleChat">Text</ButtonIcon>
+                            </Box>
+                            <Box mx={3}>
+                                <ButtonIcon glyph="phone">Call</ButtonIcon>
+                            </Box>
+                            <Box>
+                                <ButtonIcon glyph="email">Mail</ButtonIcon>
+                            </Box>
+                        </Flex>
+                        <ProfileSnippet
+                            label="Email"
+                            value={person.email}
+                            mt={12}
+                        />
+                        <ProfileSnippet
+                            label="First name"
+                            value={person.fName}
+                            mt={6}
+                        />
+                        <ProfileSnippet
+                            label="Last name"
+                            value={person.lName}
+                            mt={6}
+                        />
+                        <ProfileSnippet
+                            label="Phone"
+                            value={person.mobile}
+                            mt={6}
+                        />
+                    </Container>
+                    {person.memberGroups.length > 0 ? (
+                        <div>
+                            <Container px={8}>
+                                <Heading fontSize={4} mt={6}>
+                                    Groups
+                                </Heading>
+                            </Container>
+                            <Box maxWidth={1024} px={4} mx="auto">
+                                <Flex flexWrap="wrap">
+                                    {person.memberGroups.map((group, i) => {
+                                        return (
+                                            <GroupCard
+                                                mx={4}
+                                                w={[
+                                                    "calc(100% / 2 - 32px)",
+                                                    "calc(100% - 32px)",
+                                                    "calc(100% - 32px)",
+                                                    "calc(100% / 3 - 32px)"
+                                                ]}
+                                                mt={4}
+                                                groupName={group.name}
+                                                to={`/groups/${group.id}`}
+                                            />
+                                        );
+                                    })}
+                                </Flex>
+                            </Box>
+                        </div>
+                    ) : null}
+                </Box>
+            );
+>>>>>>> development
         } else {
             return <div>Loading...</div>;
         }

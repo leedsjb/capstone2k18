@@ -41,7 +41,7 @@ const ProfileDropdown = () => {
                                         <Relative>
                                             <Absolute
                                                 right={0}
-                                                zIndex={1}
+                                                zIndex={42}
                                                 top={8}
                                                 minWidth={120}
                                             >
