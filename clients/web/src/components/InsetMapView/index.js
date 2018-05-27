@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { Link } from "react-router-dom";
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 import { withTheme } from "styled-components";
 
@@ -55,7 +55,7 @@ class InsetMapView extends Component {
                         Math.max(this.props.aircraftDetail.data.lat, active.lat)
                     ]
                 ],
-                { padding: { top: 20, bottom: 20, left: 15, right: 15 } }
+                { padding: 32 }
             );
         }
     }
@@ -143,23 +143,22 @@ class InsetMapView extends Component {
 
     render() {
         return (
-            <Map
-                animationOptions={{ animate: false }}
-                containerStyle={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "8px"
-                }}
-                center={this.mapCenter()}
-                onClick={() =>
-                    this.props.push(`/aircraft/map/${this.props.id}`)
-                }
-                onStyleLoad={map => this.setState({ map })}
-                // style={mapStyle}
-                style="mapbox://styles/tzchen/cjhl4cawj17o92rlazjfvmmmg"
-            >
-                {this.renderMapView()}
-            </Map>
+            <Link to={`/aircraft/map/${this.props.id}`}>
+                <Map
+                    animationOptions={{ animate: false }}
+                    containerStyle={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "8px"
+                    }}
+                    center={this.mapCenter()}
+                    onStyleLoad={map => this.setState({ map })}
+                    // style={mapStyle}
+                    style="mapbox://styles/tzchen/cjhl4cawj17o92rlazjfvmmmg"
+                >
+                    {this.renderMapView()}
+                </Map>
+            </Link>
         );
     }
 }
@@ -173,8 +172,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     fetchAircraft,
-    fetchAircraftDetail,
-    push
+    fetchAircraftDetail
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

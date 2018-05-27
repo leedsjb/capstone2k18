@@ -68,9 +68,8 @@ class AircraftPage extends Component {
                 <div>
                     {aircraft.data.map((a, i) => {
                         return (
-                            <div>
+                            <div key={a.id}>
                                 <Clickable
-                                    key={a.id}
                                     onClick={() => {
                                         if (this.state.isSearching) {
                                             if (this.state.isSearching) {
