@@ -47,13 +47,6 @@ class ProfilePage extends Component {
                                 </Span>
                             </Box>
                             <Box mt={8}>
-                                <Label>UW NetID</Label>
-                                <TextInput
-                                    value={currUser.data.uwNetID}
-                                    disabled
-                                />
-                            </Box>
-                            <Box mt={3}>
                                 <Label>First name</Label>
                                 <TextInput
                                     value={currUser.data.fName}
@@ -99,15 +92,6 @@ class ProfilePage extends Component {
                                     disabled
                                 />
                             </Box>
-                            <Heading is="h2" mt={6}>
-                                Notification preferences
-                            </Heading>
-                            <Flex alignItems="baseline" mt={4}>
-                                <Checkbox defaultChecked />
-                                <Span>
-                                    Text me when I get assigned to a mission
-                                </Span>
-                            </Flex>
                         </Box>
                     </Flex>
                 </Container>
