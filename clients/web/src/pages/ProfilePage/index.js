@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
-import Checkbox from "../../components/Checkbox";
 import ColoredAvatar from "../../components/ColoredAvatar";
 import Container from "../../components/Container";
 import FlexFillVH from "../../components/FlexFillVH";
