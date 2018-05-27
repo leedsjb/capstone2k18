@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PROD_API_URL_V1 } from "../../constants/constants.js";
+import { API_URI } from "../../constants/constants.js";
 
 import {
     FETCH_AIRCRAFTDETAIL_PENDING,
@@ -15,9 +15,7 @@ export function fetchAircraftDetail(id) {
                 type: FETCH_AIRCRAFTDETAIL_PENDING
             });
 
-            const { data } = await axios.get(
-                `${PROD_API_URL_V1}/aircraft/${id}`
-            );
+            const { data } = await axios.get(`${API_URI}/aircraft/${id}`);
 
             dispatch({
                 type: FETCH_AIRCRAFTDETAIL_SUCCESS,

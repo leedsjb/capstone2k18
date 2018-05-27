@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PROD_API_URL_V1 } from "../../constants/constants.js";
+import { API_URI } from "../../constants/constants.js";
 
 import {
     FETCH_PEOPLE_PENDING,
@@ -15,7 +15,7 @@ export function fetchPeople(term) {
                 type: FETCH_PEOPLE_PENDING
             });
 
-            let url = `${PROD_API_URL_V1}/people`;
+            let url = `${API_URI}/people`;
 
             if (term) {
                 url = `${url}?q=${term}`;

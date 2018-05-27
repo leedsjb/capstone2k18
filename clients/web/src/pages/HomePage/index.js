@@ -50,11 +50,6 @@ const HomePage = () => {
 
                         <Flex
                             flexWrap={["wrap", "wrap", "nowrap"]}
-                            flexDirection={[
-                                "column-reverse",
-                                "column-reverse",
-                                "row"
-                            ]}
                             justifyContent="space-between"
                             alignItems="center"
                         >
@@ -402,7 +397,11 @@ const HomePage = () => {
                             <Link to="/signin">
                                 <Button>Get Started</Button>
                             </Link>
-                            <a href="https://www.uwmedicine.org/airlift-nw/contact-us">
+                            <a
+                                href="https://www.uwmedicine.org/airlift-nw/contact-us"
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
                                 <ButtonOutline ml={2}>
                                     Contact Airlift
                                 </ButtonOutline>

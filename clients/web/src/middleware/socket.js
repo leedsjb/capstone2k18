@@ -1,7 +1,7 @@
 // Courtesy of https://exec64.co.uk/blog/websockets_with_redux/
 
 import { OPEN_SOCKET, CLOSE_SOCKET } from "../actions/socket/types";
-import { PROD_WEBSOCKET_URL_V1 } from "../constants/constants.js";
+import { PROD_WEBSOCKET_URI } from "../constants/constants.js";
 
 const socketMiddleware = (function() {
     let socket = null;
@@ -20,7 +20,7 @@ const socketMiddleware = (function() {
                     socket.close();
                 }
 
-                socket = new WebSocket(PROD_WEBSOCKET_URL_V1);
+                socket = new WebSocket(PROD_WEBSOCKET_URI);
                 socket.onmessage = onMessage(socket, store);
                 socket.addEventListener("error", err => {
                     console.log("WebSocket error");

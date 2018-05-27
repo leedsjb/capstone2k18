@@ -13,7 +13,7 @@ const Footer = () => {
     return (
         <div>
             <Box py={8}>
-                <Container width={[1, 1 / 2, 1 / 2, 1 / 3]}>
+                <Container width={[7 / 8, 1 / 2]}>
                     <Flex flexDirection="column" justifyContent="center">
                         <Box mb={4}>
                             <Flex justifyContent="center">
@@ -23,7 +23,7 @@ const Footer = () => {
                                 />
                             </Flex>
                         </Box>
-                        <Box>
+                        <Box width={1}>
                             <Span
                                 color="#515766"
                                 display="block"
@@ -60,7 +60,11 @@ const Footer = () => {
                         </Box>
                     </Flex>
                     <Flex justifyContent="space-between">
-                        <a href="mailto:alnw@airliftnw.org">
+                        <a
+                            href="https://www.uwmedicine.org/airlift-nw/contact-us"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
                             <Span
                                 fontSize={1}
                                 fontWeight="bold"
@@ -70,7 +74,11 @@ const Footer = () => {
                                 Contact us
                             </Span>
                         </a>
-                        <a href="https://www.uwmedicine.org/about/compliance/privacy">
+                        <a
+                            href="https://www.uwmedicine.org/about/compliance/privacy"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
                             <Span
                                 fontSize={1}
                                 fontWeight="bold"

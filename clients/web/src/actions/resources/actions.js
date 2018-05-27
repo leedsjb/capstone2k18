@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { PROD_API_URL_V1 } from "../../constants/constants.js";
+import { API_URI } from "../../constants/constants.js";
 
 import {
     FETCH_RESOURCES_PENDING,
@@ -15,7 +15,7 @@ export function fetchResources() {
                 type: FETCH_RESOURCES_PENDING
             });
 
-            const { data } = await axios.get(`${PROD_API_URL_V1}/resources`);
+            const { data } = await axios.get(`${API_URI}/resources`);
 
             dispatch({
                 type: FETCH_RESOURCES_SUCCESS,
