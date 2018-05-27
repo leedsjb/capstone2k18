@@ -9,14 +9,14 @@ Description: New mission created
 */
 type Patient struct {
 	ShortReport string `json:"shortReport"`
-	Intubated   bool   `json:"intubated"`
-	Drips       int    `json:"drips"`
-	Age         int    `json:"age"`
-	Weight      int    `json:"weight"`
+	Intubated   string `json:"intubated"`
+	Drips       string `json:"drips"`
+	Age         string `json:"age"`
+	Weight      string `json:"weight"`
 	Gender      string `json:"gender"`
-	Cardiac     bool   `json:"cardiac"`
-	GIBleed     bool   `json:"GIBleed"`
-	OB          bool   `json:"OB"`
+	Cardiac     string `json:"cardiac"`
+	GIBleed     string `json:"GIBleed"`
+	OB          string `json:"OB"`
 }
 
 type MissionWaypoint struct {
@@ -82,8 +82,20 @@ type MissionDetail struct {
 	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
-	RadioReport     *Patient                 `json:"radioReport"`
+	RadioReport     *ClientPatient           `json:"radioReport"`
 	Requestor       string                   `json:"requestor"`
 	Receiver        string                   `json:"receiver"`
 	Completed       string                   `json:"completed"`
+}
+
+type ClientPatient struct {
+	ShortReport string `json:"shortReport"`
+	Intubated   bool   `json:"intubated"`
+	Drips       int    `json:"drips"`
+	Age         int    `json:"age"`
+	Weight      int    `json:"weight"`
+	Gender      string `json:"gender"`
+	Cardiac     bool   `json:"cardiac"`
+	GIBleed     bool   `json:"GIBleed"`
+	OB          bool   `json:"OB"`
 }

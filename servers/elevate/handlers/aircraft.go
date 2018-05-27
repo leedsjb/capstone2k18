@@ -542,7 +542,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		missionDetail.Waypoints = waypoints
 		missionDetail.NextWaypointETE = nextETE
 		// [RADIO REPORT]
-		report := &messages.Patient{}
+		report := &messages.ClientPatient{}
 		reportRows, err := ctx.GetPatientByAircraft(currentRow.ID)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving patient info for aircraft [%v]: %v", currentRow.Callsign, err)
@@ -564,8 +564,6 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning report row: %v", err)
 			}
-
-			report = &messages.Patient{}
 
 			if reportRow.ShortReport.Valid {
 				report.ShortReport = reportRow.ShortReport.String

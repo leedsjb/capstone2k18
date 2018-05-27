@@ -130,13 +130,60 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		Mission:  mission,
 	}
 
+	report := &messages.ClientPatient{}
+
+	if msg.Patient.ShortReport != "" {
+		report.ShortReport = msg.Patient.ShortReport
+	}
+	if msg.Patient.Intubated == "1" {
+		report.Intubated = true
+	} else {
+		report.Intubated = false
+	}
+	if msg.Patient.Drips != "" {
+		report.Drips, err = strconv.Atoi(msg.Patient.Drips)
+		if err != nil {
+			return fmt.Errorf("Couldn't convert patient drips to int: %v", err)
+		}
+	}
+	if msg.Patient.Age != "" {
+		report.Age, err = strconv.Atoi(msg.Patient.Age)
+		if err != nil {
+			return fmt.Errorf("Couldn't convert patient age to int: %v", err)
+		}
+	}
+	if msg.Patient.Weight != "" {
+		report.Weight, err = strconv.Atoi(msg.Patient.Weight)
+		if err != nil {
+			return fmt.Errorf("Couldn't convert patient weight to int: %v", err)
+		}
+	}
+	if msg.Patient.Gender != "" {
+		report.Gender = msg.Patient.Gender
+	}
+	if msg.Patient.Cardiac == "1" {
+		report.Cardiac = true
+	} else {
+		report.Cardiac = false
+	}
+	if msg.Patient.GIBleed == "1" {
+		report.GIBleed = true
+	} else {
+		report.GIBleed = false
+	}
+	if msg.Patient.OB == "1" {
+		report.OB = true
+	} else {
+		report.OB = false
+	}
+
 	missionDetail := &messages.MissionDetail{
 		Type: msg.CallType,
 		// Vision:          msg.Vision,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
-		RadioReport:     msg.Patient,
+		RadioReport:     report,
 		Requestor:       requestor,
 		Receiver:        receiver,
 	}

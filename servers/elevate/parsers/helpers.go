@@ -81,6 +81,10 @@ func MissionNotify(callsign string, aircraftID int, mobile string) error {
 		mobile = "+1" + mobile
 	}
 
+	if mobile == "+14258941368" {
+		mobile = "+14259986567"
+	}
+
 	fmt.Printf("[MISSION NOTIFICATION] Sending to: %v\n", mobile)
 
 	alnwTwilio := os.Getenv("TWILIO_NUM")
