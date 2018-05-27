@@ -122,7 +122,7 @@ class AircraftPage extends Component {
     }
 
     renderAircraftDetail(aircraftDetail) {
-        if (!aircraftDetail.pending) {
+        if (!aircraftDetail.pending && !Array.isArray(aircraftDetail.data)) {
             return (
                 <AircraftDetailListItem
                     aircraftDetail={aircraftDetail}
