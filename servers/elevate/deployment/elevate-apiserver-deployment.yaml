@@ -41,7 +41,7 @@ spec:
     spec:
       containers: 
       - name: go-apiserver-container
-        image: us.gcr.io/airliftnw-uw/go-apiserver:0.32
+        image: us.gcr.io/airliftnw-uw/go-apiserver:0.33
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -63,6 +63,12 @@ spec:
               key: password
         - name: SQLDBNAME
           value: "elevate_test"
+        - name: TWILIO_NUM
+          value: "+12062027572"
+        - name: TWILIO_SID
+          value: "ACf0c59fa72fb1ae37d42c45bc39d85a85"
+        - name: TWILIO_TOKEN
+          value: "84224c83da80c287c7ce0dd750412639"
         - name: GOOGLE_CLOUD_PROJECT
           value: "airliftnw-uw"
         - name: GOOGLE_APPLICATION_CREDENTIALS
