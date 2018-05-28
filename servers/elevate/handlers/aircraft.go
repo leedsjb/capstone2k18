@@ -28,24 +28,24 @@ type missionRow struct {
 type missionDetailRow struct {
 	Type        string
 	FlightNum   string
-	Requestor   string
-	ReqAreaCode string
-	ReqPhone    string
-	ReqType     string
+	Requestor   sql.NullString
+	ReqAreaCode sql.NullString
+	ReqPhone    sql.NullString
+	ReqType     sql.NullString
 	ReqStreet1  sql.NullString
 	ReqStreet2  sql.NullString
-	ReqCity     string
-	ReqState    string
-	ReqZip      string
-	Receiver    string
-	RecAreaCode string
-	RecPhone    string
-	RecType     string
+	ReqCity     sql.NullString
+	ReqState    sql.NullString
+	ReqZip      sql.NullString
+	Receiver    sql.NullString
+	RecAreaCode sql.NullString
+	RecPhone    sql.NullString
+	RecType     sql.NullString
 	RecStreet1  sql.NullString
 	RecStreet2  sql.NullString
-	RecCity     string
-	RecState    string
-	RecZip      string
+	RecCity     sql.NullString
+	RecState    sql.NullString
+	RecZip      sql.NullString
 	Completed   string
 }
 
@@ -199,6 +199,153 @@ type aircraftDetailRow struct {
 
 // }
 
+// AircraftHandler ...
+func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		query := r.URL.Query()
+
+		term := query.Get("q")
+
+		statusFilter := query.Get("status")
+
+		categoryFilter := query.Get("category")
+
+		if len(term) > 0 {
+			// filter by user query
+			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
+			aircraftList, err := ctx.GetTrieAircraft(aircraftIDS)
+			if err != nil {
+				fmt.Printf("Error pulling aircrafts from trie: %v", err)
+				return
+			}
+
+			respond(w, aircraftList)
+
+		} else if len(statusFilter) > 0 && len(categoryFilter) > 0 {
+			// filter by both aircraft category and aircraft status
+			aircraftRows, err := ctx.GetAircraftByStatusAndCategory(statusFilter, categoryFilter)
+			if err != nil {
+				fmt.Printf("Couldn't get aircraft by category: %v", err)
+			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			respond(w, aircraftList)
+
+		} else if len(statusFilter) > 0 {
+			// filter by aircraft status: OAM (On Mission), RFM (Ready for Mission), OOS (Out of Service)
+			aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			respond(w, aircraftList)
+
+		} else if len(categoryFilter) > 0 {
+			// filter by aircraft category: rotorcraft, fixed-wing
+			aircraftRows, err := ctx.GetAircraftByCategory(categoryFilter)
+			if err != nil {
+				fmt.Printf("Couldn't get aircraft by category: %v", err)
+			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			respond(w, aircraftList)
+
+		} else {
+			// no filter, return all
+			aircraftRows, err := ctx.GetAllAircraft()
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get all aircraft: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			aircraftList, err := ctx.getAircraftList(aircraftRows)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			respond(w, aircraftList)
+		}
+
+	default:
+		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// AircraftDetailHandler ...
+func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		id := path.Base(r.URL.Path)
+		if id != "." && id != "aircraft" {
+			aircraftDetail := &messages.AircraftDetail{}
+
+			aircraftID, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Printf("Error changing aircraft ID from string to int")
+			}
+
+			aircraftDetailRows, err := ctx.GetAircraftByID(aircraftID)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			aircraftDetailRow := &aircraftDetailRow{}
+			for aircraftDetailRows.Next() {
+				err = aircraftDetailRows.Scan(
+					&aircraftDetailRow.ID,
+					&aircraftDetailRow.Callsign,
+					&aircraftDetailRow.Nnum,
+					&aircraftDetailRow.Manufacturer,
+					&aircraftDetailRow.Title,
+					&aircraftDetailRow.Class,
+					&aircraftDetailRow.Lat,
+					&aircraftDetailRow.Long,
+					&aircraftDetailRow.LocationName,
+					&aircraftDetailRow.Status,
+				)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
+					return
+				}
+				aircraftDetail, err = ctx.GetAircraftDetailSummary(aircraftDetailRow)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Error populating aircraft detail summary: %v", err), http.StatusInternalServerError)
+					return
+				}
+			}
+			respond(w, aircraftDetail)
+		} else if id == "aircraft" {
+			ctx.AircraftHandler(w, r)
+		} else {
+			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
+		}
+	default:
+		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
 // IndexAircraft ...
 func IndexAircraft(trie *indexes.Trie, aircraft *messages.Aircraft) error {
 	if err := trie.AddEntity(strings.ToLower(aircraft.Callsign), aircraft.ID); err != nil {
@@ -288,19 +435,38 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 	// [GENERAL AIRCRAFT INFO]
 	aircraftType := currentRow.Manufacturer + " " + currentRow.Title
 
-	aircraft := &messages.Aircraft{
-		ID:       currentRow.ID,
-		Status:   currentRow.Status,
-		Type:     aircraftType,
-		Callsign: currentRow.Callsign,
-		Class:    currentRow.Class,
-		Lat:      currentRow.Lat,
-		Long:     currentRow.Long,
-		Area:     currentRow.LocationName,
-		NNum:     currentRow.Nnum,
-	}
+	aircraft := &messages.Aircraft{}
 
-	fmt.Printf("[AIRCRAFT STATUS] %v\n", aircraft.Status)
+	// check for default value so that if a field is not
+	// populated the aircraft object returns it as null
+	// (this is what the client checks for)
+	if currentRow.ID != 0 {
+		aircraft.ID = currentRow.ID
+	}
+	if currentRow.Status != "" {
+		aircraft.Status = currentRow.Status
+	}
+	if aircraftType != "" {
+		aircraft.Type = aircraftType
+	}
+	if currentRow.Callsign != "" {
+		aircraft.Callsign = currentRow.Callsign
+	}
+	if currentRow.Class != "" {
+		aircraft.Class = currentRow.Class
+	}
+	if currentRow.Lat != "" {
+		aircraft.Lat = currentRow.Lat
+	}
+	if currentRow.Long != "" {
+		aircraft.Long = currentRow.Long
+	}
+	if currentRow.LocationName != "" {
+		aircraft.Area = currentRow.LocationName
+	}
+	if currentRow.Nnum != "" {
+		aircraft.NNum = currentRow.Nnum
+	}
 
 	// [MISSION]
 	if strings.ToLower(aircraft.Status) == "oam" {
@@ -512,40 +678,8 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				return nil, fmt.Errorf("Error scanning mission detail row: %v", err)
 			}
 
-			var reqAddr string
-			if missionDetailRow.ReqStreet1.Valid {
-				reqAddr += missionDetailRow.ReqStreet1.String
-			}
-			if missionDetailRow.ReqStreet2.Valid {
-				reqAddr += missionDetailRow.ReqStreet2.String
-			}
-			var recAddr string
-			if missionDetailRow.RecStreet1.Valid {
-				recAddr += missionDetailRow.RecStreet1.String
-			}
-			if missionDetailRow.RecStreet2.Valid {
-				recAddr += missionDetailRow.RecStreet2.String
-			}
-
-			requestor := &messages.Agency{
-				Name:    missionDetailRow.Requestor,
-				Phone:   missionDetailRow.ReqPhone,
-				Type:    missionDetailRow.ReqType,
-				Address: reqAddr,
-				City:    missionDetailRow.ReqCity,
-				State:   missionDetailRow.ReqState,
-				Zip:     missionDetailRow.ReqZip,
-			}
-
-			receiver := &messages.Agency{
-				Name:    missionDetailRow.Receiver,
-				Phone:   missionDetailRow.RecPhone,
-				Type:    missionDetailRow.RecType,
-				Address: recAddr,
-				City:    missionDetailRow.RecCity,
-				State:   missionDetailRow.RecState,
-				Zip:     missionDetailRow.RecZip,
-			}
+			requestor := createRequestor(missionDetailRow)
+			receiver := createReceiver(missionDetailRow)
 
 			missionDetail = &messages.MissionDetail{
 				Type: missionDetailRow.Type,
@@ -731,6 +865,102 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	return aircraftDetail, nil
 }
 
+func createRequestor(missionDetailRow *missionDetailRow) *messages.Agency {
+	requestor := &messages.Agency{}
+
+	if missionDetailRow.Requestor.Valid {
+		requestor.Name = missionDetailRow.Requestor.String
+	}
+
+	var reqPhone string
+	if missionDetailRow.ReqAreaCode.Valid {
+		reqPhone += missionDetailRow.ReqAreaCode.String
+	}
+	if missionDetailRow.ReqPhone.Valid {
+		reqPhone += missionDetailRow.ReqPhone.String
+	}
+	if reqPhone != "" {
+		requestor.Phone = reqPhone
+	}
+
+	if missionDetailRow.ReqType.Valid {
+		requestor.Type = missionDetailRow.ReqType.String
+	}
+
+	if missionDetailRow.ReqCity.Valid {
+		requestor.City = missionDetailRow.ReqCity.String
+	}
+
+	if missionDetailRow.ReqState.Valid {
+		requestor.State = missionDetailRow.ReqState.String
+	}
+
+	if missionDetailRow.ReqZip.Valid {
+		requestor.Zip = missionDetailRow.ReqZip.String
+	}
+
+	var reqAddr string
+	if missionDetailRow.ReqStreet1.Valid {
+		reqAddr += missionDetailRow.ReqStreet1.String
+	}
+	if missionDetailRow.ReqStreet2.Valid {
+		reqAddr += missionDetailRow.ReqStreet2.String
+	}
+	if reqAddr != "" {
+		requestor.Address = reqAddr
+	}
+
+	return requestor
+}
+
+func createReceiver(missionDetailRow *missionDetailRow) *messages.Agency {
+	receiver := &messages.Agency{}
+
+	if missionDetailRow.Receiver.Valid {
+		receiver.Name = missionDetailRow.Receiver.String
+	}
+
+	var recPhone string
+	if missionDetailRow.RecAreaCode.Valid {
+		recPhone += missionDetailRow.RecAreaCode.String
+	}
+	if missionDetailRow.RecPhone.Valid {
+		recPhone += missionDetailRow.RecPhone.String
+	}
+	if recPhone != "" {
+		receiver.Phone = recPhone
+	}
+
+	if missionDetailRow.RecType.Valid {
+		receiver.Type = missionDetailRow.RecType.String
+	}
+
+	if missionDetailRow.RecCity.Valid {
+		receiver.City = missionDetailRow.RecCity.String
+	}
+
+	if missionDetailRow.RecState.Valid {
+		receiver.State = missionDetailRow.RecState.String
+	}
+
+	if missionDetailRow.RecZip.Valid {
+		receiver.Zip = missionDetailRow.RecZip.String
+	}
+
+	var recAddr string
+	if missionDetailRow.RecStreet1.Valid {
+		recAddr += missionDetailRow.RecStreet1.String
+	}
+	if missionDetailRow.RecStreet2.Valid {
+		recAddr += missionDetailRow.RecStreet2.String
+	}
+	if recAddr != "" {
+		receiver.Address = recAddr
+	}
+
+	return receiver
+}
+
 func (ctx *HandlerContext) getAircraftList(aircraftRows *sql.Rows) ([]*messages.Aircraft, error) {
 	aircraftList := []*messages.Aircraft{}
 	currentRow := &aircraftRow{}
@@ -757,151 +987,4 @@ func (ctx *HandlerContext) getAircraftList(aircraftRows *sql.Rows) ([]*messages.
 		aircraftList = append(aircraftList, aircraft)
 	}
 	return aircraftList, nil
-}
-
-// AircraftHandler ...
-func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		query := r.URL.Query()
-
-		term := query.Get("q")
-
-		statusFilter := query.Get("status")
-
-		categoryFilter := query.Get("category")
-
-		if len(term) > 0 {
-			// filter by user query
-			aircraftIDS := ctx.AircraftTrie.GetEntities(strings.ToLower(term), 20)
-			aircraftList, err := ctx.GetTrieAircraft(aircraftIDS)
-			if err != nil {
-				fmt.Printf("Error pulling aircrafts from trie: %v", err)
-				return
-			}
-
-			respond(w, aircraftList)
-
-		} else if len(statusFilter) > 0 && len(categoryFilter) > 0 {
-			// filter by both aircraft category and aircraft status
-			aircraftRows, err := ctx.GetAircraftByStatusAndCategory(statusFilter, categoryFilter)
-			if err != nil {
-				fmt.Printf("Couldn't get aircraft by category: %v", err)
-			}
-
-			aircraftList, err := ctx.getAircraftList(aircraftRows)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			respond(w, aircraftList)
-
-		} else if len(statusFilter) > 0 {
-			// filter by aircraft status: OAM (On Mission), RFM (Ready for Mission), OOS (Out of Service)
-			aircraftRows, err := ctx.GetAircraftByStatus(statusFilter)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get aircraft by status: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			aircraftList, err := ctx.getAircraftList(aircraftRows)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			respond(w, aircraftList)
-
-		} else if len(categoryFilter) > 0 {
-			// filter by aircraft category: rotorcraft, fixed-wing
-			aircraftRows, err := ctx.GetAircraftByCategory(categoryFilter)
-			if err != nil {
-				fmt.Printf("Couldn't get aircraft by category: %v", err)
-			}
-
-			aircraftList, err := ctx.getAircraftList(aircraftRows)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			respond(w, aircraftList)
-
-		} else {
-			// no filter, return all
-			aircraftRows, err := ctx.GetAllAircraft()
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get all aircraft: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			aircraftList, err := ctx.getAircraftList(aircraftRows)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			respond(w, aircraftList)
-		}
-
-	default:
-		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
-		return
-	}
-}
-
-// AircraftDetailHandler ...
-func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		id := path.Base(r.URL.Path)
-		if id != "." && id != "aircraft" {
-			aircraftDetail := &messages.AircraftDetail{}
-
-			aircraftID, err := strconv.Atoi(id)
-			if err != nil {
-				fmt.Printf("Error changing aircraft ID from string to int")
-			}
-
-			aircraftDetailRows, err := ctx.GetAircraftByID(aircraftID)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Error getting aircraft details from DB: %v", err), http.StatusInternalServerError)
-				return
-			}
-
-			aircraftDetailRow := &aircraftDetailRow{}
-			for aircraftDetailRows.Next() {
-				err = aircraftDetailRows.Scan(
-					&aircraftDetailRow.ID,
-					&aircraftDetailRow.Callsign,
-					&aircraftDetailRow.Nnum,
-					&aircraftDetailRow.Manufacturer,
-					&aircraftDetailRow.Title,
-					&aircraftDetailRow.Class,
-					&aircraftDetailRow.Lat,
-					&aircraftDetailRow.Long,
-					&aircraftDetailRow.LocationName,
-					&aircraftDetailRow.Status,
-				)
-				if err != nil {
-					http.Error(w, fmt.Sprintf("Error scanning aircraft details from query: %v", err), http.StatusInternalServerError)
-					return
-				}
-				aircraftDetail, err = ctx.GetAircraftDetailSummary(aircraftDetailRow)
-				if err != nil {
-					http.Error(w, fmt.Sprintf("Error populating aircraft detail summary: %v", err), http.StatusInternalServerError)
-					return
-				}
-			}
-			respond(w, aircraftDetail)
-		} else if id == "aircraft" {
-			ctx.AircraftHandler(w, r)
-		} else {
-			http.Error(w, "No aircraft with that ID", http.StatusBadRequest)
-		}
-	default:
-		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)
-		return
-	}
 }
