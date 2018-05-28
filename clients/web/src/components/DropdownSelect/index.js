@@ -8,6 +8,7 @@ import Span from "../Span";
 import DropdownItem from "../DropdownItem";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";
 import Clickable from "../Clickable";
+import Divider from "../Divider";
 
 const DropdownSelect = ({ items, onChange }) => {
     return (
@@ -39,24 +40,31 @@ const DropdownSelect = ({ items, onChange }) => {
                                     w={1}
                                     boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
                                 >
-                                    {items.map(item => (
-                                        <Clickable>
-                                            <DropdownItem
-                                                {...getItemProps({ item })}
-                                                key={item}
-                                            >
-                                                <Span
-                                                    fontWeight={
-                                                        selectedItem === item
-                                                            ? "bold"
-                                                            : "normal"
-                                                    }
-                                                >
-                                                    {item}
-                                                </Span>
-                                            </DropdownItem>
-                                        </Clickable>
-                                    ))}
+                                    {items.map((item, i) => {
+                                        return (
+                                            <div>
+                                                <Clickable>
+                                                    <DropdownItem
+                                                        {...getItemProps({
+                                                            item
+                                                        })}
+                                                        key={item}
+                                                    >
+                                                        <Span
+                                                            fontWeight={
+                                                                selectedItem ===
+                                                                item
+                                                                    ? "bold"
+                                                                    : "normal"
+                                                            }
+                                                        >
+                                                            {item}
+                                                        </Span>
+                                                    </DropdownItem>
+                                                </Clickable>
+                                            </div>
+                                        );
+                                    })}
                                 </BoxHiddenOverflow>
                             </Absolute>
                         </Relative>

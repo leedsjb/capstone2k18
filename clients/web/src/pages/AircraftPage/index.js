@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
+import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
 import { push } from "react-router-redux";
 
@@ -92,10 +93,7 @@ class AircraftPage extends Component {
                                         aircraft={a}
                                     />
                                 </Clickable>
-                                {aircraft.data.length === 1 ||
-                                i !== aircraft.data.length - 1 ? (
-                                    <Divider />
-                                ) : null}
+                                <Divider />
                             </div>
                         );
                     })}
@@ -155,8 +153,8 @@ class AircraftPage extends Component {
                 <Box
                     px={3}
                     py={3}
-                    boxShadow="0 2px 8px #EBEBEB"
-                    borderBottom="1px solid #E0E0E0"
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
                     position="relative"
                     zIndex={999}
                 >
@@ -293,4 +291,6 @@ const mapDispatchToProps = {
     openSocket
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(AircraftPage)
+);

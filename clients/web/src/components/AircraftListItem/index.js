@@ -16,7 +16,7 @@ const AircraftListItem = ({ active, aircraft }) => {
                     nNum={aircraft.nNum}
                     status={aircraft.status}
                 />
-                <Flex alignItems="center" mt={2}>
+                <Flex alignItems="center" mt={1}>
                     <Icon glyph="earth" size={14} />
                     <Box ml={2}>
                         <Span>{aircraft.area}</Span>

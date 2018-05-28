@@ -16,7 +16,7 @@ class SearchBox extends Component {
         return (
             <Box
                 borderRadius={32}
-                border={`1px solid ${this.props.theme.colors.border}`}
+                border={`1px solid ${this.props.theme.colors.gray3}`}
                 bg="white"
                 py={1}
             >

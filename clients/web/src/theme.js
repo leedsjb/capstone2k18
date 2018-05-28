@@ -6,18 +6,18 @@ const colors = {
     black3: "#3D3D3D",
     gray1: "#A3A3A3",
     gray2: "#8F8F8F",
-    gray3: "#EBEBEB",
-    gray4: "#FAFAFA"
+    gray3: "#DBDBDB",
+    gray4: "#E0E0E0",
+    gray5: "#EBEBEB",
+    gray6: "#F5F5F5",
+    gray7: "#FAFAFA"
 };
 
 const boxShadows = {
-    low: `0 2px 8px ${colors.gray3}`,
-    mid: `0 4px 12px ${colors.gray3}`,
-    high: `0 8px 16px ${colors.gray3}`
-};
-
-const borders = {
-    light: `1px solid ${colors.gray3}`
+    low: `0 2px 8px ${colors.gray5}`,
+    lowRight: `2px 2px 8px ${colors.gray5}`,
+    mid: `0 4px 12px ${colors.gray5}`,
+    high: `0 8px 16px ${colors.gray5}`
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
@@ -52,7 +52,6 @@ const shadows = [
 const theme = {
     breakpoints,
     boxShadows,
-    borders,
     space,
     fontSizes,
     fontWeights,

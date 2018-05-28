@@ -13,7 +13,6 @@ const Button = sys(
         px: 3,
         py: 2,
         color: "white",
-        bg: "blue",
         borderRadius: 2,
         border: 0
     },
@@ -25,21 +24,14 @@ const Button = sys(
         textAlign: "center",
         textDecoration: "none",
         appearance: "none",
-        backgroundColor: "black",
+        backgroundColor: `${themeGet("colors.black2")(props)}`,
         "&:hover": {
-            boxShadow: `inset 0 0 0 999px ${themeGet("colors.darken.0")(
-                props
-            )}`,
             cursor: "pointer"
         },
         "&:focus": {
-            outline: 0,
-            boxShadow: `0 0 0 2px ${themeGet("colors.blue")(props)}`
+            outline: 0
         },
-        "&:active": {
-            backgroundColor: themeGet("colors.blue.6")(props),
-            boxShadow: `inset 0 0 8px ${themeGet("colors.darken.1")(props)}`
-        },
+        "&:active": {},
         "&:disabled": {
             opacity: 1 / 4
         }
