@@ -164,11 +164,11 @@ class PeoplePage extends Component {
             );
         } else if (this.props.people.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <PeopleLoader />
                     <PeopleLoader />
                     <PeopleLoader />
-                </div>
+                </Box>
             );
         }
     }
@@ -246,11 +246,11 @@ class PeoplePage extends Component {
             );
         } else if (this.props.groups.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <GroupsLoader />
                     <GroupsLoader />
                     <GroupsLoader />
-                </div>
+                </Box>
             );
         }
     }
@@ -379,40 +379,28 @@ class PeoplePage extends Component {
     }
 
     renderMasterView() {
-        if (this.props.people.error || this.props.groups.error) {
-            return (
-                <MasterView>
-                    An error has occurred:{" "}
-                    {this.props.people.error.toString() ||
-                        this.props.groups.error.toString()}
-                </MasterView>
-            );
-        } else {
-            return (
-                <MasterView>
-                    <Flex>
-                        <Tab
-                            active={this.isPeopleTab() ? 1 : 0}
-                            is={Link}
-                            to="/people"
-                        >
-                            People
-                        </Tab>
-                        <Tab
-                            active={!this.isPeopleTab() ? 1 : 0}
-                            is={Link}
-                            to="/groups"
-                        >
-                            Groups
-                        </Tab>
-                    </Flex>
-                    <Divider />
-                    {this.isPeopleTab()
-                        ? this.renderPeople()
-                        : this.renderGroups()}
-                </MasterView>
-            );
-        }
+        return (
+            <MasterView>
+                <Flex>
+                    <Tab
+                        active={this.isPeopleTab() ? 1 : 0}
+                        is={Link}
+                        to="/people"
+                    >
+                        People
+                    </Tab>
+                    <Tab
+                        active={!this.isPeopleTab() ? 1 : 0}
+                        is={Link}
+                        to="/groups"
+                    >
+                        Groups
+                    </Tab>
+                </Flex>
+                <Divider />
+                {this.isPeopleTab() ? this.renderPeople() : this.renderGroups()}
+            </MasterView>
+        );
     }
 
     renderDetailView() {
@@ -425,6 +413,22 @@ class PeoplePage extends Component {
         );
     }
 
+    renderContent() {
+        if (this.props.people.error || this.props.groups.error) {
+            let error = this.props.people.error
+                ? this.props.people.error.toString()
+                : this.props.groups.error.toString();
+            return <MasterView>An error has occurred: {error}</MasterView>;
+        } else {
+            return (
+                <MasterDetailView>
+                    {this.renderMasterView()}
+                    {this.renderDetailView()}
+                </MasterDetailView>
+            );
+        }
+    }
+
     render() {
         let title = this.isPeopleTab() ? "People" : "Groups";
         return (
@@ -435,11 +439,7 @@ class PeoplePage extends Component {
 
                 <TitleBar title={title} />
                 <NavBar />
-
-                <MasterDetailView>
-                    {this.renderMasterView()}
-                    {this.renderDetailView()}
-                </MasterDetailView>
+                {this.renderContent()}
                 <TabBar />
             </FlexFillVH>
         );

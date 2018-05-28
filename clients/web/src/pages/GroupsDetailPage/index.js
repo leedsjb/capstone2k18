@@ -63,11 +63,11 @@ class GroupsDetailPage extends Component {
             );
         } else if (this.props.groupsDetail.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <PeopleLoader />
                     <PeopleLoader />
                     <PeopleLoader />
-                </div>
+                </Box>
             );
         }
     }

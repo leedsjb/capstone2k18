@@ -134,16 +134,7 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        return this.props.aircraft.error ? (
-            <Flex
-                flexDirection="column"
-                flex={1}
-                justifyContent="center"
-                px={4}
-            >
-                An error has occurred: {this.props.aircraft.error.toString()}
-            </Flex>
-        ) : (
+        return (
             <OutsideClickHandler
                 handleClickOutside={() => {
                     if (this.state.isSearching) {
@@ -241,17 +232,27 @@ class AircraftPage extends Component {
     renderDetailView = () => {
         return (
             <Flex flexDirection="column" flex={1}>
-                {this.props.aircraftDetail.error ? (
-                    <div>
-                        An error has occurred:{" "}
-                        {this.props.aircraftDetail.error.toString()}
-                    </div>
-                ) : (
-                    this.renderAircraftDetail(this.props.aircraftDetail)
-                )}
+                {this.renderAircraftDetail(this.props.aircraftDetail)}
             </Flex>
         );
     };
+
+    renderContent() {
+        if (this.props.aircraft.error || this.props.aircraftDetail.error) {
+            let error = this.props.aircraft.error
+                ? this.props.aircraft.error.toString()
+                : this.props.aircraftDetail.error.toString();
+            return <FlexFillVH>An error has occurred: {error}</FlexFillVH>;
+        } else {
+            return (
+                <MasterDetailMapView
+                    renderMasterView={this.renderMasterView}
+                    renderDetailView={this.renderDetailView}
+                    showDetail={this.props.id}
+                />
+            );
+        }
+    }
 
     render() {
         return (
@@ -261,11 +262,7 @@ class AircraftPage extends Component {
                 </Helmet>
                 <TitleBar title="Aircraft" showMap link="/aircraft/map" />
                 <NavBar />
-                <MasterDetailMapView
-                    renderMasterView={this.renderMasterView}
-                    renderDetailView={this.renderDetailView}
-                    showDetail={this.props.id}
-                />
+                {this.renderContent()}
                 <TabBar />
             </FlexFillVH>
         );
