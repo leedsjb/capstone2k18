@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { width, maxWidth, borders } from "styled-system";
 
 import Box from "../Box";
 

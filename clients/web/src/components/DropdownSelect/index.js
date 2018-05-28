@@ -8,7 +8,6 @@ import Span from "../Span";
 import DropdownItem from "../DropdownItem";
 import BoxHiddenOverflow from "../BoxHiddenOverflow";
 import Clickable from "../Clickable";
-import Divider from "../Divider";
 
 const DropdownSelect = ({ items, onChange }) => {
     return (
