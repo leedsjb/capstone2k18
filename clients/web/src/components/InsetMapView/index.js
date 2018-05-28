@@ -16,6 +16,8 @@ const Map = ReactMapboxGl({
     interactive: false
 });
 
+const seattleCoords = [-122.4821475, 47.6129432];
+
 class InsetMapView extends Component {
     constructor(props) {
         super(props);
@@ -81,7 +83,7 @@ class InsetMapView extends Component {
                 this.props.aircraftDetail.data.lat
             ];
         }
-        return [-122.4821475, 47.6129432]; // Center of Seattle
+        return seattleCoords;
     };
 
     renderMapView = () => {
@@ -109,7 +111,15 @@ class InsetMapView extends Component {
                                 type="symbol"
                                 layout={{
                                     "icon-image": "airplane",
-                                    "icon-allow-overlap": true
+                                    "icon-allow-overlap": true,
+                                    "icon-rotate": active
+                                        ? Math.atan2(
+                                              active.long - selected.long,
+                                              active.lat - selected.lat
+                                          ) *
+                                          180 /
+                                          Math.PI
+                                        : 0
                                 }}
                             >
                                 <Feature
@@ -117,21 +127,34 @@ class InsetMapView extends Component {
                                 />
                             </Layer>
                             {active ? (
-                                <Layer
-                                    type="symbol"
-                                    layout={{
-                                        "icon-image": "circle-15",
-                                        "text-field": active.name,
-                                        "text-anchor": "top",
-                                        "text-offset": [0, 0.5],
-                                        "text-size": 10,
-                                        "text-transform": "uppercase"
-                                    }}
-                                >
-                                    <Feature
-                                        coordinates={[active.long, active.lat]}
-                                    />
-                                </Layer>
+                                <div>
+                                    <Layer
+                                        type="symbol"
+                                        layout={{
+                                            "icon-image": "circle-15",
+                                            "text-field": active.name,
+                                            "text-anchor": "top",
+                                            "text-offset": [0, 0.5],
+                                            "text-size": 10,
+                                            "text-transform": "uppercase"
+                                        }}
+                                    >
+                                        <Feature
+                                            coordinates={[
+                                                active.long,
+                                                active.lat
+                                            ]}
+                                        />
+                                    </Layer>
+                                    <Layer type="line">
+                                        <Feature
+                                            coordinates={[
+                                                [selected.long, selected.lat],
+                                                [active.long, active.lat]
+                                            ]}
+                                        />
+                                    </Layer>
+                                </div>
                             ) : null}
                         </Box>
                     </div>

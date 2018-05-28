@@ -15,6 +15,7 @@ import FlexFillHeight from "../../components/FlexFillHeight";
 import Relative from "../../components/Relative";
 import Span from "../../components/Span";
 import Card from "../../components/Card";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchResources } from "../../actions/resources/actions";
 
@@ -71,7 +72,7 @@ class ResourcesPage extends Component {
                 </Flex>
             );
         }
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {

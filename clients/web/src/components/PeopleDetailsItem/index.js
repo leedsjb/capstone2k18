@@ -59,7 +59,21 @@ const PeopleDetailsItem = ({ person }) => {
                     mt={6}
                 />
                 <ProfileSnippet label="Last name" value={person.lName} mt={6} />
-                <ProfileSnippet label="Phone" value={person.mobile} mt={6} />
+                <ProfileSnippet
+                    label="Phone"
+                    value={
+                        person.mobile.length === 10
+                            ? `(${person.mobile.substring(
+                                  0,
+                                  3
+                              )}) ${person.mobile.substring(
+                                  3,
+                                  6
+                              )}-${person.mobile.substring(6, 10)}`
+                            : person.mobile
+                    }
+                    mt={6}
+                />
             </Container>
             {person.memberGroups ? (
                 <div>
@@ -73,6 +87,8 @@ const PeopleDetailsItem = ({ person }) => {
                             {person.memberGroups.map((group, i) => {
                                 return (
                                     <Card
+                                        key={group.id}
+                                        mt={4}
                                         mx={4}
                                         w={[
                                             "calc(100% / 2 - 32px)",
@@ -80,7 +96,6 @@ const PeopleDetailsItem = ({ person }) => {
                                             "calc(100% - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
-                                        mt={4}
                                     >
                                         <ColoredBox
                                             word={group.name}

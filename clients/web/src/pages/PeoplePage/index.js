@@ -137,8 +137,8 @@ class PeoplePage extends Component {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
             return this.props.people.data.map((person, i) => {
                 return (
-                    <div>
-                        <Link to={`/people/${person.id}`} key={person.id}>
+                    <div key={person.id}>
+                        <Link to={`/people/${person.id}`}>
                             <PeopleListItem
                                 active={
                                     Number(this.props.id) === person.id ? 1 : 0
@@ -217,8 +217,8 @@ class PeoplePage extends Component {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
             return this.props.groups.data.map((group, i) => {
                 return (
-                    <div>
-                        <Link to={`/groups/${group.id}`} key={group.id}>
+                    <div key={group.id}>
+                        <Link to={`/groups/${group.id}`}>
                             <GroupsListItem
                                 active={
                                     Number(this.props.groupID) === group.id
@@ -280,7 +280,9 @@ class PeoplePage extends Component {
                             {this.props.groupsDetail.data.people.map(person => {
                                 return (
                                     <Card
+                                        key={person.id}
                                         p={4}
+                                        mt={4}
                                         mx={4}
                                         w={[
                                             "calc(100% / 2 - 32px)",
@@ -288,7 +290,6 @@ class PeoplePage extends Component {
                                             "calc(100% - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
-                                        mt={4}
                                     >
                                         <Flex
                                             flexDirection="column"
