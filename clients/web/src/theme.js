@@ -10,7 +10,18 @@ const colors = {
     gray4: "#E0E0E0",
     gray5: "#EBEBEB",
     gray6: "#F5F5F5",
-    gray7: "#FAFAFA"
+    gray7: "#FAFAFA",
+    green1: "#00c853",
+    green2: "#EBFBF2",
+    orange1: "#f9a825",
+    orange2: "#FFF8EE",
+    red: "#f50057",
+    indigo: "#3d5afe",
+    purple: "#6200ea",
+    blue: "#2962ff",
+    pink1: "#f50057",
+    pink2: "#FFEBF2",
+    white: "#FFFFFF"
 };
 
 const boxShadows = {

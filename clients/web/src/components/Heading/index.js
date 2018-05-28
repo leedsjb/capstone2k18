@@ -13,10 +13,7 @@ const Heading = sys(
         m: 0
     },
     "color",
-    "textAlign",
-    props => ({
-        color: themeGet("colors.black1")(props)
-    })
+    "textAlign"
 );
 
 Heading.displayName = "Heading";

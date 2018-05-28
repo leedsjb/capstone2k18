@@ -1,6 +1,7 @@
 // Adaptation of https://github.com/jxnblk/rebass/blob/master/src/Badge.js
 
 import sys from "system-components";
+import { themeGet } from "styled-system";
 
 const Badge = sys(
     {
@@ -8,7 +9,6 @@ const Badge = sys(
         px: 2,
         py: 1,
         mx: 0,
-        color: "white",
         fontWeight: "bold",
         borderRadius: 2
     },
@@ -17,9 +17,8 @@ const Badge = sys(
         display: "inline-block",
         verticalAlign: "middle"
     },
-    props => ({
-        background: props.statusbg
-    })
+    "color",
+    "borders"
 );
 
 Badge.displayName = "Badge";

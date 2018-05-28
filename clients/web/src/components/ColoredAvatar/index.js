@@ -4,6 +4,7 @@ import FlexFullHeight from "./FlexFullHeight";
 
 import GradientCircle from "../GradientCircle";
 import Span from "../Span";
+import Circle from "../Circle";
 
 import generateGradient from "../../utils/generateGradient";
 
@@ -11,7 +12,8 @@ const ColoredAvatar = ({ fName, onClick, size = 32 }) => {
     const gradient = generateGradient(fName);
 
     return (
-        <GradientCircle
+        <Circle
+            bg="purple"
             p={0}
             onClick={onClick}
             firstcolor={gradient[0]}
@@ -23,7 +25,7 @@ const ColoredAvatar = ({ fName, onClick, size = 32 }) => {
                     {fName.charAt(0)}
                 </Span>
             </FlexFullHeight>
-        </GradientCircle>
+        </Circle>
     );
 };
 

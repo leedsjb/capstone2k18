@@ -24,8 +24,7 @@ const TextInput = sys(
         border: 0,
         appearance: "none",
         "&:focus": {
-            outline: "none",
-            boxShadow: `inset 0 0 0 1px ${theme("colors.blue")(props)}`
+            outline: "none"
         },
         "&:disabled": {
             opacity: 1 / 2

@@ -6,6 +6,7 @@ import Badge from "../Badge";
 const Circle = sys(
     {
         is: Badge,
+        color: "white",
         size: 24,
         align: "center",
         borderRadius: "99999px"
