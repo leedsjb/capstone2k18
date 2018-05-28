@@ -10,6 +10,7 @@ import Container from "../../components/Container";
 import CrewDetailListItem from "../../components/CrewDetailListItem";
 import Box from "../../components/Box";
 import Divider from "../../components/Divider";
+import Error from "../../components/Error";
 import FlexFillVH from "../../components/FlexFillVH";
 import Heading from "../../components/Heading";
 import Icon from "../../components/Icon";
@@ -107,10 +108,17 @@ class AircraftDetailPage extends Component {
     renderContent() {
         if (this.props.aircraftDetail.error) {
             return (
-                <FlexFillVH>
-                    An error has occurred:{" "}
-                    {this.props.aircraftDetail.error.toString()}
-                </FlexFillVH>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error
+                        title="An error has occurred"
+                        content={this.props.aircraftDetail.error.toString()}
+                    />
+                </Flex>
             );
         } else if (
             this.props.aircraftDetail &&

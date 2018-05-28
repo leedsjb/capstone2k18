@@ -1,6 +1,7 @@
 // Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Text.js
 
 import sys from "system-components";
+import { themeGet } from "styled-system";
 
 const Text = sys(
     {
@@ -11,7 +12,10 @@ const Text = sys(
     "fontSize",
     "fontWeight",
     "textAlign",
-    "lineHeight"
+    "lineHeight",
+    props => ({
+        colors: themeGet("colors.black1")(props)
+    })
 );
 
 Text.displayName = "Text";

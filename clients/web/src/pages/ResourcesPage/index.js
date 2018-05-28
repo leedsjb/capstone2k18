@@ -15,6 +15,7 @@ import FlexFillHeight from "../../components/FlexFillHeight";
 import Relative from "../../components/Relative";
 import Span from "../../components/Span";
 import Card from "../../components/Card";
+import Error from "../../components/Error";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchResources } from "../../actions/resources/actions";
@@ -91,10 +92,17 @@ class ResourcesPage extends Component {
 
                 <TitleBar title="Resources" />
                 {this.props.resources.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.resources.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        flex={1}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.resources.error.toString()}
+                        />
+                    </Flex>
                 ) : (
                     <ScrollView>
                         {this.renderResources(this.props.resources)}
