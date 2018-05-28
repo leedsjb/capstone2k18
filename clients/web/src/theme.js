@@ -1,14 +1,13 @@
 const colors = {
-    wireframe: "#d8d8d8",
-    primary: "#3E50C2",
-    primaryLight: "#4052C7",
-    secondary: "#E31B3D",
-    secondaryLight: "#DB4861",
-    border: "#D4D5D6",
-    gray: "#F7F9FA",
-    darkGray: "#333333",
-    airlift: "#E4002B",
-    airliftDark: "#ED002B"
+    airlift1: "#E4002B",
+    airlift2: "#ED002B",
+    black1: "#141414",
+    black2: "#292929",
+    black3: "#3D3D3D",
+    gray1: "#A3A3A3",
+    gray2: "#8F8F8F",
+    gray3: "#EBEBEB",
+    gray4: "#FAFAFA"
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");

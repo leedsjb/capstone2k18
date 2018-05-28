@@ -21,7 +21,10 @@ const NavBar = ({ theme: { breakpoints } }) => {
                         py={3}
                         px={4}
                         bg="white"
-                        borderBottom="1px solid #e5e5e4"
+                        borderBottom="1px solid #E0E0E0"
+                        boxShadow="0 2px 8px #EBEBEB"
+                        position="relative"
+                        zIndex={9999999}
                     >
                         <Flex
                             justifyContent="space-between"

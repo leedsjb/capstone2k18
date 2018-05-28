@@ -152,7 +152,14 @@ class AircraftPage extends Component {
                     }
                 }}
             >
-                <Box bg="#F7F9FA" px={3} py={3}>
+                <Box
+                    px={3}
+                    py={3}
+                    boxShadow="0 2px 8px #EBEBEB"
+                    borderBottom="1px solid #E0E0E0"
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         handleChange={query => {
                             this.setState({ query }, () => {
@@ -230,7 +237,6 @@ class AircraftPage extends Component {
                     ) : null}
                 </Box>
 
-                <Divider />
                 <ScrollView>
                     {this.renderAircraft(this.props.aircraft)}
                 </ScrollView>
