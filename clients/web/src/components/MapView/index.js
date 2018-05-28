@@ -9,7 +9,6 @@ import { withTheme } from "styled-components";
 import Box from "../../components/Box";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
-import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
 // import mapStyle from "../../utils/mapbox/style.json";
 
@@ -29,26 +28,17 @@ class MapView extends Component {
 
     componentDidMount() {
         this.props.fetchAircraft();
-        if (this.props.id) {
-            this.props.fetchAircraftDetail(this.props.id);
-        }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.id && nextProps.id !== this.props.id) {
-            this.props.fetchAircraftDetail(nextProps.id);
-            if (
-                !this.props.aircraftDetail.error &&
-                !this.props.aircraftDetail.pending &&
-                !Array.isArray(this.props.aircraftDetail.data)
-            ) {
-                this.setState({
-                    center: [
-                        nextProps.aircraftDetail.data.long,
-                        nextProps.aircraftDetail.data.lat
-                    ]
-                });
-            }
+            let aircraft = this.props.aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
+
+            this.setState({
+                center: [aircraft.long, aircraft.lat]
+            });
         }
     }
 
@@ -60,24 +50,34 @@ class MapView extends Component {
     }
 
     fitMapBounds(selected) {
-        let minLat = this.props.aircraftDetail.data.mission.waypoints.reduce(
+        let minLat = selected.mission.waypoints.reduce(
             (minLat, point) => (point.lat < minLat ? point.lat : minLat),
             selected.lat
         );
-        let maxLat = this.props.aircraftDetail.data.mission.waypoints.reduce(
+        let maxLat = selected.mission.waypoints.reduce(
             (maxLat, point) => (point.lat > maxLat ? point.lat : maxLat),
             selected.lat
         );
-        let minLong = this.props.aircraftDetail.data.mission.waypoints.reduce(
+        let minLong = selected.mission.waypoints.reduce(
             (minLong, point) => (point.long > minLong ? point.long : minLong),
             selected.long
         );
-        let maxLong = this.props.aircraftDetail.data.mission.waypoints.reduce(
+        let maxLong = selected.mission.waypoints.reduce(
             (maxLong, point) => (point.long < maxLong ? point.long : maxLong),
             selected.long
         );
         this.state.map.fitBounds([[minLong, minLat], [maxLong, maxLat]], {
             padding: 32
+        });
+    }
+
+    getActive(aircraftID) {
+        let selAircraft = this.props.aircraft.data.find(air => {
+            return air.id === aircraftID;
+        });
+
+        return selAircraft.mission.waypoints.find(point => {
+            return point.active;
         });
     }
 
@@ -112,30 +112,32 @@ class MapView extends Component {
         }
     }
 
-    isSelAirWithWaypoints() {
+    isAircraftWithWaypoints() {
+        let aircraft = this.props.aircraft.data.find(air => {
+            return air.id === Number(this.props.id);
+        });
+
         return (
-            !this.props.aircraftDetail.error &&
-            !this.props.aircraftDetail.pending &&
-            !Array.isArray(this.props.aircraftDetail.data) &&
-            this.props.aircraftDetail.data.mission &&
-            this.props.aircraftDetail.data.mission.waypoints.length > 0
+            this.props.aircraft.data &&
+            this.props.aircraft.data.length > 0 &&
+            aircraft.mission &&
+            aircraft.mission.waypoints.length > 0
         );
     }
 
     mapCenter = () => {
+        let aircraft = this.props.aircraft.data.find(air => {
+            return air.id === Number(this.props.id);
+        });
+
         if (
-            !this.props.aircraftDetail.error &&
-            !this.props.aircraftDetail.pending &&
-            !Array.isArray(this.props.aircraftDetail.data) &&
-            (!this.props.aircraftDetail.data.mission ||
-                (this.props.aircraftDetail.data.mission &&
-                    this.props.aircraftDetail.data.mission.waypoints.length ===
-                        0))
+            !this.props.aircraft.pending &&
+            this.props.aircraft.data &&
+            this.props.aircraft.data.length > 0 &&
+            (!aircraft.mission ||
+                (aircraft.mission && aircraft.mission.waypoints.length === 0))
         ) {
-            return [
-                this.props.aircraftDetail.data.long,
-                this.props.aircraftDetail.data.lat
-            ];
+            return [aircraft.long, aircraft.lat];
         }
         return this.state.center;
     };
@@ -149,7 +151,7 @@ class MapView extends Component {
             let selected = this.props.aircraft.data.find(aircraft => {
                 return aircraft.id === Number(this.props.id);
             });
-            if (this.isSelAirWithWaypoints() && selected && this.state.map) {
+            if (this.isAircraftWithWaypoints() && selected && this.state.map) {
                 this.fitMapBounds(selected);
             }
             return (
@@ -169,6 +171,24 @@ class MapView extends Component {
                                                 layout={{
                                                     "icon-image": "airplane",
                                                     "icon-allow-overlap": true,
+                                                    "icon-rotate":
+                                                        aircraft.mission &&
+                                                        aircraft.mission
+                                                            .waypoints.length >
+                                                            0
+                                                            ? Math.atan2(
+                                                                  this.getActive(
+                                                                      aircraft.id
+                                                                  ).long -
+                                                                      aircraft.long,
+                                                                  this.getActive(
+                                                                      aircraft.id
+                                                                  ).lat -
+                                                                      aircraft.lat
+                                                              ) *
+                                                              180 /
+                                                              Math.PI
+                                                            : 0,
                                                     "text-field":
                                                         aircraft.callsign,
                                                     "text-allow-overlap": true,
@@ -184,7 +204,14 @@ class MapView extends Component {
                                                             aircraft.id ===
                                                                 selected.id)
                                                             ? 1
-                                                            : 0.5
+                                                            : 0.35,
+                                                    "text-opacity":
+                                                        !selected ||
+                                                        (selected &&
+                                                            aircraft.id ===
+                                                                selected.id)
+                                                            ? 1
+                                                            : 0.35
                                                 }}
                                             >
                                                 <Feature
@@ -222,15 +249,6 @@ class MapView extends Component {
                                                     "text-offset": [0, -1],
                                                     "text-transform":
                                                         "uppercase"
-                                                }}
-                                                paint={{
-                                                    "icon-opacity":
-                                                        !selected ||
-                                                        (selected &&
-                                                            aircraft.id ===
-                                                                selected.id)
-                                                            ? 1
-                                                            : 0.5
                                                 }}
                                             >
                                                 <Feature
@@ -272,9 +290,9 @@ class MapView extends Component {
                                         />
                                     </Layer>
                                 ) : null}
-                                {this.isSelAirWithWaypoints() && selected ? (
+                                {this.isAircraftWithWaypoints() && selected ? (
                                     <Box>
-                                        {this.props.aircraftDetail.data.mission.waypoints.map(
+                                        {selected.mission.waypoints.map(
                                             point => {
                                                 return (
                                                     <Layer
@@ -296,22 +314,6 @@ class MapView extends Component {
                                                             "text-transform":
                                                                 "uppercase"
                                                         }}
-                                                        paint={{
-                                                            "icon-opacity":
-                                                                !selected ||
-                                                                (selected &&
-                                                                    aircraft.id ===
-                                                                        selected.id)
-                                                                    ? 1
-                                                                    : 0.5,
-                                                            "text-opacity":
-                                                                !selected ||
-                                                                (selected &&
-                                                                    aircraft.id ===
-                                                                        selected.id)
-                                                                    ? 1
-                                                                    : 0.5
-                                                        }}
                                                     >
                                                         <Feature
                                                             coordinates={[
@@ -330,7 +332,7 @@ class MapView extends Component {
                                                         selected.long,
                                                         selected.lat
                                                     ],
-                                                    ...this.props.aircraftDetail.data.mission.waypoints.map(
+                                                    ...selected.mission.waypoints.map(
                                                         point => {
                                                             return [
                                                                 point.long,
@@ -368,7 +370,7 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
-                    zoom={!this.isSelAirWithWaypoints() ? [10] : undefined}
+                    zoom={!this.isAircraftWithWaypoints() ? [10] : undefined}
                 >
                     {this.renderMapView()}
 
@@ -385,14 +387,12 @@ class MapView extends Component {
 
 function mapStateToProps(state) {
     return {
-        aircraft: state.aircraft,
-        aircraftDetail: state.aircraftDetail
+        aircraft: state.aircraft
     };
 }
 
 const mapDispatchToProps = {
     fetchAircraft,
-    fetchAircraftDetail,
     push
 };
 

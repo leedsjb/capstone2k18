@@ -5,18 +5,35 @@ import Badge from "../Badge";
 import Span from "../Span";
 import Box from "../Box";
 
+const allStatus = [
+    {
+        status: "OAM",
+        statDesc: "On Mission",
+        statColor: "#feb204"
+    },
+    {
+        status: "OOS",
+        statDesc: "Out of Service",
+        statColor: "#e4002b"
+    },
+    {
+        status: "RFM",
+        statDesc: "Ready",
+        statColor: "green"
+    }
+];
+
 class AircraftIdentifier extends Component {
     getStatusColor(status) {
-        switch (status) {
-            case "On a Mission":
-                return "#feb204";
-            case "Out Of Service":
-                return "#e4002b";
-            case "Ready":
-                return "green";
-            default:
-                return null;
-        }
+        return allStatus.find(stat => {
+            return stat.status === status;
+        }).statColor;
+    }
+
+    getStatusDesc(status) {
+        return allStatus.find(stat => {
+            return stat.status === status;
+        }).statDesc;
     }
 
     render() {
@@ -32,7 +49,7 @@ class AircraftIdentifier extends Component {
                 </Box>
                 <Box ml={2}>
                     <Badge statusbg={this.getStatusColor(this.props.status)}>
-                        {this.props.status}
+                        {this.getStatusDesc(this.props.status)}
                     </Badge>
                 </Box>
             </Flex>
