@@ -4,6 +4,7 @@ import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
 
 import AircraftListItem from "../../components/AircraftListItem";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import MapView from "../MapView";
 import MasterView from "../MasterView";
 import MasterDetailView from "../MasterDetailView";
@@ -45,7 +46,7 @@ class MobileMapView extends Component {
                 );
             }
         }
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {

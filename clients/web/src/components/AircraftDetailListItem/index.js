@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import { Flex } from "grid-styled";
 import { push } from "react-router-redux";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 
-import Box from "../Box";
-import CrewDetailListItem from "../CrewDetailListItem";
-import Heading from "../Heading";
-import ScrollView from "../ScrollView";
-import Route from "../Route";
-import Text from "../Text";
-import Divider from "../Divider";
 import AircraftIdentifier from "../AircraftIdentifier";
-import Icon from "../Icon";
+import Box from "../Box";
 import Clickable from "../Clickable";
+import CrewDetailListItem from "../CrewDetailListItem";
+import Divider from "../Divider";
+import Heading from "../Heading";
+import Icon from "../Icon";
+import OOSInformation from "../OOSInformation";
+import RadioReport from "../RadioReport";
+import Receiver from "../Receiver";
+import Requestor from "../Requestor";
+import Route from "../Route";
+import ScrollView from "../ScrollView";
 import Span from "../Span";
 
 class AircraftDetailListItem extends Component {
@@ -49,244 +51,64 @@ class AircraftDetailListItem extends Component {
                                 <Box mt={6}>
                                     <Route waypoints={mission.waypoints} />
                                 </Box>
-                                <Heading is="h2" fontSize={4} mt={8}>
-                                    Patient
+                                <Heading is="h2" fontSize={4} my={6}>
+                                    Patient Summary
                                 </Heading>
                                 <Box mt={2} mb={6}>
+                                    <Span fontWeight="bold">
+                                        Transfer Number:{" "}
+                                    </Span>
                                     <Span>{mission.flightNum}</Span>
                                 </Box>
                                 {mission.radioReport &&
                                 mission.radioReport.shortReport ? (
-                                    <div>
-                                        <Box mt={4}>
-                                            <Span fontWeight="bold">
-                                                Short report
-                                            </Span>
-                                            <Text mt={1}>
-                                                {
-                                                    mission.radioReport
-                                                        .shortReport
-                                                }
-                                            </Text>
-                                        </Box>
-                                        {mission.radioReport.gender ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Sex:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.radioReport.gender}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.age ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Age:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.radioReport.age}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.weight ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Weight:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {`${
-                                                        mission.radioReport
-                                                            .weight
-                                                    } kg`}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.GIBleed ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Placeholder
-                                                </Span>
-                                                <Text mt={1}>
-                                                    {`${
-                                                        mission.radioReport
-                                                            .GIBleed
-                                                    } kg`}
-                                                </Text>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.cardiac ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Placeholder
-                                                </Span>
-                                                <Text mt={1}>
-                                                    {`${
-                                                        mission.radioReport
-                                                            .cardiac
-                                                    } kg`}
-                                                </Text>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.intubated ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Intubated:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {
-                                                        mission.radioReport
-                                                            .intubated
-                                                    }
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.radioReport.drips ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Drips:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.radioReport.drips}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                    </div>
+                                    <RadioReport
+                                        radioReport={mission.radioReport}
+                                    />
                                 ) : null}
                             </div>
                         ) : null}
                         {this.props.aircraftDetail.data.crew ? (
                             <Box>
-                                <Heading is="h2" fontSize={4} mt={8}>
+                                <Heading is="h2" fontSize={4} mt={8} mb={2}>
                                     Assigned Crew
                                 </Heading>
-                                <Flex
-                                    flexWrap="wrap"
-                                    justifyContent="space-between"
-                                >
-                                    {this.props.aircraftDetail.data.crew.map(
-                                        c => {
-                                            return (
-                                                <Box
-                                                    key={c.id}
-                                                    w="calc(50% - 8px)"
-                                                    mt={6}
-                                                >
-                                                    <Link
-                                                        to={`/people/${c.id}`}
-                                                    >
-                                                        <CrewDetailListItem
-                                                            crewDetail={c}
-                                                            p={4}
-                                                        />
-                                                    </Link>
-                                                </Box>
-                                            );
-                                        }
-                                    )}
-                                </Flex>
+                                <CrewDetailListItem
+                                    crew={this.props.aircraftDetail.data.crew}
+                                />
                             </Box>
                         ) : null}
-                        {this.props.aircraftDetail.data.mission ? (
-                            <Box>
-                                <Heading is="h6" fontSize={3} mt={8}>
-                                    Requestor
-                                </Heading>
-                                {mission.requestor ? (
-                                    <div>
-                                        {mission.requestor.name ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor Name:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.name}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.phone ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor Phone:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.phone}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.type ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor Type:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.type}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.address ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor Address:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.address}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.city ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor City:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.city}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.state ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor State:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.state}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                        {mission.requestor.zip ? (
-                                            <Box mt={4}>
-                                                <Span fontWeight="bold">
-                                                    Requestor Zip:{" "}
-                                                </Span>
-                                                <Span>
-                                                    {mission.requestor.zip}
-                                                </Span>
-                                            </Box>
-                                        ) : null}
-                                    </div>
-                                ) : null}
-
-                                <Text mt={2}>
-                                    {/* {
-                                        this.props.aircraftDetail.data.mission
-                                            .requestor
-                                    } */}
-                                </Text>
-                            </Box>
+                        {mission ? (
+                            <div>
+                                <Box>
+                                    <Heading is="h3" fontSize={3} mt={8}>
+                                        Requestor
+                                    </Heading>
+                                    {mission.requestor ? (
+                                        <Requestor
+                                            requestor={mission.requestor}
+                                        />
+                                    ) : null}
+                                </Box>
+                                <Box>
+                                    <Heading is="h3" fontSize={3} mt={8}>
+                                        Receiver
+                                    </Heading>
+                                    {mission.receiver ? (
+                                        <Receiver receiver={mission.receiver} />
+                                    ) : null}
+                                </Box>
+                            </div>
                         ) : null}
-                        {this.props.aircraftDetail.data.mission ? (
-                            <Box>
-                                <Heading is="h6" fontSize={3} mt={8}>
-                                    Receiver
+                        {this.props.aircraftDetail.data.OOS ? (
+                            <div>
+                                <Heading is="h3" fontSize={3}>
+                                    Out of Service Information
                                 </Heading>
-                                <Text mt={2}>
-                                    {/* {
-                                        this.props.aircraftDetail.data.mission
-                                            .receiver
-                                    } */}
-                                </Text>
-                            </Box>
+                                <OOSInformation
+                                    OOS={this.props.aircraftDetail.data.OOS}
+                                />
+                            </div>
                         ) : null}
                     </Box>
                 </ScrollView>

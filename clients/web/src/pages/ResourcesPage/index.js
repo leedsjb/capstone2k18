@@ -15,6 +15,7 @@ import FlexFillHeight from "../../components/FlexFillHeight";
 import Relative from "../../components/Relative";
 import Span from "../../components/Span";
 import Card from "../../components/Card";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchResources } from "../../actions/resources/actions";
 
@@ -26,52 +27,59 @@ class ResourcesPage extends Component {
     renderResources(resources) {
         if (!resources.pending && resources.data.length > 0) {
             return (
-                <Flex flexWrap="wrap">
-                    {resources.data.map(item => {
-                        return (
-                            <Box key={item.id} px={2} mt={4} w={1 / 2}>
-                                <a
-                                    href={item.link}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <Card height="100%" p={4}>
-                                        <Relative pt="50%" w={1}>
-                                            <Absolute
-                                                top={0}
-                                                left={0}
-                                                bottom={0}
-                                                right={0}
-                                            >
-                                                <FlexFillHeight
-                                                    justifyContent="center"
-                                                    alignItems="center"
+                <Container py={6}>
+                    <Flex flexWrap="wrap">
+                        {resources.data.map(item => {
+                            return (
+                                <Box key={item.id} px={2} mt={4} w={1 / 2}>
+                                    <a
+                                        href={item.link}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
+                                        <Card height="100%" p={4}>
+                                            <Relative pt="50%" w={1}>
+                                                <Absolute
+                                                    top={0}
+                                                    left={0}
+                                                    bottom={0}
+                                                    right={0}
                                                 >
-                                                    <Box w={1 / 2}>
-                                                        <Image
-                                                            src={item.imageLink}
-                                                        />
-                                                    </Box>
-                                                </FlexFillHeight>
-                                            </Absolute>
-                                        </Relative>
-                                        <Flex mt={4} justifyContent="center">
-                                            <Span
-                                                fontWeight="bold"
-                                                textAlign="center"
+                                                    <FlexFillHeight
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                    >
+                                                        <Box w={1 / 2}>
+                                                            <Image
+                                                                src={
+                                                                    item.imageLink
+                                                                }
+                                                            />
+                                                        </Box>
+                                                    </FlexFillHeight>
+                                                </Absolute>
+                                            </Relative>
+                                            <Flex
+                                                mt={4}
+                                                justifyContent="center"
                                             >
-                                                {item.name}
-                                            </Span>
-                                        </Flex>
-                                    </Card>
-                                </a>
-                            </Box>
-                        );
-                    })}
-                </Flex>
+                                                <Span
+                                                    fontWeight="bold"
+                                                    textAlign="center"
+                                                >
+                                                    {item.name}
+                                                </Span>
+                                            </Flex>
+                                        </Card>
+                                    </a>
+                                </Box>
+                            );
+                        })}
+                    </Flex>
+                </Container>
             );
         }
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {
@@ -89,9 +97,7 @@ class ResourcesPage extends Component {
                     </FlexFillVH>
                 ) : (
                     <ScrollView>
-                        <Container py={6}>
-                            {this.renderResources(this.props.resources)}
-                        </Container>
+                        {this.renderResources(this.props.resources)}
                     </ScrollView>
                 )}
                 <TabBar />
