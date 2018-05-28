@@ -112,7 +112,10 @@ class AircraftDetailPage extends Component {
                     {this.props.aircraftDetail.error.toString()}
                 </FlexFillVH>
             );
-        } else if (!Array.isArray(this.props.aircraftDetail.data)) {
+        } else if (
+            this.props.aircraftDetail &&
+            !Array.isArray(this.props.aircraftDetail.data)
+        ) {
             return (
                 <ScrollView>
                     <Container my={3}>
@@ -167,12 +170,19 @@ class AircraftDetailPage extends Component {
                 ? `/aircraft/map/${this.props.id}`
                 : "/aircraft";
         let title = "Loading...";
-        if (this.props.aircraftDetail.data.mission) {
-            title = `Flight #${
-                this.props.aircraftDetail.data.mission.flightNum
-            }`;
-        } else {
-            title = `Aircraft ${this.props.aircraftDetail.data.nNum}`;
+        if (
+            this.props.aircraftDetail.data &&
+            !Array.isArray(this.props.aircraftDetail.data)
+        ) {
+            if (this.props.aircraftDetail.data.mission) {
+                title = `Flight #${
+                    this.props.aircraftDetail.data.mission.flightNum
+                }`;
+            } else {
+                title = `Aircraft ${this.props.aircraftDetail.data.nNum}`;
+            }
+        } else if (this.props.aircraftDetail.error) {
+            title = "Error";
         }
         return (
             <FlexFillVH flexDirection="column">
