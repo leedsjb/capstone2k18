@@ -91,7 +91,7 @@ func MissionNotify(callsign string, aircraftID int, mobile string) error {
 	twilioUrl := "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json"
 	fmt.Printf("[MISSION NOTIFICATION] TwilioURL: %v\n", twilioUrl)
 
-	notifyUrl := "https://test.elevate.airliftnw.org/" + strconv.Itoa(aircraftID)
+	notifyUrl := "https://test.elevate.airliftnw.org/aircraft/" + strconv.Itoa(aircraftID)
 	notification := "You've been assigned to a new mission on " + callsign + ": " + notifyUrl
 
 	log.Printf("[MISSION NOTIFICATION] notification string: %v\n", notification)
