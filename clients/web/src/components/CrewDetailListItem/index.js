@@ -4,7 +4,6 @@ import { Flex } from "grid-styled";
 import Card from "../Card";
 import Span from "../Span";
 import ColoredAvatar from "../ColoredAvatar";
-import Box from "../Box";
 
 const CrewDetailListItem = ({ crewDetail, ...props }) => {
     return (

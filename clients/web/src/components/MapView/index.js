@@ -9,6 +9,7 @@ import { withTheme } from "styled-components";
 import Box from "../../components/Box";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
+import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 
 // import mapStyle from "../../utils/mapbox/style.json";
 
@@ -115,35 +116,38 @@ class MapView extends Component {
     }
 
     isAircraftWithWaypoints() {
-        let aircraft = this.props.aircraft.data.find(air => {
-            return air.id === Number(this.props.id);
-        });
+        if (this.props.aircraft.data && this.props.aircraft.data.length > 0) {
+            let aircraft = this.props.aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
 
-        return (
-            this.props.aircraft.data &&
-            this.props.aircraft.data.length > 0 &&
-            aircraft &&
-            aircraft.mission &&
-            aircraft.mission.waypoints.length > 0
-        );
+            return (
+                aircraft &&
+                aircraft.mission &&
+                aircraft.mission.waypoints.length > 0
+            );
+        }
+
+        return false;
     }
 
     mapCenter = () => {
-        let aircraft = this.props.aircraft.data.find(air => {
-            return air.id === Number(this.props.id);
-        });
+        if (this.props.aircraft.data && this.props.aircraft.data.length > 0) {
+            let aircraft = this.props.aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
 
-        if (
-            !this.props.aircraft.pending &&
-            this.props.aircraft.data &&
-            this.props.aircraft.data.length > 0 &&
-            ((aircraft && !aircraft.mission) ||
+            if (
+                (aircraft && !aircraft.mission) ||
                 (aircraft &&
                     aircraft.mission &&
-                    aircraft.mission.waypoints.length === 0))
-        ) {
-            return [aircraft.long, aircraft.lat];
+                    aircraft.mission.waypoints.length === 0)
+            ) {
+                return [aircraft.long, aircraft.lat];
+            }
+            return this.state.center;
         }
+
         return this.state.center;
     };
 
@@ -392,12 +396,14 @@ class MapView extends Component {
 
 function mapStateToProps(state) {
     return {
-        aircraft: state.aircraft
+        aircraft: state.aircraft,
+        aircraftDetail: state.aircraftDetail
     };
 }
 
 const mapDispatchToProps = {
     fetchAircraft,
+    fetchAircraftDetail,
     push
 };
 
