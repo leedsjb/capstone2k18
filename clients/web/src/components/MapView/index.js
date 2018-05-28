@@ -36,9 +36,11 @@ class MapView extends Component {
                 return air.id === Number(this.props.id);
             });
 
-            this.setState({
-                center: [aircraft.long, aircraft.lat]
-            });
+            if (aircraft) {
+                this.setState({
+                    center: [aircraft.long, aircraft.lat]
+                });
+            }
         }
     }
 
@@ -120,6 +122,7 @@ class MapView extends Component {
         return (
             this.props.aircraft.data &&
             this.props.aircraft.data.length > 0 &&
+            aircraft &&
             aircraft.mission &&
             aircraft.mission.waypoints.length > 0
         );
@@ -134,8 +137,10 @@ class MapView extends Component {
             !this.props.aircraft.pending &&
             this.props.aircraft.data &&
             this.props.aircraft.data.length > 0 &&
-            (!aircraft.mission ||
-                (aircraft.mission && aircraft.mission.waypoints.length === 0))
+            ((aircraft && !aircraft.mission) ||
+                (aircraft &&
+                    aircraft.mission &&
+                    aircraft.mission.waypoints.length === 0))
         ) {
             return [aircraft.long, aircraft.lat];
         }
