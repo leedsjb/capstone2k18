@@ -78,8 +78,8 @@ INSERT INTO tblPERSONNEL(personnel_id, personnel_f_name, personnel_l_name, perso
 VALUES
 (1,"Tiffany","Chen","Developer","4258941368","tzc@uw.edu"),
 (2,"Benjamin","Leeds","Developer","7204804092","jbl@uw.edu"),
-(3,"Vincent","Van Der Meulen","Designer/Developer","1111111111","vmvdm@uw.edu"),
-(4,"Jessica","Basa","Developer","3333333333","jdb@uw.edu"),
+(3,"Vincent","Van Der Meulen","Designer/Developer","4255986428","vmvdm@uw.edu"),
+(4,"Jessica","Basa","Developer","7757209045","jdb@uw.edu"),
 (5,"Brian","Crownhart","Developer","2222222222","bcrownhart@uw.edu");
 
 INSERT INTO tblPERSONNEL_GROUP(personnel_group_ID,personnel_id,group_id)
@@ -190,13 +190,13 @@ VALUES
 (1, 5, 16, 1, 1, "18-0056"), -- AL7, RW-SCENE, on a mission
 (2, 1, 16, 3, 1, "18-0040"), -- AL2, on a mission
 (4, 5, 16, 3, 1, "18-0045"); -- testing second mission with same aircraft
--- DELETE FROM tblMISSION WHERE mission_id = 3;
+DELETE FROM tblMISSION WHERE mission_id = 3;
 
 INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
 VALUES
 (4,1),
 (4,2),
-(1,1),
+(1,1), -- 
 (1,2),
 (2,1),
 (2,2),
