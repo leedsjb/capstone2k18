@@ -109,7 +109,7 @@ class AircraftPage extends Component {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <EmptyState />
+                    <EmptyState page="aircraft" />
                 </Flex>
             );
         } else {

@@ -15,7 +15,7 @@ const Heading = sys(
     "color",
     "textAlign",
     props => ({
-        colors: themeGet("colors.black1")(props)
+        color: themeGet("colors.black1")(props)
     })
 );
 

@@ -163,7 +163,7 @@ class PeoplePage extends Component {
                     justifyContent="center"
                     flex={1}
                 >
-                    <EmptyState />
+                    <EmptyState page="people" />
                 </Flex>
             );
         } else if (this.props.people.pending) {
@@ -247,7 +247,7 @@ class PeoplePage extends Component {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <EmptyState />
+                    <EmptyState page="groups" />
                 </Flex>
             );
         } else if (this.props.groups.pending) {
