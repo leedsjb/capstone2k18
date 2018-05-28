@@ -12,7 +12,7 @@ import Image from "../Image";
 
 import logo from "../../images/logo.svg";
 
-const NavBar = ({ theme: { breakpoints } }) => {
+const NavBar = ({ theme: { breakpoints, boxShadows, borders } }) => {
     return (
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
@@ -21,8 +21,8 @@ const NavBar = ({ theme: { breakpoints } }) => {
                         py={3}
                         px={4}
                         bg="white"
-                        borderBottom="1px solid #E0E0E0"
-                        boxShadow="0 2px 8px #EBEBEB"
+                        borderBottom={borders["light"]}
+                        boxShadow={boxShadows["low"]}
                         position="relative"
                         zIndex={9999999}
                     >

@@ -10,6 +10,16 @@ const colors = {
     gray4: "#FAFAFA"
 };
 
+const boxShadows = {
+    low: `0 2px 8px ${colors.gray3}`,
+    mid: `0 4px 12px ${colors.gray3}`,
+    high: `0 8px 16px ${colors.gray3}`
+};
+
+const borders = {
+    light: `1px solid ${colors.gray3}`
+};
+
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
 
 let space = [];
@@ -41,6 +51,8 @@ const shadows = [
 
 const theme = {
     breakpoints,
+    boxShadows,
+    borders,
     space,
     fontSizes,
     fontWeights,
