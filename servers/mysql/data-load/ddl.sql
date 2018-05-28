@@ -1,7 +1,8 @@
 /*
     ddl.sql
     Created: Thursday May 17, 2018
-    Modified: Wednesday May 23, 2018
+    Modified: Sunday May 27, 2018
+    Last Change: Added AUTO_INCREMENTS and TIMESTAMP defaults
     Authors: J. Benjamin Leeds
     License: None
 
@@ -123,11 +124,12 @@ CREATE TABLE `tblAIRCRAFT` (
   FOREIGN KEY (ac_type_id) REFERENCES tblAIRCRAFT_TYPE(aircraft_type_id)
 );
 
+-- DESCRIBE tblASSIGNED_STATUS;
 CREATE TABLE `tblASSIGNED_STATUS` (
     `aircraft_status_id` INTEGER AUTO_INCREMENT, -- TODO not applied yet
     `status_id` INTEGER,
     `aircraft_id` INTEGER,
-    `assigned_status_date` TIMESTAMP, -- TODO default
+    `assigned_status_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`aircraft_status_id`),
     FOREIGN KEY(status_id) REFERENCES tblAIRCRAFT_STATUS(status_id),
     FOREIGN KEY(aircraft_id) REFERENCES tblAIRCRAFT(ac_id)
@@ -182,6 +184,7 @@ CREATE TABLE `tblASSIGNED_MISSION_STATUS` (
     FOREIGN KEY(m_status_id) REFERENCES tblMISSION_STATUS(m_status_id)
 );
 
+-- DESCRIBE tblMISSION_WAYPOINT;
 CREATE TABLE `tblMISSION_WAYPOINT` (
     `mission_waypoint_id` INTEGER AUTO_INCREMENT, -- TODO not committed, do we need this?
     `mission_id` INTEGER,
@@ -269,6 +272,7 @@ CREATE TABLE `tblPERSONNEL_GROUP` (
     FOREIGN KEY(group_id) REFERENCES tblGROUP(group_id)
 );
 
+-- DESCRIBE tblMISSION_PERSONNEL;
 CREATE TABLE `tblMISSION_PERSONNEL` (
     `mission_personnel_id` INTEGER AUTO_INCREMENT,
     `mission_id` INTEGER,

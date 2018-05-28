@@ -1,7 +1,7 @@
 /*
 pubsub_stored_procedures.sql
 Created: Monday April 30, 2018
-Modified: Saturday May 27, 2018
+Modified: Sunday May 27, 2018
 Author(s): J. Benjamin Leeds
 License: None
 
@@ -11,7 +11,6 @@ Use the stored procedures in this file to store data received by Pub/Sub in MySQ
 
 -- uspNewMissionInsert
 -- inserts a new mession read from the message queue
-
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `uspNewMission`$$
 CREATE PROCEDURE uspNewMission(
@@ -32,23 +31,35 @@ CREATE PROCEDURE uspNewMission(
     IN patient_cardiac_param        BOOLEAN,
     IN patient_gi_bleed_param       BOOLEAN,
     IN patient_OB_param             BOOLEAN,
-
-    -- how to handle indeterminate # of crew members
-    IN mission_personnel_param NVARCHAR(255) -- a json string
-    -- IN waypoints                -- array TODO
+    
+    -- json input
+    IN mission_personnel_param NVARCHAR(255), -- a json string
+    IN mission_waypoints_param NVARCHAR(255) -- a json string           
 )
 
 BEGIN
 		    
 	DECLARE asid INTEGER;
 	DECLARE msid INTEGER;
-    DECLARE iterator INTEGER DEFAULT 0; -- for while loop
+	-- for crew while loop
+    DECLARE iterator INTEGER DEFAULT 0; 
     DECLARE num_crew INTEGER DEFAULT 0;
     DECLARE selector NVARCHAR(10);
     DECLARE crew_member NVARCHAR(50);
     DECLARE crew_id NVARCHAR(10);
     DECLARE crew_role_id NVARCHAR(10);
     DECLARE pctid INTEGER;
+    -- for waypoints while loop
+    DECLARE iterator_2 INTEGER DEFAULT 0;
+    DECLARE num_waypoints INTEGER DEFAULT 0;
+    DECLARE selector_2 NVARCHAR(10);
+    DECLARE waypoint NVARCHAR(255);
+    DECLARE waypoint_id_param NVARCHAR(10); 
+    DECLARE waypoint_ETA_param TIMESTAMP; -- time format from T-SQL -> need to convert
+    DECLARE waypoint_active_param NVARCHAR(10); -- 0 or 1
+    DECLARE waypoint_completed_param NVARCHAR(10); -- 0 or 1
+    
+    
 	START TRANSACTION;
 
 		-- Step 1: Create mission
@@ -59,16 +70,16 @@ BEGIN
 		SET asid = (SELECT status_id FROM tblAIRCRAFT_STATUS WHERE status_short_desc = "OAM");
 		
 		-- Step 2: assign aircraft (check if aircraft is RFM and update status to OAM)
-		INSERT INTO tblASSIGNED_STATUS(aircraft_status_id, status_id, aircraft_id)
-		VALUES(10, @asid, aircraft_id_param);
+		INSERT INTO tblASSIGNED_STATUS(status_id, aircraft_id)
+		VALUES(asid, aircraft_id_param);
 		
 		-- determine mission m_status_id
 		SET msid = (SELECT m_status_id FROM tblMISSION_STATUS WHERE m_status_short_desc = "IP");
 
 		-- Step 3: Assign mission status
 		INSERT INTO tblASSIGNED_MISSION_STATUS(mission_id, m_status_id)
-		VALUES(mission_id_param, @msid);
-
+		VALUES(mission_id_param, msid);
+        
 		-- Step 4: insert patient details
 		INSERT INTO tblPATIENT(
 			mission_id, patient_gender, patient_short_report, patient_intubated, patient_drips, 
@@ -81,8 +92,6 @@ BEGIN
 		);
 		
         -- Step 5: iterate over crew and add each crewmember to mission in the specified role
-		
-		-- SET json_str = '[{"crewID":"1","crewRoleID":"2"},{"crewID":"3","crewRoleID":"4"}]';
 		SET num_crew =  JSON_LENGTH(mission_personnel_param); -- 2
 
 		WHILE iterator < num_crew
@@ -108,8 +117,35 @@ BEGIN
             
 		END WHILE;
         
-        -- Step 6: iterate over waypoints and add each waypoint to mission
-        -- TODO
+        -- Step 6: iterate over waypoints and add each waypoint to mission        
+		SET num_waypoints =  JSON_LENGTH(mission_waypoints_param); -- 2
+
+		WHILE iterator_2 < num_waypoints
+
+		DO
+			SET selector_2 = CONCAT('$[', iterator_2,  ']'); -- JSON query selector for waypoint in JSON array
+			SET waypoint = JSON_EXTRACT(mission_waypoints_param, selector_2); -- retrieve crew member object from JSON array
+			
+            SET waypoint_id_param = JSON_EXTRACT(waypoint, '$.ID');
+			SET waypoint_ETA_param = JSON_EXTRACT(waypoint, '$.ETA');
+			SET waypoint_active_param = JSON_EXTRACT(waypoint, '$.active');
+			SET waypoint_completed_param = JSON_EXTRACT(waypoint, '$.completed');
+	
+			-- lookup personnel_crew_type_id from lookup tables
+			SET pctid = (
+				SELECT personnel_crew_type_id
+				FROM tblPERSONNEL_CREW_TYPE
+				WHERE personnel_id = crew_id AND crew_type_id = crew_role_id
+			);
+
+			-- add mission waypoint
+            -- Note: does not handle case where temporary waypoints not in the database are sent TODO
+			INSERT INTO tblMISSION_WAYPOINT(mission_id, waypoint_id, mission_ETA, waypoint_active, waypoint_completed)
+			VALUES (mission_id_param, waypoint_id_param, waypoint_ETA_param, waypoint_active_param, waypoint_completed_param);
+			
+			SET iterator = iterator + 1;
+            
+		END WHILE;
         
     COMMIT;
 END$$
@@ -117,63 +153,26 @@ DELIMITER ;
 
 /*
 
-Incoming JSON Object for this Stored Procedure:
+Sample new mission:
 
- "missionID": "1",                       // Table: Missions.ID
-    "TCNum": "18-0013",                     // Table: TC.ID
-    "asset": "N123AL",
-    "requestorID": "1",                     // Ex. Snoqualmie Pass Ski Area
-    "receiverID": "1",                      // Ex. Harborview Medical Center
-    "priority": "Emergency",
-    "callType": "callTypeID",
-    "patient": {
-        "shortReport": "head bleed",
-        "intubated": "true",
-        "drips": "4",
-        "age": "42",
-        "weight": "50",
-        "gender": "M",
-        "cardiac": "false",
-        "GIBleed": "false",
-        "OB": "false",
-    },
-    "crewMemberID": [
-            {
-                "crewID":"crewID1",
-                "crewRoleID":"crewRoldID1"
-            },
-            {
-                "crewID":"crewID2",
-                "crewRoleID":"crewRoldID2"
-            },
-            {
-                "crewID":"crewID3",
-                "crewRoleID":"crewRoldID3"
-            },
-            {
-                "crewID":"crewID4",
-                "crewRoleID":"crewRoldID4"
-            }
-    ],
-    "waypoints": [
-        {
-            "ID": "1",
-            "ETA": "00:05",     // time to next point
-            "active": "1",   // denotes active waypoint, Table: Missions.CurrentLeg
-            "completed": "0"
-        }
-    ]
-        {
-            "ID": "2",
-            "ETE": "00:17",
-            "ETT": "00:22",
-            "active": "false"           // Table: Missions.CurrentLeg
-        },
-        {
-            "ID": "3",
-            "ETE": "00:12",
-            "ETT": "00:34",
-            "active": "false"           // Table: Missions.CurrentLeg
-        }
-    ],
-}
+CALL uspNewMission(
+	"5",
+    "18-0080",
+    "2", -- AL3, N124AL, Lear 31A
+    "2", -- King County Sherifft
+    "1", -- Harborview Medical Center
+    "19", -- FW-Jet
+    "Obstructed airway. Choked on a pinecone. Obstruction cleared. Lacerated larynx.",
+    "1", -- intubated
+    "1", -- drips
+    "15", -- age
+    "75", -- weight
+    "1", -- gender
+    "0", -- cardiac
+    "1", -- gi bleed
+    "0", -- OB
+    '[{"crewID":"1","crewRoleID":"1"},{"crewID":"2","crewRoleID":"2"},{"crewID":"3","crewRoleID":"3"},{"crewID":"4","crewRoleID":"4"}]', -- personnel
+    '[{"ID":"22810","ETA":"2018-05-28 05:15:27","active":"0","completed":"1"},{"ID":"20001","ETA":"2018-05-28 05:30:27","active":"1","completed":"0"},{"ID":"20070","ETA":"2018-05-28 07:07:27","active":"0","completed":"0"}]' -- waypoints
+);
+
+*/

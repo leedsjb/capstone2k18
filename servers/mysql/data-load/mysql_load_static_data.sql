@@ -155,7 +155,10 @@ VALUES
 INSERT INTO tblPERSONNEL_CREW_TYPE(personnel_crew_type_id, personnel_id, crew_type_id)
 VALUES
 (1,1,1),
-(2,2,2);
+(2,2,2),
+(3,3,3),
+(4,4,4);
+
 
 INSERT INTO tblAGENCY_TYPE(agency_type_id, agency_type_name)
 VALUES
