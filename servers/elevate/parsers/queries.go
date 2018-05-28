@@ -220,14 +220,14 @@ func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 
 // [MISSIONS]
 
-func (ctx *ParserContext) GetAgencyByID(agencyID int) (*messages.Agency, error) {
+func (ctx *ParserContext) GetAgencyDetailsByID(agencyID int) (*messages.Agency, error) {
 	// query := `CALL uspGetAgencyByID(?)`
 	// reqRow, err := ctx.DB.QueryContext(
 	// 	sqlCtx,
 	// 	query,
 	// 	requestorID,
 	// )
-	query := `SELECT agency_name FROM tblAGENCY WHERE agency_id=?`
+	query := `CALL uspGetAgencyDetailsByID(?)`
 	agencyRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
@@ -241,8 +241,8 @@ func (ctx *ParserContext) GetAgencyByID(agencyID int) (*messages.Agency, error) 
 	var areaCode string
 	var phone string
 	var agencyType string
-	var street1 string
-	var street2 string
+	var street1 sql.NullString
+	var street2 sql.NullString
 	var city string
 	var state string
 	var zip string
@@ -261,8 +261,17 @@ func (ctx *ParserContext) GetAgencyByID(agencyID int) (*messages.Agency, error) 
 		if err != nil {
 			return nil, fmt.Errorf("Error scanning agency row: %v", err)
 		}
+
+		var address string
+		if street1.Valid {
+			address += street1.String
+		}
+		if street2.Valid {
+			address += street2.String
+		}
+
 		phone = areaCode + phone
-		address := street1 + " " + street2
+
 		agency = &messages.Agency{
 			Name:    name,
 			Phone:   phone,

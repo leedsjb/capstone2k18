@@ -46,11 +46,11 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	if err != nil {
 		return fmt.Errorf("could not convert string to int: %v", err)
 	}
-	aircraftStatus := "On Mission" // assume aircraft assigned to mission is on that mission
+	aircraftStatus := "OAM" // assume aircraft assigned to mission is on that mission
 
 	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if requestorID != 0 {
-		req, err := ctx.GetAgencyByID(requestorID)
+		req, err := ctx.GetAgencyDetailsByID(requestorID)
 		if err != nil {
 			return fmt.Errorf("Could not retrieve requestor by given ID: %v, error is: %v\n", requestorID, err)
 		}
@@ -58,7 +58,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if receiverID != 0 {
-		rec, err := ctx.GetAgencyByID(receiverID)
+		rec, err := ctx.GetAgencyDetailsByID(receiverID)
 		if err != nil {
 			return fmt.Errorf("Could not retrieve receiver by given ID: %v, error is: %v\n", receiverID, err)
 		}
