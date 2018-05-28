@@ -126,7 +126,7 @@ CREATE TABLE `tblAIRCRAFT` (
 
 -- DESCRIBE tblASSIGNED_STATUS;
 CREATE TABLE `tblASSIGNED_STATUS` (
-    `aircraft_status_id` INTEGER AUTO_INCREMENT, -- TODO not applied yet
+    `aircraft_status_id` INTEGER AUTO_INCREMENT,
     `status_id` INTEGER,
     `aircraft_id` INTEGER,
     `assigned_status_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -186,7 +186,7 @@ CREATE TABLE `tblASSIGNED_MISSION_STATUS` (
 
 -- DESCRIBE tblMISSION_WAYPOINT;
 CREATE TABLE `tblMISSION_WAYPOINT` (
-    `mission_waypoint_id` INTEGER AUTO_INCREMENT, -- TODO not committed, do we need this?
+    `mission_waypoint_id` INTEGER AUTO_INCREMENT,
     `mission_id` INTEGER,
     `waypoint_id` INTEGER,
     -- `mission_ETE` TIMESTAMP, -- calculated value: ETA - NOW()
