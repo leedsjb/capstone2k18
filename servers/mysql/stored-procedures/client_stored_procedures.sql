@@ -371,7 +371,7 @@ CREATE PROCEDURE uspGetCrewByAircraft(
 )
 BEGIN
     DECLARE active_mission_id INTEGER;
-    CALL uspGetMissionIDByAircraft(5, active_mission_id);
+    CALL uspGetMissionIDByAircraft(aircraft_id, active_mission_id);
     
     -- determine current mission for aircraft
     SELECT tblPERSONNEL.personnel_id, personnel_f_name,
