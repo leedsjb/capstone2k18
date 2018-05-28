@@ -424,7 +424,16 @@ class PeoplePage extends Component {
             let error = this.props.people.error
                 ? this.props.people.error.toString()
                 : this.props.groups.error.toString();
-            return <MasterView>An error has occurred: {error}</MasterView>;
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error title="An error has occurred" content={error} />
+                </Flex>
+            );
         } else {
             return (
                 <MasterDetailView>

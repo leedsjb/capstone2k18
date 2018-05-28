@@ -116,7 +116,10 @@ class ProfilePage extends Component {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Error />
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.profile.error.toString()}
+                        />
                     </Flex>
                 ) : (
                     <ScrollView>{this.renderProfile()}</ScrollView>

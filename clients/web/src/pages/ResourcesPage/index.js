@@ -94,11 +94,14 @@ class ResourcesPage extends Component {
                 {this.props.resources.error ? (
                     <Flex
                         flexDirection="column"
-                        alignItems="center"
                         flex={1}
+                        alignItems="center"
                         justifyContent="center"
                     >
-                        <Error />
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.resources.error.toString()}
+                        />
                     </Flex>
                 ) : (
                     <ScrollView>

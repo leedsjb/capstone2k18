@@ -250,7 +250,16 @@ class AircraftPage extends Component {
             let error = this.props.aircraft.error
                 ? this.props.aircraft.error.toString()
                 : this.props.aircraftDetail.error.toString();
-            return <FlexFillVH>An error has occurred: {error}</FlexFillVH>;
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error title="An error has occurred" content={error} />
+                </Flex>
+            );
         } else {
             return (
                 <MasterDetailMapView
