@@ -112,11 +112,11 @@ class AircraftPage extends Component {
             );
         } else {
             return (
-                <div>
+                <Box mt={6}>
                     <AircraftLoader />
                     <AircraftLoader />
                     <AircraftLoader />
-                </div>
+                </Box>
             );
         }
     }

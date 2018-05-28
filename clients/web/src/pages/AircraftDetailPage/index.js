@@ -39,7 +39,7 @@ class AircraftDetailPage extends Component {
         return (
             <Accordion>
                 <Box borderTop="1px solid black">
-                    {mission.radioReport ? (
+                    {mission && mission.radioReport ? (
                         <AccordionSection title="Radio Report">
                             {mission.radioReport &&
                             mission.radioReport.shortReport ? (
