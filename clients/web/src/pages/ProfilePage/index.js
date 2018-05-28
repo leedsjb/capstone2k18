@@ -16,6 +16,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import TabBar from "../../components/TabBar";
 import TextInput from "../../components/TextInput";
 import TitleBar from "../../components/TitleBar";
+import Error from "../../components/Error";
 
 import { fetchProfile } from "../../actions/profile/actions";
 
@@ -109,10 +110,14 @@ class ProfilePage extends Component {
                 <TitleBar title="Profile" />
                 <NavBar />
                 {this.props.profile.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.profile.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        flex={1}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Error />
+                    </Flex>
                 ) : (
                     <ScrollView>{this.renderProfile()}</ScrollView>
                 )}

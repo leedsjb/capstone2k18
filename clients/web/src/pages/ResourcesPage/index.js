@@ -15,6 +15,7 @@ import FlexFillHeight from "../../components/FlexFillHeight";
 import Relative from "../../components/Relative";
 import Span from "../../components/Span";
 import Card from "../../components/Card";
+import Error from "../../components/Error";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchResources } from "../../actions/resources/actions";
@@ -84,15 +85,17 @@ class ResourcesPage extends Component {
 
                 <TitleBar title="Resources" />
                 {this.props.resources.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.resources.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        alignItems="center"
+                        flex={1}
+                        justifyContent="center"
+                    >
+                        <Error />
+                    </Flex>
                 ) : (
                     <ScrollView>
-                        <Container py={6}>
-                            {this.renderResources(this.props.resources)}
-                        </Container>
+                        {this.renderResources(this.props.resources)}
                     </ScrollView>
                 )}
                 <TabBar />

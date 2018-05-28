@@ -18,9 +18,11 @@ import AircraftLoader from "../../components/AircraftLoader";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
+import Error from "../../components/Error";
 import Text from "../../components/Text";
 import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
+import EmptyState from "../../components/EmptyState";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
@@ -101,12 +103,14 @@ class AircraftPage extends Component {
             );
         } else if (!aircraft.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No Aircraft
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState />
+                </Flex>
             );
         } else {
             return (
@@ -137,9 +141,10 @@ class AircraftPage extends Component {
                 flexDirection="column"
                 flex={1}
                 justifyContent="center"
+                alignItems="center"
                 px={4}
             >
-                An error has occurred: {this.props.aircraft.error.toString()}
+                <Error />
             </Flex>
         ) : (
             <OutsideClickHandler
