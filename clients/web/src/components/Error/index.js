@@ -31,12 +31,12 @@ const Error = ({ title, content, theme: { colors }, notFound }) => {
             </Heading>
             <Box mt={6}>
                 {notFound ? (
-                    <Button onClick={() => window.location.reload()}>
-                        Refresh page
-                    </Button>
-                ) : (
                     <Button is={Link} to="/aircraft">
                         Take me home
+                    </Button>
+                ) : (
+                    <Button onClick={() => window.location.reload()}>
+                        Refresh page
                     </Button>
                 )}
             </Box>
