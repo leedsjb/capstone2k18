@@ -364,7 +364,7 @@ END;
 -- get crew by aircraft
 -- endpoint: /v1/???
 -- CALL uspGetCrewByAircraft(5);
--- 	PersonnelID, FName, LName, Role
+-- 	PersonnelID, FName, LName, Role (crew_type_name)
 DROP PROCEDURE IF EXISTS `uspGetCrewByAircraft`;
 CREATE PROCEDURE uspGetCrewByAircraft(
     IN aircraft_id INTEGER
@@ -375,7 +375,7 @@ BEGIN
     
     -- determine current mission for aircraft
     SELECT tblPERSONNEL.personnel_id, personnel_f_name,
-    personnel_l_name, tblCREW_TYPE.crew_type_role
+    personnel_l_name, tblCREW_TYPE.crew_type_name
     FROM tblMISSION_PERSONNEL
     JOIN tblPERSONNEL_CREW_TYPE
     ON tblMISSION_PERSONNEL.personnel_crew_type_id = tblPERSONNEL_CREW_TYPE.personnel_crew_type_id
