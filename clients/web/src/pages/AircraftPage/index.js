@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
+import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
@@ -11,21 +13,24 @@ import Clickable from "../../components/Clickable";
 import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
-import Heading from "../../components/Heading";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
+import MapView from "../../components/MapView";
 import AircraftLoader from "../../components/AircraftLoader";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
-import Text from "../../components/Text";
+import Error from "../../components/Error";
 import ScrollView from "../../components/ScrollView";
 import SearchBox from "../../components/SearchBox";
+import EmptyState from "../../components/EmptyState";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 import openSocket from "../../actions/socket/openSocket";
+
+import matchPath from "../../utils/matchPath";
 
 const AS = "Any status";
 const OAM = "On a mission";
@@ -62,6 +67,10 @@ class AircraftPage extends Component {
         }
     }
 
+    isMobileMap() {
+        return matchPath(this.props.location.pathname, "/aircraft/map");
+    }
+
     renderAircraft(aircraft) {
         if (!aircraft.pending && aircraft.data.length > 0) {
             return (
@@ -92,10 +101,7 @@ class AircraftPage extends Component {
                                         aircraft={a}
                                     />
                                 </Clickable>
-                                {aircraft.data.length === 1 ||
-                                i !== aircraft.data.length - 1 ? (
-                                    <Divider />
-                                ) : null}
+                                <Divider />
                             </div>
                         );
                     })}
@@ -103,12 +109,14 @@ class AircraftPage extends Component {
             );
         } else if (!aircraft.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No Aircraft
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState page="aircraft" />
+                </Flex>
             );
         } else {
             return (
@@ -119,6 +127,26 @@ class AircraftPage extends Component {
                 </Box>
             );
         }
+    }
+
+    renderAircraftPreview(aircraft) {
+        if (!aircraft.pending && aircraft.data.length > 0) {
+            let selected = aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
+
+            if (selected) {
+                return (
+                    <Link
+                        to={`/aircraft/${selected.id}?source=map`}
+                        key={selected.id}
+                    >
+                        <AircraftListItem aircraft={selected} />
+                    </Link>
+                );
+            }
+        }
+        return <LoadingSpinner />;
     }
 
     renderAircraftDetail(aircraftDetail) {
@@ -134,7 +162,14 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        return (
+        return this.isMobileMap() ? (
+            <FlexFillVH flexDirection="column">
+                <MapView id={this.props.id} />
+                {this.props.id ? (
+                    <Box>{this.renderAircraftPreview(this.props.aircraft)}</Box>
+                ) : null}
+            </FlexFillVH>
+        ) : (
             <OutsideClickHandler
                 handleClickOutside={() => {
                     if (this.state.isSearching) {
@@ -143,7 +178,14 @@ class AircraftPage extends Component {
                     }
                 }}
             >
-                <Box bg="#F7F9FA" px={3} py={3}>
+                <Box
+                    px={3}
+                    py={3}
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         handleChange={query => {
                             this.setState({ query }, () => {
@@ -221,7 +263,6 @@ class AircraftPage extends Component {
                     ) : null}
                 </Box>
 
-                <Divider />
                 <ScrollView>
                     {this.renderAircraft(this.props.aircraft)}
                 </ScrollView>
@@ -242,7 +283,16 @@ class AircraftPage extends Component {
             let error = this.props.aircraft.error
                 ? this.props.aircraft.error.toString()
                 : this.props.aircraftDetail.error.toString();
-            return <FlexFillVH>An error has occurred: {error}</FlexFillVH>;
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error title="An error has occurred" content={error} />
+                </Flex>
+            );
         } else {
             return (
                 <MasterDetailMapView
@@ -260,7 +310,11 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar title="Aircraft" showMap link="/aircraft/map" />
+                <TitleBar
+                    title="Aircraft"
+                    showMap
+                    link={this.isMobileMap() ? "/aircraft" : "/aircraft/map"}
+                />
                 <NavBar />
                 {this.renderContent()}
                 <TabBar />
@@ -284,4 +338,6 @@ const mapDispatchToProps = {
     openSocket
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AircraftPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(AircraftPage)
+);

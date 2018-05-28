@@ -19,6 +19,8 @@ import MasterView from "../../components/MasterView";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
+import EmptyState from "../../components/EmptyState";
+import Error from "../../components/Error";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import PeopleListItem from "../../components/PeopleListItem";
@@ -30,6 +32,7 @@ import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
 import { fetchGroups } from "../../actions/groups/actions";
@@ -155,12 +158,14 @@ class PeoplePage extends Component {
             });
         } else if (!this.props.people.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No People
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    flex={1}
+                >
+                    <EmptyState page="people" />
+                </Flex>
             );
         } else if (this.props.people.pending) {
             return (
@@ -237,12 +242,14 @@ class PeoplePage extends Component {
             });
         } else if (!this.props.groups.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No Groups
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState page="groups" />
+                </Flex>
             );
         } else if (this.props.groups.pending) {
             return (
@@ -418,7 +425,16 @@ class PeoplePage extends Component {
             let error = this.props.people.error
                 ? this.props.people.error.toString()
                 : this.props.groups.error.toString();
-            return <MasterView>An error has occurred: {error}</MasterView>;
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error title="An error has occurred" content={error} />
+                </Flex>
+            );
         } else {
             return (
                 <MasterDetailView>

@@ -1,4 +1,5 @@
 import sys from "system-components";
+import { themeGet } from "styled-system";
 
 export const Span = sys(
     {
@@ -11,7 +12,10 @@ export const Span = sys(
     "fontWeight",
     "textAlign",
     "lineHeight",
-    "display"
+    "display",
+    props => ({
+        colors: themeGet("colors.black1")(props)
+    })
 );
 
 Span.displayName = "Span";

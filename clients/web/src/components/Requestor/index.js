@@ -9,13 +9,11 @@ const Requestor = ({ requestor }) => {
         <div>
             {requestor.name ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Requestor Name: </Span>
                     <Span>{requestor.name}</Span>
                 </Box>
             ) : null}
             {requestor.phone ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Requestor Phone: </Span>
                     <Span>
                         {requestor.phone.length === 10
                             ? `(${requestor.phone.substring(
@@ -31,7 +29,6 @@ const Requestor = ({ requestor }) => {
             ) : null}
             {requestor.type ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Requestor Type: </Span>
                     <Span>{requestor.type}</Span>
                 </Box>
             ) : null}
@@ -40,7 +37,6 @@ const Requestor = ({ requestor }) => {
             requestor.state &&
             requestor.zip ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Requestor Address: </Span>
                     <Text mt={1}>{requestor.address}</Text>
                     <Text>{`${requestor.city}, ${requestor.state} ${
                         requestor.zip

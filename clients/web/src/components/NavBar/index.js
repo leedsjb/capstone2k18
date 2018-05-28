@@ -12,7 +12,7 @@ import Image from "../Image";
 
 import logo from "../../images/logo.svg";
 
-const NavBar = ({ theme: { breakpoints } }) => {
+const NavBar = ({ theme: { breakpoints, boxShadows, colors } }) => {
     return (
         <Media query={`(min-width: ${breakpoints[1]})`}>
             {matches =>
@@ -21,7 +21,10 @@ const NavBar = ({ theme: { breakpoints } }) => {
                         py={3}
                         px={4}
                         bg="white"
-                        borderBottom="1px solid #e5e5e4"
+                        borderBottom={`1px solid ${colors.gray5}`}
+                        boxShadow={boxShadows["low"]}
+                        position="relative"
+                        zIndex={9999999}
                     >
                         <Flex
                             justifyContent="space-between"

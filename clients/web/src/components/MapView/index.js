@@ -69,6 +69,7 @@ class MapView extends Component {
             (maxLong, point) => (point.long < maxLong ? point.long : maxLong),
             selected.long
         );
+
         this.state.map.fitBounds([[minLong, minLat], [maxLong, maxLat]], {
             padding: 32
         });
@@ -251,6 +252,24 @@ class MapView extends Component {
                                                 layout={{
                                                     "icon-image": "airplane",
                                                     "icon-allow-overlap": true,
+                                                    "icon-rotate":
+                                                        aircraft.mission &&
+                                                        aircraft.mission
+                                                            .waypoints.length >
+                                                            0
+                                                            ? Math.atan2(
+                                                                  this.getActive(
+                                                                      aircraft.id
+                                                                  ).long -
+                                                                      aircraft.long,
+                                                                  this.getActive(
+                                                                      aircraft.id
+                                                                  ).lat -
+                                                                      aircraft.lat
+                                                              ) *
+                                                              180 /
+                                                              Math.PI
+                                                            : 0,
                                                     "text-field":
                                                         aircraft.callsign,
                                                     "text-allow-overlap": true,
@@ -258,6 +277,22 @@ class MapView extends Component {
                                                     "text-offset": [0, -1],
                                                     "text-transform":
                                                         "uppercase"
+                                                }}
+                                                paint={{
+                                                    "icon-opacity":
+                                                        !selected ||
+                                                        (selected &&
+                                                            aircraft.id ===
+                                                                selected.id)
+                                                            ? 1
+                                                            : 0.35,
+                                                    "text-opacity":
+                                                        !selected ||
+                                                        (selected &&
+                                                            aircraft.id ===
+                                                                selected.id)
+                                                            ? 1
+                                                            : 0.35
                                                 }}
                                             >
                                                 <Feature
