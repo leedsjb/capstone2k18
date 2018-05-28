@@ -71,7 +71,7 @@ type oosDetailRow struct {
 	EndTime   mysql.NullTime
 }
 
-type crewRow struct {
+type CrewRow struct {
 	PersonnelID int
 	FName       string
 	LName       string
@@ -616,7 +616,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving crew for aircraft [%v]: %v", currentRow.Callsign, err)
 	}
-	crewRow := &crewRow{}
+	crewRow := &CrewRow{}
 	for crewRows.Next() {
 		err = crewRows.Scan(
 			&crewRow.PersonnelID,
@@ -693,6 +693,39 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				Completed: missionDetailRow.Completed,
 			}
 		}
+
+		// [MISSION CREW]
+		missionCrew := []*messages.Person{}
+		// TODO: change to GetCrewByMission(currentRow.ID)
+		missionCrewRows, err := ctx.GetCrewByAircraft(currentRow.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving crew for aircraft [%v]: %v", currentRow.Callsign, err)
+		}
+		missionCrewRow := &CrewRow{}
+		for missionCrewRows.Next() {
+			err = missionCrewRows.Scan(
+				&missionCrewRow.PersonnelID,
+				&missionCrewRow.FName,
+				&missionCrewRow.LName,
+				&missionCrewRow.Role,
+			)
+			if err != nil {
+				return nil, fmt.Errorf("Error scanning crew row: %v", err)
+			}
+			missionCrewMember := &messages.Person{
+				ID:       missionCrewRow.PersonnelID,
+				FName:    missionCrewRow.FName,
+				LName:    missionCrewRow.LName,
+				Position: missionCrewRow.Role,
+			}
+			missionCrew = append(missionCrew, missionCrewMember)
+		}
+
+		if len(crew) > 0 {
+			missionDetail.Crew = missionCrew
+			// aircraftDetail.Crew = nil
+		}
+
 		// [Waypoint]
 		nextETE := ""
 		waypoints := []*messages.ClientMissionWaypoint{}

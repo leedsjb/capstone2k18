@@ -96,6 +96,7 @@ type MissionDetail struct {
 	Requestor       *Agency                  `json:"requestor"`
 	Receiver        *Agency                  `json:"receiver"`
 	Completed       string                   `json:"completed"`
+	Crew            []*Person                `json:"crew"`
 }
 
 type ClientPatient struct {

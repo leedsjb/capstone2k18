@@ -142,7 +142,20 @@ func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) 
 		aircraftID,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("Error querying MySQL for crew: %v", err)
+		return nil, fmt.Errorf("Error querying MySQL for aircraft crew: %v", err)
+	}
+	return crewRows, nil
+}
+
+func (ctx *HandlerContext) GetCrewByMission(missionID int) (*sql.Rows, error) {
+	query := "CALL uspGetCrewByMission(?)"
+	crewRows, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		missionID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Error querying MySQL for mission crew: %v", err)
 	}
 	return crewRows, nil
 }
