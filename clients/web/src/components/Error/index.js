@@ -3,14 +3,10 @@ import { Flex } from "grid-styled";
 import { withTheme } from "styled-components";
 import { Link } from "react-router-dom";
 
-import Text from "../Text";
-import Span from "../Span";
 import Heading from "../Heading";
 import Box from "../Box";
 import Illustration from "../Illustration";
 import Button from "../Button";
-
-import PushProvider from "../../containers/PushProvider";
 
 const Error = ({ title, content, theme: { colors }, notFound }) => {
     if (notFound) {

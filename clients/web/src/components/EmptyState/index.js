@@ -2,8 +2,6 @@ import React from "react";
 import { Flex } from "grid-styled";
 import { withTheme } from "styled-components";
 
-import Text from "../Text";
-import Span from "../Span";
 import Heading from "../Heading";
 import Illustration from "../Illustration";
 
