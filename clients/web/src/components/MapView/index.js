@@ -48,6 +48,7 @@ class MapView extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.id !== prevProps.id && this.state.map) {
             this.state.map.resize();
+            this.state.map.flyTo(this.mapCenter());
         }
     }
 
