@@ -189,15 +189,19 @@ INSERT INTO tblMISSION(
 VALUES
 (1, 5, 16, 1, 1, "18-0056"), -- AL7, RW-SCENE, on a mission
 (2, 1, 16, 3, 1, "18-0040"), -- AL2, on a mission
-(3, 7, null, null, null, null), -- AL9, out of service
 (4, 5, 16, 3, 1, "18-0045"); -- testing second mission with same aircraft
+-- DELETE FROM tblMISSION WHERE mission_id = 3;
 
 INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
 VALUES
 (4,1),
 (4,2),
 (1,1),
-(1,2);
+(1,2),
+(2,1),
+(2,2),
+(2,3),
+(2,4);
 
 INSERT INTO tblPATIENT(
     mission_id, patient_gender_id, patient_short_report, patient_intubated, patient_drips, patient_age,
