@@ -81,10 +81,6 @@ func MissionNotify(callsign string, aircraftID int, mobile string) error {
 		mobile = "+1" + mobile
 	}
 
-	if mobile == "+14258941368" {
-		mobile = "+14259986567"
-	}
-
 	fmt.Printf("[MISSION NOTIFICATION] Sending to: %v\n", mobile)
 
 	alnwTwilio := os.Getenv("TWILIO_NUM")
@@ -95,7 +91,7 @@ func MissionNotify(callsign string, aircraftID int, mobile string) error {
 	twilioUrl := "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json"
 	fmt.Printf("[MISSION NOTIFICATION] TwilioURL: %v\n", twilioUrl)
 
-	notifyUrl := "https://test.elevate.airliftnw.org/" + strconv.Itoa(aircraftID)
+	notifyUrl := "https://test.elevate.airliftnw.org/v1/aircraft/" + strconv.Itoa(aircraftID)
 	notification := "You've been assigned to a new mission on " + callsign + ": " + notifyUrl
 
 	log.Printf("[MISSION NOTIFICATION] notification string: %v\n", notification)
