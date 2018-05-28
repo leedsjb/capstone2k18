@@ -12,8 +12,8 @@ const Route = ({ waypoints }) => {
         <div>
             {waypoints.map((waypoint, i) => {
                 return (
-                    <Relative>
-                        <Flex key={waypoint.id} mt={i !== 0 ? 2 : 0}>
+                    <Relative key={waypoint.id}>
+                        <Flex mt={i !== 0 ? 2 : 0}>
                             {waypoints[i + 1] && waypoints[i + 1].completed ? (
                                 <Absolute
                                     bg="black"

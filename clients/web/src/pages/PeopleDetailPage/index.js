@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 
 import FlexFillVH from "../../components/FlexFillVH";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
@@ -25,7 +26,7 @@ class PeopleDetailPage extends Component {
             return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         }
 
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {

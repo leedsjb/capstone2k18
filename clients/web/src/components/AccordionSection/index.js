@@ -30,15 +30,17 @@ class AccordionSection extends Component {
                     <Box borderBottom="1px solid black" p={3}>
                         <Flex justifyContent="space-between">
                             <Span fontWeight="bold"> {this.props.title}</Span>
-                            <Icon
-                                glyph={
-                                    this.state.active === this.props.title
-                                        ? "chevronUp"
-                                        : "chevronDown"
-                                }
-                                size={16}
-                                color="black"
-                            />
+                            <Box>
+                                <Icon
+                                    glyph={
+                                        this.state.active === this.props.title
+                                            ? "chevronUp"
+                                            : "chevronDown"
+                                    }
+                                    color="black"
+                                    size={16}
+                                />
+                            </Box>
                         </Flex>
                     </Box>
                 </Clickable>
