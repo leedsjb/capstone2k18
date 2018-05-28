@@ -183,7 +183,7 @@ CREATE TABLE `tblASSIGNED_MISSION_STATUS` (
 );
 
 CREATE TABLE `tblMISSION_WAYPOINT` (
-    `mission_waypoint_id` INTEGER,
+    `mission_waypoint_id` INTEGER AUTO_INCREMENT, -- TODO not committed, do we need this?
     `mission_id` INTEGER,
     `waypoint_id` INTEGER,
     -- `mission_ETE` TIMESTAMP, -- calculated value: ETA - NOW()
@@ -252,7 +252,7 @@ CREATE TABLE `tblGROUP` (
 );
 
 CREATE TABLE `tblPERSONNEL_CREW_TYPE` (
-    `personnel_crew_type_id` INTEGER,
+    `personnel_crew_type_id` INTEGER AUTO_INCREMENT, -- not commited, do we need???
     `personnel_id` INTEGER,
     `crew_type_id` INTEGER,
     PRIMARY KEY (`personnel_crew_type_id`),

@@ -34,66 +34,84 @@ CREATE PROCEDURE uspNewMission(
     IN patient_OB_param             BOOLEAN,
 
     -- how to handle indeterminate # of crew members
-    IN mission_personnel_param NVARCHAR(255)
-    -- IN waypoints                -- array
+    IN mission_personnel_param NVARCHAR(255) -- a json string
+    -- IN waypoints                -- array TODO
 )
 
 BEGIN
 		    
 	DECLARE asid INTEGER;
 	DECLARE msid INTEGER;
+    DECLARE iterator INTEGER DEFAULT 0; -- for while loop
+    DECLARE num_crew INTEGER DEFAULT 0;
+    DECLARE selector NVARCHAR(10);
+    DECLARE crew_member NVARCHAR(50);
+    DECLARE crew_id NVARCHAR(10);
+    DECLARE crew_role_id NVARCHAR(10);
     DECLARE pctid INTEGER;
 	START TRANSACTION;
 
-    -- Step 1: Create mission
-    INSERT INTO tblMISSION(mission_id, aircraft_id, mission_type_id, requestor_id, receiver_id, tc_number) 
-    VALUES(mission_id_param, aircraft_id_param, mission_type_id_param, requestor_id_param, receiver_id_param, tc_number_param);
-   
-	-- determine aircraft_status_id
-    SET asid = (SELECT status_id FROM tblAIRCRAFT_STATUS WHERE status_short_desc = "OAM");
-    
-    -- Step 2: assign aircraft (check if aircraft is RFM and update status to OAM)
-    INSERT INTO tblASSIGNED_STATUS(aircraft_status_id, status_id, aircraft_id)
-    VALUES(10, @asid, aircraft_id_param);
-    
-    -- determine mission m_status_id
-    SET msid = (SELECT m_status_id FROM tblMISSION_STATUS WHERE m_status_short_desc = "IP");
+		-- Step 1: Create mission
+		INSERT INTO tblMISSION(mission_id, aircraft_id, mission_type_id, requestor_id, receiver_id, tc_number) 
+		VALUES(mission_id_param, aircraft_id_param, mission_type_id_param, requestor_id_param, receiver_id_param, tc_number_param);
+	   
+		-- determine aircraft_status_id
+		SET asid = (SELECT status_id FROM tblAIRCRAFT_STATUS WHERE status_short_desc = "OAM");
+		
+		-- Step 2: assign aircraft (check if aircraft is RFM and update status to OAM)
+		INSERT INTO tblASSIGNED_STATUS(aircraft_status_id, status_id, aircraft_id)
+		VALUES(10, @asid, aircraft_id_param);
+		
+		-- determine mission m_status_id
+		SET msid = (SELECT m_status_id FROM tblMISSION_STATUS WHERE m_status_short_desc = "IP");
 
-    -- Step 3: Assign mission status
-    INSERT INTO tblASSIGNED_MISSION_STATUS(mission_id, m_status_id)
-    VALUES(mission_id_param, @msid);
+		-- Step 3: Assign mission status
+		INSERT INTO tblASSIGNED_MISSION_STATUS(mission_id, m_status_id)
+		VALUES(mission_id_param, @msid);
 
-    -- Step 4: insert patient details
-    INSERT INTO tblPATIENT(
-        mission_id, patient_gender, patient_short_report, patient_intubated, patient_drips, 
-        patient_age, patient_weight, patient_cardiac, patient_gi_bleed, patient_OB
-    )
-    VALUES(
-        mission_id_param, patient_gender_param, patient_short_report_param, patient_intubated_param,
-        patient_drips_param, patient_age_param, patient_weight_param, patient_cardiac_param,
-        patient_gi_bleed_param, patient_OB_param
-    );
-    
-    -- iterate over crew and add each to mission
-    -- NOTE: Logic in progress
-    SET i = 1;
-    SET mpid = "null";
-    
-    WHILE i IS NOT null
-    DO
-		SET mpid = ELT(i, mission_personnel_param); -- retrive 
-        SET mptid = ELT(i, mission_personnel_type_param);
-    END WHILE;
+		-- Step 4: insert patient details
+		INSERT INTO tblPATIENT(
+			mission_id, patient_gender, patient_short_report, patient_intubated, patient_drips, 
+			patient_age, patient_weight, patient_cardiac, patient_gi_bleed, patient_OB
+		)
+		VALUES(
+			mission_id_param, patient_gender_param, patient_short_report_param, patient_intubated_param,
+			patient_drips_param, patient_age_param, patient_weight_param, patient_cardiac_param,
+			patient_gi_bleed_param, patient_OB_param
+		);
+		
+        -- Step 5: iterate over crew and add each crewmember to mission in the specified role
+		
+		-- SET json_str = '[{"crewID":"1","crewRoleID":"2"},{"crewID":"3","crewRoleID":"4"}]';
+		SET num_crew =  JSON_LENGTH(mission_personnel_param); -- 2
 
-	-- determine personnel_crew_type_id
-    SET pctid = (SELECT personnel_crew_type_id FROM tblPERSONNEL_CREW_TYPE WHERE personnel_id = personnel_id_param AND crew_type_id = crew_type_id_param);
-    -- Step 5: Assign mission personnel
-    INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
-    VALUES(mission_id_param, pctid);
+		WHILE iterator < num_crew
 
+		DO
+			SET selector = CONCAT('$[', iterator,  ']'); -- JSON query selector for crew member in JSON array
+			SET crew_member = JSON_EXTRACT(mission_personnel_param, selector); -- retrieve crew member object from JSON array
+			SET crew_id = JSON_EXTRACT(crew_member, '$.crewID');
+			SET crew_role_id = JSON_EXTRACT(crew_member, '$.crewRoleID');
+			
+			-- lookup personnel_crew_type_id from lookup tables
+			SET pctid = (
+				SELECT personnel_crew_type_id
+				FROM tblPERSONNEL_CREW_TYPE
+				WHERE personnel_id = crew_id AND crew_type_id = crew_role_id
+			);
+
+			-- add personnel to mission
+			INSERT INTO tblMISSION_PERSONNEL(mission_id, personnel_crew_type_id)
+			VALUES (mission_id_param, pctid);
+			
+			SET iterator = iterator + 1;
+            
+		END WHILE;
+        
+        -- Step 6: iterate over waypoints and add each waypoint to mission
+        -- TODO
+        
     COMMIT;
-
-
 END$$
 DELIMITER ;
 
@@ -140,11 +158,11 @@ Incoming JSON Object for this Stored Procedure:
     "waypoints": [
         {
             "ID": "1",
-            "ETE": "00:05",             // time to next point
-            "ETT": "00:05",             // cumulative mission time
-            "active": "true"            // denotes active waypoint
-                                        // Table: Missions.CurrentLeg
-        },
+            "ETA": "00:05",     // time to next point
+            "active": "1",   // denotes active waypoint, Table: Missions.CurrentLeg
+            "completed": "0"
+        }
+    ]
         {
             "ID": "2",
             "ETE": "00:17",
