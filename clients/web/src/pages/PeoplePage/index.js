@@ -199,7 +199,14 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <Box py={3} px={4}>
+                <Box
+                    py={3}
+                    px={4}
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         placeholder="Search all groups"
                         handleChange={queryGroups => {
