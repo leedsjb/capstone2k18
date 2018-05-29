@@ -25,10 +25,12 @@ type groupRow struct {
 type groupDetailRow struct {
 	GroupID     int
 	GroupName   string
+	PersonnelID int
 	FName       string
 	LName       string
-	PersonnelID int
 	RoleTitle   string
+	SMS         string
+	Email       string
 }
 
 // IndexGroup ...
@@ -183,7 +185,7 @@ func GroupToClientGroup(group *messages.Group) (*messages.ClientGroup, error) {
 	return client, nil
 }
 
-func PeopleToPreview(people []*messages.Person) string {
+func PeopleToPreview(people []*messages.GroupMember) string {
 	var preview string
 	var firstMember string
 	var count int
@@ -349,13 +351,22 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 			// create variables and fill contents from retrieved rows
 			groupDetail := &messages.GroupDetail{}
-			people := []*messages.Person{}
+			members := []*messages.GroupMember{}
 
-			currentPerson := &messages.Person{}
+			currentMember := &messages.GroupMember{}
 			row := &groupDetailRow{}
 			// currentName := ""
 			for groupDetailRows.Next() {
-				err = groupDetailRows.Scan(&row.GroupID, &row.GroupName, &row.FName, &row.LName, &row.PersonnelID, &row.RoleTitle)
+				err = groupDetailRows.Scan(
+					&row.GroupID,
+					&row.GroupName,
+					&row.PersonnelID,
+					&row.FName,
+					&row.LName,
+					&row.RoleTitle,
+					&row.SMS,
+					&row.Email,
+				)
 				if err != nil {
 					http.Error(w, fmt.Sprintf("Error scanning group detail row for group [%v]: %v", id, err), http.StatusInternalServerError)
 					return
@@ -364,23 +375,25 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 				groupDetail.ID = row.GroupID
 				groupDetail.Name = row.GroupName
 
-				currentPerson = &messages.Person{
+				currentMember = &messages.GroupMember{
 					ID:       row.PersonnelID,
 					FName:    row.FName,
 					LName:    row.LName,
 					Position: row.RoleTitle,
+					SMS:      row.SMS,
+					Email:    row.Email,
 				}
 
-				people = append(people, currentPerson)
+				members = append(members, currentMember)
 			}
 
 			close(groupDetailRows)
 
 			// change array of members to client-friendly string
-			preview := PeopleToPreview(people)
+			preview := PeopleToPreview(members)
 			groupDetail.PeoplePreview = preview
 			// attach list of people to the groupDetail
-			groupDetail.People = people
+			groupDetail.Members = members
 			respond(w, groupDetail)
 		} else if id == "groups" {
 			ctx.GroupsHandler(w, r)

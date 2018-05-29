@@ -33,6 +33,15 @@ type Group_Delete struct {
 
 // [Client Messages]
 
+type GroupMember struct {
+	ID       int    `json:"id"`
+	FName    string `json:"fName"`
+	LName    string `json:"lName"`
+	Position string `json:"position"`
+	SMS      string `json:"mobile"`
+	Email    string `json:"email"`
+}
+
 // Group ...
 type ClientGroup struct {
 	ID            int    `json:"id"`
@@ -42,8 +51,8 @@ type ClientGroup struct {
 
 // GroupDetail ...
 type GroupDetail struct {
-	ID            int       `json:"id"`
-	Name          string    `json:"name"`
-	PeoplePreview string    `json:"peoplePreview"`
-	People        []*Person `json:"people"`
+	ID            int            `json:"id"`
+	Name          string         `json:"name"`
+	PeoplePreview string         `json:"peoplePreview"`
+	Members       []*GroupMember `json:"people"`
 }
