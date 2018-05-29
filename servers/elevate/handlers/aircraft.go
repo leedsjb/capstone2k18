@@ -537,6 +537,14 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				Long:        waypointRow.Long,
 			}
 
+			if waypointRow.ETA.Valid {
+				waypoint.ETA = waypointRow.ETA.Time.String()
+
+				if strings.ToLower(waypointRow.Active) == "1" {
+					nextETE = time.Until(waypointRow.ETA.Time).String()
+				}
+			}
+
 			if waypointRow.Active == "0" {
 				waypoint.Active = false
 			} else {
@@ -547,14 +555,6 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				waypoint.Completed = false
 			} else {
 				waypoint.Completed = true
-			}
-
-			if waypointRow.ETA.Valid {
-				waypoint.ETA = waypointRow.ETA.Time.String()
-
-				if strings.ToLower(waypointRow.Active) == "true" {
-					nextETE = time.Until(waypointRow.ETA.Time).String()
-				}
 			}
 
 			waypoints = append(waypoints, waypoint)
@@ -773,6 +773,14 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				Long:        waypointRow.Long,
 			}
 
+			if waypointRow.ETA.Valid {
+				waypoint.ETA = waypointRow.ETA.Time.String()
+
+				if strings.ToLower(waypointRow.Active) == "1" {
+					nextETE = time.Until(waypointRow.ETA.Time).String()
+				}
+			}
+
 			if waypointRow.Active == "0" {
 				waypoint.Active = false
 			} else {
@@ -783,14 +791,6 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				waypoint.Completed = false
 			} else {
 				waypoint.Completed = true
-			}
-
-			if waypointRow.ETA.Valid {
-				waypoint.ETA = waypointRow.ETA.Time.String()
-
-				if strings.ToLower(waypointRow.Active) == "1" {
-					nextETE = time.Until(waypointRow.ETA.Time).String()
-				}
 			}
 
 			waypoints = append(waypoints, waypoint)
