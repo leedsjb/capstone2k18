@@ -2,7 +2,6 @@
 
 import React from "react";
 import sys from "system-components";
-import { themeGet } from "styled-system";
 
 const Heading = sys(
     {

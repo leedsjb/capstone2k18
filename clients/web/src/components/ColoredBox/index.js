@@ -1,6 +1,5 @@
 import React from "react";
 
-import GradientBox from "../GradientBox";
 import Box from "../Box";
 
 const ColoredBox = ({ word, ...props }) => {

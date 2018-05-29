@@ -1,7 +1,6 @@
 // Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Input.js
 
 import sys from "system-components";
-import { theme } from "styled-system";
 
 const TextInput = sys(
     {

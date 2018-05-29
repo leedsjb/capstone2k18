@@ -1,7 +1,6 @@
 // Adaptation of https://github.com/jxnblk/rebass/blob/master/src/Badge.js
 
 import sys from "system-components";
-import { themeGet } from "styled-system";
 
 const Badge = sys(
     {
