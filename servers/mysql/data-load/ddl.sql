@@ -24,11 +24,11 @@ CREATE TABLE tblWAYPOINT_TYPE (
 CREATE TABLE `tblWAYPOINT` (
     `waypoint_id` INTEGER,
     `waypoint_title` NVARCHAR(50),
-    `latitude` DECIMAL(9,6),
-    `longitude` DECIMAL(9,6),
+    `latitude` DECIMAL(9,6), -- Latitudes range from -90 to 90.
+    `longitude` DECIMAL(9,6), -- Longitudes range from -180 to 180.
     `waypoint_type` INTEGER,
     PRIMARY KEY (`waypoint_id`),
-    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypoint_type_id)
+    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypoint_type_id),
 );
 
 CREATE TABLE `tblHOSPITAL` (
@@ -261,6 +261,17 @@ CREATE TABLE `tblPERSONNEL_CREW_TYPE` (
     PRIMARY KEY (`personnel_crew_type_id`),
     FOREIGN KEY(personnel_id) REFERENCES tblPERSONNEL(personnel_id),
     FOREIGN KEY(crew_type_id) REFERENCES tblCREW_TYPE(crew_type_id)
+);
+
+DROP TABLE IF EXISTS `tblAIRCRAFT_PERSONNEL`;
+CREATE TABLE `tblAIRCRAFT_PERSONNEL`(
+    `aircraft_personnel_id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+    `ac_id` INTEGER,
+    `personnel_crew_type_id` INTEGER,
+    `shift_start` TIMESTAMP NULL,
+    `shift_end` TIMESTAMP NULL,
+    FOREIGN KEY(ac_id) REFERENCES tblAIRCRAFT(ac_id),
+    FOREIGN KEY(personnel_crew_type_id) REFERENCES tblPERSONNEL_CREW_TYPE(personnel_crew_type_id)
 );
 
 CREATE TABLE `tblPERSONNEL_GROUP` (

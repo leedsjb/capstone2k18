@@ -346,7 +346,7 @@ END;
 
 -- get patient by aircraft
 -- Questions: can mission be provided or can only aircraft be provided?
--- CALL uspGetPatientByAircraft(5);
+-- CALL uspGetPatientByAircraft(1);
 DROP PROCEDURE IF EXISTS `uspGetPatientByAircraft`;
 CREATE PROCEDURE uspGetPatientByAircraft(
     IN aircraft_id INTEGER
@@ -361,12 +361,12 @@ BEGIN
     WHERE mission_id = active_mission_id;
 END;
 
--- get crew by aircraft
+-- get mission crew by aircraft
 -- endpoint: /v1/???
--- CALL uspGetCrewByAircraft(5);
+-- CALL uspGetMissionCrewByAircraft(2);
 -- 	PersonnelID, FName, LName, Role (crew_type_name)
-DROP PROCEDURE IF EXISTS `uspGetCrewByAircraft`;
-CREATE PROCEDURE uspGetCrewByAircraft(
+DROP PROCEDURE IF EXISTS `uspGetMissionCrewByAircraft`; -- TODO: DROP uspGetCrewByAircraft;
+CREATE PROCEDURE uspGetMissionCrewByAircraft(
     IN aircraft_id INTEGER
 )
 BEGIN
@@ -382,6 +382,25 @@ BEGIN
     JOIN tblPERSONNEL ON tblPERSONNEL_CREW_TYPE.personnel_id = tblPERSONNEL.personnel_id
     JOIN tblCREW_TYPE ON tblPERSONNEL_CREW_TYPE.crew_type_id = tblCREW_TYPE.crew_type_id
     WHERE mission_id = active_mission_id;
+END;
+
+-- get assigned crew by aircraft
+-- CALL uspGetAssignedCrewByAircraft(1);
+DROP PROCEDURE IF EXISTS `uspGetAssignedCrewByAircraft`;
+CREATE PROCEDURE `uspGetAssignedCrewByAircraft`(
+    IN aircraft_id INTEGER
+)
+BEGIN
+    SELECT tblPERSONNEL.personnel_id, personnel_f_name, -- TODO: use SELECT DISTINCT(personnel_id)?
+    personnel_l_name, tblCREW_TYPE.crew_type_name
+    FROM tblAIRCRAFT_PERSONNEL
+    INNER JOIN tblPERSONNEL_CREW_TYPE
+    ON tblAIRCRAFT_PERSONNEL.personnel_crew_type_id = tblPERSONNEL_CREW_TYPE.personnel_crew_type_id
+    INNER JOIN tblPERSONNEL ON tblPERSONNEL_CREW_TYPE.personnel_id = tblPERSONNEL.personnel_id
+    INNER JOIN tblCREW_TYPE ON tblPERSONNEL_CREW_TYPE.crew_type_id = tblCREW_TYPE.crew_type_id
+    WHERE tblAIRCRAFT_PERSONNEL.ac_id = aircraft_id
+    AND tblAIRCRAFT_PERSONNEL.shift_start < NOW()
+    AND tblAIRCRAFT_PERSONNEL.shift_end > NOW(); 
 END;
 
 -- endpoint: /v1/waypoints??
