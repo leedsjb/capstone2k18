@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
+import { withTheme } from "styled-components";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
@@ -32,6 +33,9 @@ class ProfilePage extends Component {
             !this.props.profile.pending &&
             !Array.isArray(this.props.profile.data)
         ) {
+            let colors = this.props.theme.colors;
+            console.log(colors);
+
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
@@ -109,6 +113,8 @@ class ProfilePage extends Component {
                                             ? currUser.data.specialQuals
                                             : "N/A"
                                     }
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -160,4 +166,6 @@ const mapDispatchToProps = {
     fetchProfile
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(ProfilePage)
+);
