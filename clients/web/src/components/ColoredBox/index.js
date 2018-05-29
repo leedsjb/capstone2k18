@@ -1,19 +1,9 @@
 import React from "react";
 
-import GradientBox from "../GradientBox";
-
-import generateGradient from "../../utils/generateGradient";
+import Box from "../Box";
 
 const ColoredBox = ({ word, ...props }) => {
-    const gradient = generateGradient(word);
-
-    return (
-        <GradientBox
-            firstcolor={gradient[0]}
-            secondcolor={gradient[1]}
-            {...props}
-        />
-    );
+    return <Box bg="blue" {...props} />;
 };
 
 export default ColoredBox;

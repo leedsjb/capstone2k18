@@ -8,7 +8,6 @@ const Badge = sys(
         px: 2,
         py: 1,
         mx: 0,
-        color: "white",
         fontWeight: "bold",
         borderRadius: 2
     },
@@ -17,9 +16,8 @@ const Badge = sys(
         display: "inline-block",
         verticalAlign: "middle"
     },
-    props => ({
-        background: props.statusbg
-    })
+    "color",
+    "borders"
 );
 
 Badge.displayName = "Badge";

@@ -43,7 +43,7 @@ const TabBarItem = ({ title, glyph, path, pathSecond }) => {
                                         matchPath(pathname, path) ||
                                         (pathSecond &&
                                             matchPath(pathname, pathSecond))
-                                            ? "airlift"
+                                            ? "airlift1"
                                             : "black"
                                     }
                                 />

@@ -2,7 +2,6 @@
 
 import React from "react";
 import sys from "system-components";
-import { themeGet } from "styled-system";
 
 const Heading = sys(
     {
@@ -13,10 +12,7 @@ const Heading = sys(
         m: 0
     },
     "color",
-    "textAlign",
-    props => ({
-        color: themeGet("colors.black1")(props)
-    })
+    "textAlign"
 );
 
 Heading.displayName = "Heading";
