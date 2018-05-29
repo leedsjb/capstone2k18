@@ -300,9 +300,10 @@ class PeoplePage extends Component {
                                         mt={4}
                                         mx={4}
                                         w={[
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
                                             "calc(100% / 2 - 32px)",
-                                            "calc(100% - 32px)",
-                                            "calc(100% - 32px)",
+                                            "calc(100% / 2 - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
                                     >

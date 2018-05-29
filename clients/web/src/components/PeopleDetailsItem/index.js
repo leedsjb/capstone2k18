@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
@@ -97,16 +98,18 @@ const PeopleDetailsItem = ({ person }) => {
                                             "calc(100% / 3 - 32px)"
                                         ]}
                                     >
-                                        <ColoredBox
-                                            word={group.name}
-                                            w={1}
-                                            height={64}
-                                        />
-                                        <Box px={4} py={3}>
-                                            <Span fontWeight="bold">
-                                                {group.name}
-                                            </Span>
-                                        </Box>
+                                        <Link to={`/groups/${group.id}`}>
+                                            <ColoredBox
+                                                word={group.name}
+                                                w={1}
+                                                height={64}
+                                            />
+                                            <Box px={4} py={3}>
+                                                <Span fontWeight="bold">
+                                                    {group.name}
+                                                </Span>
+                                            </Box>
+                                        </Link>
                                     </Card>
                                 );
                             })}
