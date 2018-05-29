@@ -8,7 +8,6 @@ import FlexFillVH from "../FlexFillVH";
 
 import AircraftPage from "../../pages/AircraftPage";
 import AircraftDetailPage from "../../pages/AircraftDetailPage";
-import AircraftMapPage from "../../pages/AircraftMapPage";
 import GroupsDetailPage from "../../pages/GroupsDetailPage";
 import HomePage from "../../pages/HomePage";
 import NotFoundPage from "../../pages/NotFoundPage";
@@ -67,11 +66,11 @@ const App = ({ theme: { breakpoints } }) => {
                             <Route path="/signin" component={SignInPage} />
                             <Route
                                 path="/aircraft/map/:id"
-                                component={AircraftMapPage}
+                                component={AircraftPage}
                             />
                             <Route
                                 path="/aircraft/map"
-                                component={AircraftMapPage}
+                                component={AircraftPage}
                             />
                             <Route
                                 path="/aircraft/:id"

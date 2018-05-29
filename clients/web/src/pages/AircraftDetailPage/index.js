@@ -122,6 +122,7 @@ class AircraftDetailPage extends Component {
             );
         } else if (
             this.props.aircraftDetail &&
+            this.props.aircraftDetail.data.id === Number(this.props.id) &&
             !Array.isArray(this.props.aircraftDetail.data)
         ) {
             return (

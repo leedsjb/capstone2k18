@@ -32,6 +32,7 @@ import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
 import { fetchGroups } from "../../actions/groups/actions";

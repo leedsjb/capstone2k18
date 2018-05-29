@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Flex } from "grid-styled";
 import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { push } from "react-router-redux";
 
 import AircraftListItem from "../../components/AircraftListItem";
@@ -13,6 +14,7 @@ import Divider from "../../components/Divider";
 import DropdownSelect from "../../components/DropdownSelect";
 import FlexFillVH from "../../components/FlexFillVH";
 import MasterDetailMapView from "../../components/MasterDetailMapView";
+import MapView from "../../components/MapView";
 import AircraftLoader from "../../components/AircraftLoader";
 import NavBar from "../../components/NavBar";
 import TabBar from "../../components/TabBar";
@@ -27,6 +29,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import { fetchAircraft } from "../../actions/aircraft/actions";
 import { fetchAircraftDetail } from "../../actions/aircraftDetail/actions";
 import openSocket from "../../actions/socket/openSocket";
+
+import matchPath from "../../utils/matchPath";
 
 const AS = "Any status";
 const OAM = "On a mission";
@@ -61,6 +65,10 @@ class AircraftPage extends Component {
         if (nextProps.id && nextProps.id !== this.props.id) {
             this.props.fetchAircraftDetail(nextProps.id);
         }
+    }
+
+    isMobileMap() {
+        return matchPath(this.props.location.pathname, "/aircraft/map");
     }
 
     renderAircraft(aircraft) {
@@ -121,6 +129,26 @@ class AircraftPage extends Component {
         }
     }
 
+    renderAircraftPreview(aircraft) {
+        if (!aircraft.pending && aircraft.data.length > 0) {
+            let selected = aircraft.data.find(air => {
+                return air.id === Number(this.props.id);
+            });
+
+            if (selected) {
+                return (
+                    <Link
+                        to={`/aircraft/${selected.id}?source=map`}
+                        key={selected.id}
+                    >
+                        <AircraftListItem aircraft={selected} />
+                    </Link>
+                );
+            }
+        }
+        return <LoadingSpinner />;
+    }
+
     renderAircraftDetail(aircraftDetail) {
         if (!aircraftDetail.pending && !Array.isArray(aircraftDetail.data)) {
             return (
@@ -134,7 +162,14 @@ class AircraftPage extends Component {
     }
 
     renderMasterView = () => {
-        return (
+        return this.isMobileMap() ? (
+            <FlexFillVH flexDirection="column">
+                <MapView id={this.props.id} />
+                {this.props.id ? (
+                    <Box>{this.renderAircraftPreview(this.props.aircraft)}</Box>
+                ) : null}
+            </FlexFillVH>
+        ) : (
             <OutsideClickHandler
                 handleClickOutside={() => {
                     if (this.state.isSearching) {
@@ -275,7 +310,11 @@ class AircraftPage extends Component {
                 <Helmet>
                     <title>Aircraft</title>
                 </Helmet>
-                <TitleBar title="Aircraft" showMap link="/aircraft/map" />
+                <TitleBar
+                    title="Aircraft"
+                    showMap
+                    link={this.isMobileMap() ? "/aircraft" : "/aircraft/map"}
+                />
                 <NavBar />
                 {this.renderContent()}
                 <TabBar />

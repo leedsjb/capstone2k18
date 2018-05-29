@@ -9,13 +9,11 @@ const Receiver = ({ receiver }) => {
         <div>
             {receiver.name ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Receiver Name: </Span>
                     <Span>{receiver.name}</Span>
                 </Box>
             ) : null}
             {receiver.phone ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Receiver Phone: </Span>
                     <Span>
                         {receiver.phone.length === 10
                             ? `(${receiver.phone.substring(
@@ -31,7 +29,6 @@ const Receiver = ({ receiver }) => {
             ) : null}
             {receiver.type ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Receiver Type: </Span>
                     <Span>{receiver.type}</Span>
                 </Box>
             ) : null}
@@ -40,7 +37,6 @@ const Receiver = ({ receiver }) => {
             receiver.state &&
             receiver.zip ? (
                 <Box mt={4}>
-                    <Span fontWeight="bold">Receiver Address: </Span>
                     <Text mt={1}>{receiver.address}</Text>
                     <Text>{`${receiver.city}, ${receiver.state} ${
                         receiver.zip
