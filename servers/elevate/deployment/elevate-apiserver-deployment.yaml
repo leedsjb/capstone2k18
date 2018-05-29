@@ -41,7 +41,7 @@ spec:
     spec:
       containers: 
       - name: go-apiserver-container
-        image: us.gcr.io/airliftnw-uw/go-apiserver:0.37
+        image: us.gcr.io/airliftnw-uw/go-apiserver:0.38
         imagePullPolicy: Always
         ports:
         - containerPort: 80
