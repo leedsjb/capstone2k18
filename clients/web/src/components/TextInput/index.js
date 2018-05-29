@@ -12,16 +12,16 @@ const TextInput = sys(
         py: 2,
         m: 0,
         width: 1,
-        border: 0,
         color: "inherit",
         bg: "transparent"
     },
     "space",
+    "borders",
+    "borderRadius",
     props => ({
         fontFamily: "inherit",
         display: "inline-block",
         verticalAlign: "middle",
-        border: 0,
         appearance: "none",
         "&:focus": {
             outline: "none"
