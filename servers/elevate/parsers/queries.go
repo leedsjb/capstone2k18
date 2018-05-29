@@ -60,8 +60,8 @@ func (ctx *ParserContext) GetAircraftIDByCallsign(aircraftCallsign string) (int,
 	return aircraftID, nil
 }
 
-// GetAircraftCallsign retrieves an aircraft's callsign given the aircraft's ID
-func (ctx *ParserContext) GetAircraftCallsign(aircraftID int) (string, error) {
+// GetAircraftCallsign retrieves an aircraft's callsign given mission's ID
+func (ctx *ParserContext) GetAircraftCallsignByMission(missionID int) (string, error) {
 	// get callsign from db using aircraftID
 	// aircraftID := strconv.Itoa(ID)
 
@@ -71,7 +71,7 @@ func (ctx *ParserContext) GetAircraftCallsign(aircraftID int) (string, error) {
 	aircraftRow, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		aircraftID,
+		missionID,
 	)
 	if err != nil {
 		return "", fmt.Errorf("Error querying MySQL for aircraft callsign: %v\n", err)
@@ -191,18 +191,19 @@ func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.A
 // UpdateAircraftPosition updates the lat/long and a human-friendly area name
 // for an existing aircraft's position
 func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft_Pos_Update) error {
-	query := `CALL uspUpdateAircraftPosition(?, ?, ?, ?)`
+	query := `CALL uspUpdateACLocation(?, ?, ?, ?)`
 	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.ID,
-		aircraftInfo.PosFriendlyName,
 		aircraftInfo.PosLat,
 		aircraftInfo.PosLong,
+		aircraftInfo.PosFriendlyName,
 	)
 	if err != nil {
 		return fmt.Errorf("Error updating aircraft position in DB: %v", err)
 	}
+	fmt.Printf("[AIRCRAFT POS QUERY] Updated aircraft!!!")
 	close(connect)
 	return nil
 }

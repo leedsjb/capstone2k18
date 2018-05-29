@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
@@ -199,33 +198,28 @@ func (ctx *ParserContext) ParseAircraftServiceSchedule(msg *messages.Aircraft_Se
 // notifies client, writes new info to db
 func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos_Update,
 	pulledMsg *pubsub.Message, msgType string) error {
-	log.Printf("[AIRCRAFT POSITION UPDATE] before unmarshaling: %v", string(pulledMsg.Data))
+	log.Printf("[AIRCRAFT POSITION UPDATE] before unmarshaling: %v\n", string(pulledMsg.Data))
 
 	if err := json.Unmarshal(pulledMsg.Data, &msg); err != nil {
-		log.Printf("PROBLEM contents of decoded json: %#v", msg)
-		log.Printf("Could not decode message data: %#v", pulledMsg)
+		log.Printf("PROBLEM contents of decoded json: %#v\n", msg)
+		log.Printf("Could not decode message data: %#v\n", pulledMsg)
 		pulledMsg.Ack()
-		return fmt.Errorf("Error unmarshaling message data in Aircraft-Position-Update: %v", err)
+		return fmt.Errorf("Error unmarshaling message data in Aircraft-Position-Update: %v\n", err)
 	}
 
 	log.Printf("Message contents: %#v", msg)
 
 	// TODO: parse and write to sql sproc
 	// type Aircraft_Pos_Update struct {
-	// 	ID              string `json:"ID"`
+	// 	ID              string `json:"id"`
 	// 	PosLat          string `json:"posLat"`
 	// 	PosLong         string `json:"posLong"`
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	msgID, err := strconv.Atoi(msg.ID)
+	aircraftCallsign, err := ctx.GetAircraftCallsignByID(msg.ID)
 	if err != nil {
-		return fmt.Errorf("Could not convert message ID from string to int: %v", err)
-	}
-
-	aircraftCallsign, err := ctx.GetAircraftCallsign(msgID)
-	if err != nil {
-		return fmt.Errorf("Error getting aircraft callsign: %v", err)
+		return fmt.Errorf("Error getting aircraft callsign: %v\n", err)
 	}
 
 	aircraft := &messages.Aircraft{
@@ -242,13 +236,15 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 		Area:     msg.PosFriendlyName,
 	}
 
+	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraft)
+	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraftDetail)
 	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
 	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// ADD POSITION UPDATE TO DB
-	// if err := ctx.UpdateAircraftPosition(msg); err != nil {
-	// 	return fmt.Errorf("Error adding aircraft position updates to DB: %v", err)
-	// }
+	if err := ctx.UpdateAircraftPosition(msg); err != nil {
+		return fmt.Errorf("Error adding aircraft position updates to DB: %v", err)
+	}
 
 	return nil
 }

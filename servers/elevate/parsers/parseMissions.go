@@ -316,7 +316,7 @@ func (ctx *ParserContext) ParseMissionWaypointsUpdate(msg *messages.Mission_Wayp
 	if err != nil {
 		return fmt.Errorf("Could not convert mission ID from string to int: %v", err)
 	}
-	aircraftCallsign, err := ctx.GetAircraftCallsign(missionID)
+	aircraftCallsign, err := ctx.GetAircraftCallsignByMission(missionID)
 	if err != nil {
 		return fmt.Errorf("Error getting aircraftCallsign: %v", err)
 	}
@@ -404,7 +404,7 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	if err != nil {
 		return fmt.Errorf("Could not convert mission ID from string to int: %v\n", err)
 	}
-	aircraftCallsign, err := ctx.GetAircraftCallsign(missionID)
+	aircraftCallsign, err := ctx.GetAircraftCallsignByMission(missionID)
 	if err != nil {
 		fmt.Printf("Error getting aircraft callsign: %v\n", err)
 	}

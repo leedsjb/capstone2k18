@@ -143,7 +143,7 @@ func main() {
 
 	testSubNames := [18]string{
 		"test_mission_create_sub",
-		"test_mission_complete",
+		"test_mission_complete_sub",
 		"test_mission_waypoints_update_sub",
 		"test_mission_crew_update_sub",
 		"test_waypoint_create_sub",
