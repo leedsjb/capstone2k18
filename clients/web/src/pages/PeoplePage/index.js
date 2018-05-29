@@ -4,6 +4,7 @@ import { Flex } from "grid-styled";
 import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { push } from "react-router-redux";
 
 import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
@@ -300,10 +301,14 @@ class PeoplePage extends Component {
                     <Box maxWidth={1024} mx="auto" w={1} px={4}>
                         <Flex flexWrap="wrap" justifyContent="flex-start">
                             {this.props.groupsDetail.data.people.map(person => {
-                                console.log(person);
                                 return (
                                     <Card
                                         key={person.id}
+                                        onClick={() =>
+                                            this.props.push(
+                                                `/people/${person.id}`
+                                            )
+                                        }
                                         p={4}
                                         mt={4}
                                         mx={4}
@@ -351,7 +356,12 @@ class PeoplePage extends Component {
                                                 justifyContent="center"
                                                 mt={2}
                                             >
-                                                <Box mt={4}>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mt={4}
+                                                >
                                                     <a
                                                         href={`sms:${
                                                             person.mobile
@@ -362,7 +372,13 @@ class PeoplePage extends Component {
                                                         </ButtonIcon>
                                                     </a>
                                                 </Box>
-                                                <Box mx={3} mt={4}>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mx={3}
+                                                    mt={4}
+                                                >
                                                     <a
                                                         href={`tel:${
                                                             person.mobile
@@ -373,7 +389,12 @@ class PeoplePage extends Component {
                                                         </ButtonIcon>
                                                     </a>
                                                 </Box>
-                                                <Box mt={4}>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mt={4}
+                                                >
                                                     <a
                                                         href={`mailto:${
                                                             person.email
@@ -513,7 +534,8 @@ const mapDispatchToProps = {
     fetchPeople,
     fetchPeopleDetail,
     fetchGroups,
-    fetchGroupsDetail
+    fetchGroupsDetail,
+    push
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

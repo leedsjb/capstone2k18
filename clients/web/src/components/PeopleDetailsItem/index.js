@@ -99,7 +99,11 @@ const PeopleDetailsItem = ({ person }) => {
                                             "calc(100% / 3 - 32px)"
                                         ]}
                                     >
-                                        <Link to={`/groups/${group.id}`}>
+                                        <Link
+                                            to={`/groups/${
+                                                group.id
+                                            }?source=people&id=${person.id}`}
+                                        >
                                             <ColoredBox
                                                 word={group.name}
                                                 w={1}

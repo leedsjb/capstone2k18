@@ -49,7 +49,7 @@ class AircraftDetailPage extends Component {
                                         <Span fontWeight="bold">
                                             Patient Summary
                                         </Span>
-                                        <Box mt={2} mb={4}>
+                                        <Box my={3}>
                                             <Span>{mission.flightNum}</Span>
                                         </Box>
                                         <RadioReport
@@ -64,7 +64,7 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.crew ? (
                         <AccordionSection title="Assigned Crew">
-                            <Box mb={8}>
+                            <Box mt={2} mb={6}>
                                 <CrewDetailListItem
                                     crew={this.props.aircraftDetail.data.crew}
                                 />
@@ -75,7 +75,7 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.mission ? (
                         <AccordionSection title="Requestor">
-                            <Box my={3}>
+                            <Box my={4}>
                                 <Requestor requestor={mission.requestor} />
                             </Box>
                         </AccordionSection>
@@ -84,7 +84,7 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.mission ? (
                         <AccordionSection title="Receiver">
-                            <Box my={3}>
+                            <Box my={4}>
                                 <Receiver receiver={mission.receiver} />
                             </Box>
                         </AccordionSection>
@@ -93,7 +93,7 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.OOS ? (
                         <AccordionSection title="OOS Information">
-                            <Box my={3}>
+                            <Box my={4}>
                                 <OOSInformation
                                     OOS={this.props.aircraftDetail.data.OOS}
                                 />
@@ -140,10 +140,11 @@ class AircraftDetailPage extends Component {
                     <Container mt={3}>
                         {this.props.aircraftDetail.data.mission ? (
                             <div>
-                                <Heading is="h2" fontSize={4}>
+                                <Heading is="h2" fontSize={4} mt={1} mb={4}>
                                     Route
                                 </Heading>
                                 <Route
+                                    mb={4}
                                     waypoints={
                                         this.props.aircraftDetail.data.mission
                                             .waypoints
