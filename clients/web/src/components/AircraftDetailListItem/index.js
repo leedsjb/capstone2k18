@@ -54,7 +54,7 @@ class AircraftDetailListItem extends Component {
                                 <Heading is="h2" fontSize={4} my={6}>
                                     Patient Summary
                                 </Heading>
-                                <Box mt={2} mb={6}>
+                                <Box mt={2} mb={4}>
                                     <Span fontWeight="bold">
                                         Transfer Number:{" "}
                                     </Span>
@@ -70,18 +70,35 @@ class AircraftDetailListItem extends Component {
                         ) : null}
                         {this.props.aircraftDetail.data.crew ? (
                             <Box>
-                                <Heading is="h2" fontSize={4} mt={8} mb={2}>
-                                    Assigned Crew
+                                <Heading
+                                    is="h2"
+                                    fontSize={4}
+                                    mt={
+                                        this.props.aircraftDetail.data.mission
+                                            ? 6
+                                            : 0
+                                    }
+                                    mb={2}
+                                >
+                                    {this.props.aircraftDetail.data.mission
+                                        ? "Mission Crew"
+                                        : "Assigned Crew"}
                                 </Heading>
                                 <CrewDetailListItem
-                                    crew={this.props.aircraftDetail.data.crew}
+                                    crew={
+                                        this.props.aircraftDetail.data.mission
+                                            ? this.props.aircraftDetail.data
+                                                  .mission.crew
+                                            : this.props.aircraftDetail.data
+                                                  .crew
+                                    }
                                 />
                             </Box>
                         ) : null}
                         {mission ? (
                             <div>
                                 <Box>
-                                    <Heading is="h3" fontSize={3} mt={8}>
+                                    <Heading is="h2" fontSize={4} my={6}>
                                         Requestor
                                     </Heading>
                                     {mission.requestor ? (
@@ -91,7 +108,7 @@ class AircraftDetailListItem extends Component {
                                     ) : null}
                                 </Box>
                                 <Box>
-                                    <Heading is="h3" fontSize={3} mt={8}>
+                                    <Heading is="h2" fontSize={4} my={6}>
                                         Receiver
                                     </Heading>
                                     {mission.receiver ? (
@@ -102,7 +119,16 @@ class AircraftDetailListItem extends Component {
                         ) : null}
                         {this.props.aircraftDetail.data.OOS ? (
                             <div>
-                                <Heading is="h3" fontSize={3}>
+                                <Heading
+                                    is="h2"
+                                    fontSize={4}
+                                    mt={
+                                        this.props.aircraftDetail.data.crew
+                                            ? 6
+                                            : 0
+                                    }
+                                    mb={4}
+                                >
                                     Out of Service Information
                                 </Heading>
                                 <OOSInformation

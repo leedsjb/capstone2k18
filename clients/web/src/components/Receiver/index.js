@@ -1,6 +1,5 @@
 import React from "react";
 
-import Box from "../Box";
 import Span from "../Span";
 import Text from "../Text";
 
@@ -8,12 +7,12 @@ const Receiver = ({ receiver }) => {
     return (
         <div>
             {receiver.name ? (
-                <Box mt={4}>
+                <div>
                     <Span>{receiver.name}</Span>
-                </Box>
+                </div>
             ) : null}
             {receiver.phone ? (
-                <Box mt={4}>
+                <div>
                     <Span>
                         {receiver.phone.length === 10
                             ? `(${receiver.phone.substring(
@@ -25,23 +24,23 @@ const Receiver = ({ receiver }) => {
                               )}-${receiver.phone.substring(6, 10)}`
                             : receiver.phone}
                     </Span>
-                </Box>
+                </div>
             ) : null}
             {receiver.type ? (
-                <Box mt={4}>
+                <div>
                     <Span>{receiver.type}</Span>
-                </Box>
+                </div>
             ) : null}
             {receiver.address &&
             receiver.city &&
             receiver.state &&
             receiver.zip ? (
-                <Box mt={4}>
+                <div>
                     <Text mt={1}>{receiver.address}</Text>
                     <Text>{`${receiver.city}, ${receiver.state} ${
                         receiver.zip
                     }`}</Text>
-                </Box>
+                </div>
             ) : null}
         </div>
     );

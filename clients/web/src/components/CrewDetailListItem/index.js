@@ -9,7 +9,7 @@ import ColoredAvatar from "../ColoredAvatar";
 
 const CrewDetailListItem = ({ crew, ...props }) => {
     return (
-        <Flex flexWrap="wrap" justifyContent="space-between" mt={3}>
+        <Flex flexWrap="wrap" justifyContent="space-between">
             {crew.map(c => {
                 return (
                     <Box key={c.id} mt={4} w="calc(50% - 8px)">
