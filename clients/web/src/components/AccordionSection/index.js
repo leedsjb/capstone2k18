@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withTheme } from "styled-components";
 import { Flex } from "grid-styled";
 
 import Box from "../Box";
@@ -27,7 +28,13 @@ class AccordionSection extends Component {
         return (
             <div>
                 <Clickable onClick={this.toggleisopen}>
-                    <Box borderBottom="1px solid black" p={3}>
+                    <Box
+                        borderBottom={`1px solid ${
+                            this.props.theme.colors.gray4
+                        }`}
+                        px={4}
+                        py={3}
+                    >
                         <Flex justifyContent="space-between">
                             <Span fontWeight="bold"> {this.props.title}</Span>
                             <Box>
@@ -37,7 +44,7 @@ class AccordionSection extends Component {
                                             ? "chevronUp"
                                             : "chevronDown"
                                     }
-                                    color="black"
+                                    color="black1"
                                     size={16}
                                 />
                             </Box>
@@ -46,16 +53,14 @@ class AccordionSection extends Component {
                 </Clickable>
                 <DisplayWhenOpen
                     isopen={this.state.isopen ? 1 : 0}
-                    borderBottom={
-                        this.state.isopen ? "1px solid black" : "none"
-                    }
-                    px={3}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray4}`}
+                    px={4}
                 >
-                    {this.props.children}
+                    <Box my={6}>{this.props.children}</Box>
                 </DisplayWhenOpen>
             </div>
         );
     }
 }
 
-export default AccordionSection;
+export default withTheme(AccordionSection);

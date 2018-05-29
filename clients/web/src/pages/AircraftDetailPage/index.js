@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
+import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
 
 import Accordion from "../../components/Accordion";
@@ -39,24 +40,22 @@ class AircraftDetailPage extends Component {
         const { mission } = this.props.aircraftDetail.data;
         return (
             <Accordion>
-                <Box borderTop="1px solid black">
+                <Box borderTop={`1px solid ${this.props.theme.colors.gray4}`}>
                     {mission && mission.radioReport ? (
                         <AccordionSection title="Radio Report">
                             {mission.radioReport &&
                             mission.radioReport.shortReport ? (
-                                <Box mb={3}>
-                                    <Box my={6}>
-                                        <Span fontWeight="bold">
-                                            Patient Summary
-                                        </Span>
-                                        <Box my={3}>
-                                            <Span>{mission.flightNum}</Span>
-                                        </Box>
-                                        <RadioReport
-                                            radioReport={mission.radioReport}
-                                        />
+                                <div>
+                                    <Span fontWeight="bold">
+                                        Patient Summary
+                                    </Span>
+                                    <Box my={3}>
+                                        <Span>{mission.flightNum}</Span>
                                     </Box>
-                                </Box>
+                                    <RadioReport
+                                        radioReport={mission.radioReport}
+                                    />
+                                </div>
                             ) : null}
                         </AccordionSection>
                     ) : (
@@ -64,40 +63,32 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.crew ? (
                         <AccordionSection title="Assigned Crew">
-                            <Box mt={2} mb={6}>
-                                <CrewDetailListItem
-                                    crew={this.props.aircraftDetail.data.crew}
-                                />
-                            </Box>
+                            <CrewDetailListItem
+                                crew={this.props.aircraftDetail.data.crew}
+                            />
                         </AccordionSection>
                     ) : (
                         <div />
                     )}
                     {this.props.aircraftDetail.data.mission ? (
                         <AccordionSection title="Requestor">
-                            <Box my={4}>
-                                <Requestor requestor={mission.requestor} />
-                            </Box>
+                            <Requestor requestor={mission.requestor} />
                         </AccordionSection>
                     ) : (
                         <div />
                     )}
                     {this.props.aircraftDetail.data.mission ? (
                         <AccordionSection title="Receiver">
-                            <Box my={4}>
-                                <Receiver receiver={mission.receiver} />
-                            </Box>
+                            <Receiver receiver={mission.receiver} />
                         </AccordionSection>
                     ) : (
                         <div />
                     )}
                     {this.props.aircraftDetail.data.OOS ? (
                         <AccordionSection title="OOS Information">
-                            <Box my={4}>
-                                <OOSInformation
-                                    OOS={this.props.aircraftDetail.data.OOS}
-                                />
-                            </Box>
+                            <OOSInformation
+                                OOS={this.props.aircraftDetail.data.OOS}
+                            />
                         </AccordionSection>
                     ) : null}
                 </Box>
@@ -132,15 +123,14 @@ class AircraftDetailPage extends Component {
                             callsign={this.props.aircraftDetail.data.callsign}
                             nNum={this.props.aircraftDetail.data.nNum}
                             status={this.props.aircraftDetail.data.status}
-                            fontSize={4}
-                            ml={2}
+                            fontSize={3}
                         />
                     </Container>
                     <Divider />
                     <Container mt={3}>
                         {this.props.aircraftDetail.data.mission ? (
                             <div>
-                                <Heading is="h2" fontSize={4} mt={1} mb={4}>
+                                <Heading is="h2" fontSize={3} mt={1} mb={4}>
                                     Route
                                 </Heading>
                                 <Route
@@ -156,7 +146,7 @@ class AircraftDetailPage extends Component {
                         <Box height={160} my={4}>
                             <InsetMapView id={this.props.id} />
                         </Box>
-                        <Flex alignItems="center" mb={4}>
+                        <Flex alignItems="center">
                             <Icon glyph="earth" size={16} />
                             <Box ml={2}>
                                 <Span>
@@ -165,9 +155,9 @@ class AircraftDetailPage extends Component {
                             </Box>
                         </Flex>
                     </Container>
-
-                    <Divider />
-                    {this.renderAircraftDetail(this.props.aircraftDetail)}
+                    <Box py={4}>
+                        {this.renderAircraftDetail(this.props.aircraftDetail)}
+                    </Box>
                 </ScrollView>
             );
         }
@@ -218,4 +208,6 @@ const mapDispatchToProps = {
     fetchAircraftDetail
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AircraftDetailPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(AircraftDetailPage)
+);
