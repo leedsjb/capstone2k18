@@ -88,6 +88,7 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Connected to SQL")
+	db.SetMaxOpenConns(30)
 	defer db.Close()
 
 	// [LOAD TRIES]

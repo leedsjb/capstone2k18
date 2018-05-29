@@ -235,6 +235,7 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				return
 			}
 
+			close(aircraftRows)
 			respond(w, aircraftList)
 
 		} else if len(statusFilter) > 0 {
@@ -251,6 +252,7 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				return
 			}
 
+			close(aircraftRows)
 			respond(w, aircraftList)
 
 		} else if len(categoryFilter) > 0 {
@@ -265,6 +267,8 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
 				return
 			}
+
+			close(aircraftRows)
 
 			respond(w, aircraftList)
 
@@ -281,6 +285,8 @@ func (ctx *HandlerContext) AircraftHandler(w http.ResponseWriter, r *http.Reques
 				http.Error(w, fmt.Sprintf("Couldn't get aircraft list by status: %v", err), http.StatusInternalServerError)
 				return
 			}
+
+			close(aircraftRows)
 
 			respond(w, aircraftList)
 		}
@@ -334,6 +340,9 @@ func (ctx *HandlerContext) AircraftDetailHandler(w http.ResponseWriter, r *http.
 					return
 				}
 			}
+
+			close(aircraftDetailRows)
+
 			respond(w, aircraftDetail)
 		} else if id == "aircraft" {
 			ctx.AircraftHandler(w, r)
@@ -390,6 +399,9 @@ func (ctx *HandlerContext) LoadAircraftTrie(trie *indexes.Trie) error {
 			return fmt.Errorf("Error loading trie: %v", err)
 		}
 	}
+
+	close(aircraftRows)
+
 	return nil
 }
 
@@ -425,6 +437,7 @@ func (ctx *HandlerContext) GetTrieAircraft(aircraftIDS []int) ([]*messages.Aircr
 			return nil, fmt.Errorf("Error populating aircraft for trie: %v", err)
 		}
 		results = append(results, result)
+		close(aircraftRows)
 	}
 
 	return results, nil
@@ -493,6 +506,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			}
 		}
 		nextETE := ""
+		close(missionRows)
 
 		// [Waypoint]
 		waypoints := []*messages.ClientMissionWaypoint{}
@@ -546,6 +560,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 
 			waypoints = append(waypoints, waypoint)
 		}
+		close(waypointRows)
 		// add waypoints to mission
 		mission.Waypoints = waypoints
 		mission.NextWaypointETE = nextETE
@@ -582,6 +597,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				Remaining: remaining,
 			}
 		}
+		close(oosRows)
 
 		// add OOS to aircraft
 		aircraft.OOS = oos
@@ -635,6 +651,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 		}
 		crew = append(crew, crewMember)
 	}
+	close(crewRows)
 
 	if len(crew) > 0 {
 		aircraftDetail.Crew = crew
@@ -693,6 +710,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				Completed: missionDetailRow.Completed,
 			}
 		}
+		close(missionDetailRows)
 
 		// [MISSION CREW]
 		missionCrew := []*messages.Person{}
@@ -719,6 +737,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			}
 			missionCrew = append(missionCrew, missionCrewMember)
 		}
+		close(missionCrewRows)
 
 		if len(crew) > 0 {
 			missionDetail.Crew = missionCrew
@@ -777,6 +796,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 
 			waypoints = append(waypoints, waypoint)
 		}
+		close(waypointRows)
 		// add waypoints to mission
 		missionDetail.Waypoints = waypoints
 		missionDetail.NextWaypointETE = nextETE
@@ -849,6 +869,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			// add patient information to mission
 			missionDetail.RadioReport = report
 		}
+		close(reportRows)
 		// add mission, waypoints, and radio report to aircraft detail
 		fmt.Printf("[ADD MISSION DETAIL TO AIRCRAFT DETAIL] %+v", missionDetail)
 		aircraftDetail.Mission = missionDetail
@@ -890,6 +911,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				Duration:  duration,
 			}
 		}
+		close(oosDetailRows)
 		// add OOS to aircraft
 		aircraftDetail.OOS = oosDetail
 	}

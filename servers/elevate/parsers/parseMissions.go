@@ -229,6 +229,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 			if err := MissionNotify(aircraftCallsign, aircraftID, mobile); err != nil {
 				return fmt.Errorf("Couldn't send mission notification: %v\n", err)
 			}
+			close(personRows)
 		}
 	}
 

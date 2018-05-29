@@ -21,18 +21,14 @@ type personRow struct {
 }
 
 type personDetailRow struct {
-	PersonnelID    int
-	FName          string
-	LName          string
-	PersonnelTitle string
-	// Will we still have UWNetID in the DB if we're using UW Groups?
-	// UWNetID        string
+	PersonnelID     int
+	FName           string
+	LName           string
+	PersonnelTitle  string
 	SMS             string
 	Email           string
 	MemberGroupID   sql.NullInt64
 	MemberGroupName sql.NullString
-	// Infer?
-	// SpecialQuals   string
 }
 
 // type peopleAndGroups struct {
@@ -89,6 +85,7 @@ func (ctx *HandlerContext) LoadPeopleTrie(trie *indexes.Trie) error {
 			return fmt.Errorf("Error loading people trie: %v", err)
 		}
 	}
+	close(peopleRows)
 	return nil
 }
 
@@ -137,6 +134,7 @@ func (ctx *HandlerContext) GetTriePeople(peopleIDS []int) ([]*messages.Person, e
 		// one person per ID?
 		// Or some sort of logic to append multiple positions to a person?
 		people = append(people, person)
+		close(peopleRows)
 	}
 	return people, nil
 }
@@ -190,6 +188,7 @@ func (ctx *HandlerContext) PeopleHandler(w http.ResponseWriter, r *http.Request)
 
 				people = append(people, currentPerson)
 			}
+			close(peopleRows)
 			respond(w, people)
 		}
 	default:
@@ -256,6 +255,7 @@ func (ctx *HandlerContext) PersonDetailHandler(w http.ResponseWriter, r *http.Re
 			if len(memberGroups) > 0 {
 				personDetail.MemberGroups = memberGroups
 			}
+			close(personDetailRows)
 			respond(w, personDetail)
 		} else if id == "people" {
 			ctx.PeopleHandler(w, r)

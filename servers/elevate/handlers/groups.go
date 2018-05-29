@@ -99,6 +99,7 @@ func (ctx *HandlerContext) LoadGroupsTrie(trie *indexes.Trie) error {
 			return fmt.Errorf("Error populating group for trie: %v", err)
 		}
 	}
+	close(groupRows)
 	// Index last group
 	if err := IndexGroup(trie, currentGroup); err != nil {
 		return fmt.Errorf("Error loading trie: %v", err)
@@ -138,6 +139,7 @@ func (ctx *HandlerContext) GetTrieGroups(groupIDS []int) ([]*messages.ClientGrou
 			return nil, fmt.Errorf("Could not parse Group to ClientGroup: %v", err)
 		}
 		groups = append(groups, clientGroup)
+		close(groupRows)
 	}
 	return groups, nil
 }
@@ -303,6 +305,8 @@ func (ctx *HandlerContext) GroupsHandler(w http.ResponseWriter, r *http.Request)
 			}
 			groups = append(groups, clientGroup)
 
+			close(groupRows)
+
 			respond(w, groups)
 		}
 	default:
@@ -369,6 +373,9 @@ func (ctx *HandlerContext) GroupDetailHandler(w http.ResponseWriter, r *http.Req
 
 				people = append(people, currentPerson)
 			}
+
+			close(groupDetailRows)
+
 			// change array of members to client-friendly string
 			preview := PeopleToPreview(people)
 			groupDetail.PeoplePreview = preview

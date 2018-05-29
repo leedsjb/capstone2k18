@@ -61,6 +61,7 @@ func (ctx *HandlerContext) ResourcesHandler(w http.ResponseWriter, r *http.Reque
 			}
 			resourceList = append(resourceList, resource)
 		}
+		close(resourceRows)
 		respond(w, resourceList)
 	default:
 		http.Error(w, "Method must be GET", http.StatusMethodNotAllowed)

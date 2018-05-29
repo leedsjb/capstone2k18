@@ -35,6 +35,7 @@ func (ctx *ParserContext) GetAircraftIDByCallsign(aircraftCallsign string) (int,
 			return -1, fmt.Errorf("Error retrieving aircraft ID by callsign: %v", err)
 		}
 	}
+	close(aircraftRow)
 	return aircraftID, nil
 }
 
@@ -61,6 +62,7 @@ func (ctx *ParserContext) GetAircraftCallsign(aircraftID int) (string, error) {
 			return "", err
 		}
 	}
+	close(aircraftRow)
 	return aircraftCallsign, nil
 }
 
@@ -81,7 +83,7 @@ func (ctx *ParserContext) GetAircraftByID(aircraftID int) (*sql.Rows, error) {
 // AddNewAircraft adds a new aircraft object to the database
 func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create) error {
 	query := `CALL uspAddNewAircraft(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.ID,
@@ -96,16 +98,18 @@ func (ctx *ParserContext) AddNewAircraft(aircraftInfo *messages.Aircraft_Create)
 		aircraftInfo.NNum,
 		aircraftInfo.PadTimeDay,
 		aircraftInfo.PadTimeNight,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error adding aircraft to DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateAircraftProps updates an existing aircraft object
 func (ctx *ParserContext) UpdateAircraftProps(aircraftInfo *messages.Aircraft_Props_Update) error {
 	query := `CALL uspUpdateAircraftProps(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.ID,
@@ -118,32 +122,36 @@ func (ctx *ParserContext) UpdateAircraftProps(aircraftInfo *messages.Aircraft_Pr
 		aircraftInfo.SatPhone,
 		aircraftInfo.SpecialEquipment,
 		aircraftInfo.Vendor,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating aircraft props: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateAircraftCrew updates the crewmembers that are assigned to an aircraft
 func (ctx *ParserContext) UpdateAircraftCrew(aircraftInfo *messages.Aircraft_Crew_Update) error {
 	query := `CALL uspUpateAircraftCrew(?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.AdultRN,
 		aircraftInfo.ID,
 		aircraftInfo.PediatricRN,
 		aircraftInfo.PIC,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating aircraft crew in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateAircraftServiceSchedule updates the OOS status of an existing aircraft
 func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.Aircraft_Service_Schedule) error {
 	query := `CALL uspUpdateAircraftServiceSchedule(?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.ID,
@@ -151,9 +159,11 @@ func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.A
 		aircraftInfo.Status,
 		aircraftInfo.StartTime,
 		aircraftInfo.EndTime,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating aircraft service schedule in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -161,16 +171,18 @@ func (ctx *ParserContext) UpdateAircraftServiceSchedule(aircraftInfo *messages.A
 // for an existing aircraft's position
 func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft_Pos_Update) error {
 	query := `CALL uspUpdateAircraftPosition(?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		aircraftInfo.ID,
 		aircraftInfo.PosFriendlyName,
 		aircraftInfo.PosLat,
 		aircraftInfo.PosLong,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating aircraft position in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -179,43 +191,49 @@ func (ctx *ParserContext) UpdateAircraftPosition(aircraftInfo *messages.Aircraft
 // AddNewGroup adds a new group object to the database
 func (ctx *ParserContext) AddNewGroup(groupInfo *messages.Group) error {
 	query := `CALL uspAddNewGroup(?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		groupInfo.ID,
 		groupInfo.Members,
 		groupInfo.Name,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error adding new group to DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateGroup updates an existing group object
 func (ctx *ParserContext) UpdateGroup(groupInfo *messages.Group) error {
 	query := `CALL uspUpdateGroup(?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		groupInfo.ID,
 		groupInfo.Members,
 		groupInfo.Name,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating group in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // DeleteGroup deletes an existing group object from the database
 func (ctx *ParserContext) DeleteGroup(groupInfo *messages.Group_Delete) error {
 	query := `CALL uspDeleteGroup(?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		groupInfo.ID,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error deleting group from DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -283,6 +301,7 @@ func (ctx *ParserContext) GetAgencyDetailsByID(agencyID int) (*messages.Agency, 
 			Zip:     zip,
 		}
 	}
+	close(agencyRow)
 	return agency, nil
 }
 
@@ -337,6 +356,7 @@ func (ctx *ParserContext) GetCrewMemberByID(memberID int) (string, string, error
 			return "", "", fmt.Errorf("Error scanning member row: %v", err)
 		}
 	}
+	close(memRow)
 	return fName, lName, nil
 }
 
@@ -365,6 +385,7 @@ func (ctx *ParserContext) GetRoleByMemberID(memberID int) (string, error) {
 			return "", fmt.Errorf("Error scanning role row: %v", err)
 		}
 	}
+	close(roleRow)
 	return roleTitle, nil
 }
 
@@ -386,6 +407,7 @@ func (ctx *ParserContext) GetWaypointNameByID(waypointID int) (string, error) {
 			return "", fmt.Errorf("Error scanning waypoint row: %v", err)
 		}
 	}
+	close(wayPtRows)
 	return wayPtName, nil
 }
 
@@ -406,6 +428,7 @@ func (ctx *ParserContext) GetTCNumByMissionID(missionID int) (string, error) {
 			return "", fmt.Errorf("Error scanning tcnum row: %v", err)
 		}
 	}
+	close(missionRow)
 	return tcNum, nil
 }
 
@@ -429,7 +452,7 @@ func (ctx *ParserContext) NewMission(missionInfo *messages.Mission_Create, aircr
 	fmt.Printf("[STRINGIFIED] waypoints: %v\n", waypoints)
 
 	query := `CALL uspNewMission(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		missionInfo.MissionID,
@@ -449,23 +472,27 @@ func (ctx *ParserContext) NewMission(missionInfo *messages.Mission_Create, aircr
 		missionInfo.Patient.OB,
 		crew,
 		waypoints,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error adding new mission to DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateMissionWaypoints updates the waypoints for an existing mission
 func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_Waypoint_Update) error {
 	query := `CALL uspUpdateMissionWaypoints(?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		missionInfo.MissionID,
 		missionInfo.Waypoints,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating mission waypoints in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -474,14 +501,16 @@ func (ctx *ParserContext) UpdateMissionWaypoints(missionInfo *messages.Mission_W
 // the case when crew is reassigned for a particular mission
 func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_Update) error {
 	query := `CALL uspUpdateMissionCrew(?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		missionInfo.MissionID,
 		missionInfo.CrewMembers,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating mission crew in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -490,7 +519,7 @@ func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_U
 // AddNewUser adds a new user object to the database
 func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
 	query := `CALL uspAddNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		userInfo.ID,
@@ -505,16 +534,18 @@ func (ctx *ParserContext) AddNewUser(userInfo *messages.User) error {
 		userInfo.Role,
 		userInfo.CellPhone,
 		// userInfo.QualificationID,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error adding new user to DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateUser updates an existing user
 func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 	query := `CALL uspUpdateUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		userInfo.ID,
@@ -529,22 +560,26 @@ func (ctx *ParserContext) UpdateUser(userInfo *messages.User) error {
 		userInfo.Role,
 		userInfo.CellPhone,
 		// userInfo.QualificationID,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating user in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // DeleteUser deletes an existing user from the database
 func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 	query := `CALL uspDeleteUser(?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		userInfo.ID,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error deleting user from DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -553,7 +588,7 @@ func (ctx *ParserContext) DeleteUser(userInfo *messages.User_Delete) error {
 // AddNewWaypoint adds a new waypoint object to the database
 func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error {
 	query := `CALL uspAddNewWaypoint(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		waypointInfo.ID,
@@ -576,16 +611,18 @@ func (ctx *ParserContext) AddNewWaypoint(waypointInfo *messages.Waypoint) error 
 		waypointInfo.PadTime,
 		waypointInfo.RadioChannels,
 		waypointInfo.NOTAMS,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error adding new waypoint to DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // UpdateWaypoint updates an existing waypoint's information
 func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error {
 	query := `CALL uspUpdateWaypoint(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		waypointInfo.ID,
@@ -608,22 +645,26 @@ func (ctx *ParserContext) UpdateWaypoint(waypointInfo *messages.Waypoint) error 
 		waypointInfo.PadTime,
 		waypointInfo.RadioChannels,
 		waypointInfo.NOTAMS,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error updating waypoint in DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
 // DeleteWaypoint deletes an existing waypoint from the database
 func (ctx *ParserContext) DeleteWaypoint(waypointInfo *messages.Waypoint_Delete) error {
 	query := `CALL uspDeleteWaypoint(?)`
-	if _, err := ctx.DB.QueryContext(
+	connect, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
 		waypointInfo.ID,
-	); err != nil {
+	)
+	if err != nil {
 		return fmt.Errorf("Error deleting waypoint from DB: %v", err)
 	}
+	close(connect)
 	return nil
 }
 
@@ -645,6 +686,7 @@ func (ctx *ParserContext) GetPersonByID(personID int) (*messages.Person, error) 
 			return nil, fmt.Errorf("Error populating person: %v", err)
 		}
 	}
+	close(personRows)
 	return person, nil
 }
 
