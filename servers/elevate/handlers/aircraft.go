@@ -91,9 +91,8 @@ type reportRow struct {
 	OB          sql.NullBool
 }
 
-const (
-	timeFormat = "2006-01-02 15:04 MST"
-)
+// const timeFormat = "2006-01-02 15:04 MST"
+const timeFormat = "2006-01-02 15:04:05.0000000 -07:00"
 
 type aircraftRow struct {
 	ID           int
