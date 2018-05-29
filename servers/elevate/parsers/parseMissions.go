@@ -48,7 +48,6 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 	aircraftStatus := "OAM" // assume aircraft assigned to mission is on that mission
 
-	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if requestorID != 0 {
 		req, err := ctx.GetAgencyDetailsByID(requestorID)
 		if err != nil {
@@ -56,7 +55,6 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		}
 		requestor = req
 	}
-	log.Printf("[MISSION CREATE] requestor ID: %v\n", requestorID)
 	if receiverID != 0 {
 		rec, err := ctx.GetAgencyDetailsByID(receiverID)
 		if err != nil {
@@ -65,7 +63,8 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		receiver = rec
 	}
 
-	// separate crewIDs to build crew members into related groups
+	// [CREW]
+	// use given people IDs to build person objects for clientside
 	people := []*messages.Person{}
 
 	intCrewMemberIDs, err := convertToInts(msg.CrewMembers)
@@ -82,6 +81,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		}
 	}
 
+	// [WAYPOINTS]
 	var waypoints []*messages.ClientMissionWaypoint
 	nextWaypointETE := ""
 	if len(msg.Waypoints) > 0 {
@@ -114,7 +114,10 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		}
 	}
 
-	aircraftCallsign := msg.Asset
+	aircraftCallsign, err := ctx.GetAircraftCallsignByID(msg.Asset)
+	if err != nil {
+		return fmt.Errorf("Couldn't get aircraft callsign: %v", err)
+	}
 
 	mission := &messages.Mission{
 		Type:            msg.CallType,
@@ -199,9 +202,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// Notify crewmembers assigned to mission
-	aircraftID, err := ctx.GetAircraftIDByCallsign(aircraftCallsign)
+	aircraftID, err := strconv.Atoi(msg.Asset)
 	if err != nil {
-		return fmt.Errorf("Could not retrieve aircraft ID from given callsign: %v", err)
+		return fmt.Errorf("Could not convert aircraft ID from string to int: %v", err)
 	}
 
 	if len(msg.CrewMembers) > 0 {
