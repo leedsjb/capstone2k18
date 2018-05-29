@@ -111,7 +111,7 @@ class ResourcesDropdown extends Component {
                                     <Icon
                                         glyph="grid"
                                         size={16}
-                                        color="black"
+                                        color="black1"
                                     />
                                 </Clickable>
                                 {isOpen ? (
