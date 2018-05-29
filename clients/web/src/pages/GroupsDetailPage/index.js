@@ -74,12 +74,19 @@ class GroupsDetailPage extends Component {
     }
 
     render() {
+        let backPath =
+            new URLSearchParams(window.location.search).get("source") ===
+            "people"
+                ? `/people/${new URLSearchParams(window.location.search).get(
+                      "id"
+                  )}`
+                : "/groups";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Groups</title>
                 </Helmet>
-                <TitleBar back backPath="/groups" title="Groups" />
+                <TitleBar back backPath={backPath} title="Groups" />
                 {this.props.groupsDetail.error ? (
                     <Flex
                         flexDirection="column"

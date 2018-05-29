@@ -300,7 +300,6 @@ class PeoplePage extends Component {
                     <Box maxWidth={1024} mx="auto" w={1} px={4}>
                         <Flex flexWrap="wrap" justifyContent="flex-start">
                             {this.props.groupsDetail.data.people.map(person => {
-                                console.log(person);
                                 return (
                                     <Card
                                         key={person.id}
