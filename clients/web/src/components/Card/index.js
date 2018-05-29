@@ -8,7 +8,7 @@ const Card = sys(
         bg: "white",
         borderRadius: 4,
         border: "1px solid",
-        borderColor: "border",
+        borderColor: "gray4",
         is: Box
     },
     {
@@ -20,7 +20,7 @@ const Card = sys(
     "height",
     props => ({
         "&:hover": {
-            backgroundColor: "cyan"
+            backgroundColor: `${props.theme.colors.gray6}`
         }
     })
 );

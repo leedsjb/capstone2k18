@@ -28,6 +28,7 @@ injectGlobal`
         background-color: #ffffff;
         padding: 0;
         margin: 0;
+        color: #141414;
         -webkit-font-smoothing: antialiased;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
@@ -40,7 +41,7 @@ injectGlobal`
         max-width: 100%;
         max-height: 100%;
         -webkit-overflow-scrolling: touch;
-    }
+     }
 
     #root {
         display: flex;
@@ -60,6 +61,10 @@ injectGlobal`
         line-height: 1.25;
     }
 
+    a {
+        transition: all .2s ease;
+    }
+    
     a, a:visited, a:hover, a:active {
         color: inherit;
         text-decoration: none;

@@ -13,6 +13,7 @@ import PeopleLoader from "../../components/PeopleLoader";
 import ScrollView from "../../components/ScrollView";
 import Span from "../../components/Span";
 import TabBar from "../../components/TabBar";
+import Error from "../../components/Error";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
 
@@ -63,27 +64,41 @@ class GroupsDetailPage extends Component {
             );
         } else if (this.props.groupsDetail.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <PeopleLoader />
                     <PeopleLoader />
                     <PeopleLoader />
-                </div>
+                </Box>
             );
         }
     }
 
     render() {
+        let backPath =
+            new URLSearchParams(window.location.search).get("source") ===
+            "people"
+                ? `/people/${new URLSearchParams(window.location.search).get(
+                      "id"
+                  )}`
+                : "/groups";
         return (
             <FlexFillVH flexDirection="column">
                 <Helmet>
                     <title>Groups</title>
                 </Helmet>
-                <TitleBar back backPath="/groups" title="Groups" />
+                <TitleBar back backPath={backPath} title="Groups" />
                 {this.props.groupsDetail.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.groupsDetail.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        flex={1}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.groupsDetail.error.toString()}
+                        />
+                    </Flex>
                 ) : (
                     <FlexFillVH flexDirection="column">
                         <Flex justifyContent="center" py={2} px={3}>

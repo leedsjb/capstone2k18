@@ -35,8 +35,8 @@ class TitleBar extends Component {
                 {matches =>
                     matches ? null : this.props.showMap ? (
                         <GradientBox
-                            firstcolor="airlift"
-                            secondcolor="airliftDark"
+                            firstcolor="airlift1"
+                            secondcolor="airlift2"
                             p={3}
                         >
                             <Flex justifyContent="flex-start" align="center">
@@ -59,8 +59,8 @@ class TitleBar extends Component {
                         </GradientBox>
                     ) : (
                         <GradientBox
-                            firstcolor="airlift"
-                            secondcolor="airliftDark"
+                            firstcolor="airlift1"
+                            secondcolor="airlift2"
                             p={3}
                         >
                             <Flex justifyContent="space-between" align="center">

@@ -10,7 +10,7 @@ const DropdownItem = sys(
     },
     props => ({
         "&:hover": {
-            backgroundColor: "cyan"
+            backgroundColor: `${props.theme.colors.gray6}`
         }
     })
 );

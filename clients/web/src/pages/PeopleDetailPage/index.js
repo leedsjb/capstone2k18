@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Flex } from "grid-styled";
 import { Helmet } from "react-helmet";
 
 import FlexFillVH from "../../components/FlexFillVH";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import ScrollView from "../../components/ScrollView";
 import TabBar from "../../components/TabBar";
 import TitleBar from "../../components/TitleBar";
+import Error from "../../components/Error";
 
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
 
@@ -25,7 +28,7 @@ class PeopleDetailPage extends Component {
             return <PeopleDetailsItem person={this.props.peopleDetail.data} />;
         }
 
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     render() {
@@ -43,10 +46,17 @@ class PeopleDetailPage extends Component {
                 </Helmet>
                 <TitleBar back backPath={backPath} title="People" />
                 {this.props.peopleDetail.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.peopleDetail.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        flex={1}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.peopleDetail.error.toString()}
+                        />
+                    </Flex>
                 ) : (
                     <ScrollView>{this.renderPeopleDetail()}</ScrollView>
                 )}

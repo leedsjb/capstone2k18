@@ -36,8 +36,8 @@ const NavBarItem = ({ title, glyph, path, pathSecond }) => {
                                     matchPath(pathname, path) ||
                                     (pathSecond &&
                                         matchPath(pathname, pathSecond))
-                                        ? "airlift"
-                                        : "black"
+                                        ? "airlift1"
+                                        : "black3"
                                 }
                             />
                             <Box ml={3}>
@@ -46,8 +46,8 @@ const NavBarItem = ({ title, glyph, path, pathSecond }) => {
                                         matchPath(pathname, path) ||
                                         (pathSecond &&
                                             matchPath(pathname, pathSecond))
-                                            ? "airlift"
-                                            : "black"
+                                            ? "black1"
+                                            : "black3"
                                     }
                                 >
                                     {title}

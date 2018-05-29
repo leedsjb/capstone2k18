@@ -3,9 +3,9 @@ import Box from "../Box";
 
 const StyledBox = styled(Box)`
     background-color: ${props =>
-        props.active ? props.theme.colors.wireframe : "white"};
+        props.active ? props.theme.colors.gray6 : "white"};
     &:hover {
-        background-color: ${props => props.theme.colors.wireframe};
+        background-color: ${props => props.theme.colors.gray6};
     }
 `;
 

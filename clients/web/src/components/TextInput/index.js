@@ -1,7 +1,6 @@
 // Adaptation of https://raw.githubusercontent.com/jxnblk/rebass/master/src/Input.js
 
 import sys from "system-components";
-import { theme } from "styled-system";
 
 const TextInput = sys(
     {
@@ -12,23 +11,22 @@ const TextInput = sys(
         py: 2,
         m: 0,
         width: 1,
-        border: 0,
         color: "inherit",
         bg: "transparent"
     },
     "space",
+    "borders",
+    "borderRadius",
     props => ({
         fontFamily: "inherit",
         display: "inline-block",
         verticalAlign: "middle",
-        border: 0,
         appearance: "none",
         "&:focus": {
-            outline: "none",
-            boxShadow: `inset 0 0 0 1px ${theme("colors.blue")(props)}`
+            outline: "none"
         },
         "&:disabled": {
-            opacity: 1 / 2
+            opacity: 3 / 4
         }
     })
 );

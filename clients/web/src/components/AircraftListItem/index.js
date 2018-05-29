@@ -16,10 +16,10 @@ const AircraftListItem = ({ active, aircraft }) => {
                     nNum={aircraft.nNum}
                     status={aircraft.status}
                 />
-                <Flex alignItems="center" mt={2}>
-                    <Icon glyph="earth" size={14} />
+                <Flex alignItems="center" mt={1}>
+                    <Icon glyph="earth" size={14} color="black2" />
                     <Box ml={2}>
-                        <Span>{aircraft.area}</Span>
+                        <Span color="black2">{aircraft.area}</Span>
                     </Box>
                 </Flex>
             </Box>

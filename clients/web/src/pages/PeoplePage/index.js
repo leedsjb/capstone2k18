@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Flex } from "grid-styled";
+import { withTheme } from "styled-components";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { push } from "react-router-redux";
 
 import Box from "../../components/Box";
 import ButtonIcon from "../../components/ButtonIcon";
@@ -19,6 +21,8 @@ import MasterView from "../../components/MasterView";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import MasterDetailView from "../../components/MasterDetailView";
 import NavBar from "../../components/NavBar";
+import EmptyState from "../../components/EmptyState";
+import Error from "../../components/Error";
 import OutsideClickHandler from "../../components/OutsideClickHandler";
 import PeopleDetailsItem from "../../components/PeopleDetailsItem";
 import PeopleListItem from "../../components/PeopleListItem";
@@ -30,6 +34,7 @@ import Tab from "../../components/Tab";
 import TabBar from "../../components/TabBar";
 import Text from "../../components/Text";
 import TitleBar from "../../components/TitleBar";
+
 import { fetchPeople } from "../../actions/people/actions";
 import { fetchPeopleDetail } from "../../actions/peopleDetail/actions";
 import { fetchGroups } from "../../actions/groups/actions";
@@ -106,7 +111,14 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <Box py={3} px={4}>
+                <Box
+                    py={3}
+                    px={4}
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         placeholder="Search all people"
                         handleChange={queryPeople => {
@@ -137,8 +149,8 @@ class PeoplePage extends Component {
         if (!this.props.people.pending && this.props.people.data.length > 0) {
             return this.props.people.data.map((person, i) => {
                 return (
-                    <div>
-                        <Link to={`/people/${person.id}`} key={person.id}>
+                    <div key={person.id}>
+                        <Link to={`/people/${person.id}`}>
                             <PeopleListItem
                                 active={
                                     Number(this.props.id) === person.id ? 1 : 0
@@ -155,20 +167,22 @@ class PeoplePage extends Component {
             });
         } else if (!this.props.people.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No People
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    flex={1}
+                >
+                    <EmptyState page="people" />
+                </Flex>
             );
         } else if (this.props.people.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <PeopleLoader />
                     <PeopleLoader />
                     <PeopleLoader />
-                </div>
+                </Box>
             );
         }
     }
@@ -186,7 +200,14 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <Box py={3} px={4}>
+                <Box
+                    py={3}
+                    px={4}
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         placeholder="Search all groups"
                         handleChange={queryGroups => {
@@ -217,8 +238,8 @@ class PeoplePage extends Component {
         if (!this.props.groups.pending && this.props.groups.data.length > 0) {
             return this.props.groups.data.map((group, i) => {
                 return (
-                    <div>
-                        <Link to={`/groups/${group.id}`} key={group.id}>
+                    <div key={group.id}>
+                        <Link to={`/groups/${group.id}`}>
                             <GroupsListItem
                                 active={
                                     Number(this.props.groupID) === group.id
@@ -237,27 +258,29 @@ class PeoplePage extends Component {
             });
         } else if (!this.props.groups.pending) {
             return (
-                <Box mt={4}>
-                    <Heading is="h2" textAlign="center" fontSize={4}>
-                        No Groups
-                    </Heading>
-                    <Text textAlign="center">Empty State Text</Text>
-                </Box>
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState page="groups" />
+                </Flex>
             );
         } else if (this.props.groups.pending) {
             return (
-                <div>
+                <Box mt={3}>
                     <GroupsLoader />
                     <GroupsLoader />
                     <GroupsLoader />
-                </div>
+                </Box>
             );
         }
     }
 
     renderGroupsDetail() {
         if (!this.props.groupID) {
-            return <Box bg="gray" height="100%" />;
+            return <Box bg="gray6" height="100%" />;
         } else if (
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
@@ -280,15 +303,22 @@ class PeoplePage extends Component {
                             {this.props.groupsDetail.data.people.map(person => {
                                 return (
                                     <Card
+                                        key={person.id}
+                                        onClick={() =>
+                                            this.props.push(
+                                                `/people/${person.id}`
+                                            )
+                                        }
                                         p={4}
+                                        mt={4}
                                         mx={4}
                                         w={[
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
                                             "calc(100% / 2 - 32px)",
-                                            "calc(100% - 32px)",
-                                            "calc(100% - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
-                                        mt={4}
                                     >
                                         <Flex
                                             flexDirection="column"
@@ -326,20 +356,54 @@ class PeoplePage extends Component {
                                                 justifyContent="center"
                                                 mt={2}
                                             >
-                                                <Box mt={4}>
-                                                    <ButtonIcon glyph="bubbleChat">
-                                                        Text
-                                                    </ButtonIcon>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mt={4}
+                                                >
+                                                    <a
+                                                        href={`sms:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="bubbleChat">
+                                                            Text
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
-                                                <Box mx={3} mt={4}>
-                                                    <ButtonIcon glyph="phone">
-                                                        Call
-                                                    </ButtonIcon>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mx={3}
+                                                    mt={4}
+                                                >
+                                                    <a
+                                                        href={`tel:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="phone">
+                                                            Call
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
-                                                <Box mt={4}>
-                                                    <ButtonIcon glyph="email">
-                                                        Mail
-                                                    </ButtonIcon>
+                                                <Box
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
+                                                    mt={4}
+                                                >
+                                                    <a
+                                                        href={`mailto:${
+                                                            person.email
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="email">
+                                                            Mail
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                             </Flex>
                                         </Flex>
@@ -366,7 +430,7 @@ class PeoplePage extends Component {
 
     renderPeopleDetail() {
         if (!this.props.id && !this.props.groupID) {
-            return <Box bg="gray" height="100%" />;
+            return <Box bg="gray6" height="100%" />;
         } else if (
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
@@ -378,40 +442,28 @@ class PeoplePage extends Component {
     }
 
     renderMasterView() {
-        if (this.props.people.error || this.props.groups.error) {
-            return (
-                <MasterView>
-                    An error has occurred:{" "}
-                    {this.props.people.error.toString() ||
-                        this.props.groups.error.toString()}
-                </MasterView>
-            );
-        } else {
-            return (
-                <MasterView>
-                    <Flex>
-                        <Tab
-                            active={this.isPeopleTab() ? 1 : 0}
-                            is={Link}
-                            to="/people"
-                        >
-                            People
-                        </Tab>
-                        <Tab
-                            active={!this.isPeopleTab() ? 1 : 0}
-                            is={Link}
-                            to="/groups"
-                        >
-                            Groups
-                        </Tab>
-                    </Flex>
-                    <Divider />
-                    {this.isPeopleTab()
-                        ? this.renderPeople()
-                        : this.renderGroups()}
-                </MasterView>
-            );
-        }
+        return (
+            <MasterView>
+                <Flex>
+                    <Tab
+                        active={this.isPeopleTab() ? 1 : 0}
+                        is={Link}
+                        to="/people"
+                    >
+                        People
+                    </Tab>
+                    <Tab
+                        active={!this.isPeopleTab() ? 1 : 0}
+                        is={Link}
+                        to="/groups"
+                    >
+                        Groups
+                    </Tab>
+                </Flex>
+                <Divider />
+                {this.isPeopleTab() ? this.renderPeople() : this.renderGroups()}
+            </MasterView>
+        );
     }
 
     renderDetailView() {
@@ -424,6 +476,31 @@ class PeoplePage extends Component {
         );
     }
 
+    renderContent() {
+        if (this.props.people.error || this.props.groups.error) {
+            let error = this.props.people.error
+                ? this.props.people.error.toString()
+                : this.props.groups.error.toString();
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Error title="An error has occurred" content={error} />
+                </Flex>
+            );
+        } else {
+            return (
+                <MasterDetailView>
+                    {this.renderMasterView()}
+                    {this.renderDetailView()}
+                </MasterDetailView>
+            );
+        }
+    }
+
     render() {
         let title = this.isPeopleTab() ? "People" : "Groups";
         return (
@@ -434,11 +511,7 @@ class PeoplePage extends Component {
 
                 <TitleBar title={title} />
                 <NavBar />
-
-                <MasterDetailView>
-                    {this.renderMasterView()}
-                    {this.renderDetailView()}
-                </MasterDetailView>
+                {this.renderContent()}
                 <TabBar />
             </FlexFillVH>
         );
@@ -461,7 +534,10 @@ const mapDispatchToProps = {
     fetchPeople,
     fetchPeopleDetail,
     fetchGroups,
-    fetchGroupsDetail
+    fetchGroupsDetail,
+    push
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PeoplePage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(PeoplePage)
+);

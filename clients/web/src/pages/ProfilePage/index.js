@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
+import { withTheme } from "styled-components";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
@@ -16,6 +17,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import TabBar from "../../components/TabBar";
 import TextInput from "../../components/TextInput";
 import TitleBar from "../../components/TitleBar";
+import Error from "../../components/Error";
 
 import { fetchProfile } from "../../actions/profile/actions";
 
@@ -31,6 +33,9 @@ class ProfilePage extends Component {
             !this.props.profile.pending &&
             !Array.isArray(this.props.profile.data)
         ) {
+            let colors = this.props.theme.colors;
+            console.log(colors);
+
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
@@ -49,6 +54,13 @@ class ProfilePage extends Component {
                                 <Label>First name</Label>
                                 <TextInput
                                     value={currUser.data.fName}
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -56,6 +68,13 @@ class ProfilePage extends Component {
                                 <Label>Last name</Label>
                                 <TextInput
                                     value={currUser.data.lName}
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -63,6 +82,13 @@ class ProfilePage extends Component {
                                 <Label>Email</Label>
                                 <TextInput
                                     value={currUser.data.email}
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -70,6 +96,13 @@ class ProfilePage extends Component {
                                 <Label>Phone</Label>
                                 <TextInput
                                     value={currUser.data.mobile}
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -77,6 +110,13 @@ class ProfilePage extends Component {
                                 <Label>Position</Label>
                                 <TextInput
                                     value={currUser.data.position}
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -88,6 +128,13 @@ class ProfilePage extends Component {
                                             ? currUser.data.specialQuals
                                             : "N/A"
                                     }
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
+                                    px={4}
+                                    py={2}
                                     disabled
                                 />
                             </Box>
@@ -109,10 +156,17 @@ class ProfilePage extends Component {
                 <TitleBar title="Profile" />
                 <NavBar />
                 {this.props.profile.error ? (
-                    <FlexFillVH>
-                        An error has occurred:{" "}
-                        {this.props.profile.error.toString()}
-                    </FlexFillVH>
+                    <Flex
+                        flexDirection="column"
+                        flex={1}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Error
+                            title="An error has occurred"
+                            content={this.props.profile.error.toString()}
+                        />
+                    </Flex>
                 ) : (
                     <ScrollView>{this.renderProfile()}</ScrollView>
                 )}
@@ -132,4 +186,6 @@ const mapDispatchToProps = {
     fetchProfile
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(ProfilePage)
+);

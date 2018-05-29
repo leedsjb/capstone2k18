@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Downshift from "downshift";
+import { withTheme } from "styled-components";
 import { Flex } from "grid-styled";
 
 import Absolute from "../Absolute";
@@ -29,7 +30,8 @@ class ResourcesDropdown extends Component {
                     bg="white"
                     borderRadius={4}
                     w={1}
-                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
+                    boxShadow={this.props.theme.boxShadows.mid}
+                    border={`1px solid ${this.props.theme.colors.gray5}`}
                 >
                     An error has occurred:{" "}
                     {this.props.resources.error.toString()}
@@ -41,7 +43,8 @@ class ResourcesDropdown extends Component {
                     bg="white"
                     borderRadius={4}
                     w={1}
-                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.1)"
+                    boxShadow={this.props.theme.boxShadows.mid}
+                    border={`1px solid ${this.props.theme.colors.gray5}`}
                 >
                     <Flex flexWrap="wrap" p={4} alignItems="center">
                         {this.props.resources.data.map(item => {
@@ -143,4 +146,6 @@ const mapDispatchToProps = {
     fetchResources
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResourcesDropdown);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(ResourcesDropdown)
+);

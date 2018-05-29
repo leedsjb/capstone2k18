@@ -1,14 +1,32 @@
 const colors = {
-    wireframe: "#d8d8d8",
-    primary: "#3E50C2",
-    primaryLight: "#4052C7",
-    secondary: "#E31B3D",
-    secondaryLight: "#DB4861",
-    border: "#D4D5D6",
-    gray: "#F7F9FA",
-    darkGray: "#333333",
-    airlift: "#E4002B",
-    airliftDark: "#ED002B"
+    airlift1: "#E4002B",
+    airlift2: "#ED002B",
+    black1: "#141414",
+    black2: "#292929",
+    black3: "#3D3D3D",
+    gray1: "#A3A3A3",
+    gray2: "#8F8F8F",
+    gray3: "#DBDBDB",
+    gray4: "#E0E0E0",
+    gray5: "#EBEBEB",
+    gray6: "#F5F5F5",
+    gray7: "#FAFAFA",
+    green1: "#008b00",
+    green2: "#f2fde4",
+    orange1: "#f47100",
+    orange2: "#fff2df",
+    purple: "#7e3ff2",
+    blue: "#4a26fd",
+    pink1: "#ef0078",
+    pink2: "#fbe2f0",
+    white: "#FFFFFF"
+};
+
+const boxShadows = {
+    low: `0 2px 8px rgba(0, 0, 0, 0.08)`,
+    lowRight: `2px 2px 8px rgba(0, 0, 0, 0.08)`,
+    mid: `0 4px 12px rgba(0, 0, 0, 0.08)`,
+    high: `0 8px 16px rgba(0, 0, 0, 0.08)`
 };
 
 const breakpoints = [32, 48, 64, 80].map(n => n + "em");
@@ -42,6 +60,7 @@ const shadows = [
 
 const theme = {
     breakpoints,
+    boxShadows,
     space,
     fontSizes,
     fontWeights,
