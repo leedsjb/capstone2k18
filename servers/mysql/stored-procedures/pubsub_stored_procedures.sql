@@ -176,3 +176,18 @@ CALL uspNewMission(
 );
 
 */
+CALL uspUpdateACLocation("1", "47.4441", "-121.3249");
+
+DROP PROCEDURE IF EXISTS `uspUpdateACLocation`;
+CREATE PROCEDURE uspUpdateACLocation(
+	IN aid INTEGER, 
+	IN lat_param DECIMAL(9,6),
+	IN long_param DECIMAL(9,6)
+)
+BEGIN
+	UPDATE tblAIRCRAFT
+	SET ac_lat = lat_param, ac_long = long_param
+	WHERE tblAIRCRAFT.ac_id = aid;
+END;
+
+SELECT * FROM tblAIRCRAFT;
