@@ -48,7 +48,7 @@ const PeopleDetailsItem = ({ person }) => {
                         </a>
                     </Box>
                     <Box>
-                        <a href={`mailTo:${person.email}`}>
+                        <a href={`mailto:${person.email}`}>
                             <ButtonIcon glyph="email">Mail</ButtonIcon>
                         </a>
                     </Box>

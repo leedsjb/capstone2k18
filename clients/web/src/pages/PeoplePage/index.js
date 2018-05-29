@@ -293,6 +293,7 @@ class PeoplePage extends Component {
                     <Box maxWidth={1024} mx="auto" w={1} px={4}>
                         <Flex flexWrap="wrap" justifyContent="flex-start">
                             {this.props.groupsDetail.data.people.map(person => {
+                                console.log(person);
                                 return (
                                     <Card
                                         key={person.id}
@@ -344,19 +345,37 @@ class PeoplePage extends Component {
                                                 mt={2}
                                             >
                                                 <Box mt={4}>
-                                                    <ButtonIcon glyph="bubbleChat">
-                                                        Text
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`sms:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="bubbleChat">
+                                                            Text
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                                 <Box mx={3} mt={4}>
-                                                    <ButtonIcon glyph="phone">
-                                                        Call
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`tel:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="phone">
+                                                            Call
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                                 <Box mt={4}>
-                                                    <ButtonIcon glyph="email">
-                                                        Mail
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`mailto:${
+                                                            person.email
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="email">
+                                                            Mail
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                             </Flex>
                                         </Flex>
