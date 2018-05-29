@@ -37,13 +37,14 @@ BEGIN
 END;
 
 -- endpoint: /v1/groups/{id}
+-- CALL uspGetGroupDetailByID(20);
 DROP PROCEDURE IF EXISTS `uspGetGroupDetailByID`;
 CREATE PROCEDURE uspGetGroupDetailByID(
     IN gid INTEGER
 )
 BEGIN
-    SELECT tblGROUP.group_id, group_name, personnel_f_name,
-    personnel_l_name, tblPERSONNEL.personnel_id, personnel_title
+    SELECT tblGROUP.group_id, group_name, tblPERSONNEL.personnel_id, personnel_f_name,
+    personnel_l_name, personnel_title, personnel_sms_num, personnel_email
     FROM tblGROUP
     JOIN tblPERSONNEL_GROUP ON tblGROUP.group_id = tblPERSONNEL_GROUP.group_id
     JOIN tblPERSONNEL ON tblPERSONNEL_GROUP.personnel_id = tblPERSONNEL.personnel_id 
