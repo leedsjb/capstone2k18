@@ -612,7 +612,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 
 	// [CREW]
 	crew := []*messages.Person{}
-	crewRows, err := ctx.GetCrewByAircraft(currentRow.ID)
+	crewRows, err := ctx.GetAssignedCrewByAircraft(currentRow.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving crew for aircraft [%v]: %v", currentRow.Callsign, err)
 	}
@@ -696,8 +696,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 
 		// [MISSION CREW]
 		missionCrew := []*messages.Person{}
-		// TODO: change to GetCrewByMission(currentRow.ID)
-		missionCrewRows, err := ctx.GetCrewByAircraft(currentRow.ID)
+		missionCrewRows, err := ctx.GetMissionCrewByAircraft(currentRow.ID)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving crew for aircraft [%v]: %v", currentRow.Callsign, err)
 		}

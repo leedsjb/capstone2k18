@@ -134,8 +134,8 @@ func (ctx *HandlerContext) GetAircraftDetailByID(aircraftID int) (*sql.Rows, err
 	return acDetailRows, nil
 }
 
-func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) {
-	query := "CALL uspGetCrewByAircraft(?)"
+func (ctx *HandlerContext) GetAssignedCrewByAircraft(aircraftID int) (*sql.Rows, error) {
+	query := "CALL uspGetAssignedCrewByAircraft(?)"
 	crewRows, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
@@ -147,8 +147,8 @@ func (ctx *HandlerContext) GetCrewByAircraft(aircraftID int) (*sql.Rows, error) 
 	return crewRows, nil
 }
 
-func (ctx *HandlerContext) GetCrewByMission(missionID int) (*sql.Rows, error) {
-	query := "CALL uspGetCrewByMission(?)"
+func (ctx *HandlerContext) GetMissionCrewByAircraft(missionID int) (*sql.Rows, error) {
+	query := "CALL uspGetMissionCrewByAircraft(?)"
 	crewRows, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,

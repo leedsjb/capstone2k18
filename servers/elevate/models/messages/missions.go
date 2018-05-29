@@ -27,16 +27,21 @@ type MissionWaypoint struct {
 	Completed   string `json:"completed"`
 }
 
+type Mission_Crew struct {
+	ID     string `json:"id"`
+	RoleID string `json:"roleID"`
+}
+
 type Mission_Create struct {
-	MissionID    string             `json:"missionID"`
-	TCNum        string             `json:"TCNum"`
-	Asset        string             `json:"asset"`
-	RequestorID  string             `json:"reqID"`
-	ReceiverID   string             `json:"recID"`
-	CallType     string             `json:"callType"`
-	Patient      *Patient           `json:"patient"`
-	CrewMemberID []string           `json:"crewMemberID"`
-	Waypoints    []*MissionWaypoint `json:"waypoints"`
+	MissionID   string             `json:"missionID"`
+	TCNum       string             `json:"TCNum"`
+	Asset       string             `json:"asset"`
+	RequestorID string             `json:"reqID"`
+	ReceiverID  string             `json:"recID"`
+	CallType    string             `json:"callType"`
+	Patient     *Patient           `json:"patient"`
+	CrewMembers []*Mission_Crew    `json:"crewMembers"`
+	Waypoints   []*MissionWaypoint `json:"waypoints"`
 }
 
 type Mission_Complete struct {
@@ -61,8 +66,8 @@ Topic Name: mission_crew_update
 Description: Changes to crew after mission creation
 */
 type Mission_Crew_Update struct {
-	MissionID    string   `json:"missionID"`
-	CrewMemberID []string `json:"crewMemberID"`
+	MissionID   string          `json:"missionID"`
+	CrewMembers []*Mission_Crew `json:"crewMembers"`
 }
 
 // [Client Messages]
