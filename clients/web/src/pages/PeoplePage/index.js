@@ -302,7 +302,7 @@ class PeoplePage extends Component {
                                         w={[
                                             "calc(100% - 32px)",
                                             "calc(100% - 32px)",
-                                            "calc(100% / 2 - 32px)",
+                                            "calc(100% - 32px)",
                                             "calc(100% / 2 - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
