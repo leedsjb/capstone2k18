@@ -15,7 +15,7 @@ const DetailView = ({
                 return (
                     <ScrollView
                         borderLeft={`1px solid ${colors.gray5}`}
-                        boxShadows={boxShadows["lowRight"]}
+                        boxShadow={boxShadows["lowRight"]}
                         position="relative"
                         zIndex={999}
                     >
