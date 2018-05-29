@@ -8,12 +8,11 @@ const Tab = sys(
         fontSize: 1,
         fontWeight: "bold",
         py: 3,
-        color: "inherit",
         flex: 1,
         borderBottom: 2,
         textAlign: "center",
         hover: {
-            color: "blue"
+            color: "purple"
         },
         display: "block"
     },
@@ -21,7 +20,10 @@ const Tab = sys(
         textDecoration: "none"
     },
     props => ({
-        borderColor: props.active ? "black" : "transparent"
+        borderColor: props.active ? props.theme.colors.black1 : "transparent",
+        color: props.active
+            ? props.theme.colors.black1
+            : props.theme.colors.gray3
     })
 );
 

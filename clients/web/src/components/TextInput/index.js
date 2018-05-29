@@ -26,7 +26,7 @@ const TextInput = sys(
             outline: "none"
         },
         "&:disabled": {
-            opacity: 1 / 2
+            opacity: 3 / 4
         }
     })
 );

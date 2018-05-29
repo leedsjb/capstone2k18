@@ -54,8 +54,11 @@ class ProfilePage extends Component {
                                 <Label>First name</Label>
                                 <TextInput
                                     value={currUser.data.fName}
-                                    border="1px solid cyan"
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
                                     borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled
@@ -65,8 +68,11 @@ class ProfilePage extends Component {
                                 <Label>Last name</Label>
                                 <TextInput
                                     value={currUser.data.lName}
-                                    border="1px solid cyan"
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
                                     borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled
@@ -76,8 +82,11 @@ class ProfilePage extends Component {
                                 <Label>Email</Label>
                                 <TextInput
                                     value={currUser.data.email}
-                                    border="1px solid cyan"
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
                                     borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled
@@ -87,8 +96,11 @@ class ProfilePage extends Component {
                                 <Label>Phone</Label>
                                 <TextInput
                                     value={currUser.data.mobile}
-                                    border="1px solid cyan"
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
                                     borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled
@@ -98,8 +110,11 @@ class ProfilePage extends Component {
                                 <Label>Position</Label>
                                 <TextInput
                                     value={currUser.data.position}
-                                    border="1px solid cyan"
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
                                     borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled
@@ -113,6 +128,11 @@ class ProfilePage extends Component {
                                             ? currUser.data.specialQuals
                                             : "N/A"
                                     }
+                                    border={`1px solid ${
+                                        this.props.theme.colors.gray3
+                                    }`}
+                                    borderRadius="4px"
+                                    bg={this.props.theme.colors.gray6}
                                     px={4}
                                     py={2}
                                     disabled

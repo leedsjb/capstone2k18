@@ -6,12 +6,12 @@ import createHistory from "history/createBrowserHistory";
 import { ConnectedRouter } from "react-router-redux";
 import "sanitize.css/sanitize.css";
 
-import App from "./components/App";
-
 import registerServiceWorker from "./registerServiceWorker";
 import configureStore from "./configureStore";
 import "./global-styles";
 import theme from "./theme";
+
+import App from "./components/App";
 
 const initialState = {};
 const history = createHistory();

@@ -279,7 +279,7 @@ class PeoplePage extends Component {
 
     renderGroupsDetail() {
         if (!this.props.groupID) {
-            return <Box bg="gray" height="100%" />;
+            return <Box bg="gray6" height="100%" />;
         } else if (
             !this.props.groupsDetail.pending &&
             !Array.isArray(this.props.groupsDetail.data)
@@ -408,7 +408,7 @@ class PeoplePage extends Component {
 
     renderPeopleDetail() {
         if (!this.props.id && !this.props.groupID) {
-            return <Box bg="gray" height="100%" />;
+            return <Box bg="gray6" height="100%" />;
         } else if (
             !this.props.peopleDetail.pending &&
             !Array.isArray(this.props.peopleDetail.data)
