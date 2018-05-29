@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Flex } from "grid-styled";
 
 import Box from "../../components/Box";
@@ -47,7 +48,7 @@ const PeopleDetailsItem = ({ person }) => {
                         </a>
                     </Box>
                     <Box>
-                        <a href={`mailTo:${person.email}`}>
+                        <a href={`mailto:${person.email}`}>
                             <ButtonIcon glyph="email">Mail</ButtonIcon>
                         </a>
                     </Box>
@@ -91,22 +92,25 @@ const PeopleDetailsItem = ({ person }) => {
                                         mt={4}
                                         mx={4}
                                         w={[
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
                                             "calc(100% / 2 - 32px)",
-                                            "calc(100% - 32px)",
-                                            "calc(100% - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
                                     >
-                                        <ColoredBox
-                                            word={group.name}
-                                            w={1}
-                                            height={64}
-                                        />
-                                        <Box px={4} py={3}>
-                                            <Span fontWeight="bold">
-                                                {group.name}
-                                            </Span>
-                                        </Box>
+                                        <Link to={`/groups/${group.id}`}>
+                                            <ColoredBox
+                                                word={group.name}
+                                                w={1}
+                                                height={64}
+                                            />
+                                            <Box px={4} py={3}>
+                                                <Span fontWeight="bold">
+                                                    {group.name}
+                                                </Span>
+                                            </Box>
+                                        </Link>
                                     </Card>
                                 );
                             })}

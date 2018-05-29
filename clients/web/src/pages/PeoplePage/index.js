@@ -199,7 +199,14 @@ class PeoplePage extends Component {
                     }
                 }}
             >
-                <Box py={3} px={4}>
+                <Box
+                    py={3}
+                    px={4}
+                    boxShadow={this.props.theme.boxShadows.low}
+                    borderBottom={`1px solid ${this.props.theme.colors.gray5}`}
+                    position="relative"
+                    zIndex={999}
+                >
                     <SearchBox
                         placeholder="Search all groups"
                         handleChange={queryGroups => {
@@ -293,6 +300,7 @@ class PeoplePage extends Component {
                     <Box maxWidth={1024} mx="auto" w={1} px={4}>
                         <Flex flexWrap="wrap" justifyContent="flex-start">
                             {this.props.groupsDetail.data.people.map(person => {
+                                console.log(person);
                                 return (
                                     <Card
                                         key={person.id}
@@ -300,9 +308,10 @@ class PeoplePage extends Component {
                                         mt={4}
                                         mx={4}
                                         w={[
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
+                                            "calc(100% - 32px)",
                                             "calc(100% / 2 - 32px)",
-                                            "calc(100% - 32px)",
-                                            "calc(100% - 32px)",
                                             "calc(100% / 3 - 32px)"
                                         ]}
                                     >
@@ -343,19 +352,37 @@ class PeoplePage extends Component {
                                                 mt={2}
                                             >
                                                 <Box mt={4}>
-                                                    <ButtonIcon glyph="bubbleChat">
-                                                        Text
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`sms:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="bubbleChat">
+                                                            Text
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                                 <Box mx={3} mt={4}>
-                                                    <ButtonIcon glyph="phone">
-                                                        Call
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`tel:${
+                                                            person.mobile
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="phone">
+                                                            Call
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                                 <Box mt={4}>
-                                                    <ButtonIcon glyph="email">
-                                                        Mail
-                                                    </ButtonIcon>
+                                                    <a
+                                                        href={`mailto:${
+                                                            person.email
+                                                        }`}
+                                                    >
+                                                        <ButtonIcon glyph="email">
+                                                            Mail
+                                                        </ButtonIcon>
+                                                    </a>
                                                 </Box>
                                             </Flex>
                                         </Flex>

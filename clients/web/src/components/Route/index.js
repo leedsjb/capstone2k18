@@ -56,7 +56,9 @@ const Route = ({ waypoints }) => {
                                     </Span>
                                 </Box>
                                 <Flex justifyContent="flex-end" w={0.3 / 1}>
-                                    <Span>{moment(waypoint.ETA).toNow()}</Span>
+                                    <Span>
+                                        {moment(waypoint.eta).format("HH:mm")}
+                                    </Span>
                                 </Flex>
                             </Flex>
                         </Flex>
