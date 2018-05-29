@@ -3,6 +3,7 @@ package parsers
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -409,22 +410,45 @@ func (ctx *ParserContext) GetTCNumByMissionID(missionID int) (string, error) {
 }
 
 // AddNewMission adds a new mission object to the database
-func (ctx *ParserContext) AddNewMission(missionInfo *messages.Mission_Create) error {
-	query := `CALL uspAddNewMission(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+func (ctx *ParserContext) NewMission(missionInfo *messages.Mission_Create, aircraftID int) error {
+
+	marshaledMembers, err := json.Marshal(missionInfo.CrewMembers)
+	if err != nil {
+		return fmt.Errorf("Error marshaling crew members: %v", err)
+	}
+	crew := string(marshaledMembers)
+
+	fmt.Printf("[STRINGIFIED] crew: %v\n", crew)
+
+	marshaledWaypoints, err := json.Marshal(missionInfo.Waypoints)
+	if err != nil {
+		return fmt.Errorf("Error marshaling waypoints: %v", err)
+	}
+	waypoints := string(marshaledWaypoints)
+
+	fmt.Printf("[STRINGIFIED] waypoints: %v\n", waypoints)
+
+	query := `CALL uspNewMission(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	if _, err := ctx.DB.QueryContext(
 		sqlCtx,
 		query,
-		missionInfo.Asset,
-		missionInfo.CallType,
-		missionInfo.CrewMemberID,
 		missionInfo.MissionID,
-		missionInfo.Patient,
-		// missionInfo.Priority,
-		missionInfo.ReceiverID,
-		missionInfo.RequestorID,
 		missionInfo.TCNum,
-		// missionInfo.Vision,
-		missionInfo.Waypoints,
+		aircraftID,
+		missionInfo.RequestorID,
+		missionInfo.ReceiverID,
+		missionInfo.CallType,
+		missionInfo.Patient.ShortReport,
+		missionInfo.Patient.Intubated,
+		missionInfo.Patient.Drips,
+		missionInfo.Patient.Age,
+		missionInfo.Patient.Weight,
+		missionInfo.Patient.Gender,
+		missionInfo.Patient.Cardiac,
+		missionInfo.Patient.GIBleed,
+		missionInfo.Patient.OB,
+		crew,
+		waypoints,
 	); err != nil {
 		return fmt.Errorf("Error adding new mission to DB: %v", err)
 	}
@@ -454,7 +478,7 @@ func (ctx *ParserContext) UpdateMissionCrew(missionInfo *messages.Mission_Crew_U
 		sqlCtx,
 		query,
 		missionInfo.MissionID,
-		missionInfo.CrewMemberID,
+		missionInfo.CrewMembers,
 	); err != nil {
 		return fmt.Errorf("Error updating mission crew in DB: %v", err)
 	}

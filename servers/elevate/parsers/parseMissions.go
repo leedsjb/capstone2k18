@@ -11,8 +11,8 @@ import (
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
 )
 
-// const layout = "2018-05-26 14:00:00"
-const layout = "2006-01-02 15:04:05.0000000 -07:00"
+// const layout = "2006-01-02 15:04:05.0000000 -07:00"
+const layout = "2006-01-02 15:04:05"
 
 // ParseMissionCreate handles when a mission is assigned to
 // an aircraft
@@ -68,11 +68,11 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	// separate crewIDs to build crew members into related groups
 	people := []*messages.Person{}
 
-	intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
+	intCrewMemberIDs, err := convertToInts(msg.CrewMembers)
 	if err != nil {
 		return fmt.Errorf("Could not convert crew member IDs to int: %v", err)
 	}
-	if len(msg.CrewMemberID) > 0 {
+	if len(intCrewMemberIDs) > 0 {
 		for _, memberID := range intCrewMemberIDs {
 			person, err := ctx.GetPersonByID(memberID)
 			if err != nil {
@@ -117,8 +117,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	aircraftCallsign := msg.Asset
 
 	mission := &messages.Mission{
-		Type: msg.CallType,
-		// Vision:          msg.Vision,
+		Type:            msg.CallType,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
@@ -178,8 +177,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	missionDetail := &messages.MissionDetail{
-		Type: msg.CallType,
-		// Vision:          msg.Vision,
+		Type:            msg.CallType,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
@@ -206,7 +204,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		return fmt.Errorf("Could not retrieve aircraft ID from given callsign: %v", err)
 	}
 
-	if len(msg.CrewMemberID) > 0 {
+	if len(msg.CrewMembers) > 0 {
 		for _, memberID := range intCrewMemberIDs {
 			personRows, err := ctx.GetPersonDetailByID(memberID)
 			if err != nil {
@@ -235,9 +233,12 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	// [ADD MISSION TO DB]
-	// if err := ctx.AddNewMission(msg); err != nil {
-	// 	return fmt.Errorf("Error adding new mission to DB: %v", err)
-	// }
+
+	// collect info for new mission insert
+
+	if err := ctx.NewMission(msg, aircraftID); err != nil {
+		return fmt.Errorf("Error adding new mission to DB: %v", err)
+	}
 
 	return nil
 }
@@ -381,8 +382,8 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	// separate crewIDs to build crew members into related groups
 	people := []*messages.Person{}
 
-	if len(msg.CrewMemberID) > 0 {
-		intCrewMemberIDs, err := convertToInts(msg.CrewMemberID)
+	if len(msg.CrewMembers) > 0 {
+		intCrewMemberIDs, err := convertToInts(msg.CrewMembers)
 		if err != nil {
 			return fmt.Errorf("Could not convert crew member IDs to int: %v\n", err)
 		}
@@ -418,10 +419,10 @@ func (ctx *ParserContext) ParseMissionCrewUpdate(msg *messages.Mission_Crew_Upda
 	return nil
 }
 
-func convertToInts(toInt []string) ([]int, error) {
+func convertToInts(toInt []*messages.Mission_Crew) ([]int, error) {
 	converted := []int{}
-	for _, str := range toInt {
-		tempInt, err := strconv.Atoi(str)
+	for _, member := range toInt {
+		tempInt, err := strconv.Atoi(member.ID)
 		if err != nil {
 			return nil, err
 		}
