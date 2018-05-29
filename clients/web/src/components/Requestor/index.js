@@ -1,6 +1,5 @@
 import React from "react";
 
-import Box from "../Box";
 import Span from "../Span";
 import Text from "../Text";
 
@@ -8,12 +7,12 @@ const Requestor = ({ requestor }) => {
     return (
         <div>
             {requestor.name ? (
-                <Box mt={4}>
+                <div>
                     <Span>{requestor.name}</Span>
-                </Box>
+                </div>
             ) : null}
             {requestor.phone ? (
-                <Box mt={4}>
+                <div>
                     <Span>
                         {requestor.phone.length === 10
                             ? `(${requestor.phone.substring(
@@ -25,23 +24,23 @@ const Requestor = ({ requestor }) => {
                               )}-${requestor.phone.substring(6, 10)}`
                             : requestor.phone}
                     </Span>
-                </Box>
+                </div>
             ) : null}
             {requestor.type ? (
-                <Box mt={4}>
+                <div>
                     <Span>{requestor.type}</Span>
-                </Box>
+                </div>
             ) : null}
             {requestor.address &&
             requestor.city &&
             requestor.state &&
             requestor.zip ? (
-                <Box mt={4}>
+                <div>
                     <Text mt={1}>{requestor.address}</Text>
                     <Text>{`${requestor.city}, ${requestor.state} ${
                         requestor.zip
                     }`}</Text>
-                </Box>
+                </div>
             ) : null}
         </div>
     );

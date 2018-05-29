@@ -7,7 +7,7 @@ const OOSInformation = ({ OOS }) => {
     return (
         <div>
             {OOS.reason ? (
-                <Box mt={4}>
+                <Box>
                     <Span fontWeight="bold">OOS Reason: </Span>
                     <Span>{OOS.reason}</Span>
                 </Box>
