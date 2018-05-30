@@ -3,11 +3,12 @@ import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
 
 import Box from "../../components/Box";
-import Button from "../../components/Button";
-import ButtonOutline from "../../components/ButtonOutline";
+import ButtonPrimaryGradient from "../../components/ButtonPrimaryGradient";
+import ButtonPrimaryOutline from "../../components/ButtonPrimaryOutline";
 import Container from "../../components/Container";
 import Footer from "../../components/Footer";
 import Heading from "../../components/Heading";
+import Relative from "../../components/Relative";
 import Icon from "../../components/Icon";
 import Image from "../../components/Image";
 import Measure from "../../components/Measure";
@@ -32,29 +33,44 @@ const HomePage = () => {
         <div>
             <Box bg="#F7F9FA">
                 <Container>
-                    <Box mx="auto" width={["100%", 488, "100%"]}>
-                        <Flex justifyContent="space-between" pt={4}>
-                            <Link to="/">
-                                <Image
-                                    src={logotext}
-                                    alt="AirliftNW Elevate"
-                                    w={144}
-                                />
-                            </Link>
+                    <Box
+                        mx="auto"
+                        width={["100%", 488, "100%"]}
+                        pt={12}
+                        pb={24}
+                    >
+                        <Flex
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
+                            <Relative left="-3px">
+                                <Link to="/">
+                                    <Image
+                                        src={logotext}
+                                        alt="AirliftNW Elevate"
+                                        w={184}
+                                    />
+                                </Link>
+                            </Relative>
                             <div>
-                                <Button>
+                                <ButtonPrimaryGradient>
                                     <Link to="/signin">Sign in</Link>
-                                </Button>
+                                </ButtonPrimaryGradient>
                             </div>
                         </Flex>
 
                         <Flex
-                            flexWrap={["wrap", "wrap", "nowrap"]}
                             justifyContent="space-between"
                             alignItems="center"
+                            mt={24}
                         >
-                            <Box mb={[8, 8, 0]} width={[1, 1, 2 / 3]}>
-                                <Heading is="h1" mt={0} fontSize={[5, 6]}>
+                            <Flex flexDirection="column">
+                                <Heading
+                                    is="h1"
+                                    mt={0}
+                                    fontSize={6}
+                                    maxWidth={720}
+                                >
                                     Critical Communication for Airborne Medical
                                     Missions
                                 </Heading>
@@ -67,15 +83,13 @@ const HomePage = () => {
                                     medical treatment.
                                 </Measure>
                                 <Link to="/signin">
-                                    <Button mt={3}>Get Started</Button>
+                                    <ButtonPrimaryGradient mt={6}>
+                                        Get Started
+                                    </ButtonPrimaryGradient>
                                 </Link>
-                            </Box>
-                            <Box my={5} width={[1, 1, 1 / 3]}>
-                                <Image
-                                    mx="auto"
-                                    src={phone}
-                                    width={[5 / 8, 5 / 8, 1]}
-                                />
+                            </Flex>
+                            <Box maxWidth={320}>
+                                <Image src={phone} w="100%" />
                             </Box>
                         </Flex>
                     </Box>
@@ -83,20 +97,20 @@ const HomePage = () => {
             </Box>
 
             <RedBox>
-                <Container px={5} py={5}>
+                <Container py={24}>
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Box maxWidth={488} mr={[0, 0, 5]}>
+                        <Box maxWidth={488} mr={[0, 0, 12]}>
                             <Image src={second} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={4} pt={5} color="white">
+                            <Heading is="h2" fontSize={5} pt={5} color="white">
                                 Because every second counts
                             </Heading>
-                            <Measure mt={2} color="white">
+                            <Measure mt={3} color="white">
                                 Elevate bridges the communication gap between
                                 the dispatch center on the ground and flight
                                 crews in the air by displaying patient,
@@ -110,53 +124,51 @@ const HomePage = () => {
                 </Container>
             </RedBox>
 
-            <Box>
-                <Container px={5} py={5}>
-                    <Box mx="auto" width={["100%", 488, "100%"]}>
-                        <Heading is="h2" fontSize={5} mb={4}>
-                            Elevating health care technology
-                        </Heading>
-                        <Flex flexWrap={["wrap", "wrap", "nowrap"]} mt={5}>
-                            <Box mr={4}>
-                                <Icon glyph="devices" size={48} />
-                                <Heading is="h4" fontSize={3} mt={3}>
-                                    Use anywhere
-                                </Heading>
-                                <Measure mt={2}>
-                                    Elevate is available on any device with a
-                                    web browser.
-                                </Measure>
-                            </Box>
+            <Container py={24}>
+                <Box mx="auto" width={["100%", 488, "100%"]}>
+                    <Heading is="h2" fontSize={5} mb={4}>
+                        Elevating health care technology
+                    </Heading>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]} mt={18}>
+                        <Box mr={12}>
+                            <Icon glyph="devices" size={48} />
+                            <Heading is="h4" fontSize={4} mt={8}>
+                                Use anywhere
+                            </Heading>
+                            <Measure mt={3}>
+                                Elevate is available on any device with a web
+                                browser.
+                            </Measure>
+                        </Box>
 
-                            <Box mr={4}>
-                                <Icon glyph="checkShield" size={48} />
-                                <Heading is="h4" fontSize={3} mt={3}>
-                                    HIPAA Compliant
-                                </Heading>
-                                <Measure mt={2}>
-                                    We comply with HIPAA and do not store or
-                                    show any PHI.
-                                </Measure>
-                            </Box>
+                        <Box mr={12}>
+                            <Icon glyph="checkShield" size={48} />
+                            <Heading is="h4" fontSize={4} mt={8}>
+                                HIPAA Compliant
+                            </Heading>
+                            <Measure mt={3}>
+                                We comply with HIPAA and do not store or show
+                                any PHI.
+                            </Measure>
+                        </Box>
 
-                            <Box>
-                                <Icon glyph="wifiCheck" size={48} />
-                                <Heading is="h4" fontSize={3} mt={3}>
-                                    Works offline
-                                </Heading>
-                                <Measure mt={2}>
-                                    If you lose your internet connnection, the
-                                    most recently updated information will still
-                                    be available to you.
-                                </Measure>
-                            </Box>
-                        </Flex>
-                    </Box>
-                </Container>
-            </Box>
+                        <Box>
+                            <Icon glyph="wifiCheck" size={48} />
+                            <Heading is="h4" fontSize={4} mt={8}>
+                                Works offline
+                            </Heading>
+                            <Measure mt={3}>
+                                If you lose your internet connnection, the most
+                                recently updated information will still be
+                                available to you.
+                            </Measure>
+                        </Box>
+                    </Flex>
+                </Box>
+            </Container>
 
             <RedBox>
-                <Container px={5} py={5}>
+                <Container py={24}>
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         flexDirection={[
@@ -167,23 +179,23 @@ const HomePage = () => {
                         alignItems="center"
                     >
                         <Box mr={[0, 0, 5]}>
-                            <Heading is="h2" fontSize={4} pt={5} color="white">
+                            <Heading is="h2" fontSize={5} color="white">
                                 Track missions
                             </Heading>
-                            <Measure mt={2} color="white">
+                            <Measure mt={3} color="white">
                                 Know what is going on at all times and follow
                                 missions on a map as they are happening.
                             </Measure>
                         </Box>
-                        <Box maxWidth={488}>
-                            <Image src={trackMissions} width={1} />
+                        <Box maxWidth={320}>
+                            <Image src={trackMissions} width="100%" />
                         </Box>
                     </Flex>
                 </Container>
             </RedBox>
 
             <Box bg="#F7F9FA">
-                <Container px={5} py={5}>
+                <Container py={24}>
                     <Box mx="auto" width={["100%", 488, "100%"]}>
                         <Flex
                             flexWrap={["wrap", "wrap", "nowrap"]}
@@ -193,10 +205,10 @@ const HomePage = () => {
                                 <Image src={notification} width={1} />
                             </Box>
                             <Box>
-                                <Heading is="h2" fontSize={4} pt={5}>
+                                <Heading is="h2" fontSize={5}>
                                     Get notified
                                 </Heading>
-                                <Measure mt={2}>
+                                <Measure mt={3}>
                                     Receive a text notification as soon as you
                                     are assigned to a new mission.
                                 </Measure>
@@ -207,7 +219,7 @@ const HomePage = () => {
             </Box>
 
             <RedBox>
-                <Container px={5} py={5}>
+                <Container py={24}>
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         flexDirection={[
@@ -218,10 +230,10 @@ const HomePage = () => {
                         alignItems="center"
                     >
                         <Box mr={[0, 0, 5]}>
-                            <Heading is="h2" fontSize={4} pt={5} color="white">
+                            <Heading is="h2" fontSize={5} color="white">
                                 Find the right person
                             </Heading>
-                            <Measure mt={2} color="white">
+                            <Measure mt={3} color="white">
                                 Find and contact the person or group you’re
                                 looking for in seconds.
                             </Measure>
@@ -234,20 +246,20 @@ const HomePage = () => {
             </RedBox>
 
             <Box>
-                <Container px={5} py={5}>
+                <Container py={24}>
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Box maxWidth={488} mr={[0, 0, 5]}>
+                        <Box maxWidth={488} mr={[0, 0, 12]}>
                             <Image src={partner} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={4} pt={5}>
+                            <Heading is="h2" fontSize={5}>
                                 About Airlift Northwest
                             </Heading>
-                            <Measure mt={2}>
+                            <Measure mt={3}>
                                 Elevate was built together with Airlift
                                 Northwest, the preeminent medical transport
                                 service in the Pacific Northwest.
@@ -257,7 +269,9 @@ const HomePage = () => {
                                 rel="noopener noreferrer"
                                 target="_blank"
                             >
-                                <Button>Get to know Airlift</Button>
+                                <ButtonPrimaryGradient mt={6}>
+                                    Get to know Airlift
+                                </ButtonPrimaryGradient>
                             </a>
                         </Box>
                     </Flex>
@@ -265,27 +279,31 @@ const HomePage = () => {
             </Box>
 
             <RedBox>
-                <Container px={5} py={5}>
-                    <Heading is="h2" fontSize={4} mb={5} color="white">
+                <Container py={24}>
+                    <Heading is="h2" fontSize={5} color="white">
                         Team
                     </Heading>
                     <Flex
-                        flexWrap={["wrap", "wrap", "nowrap"]}
-                        justify={["space-evenly", "space-evenly", "flex-start"]}
+                        flexWrap="wrap"
+                        justifyContent="space-between"
+                        mt={18}
                     >
-                        <Box mb={3} mr={[0, 0, 5]}>
+                        <Flex
+                            flexDirection="column"
+                            alignItems="center"
+                            width="calc(100% / 4 - 24px)"
+                        >
                             <Image
                                 backgroundSize="cover"
                                 borderRadius="50%"
                                 src={benjamin}
-                                width={1}
+                                width={160}
                             />
                             <Heading
-                                is="h5"
-                                fontSize={2}
+                                fontSize={4}
                                 textAlign="center"
-                                mt={4}
-                                mb={2}
+                                mt={6}
+                                mb={1}
                                 color="white"
                             >
                                 Benjamin Leeds
@@ -297,20 +315,24 @@ const HomePage = () => {
                             >
                                 Product Owner and Developer
                             </Span>
-                        </Box>
-                        <Box mb={3} mr={[0, 0, 5]}>
+                        </Flex>
+                        <Flex
+                            flexDirection="column"
+                            alignItems="center"
+                            width="calc(100% / 4 - 24px)"
+                        >
                             <Image
                                 backgroundSize="cover"
                                 borderRadius="50%"
                                 src={jessica}
-                                width={1}
+                                width={160}
                             />
                             <Heading
                                 is="h5"
-                                fontSize={2}
+                                fontSize={4}
                                 textAlign="center"
-                                mt={4}
-                                mb={2}
+                                mt={6}
+                                mb={1}
                                 color="white"
                             >
                                 Jessica Basa
@@ -322,20 +344,25 @@ const HomePage = () => {
                             >
                                 Developer
                             </Span>
-                        </Box>
-                        <Box mb={3} mr={[0, 0, 5]}>
+                        </Flex>
+                        <Flex
+                            flexDirection="column"
+                            alignItems="center"
+                            width="calc(100% / 4 - 24px)"
+                        >
+                            {" "}
                             <Image
                                 backgroundSize="cover"
                                 borderRadius="50%"
                                 src={tiffany}
-                                width={1}
+                                width={160}
                             />
                             <Heading
                                 is="h5"
-                                fontSize={2}
+                                fontSize={4}
                                 textAlign="center"
-                                mt={4}
-                                mb={2}
+                                mt={6}
+                                mb={1}
                                 color="white"
                             >
                                 Tiffany Chen
@@ -347,20 +374,25 @@ const HomePage = () => {
                             >
                                 Designer and Developer
                             </Span>
-                        </Box>
-                        <Box mb={3}>
+                        </Flex>
+                        <Flex
+                            flexDirection="column"
+                            alignItems="center"
+                            width="calc(100% / 4 - 24px)"
+                        >
+                            {" "}
                             <Image
                                 backgroundSize="cover"
                                 borderRadius="50%"
                                 src={vincent}
-                                width={1}
+                                width={160}
                             />
                             <Heading
                                 is="h5"
-                                fontSize={2}
+                                fontSize={4}
                                 textAlign="center"
-                                mt={4}
-                                mb={2}
+                                mt={6}
+                                mb={1}
                                 color="white"
                             >
                                 Vincent van der Meulen
@@ -372,43 +404,48 @@ const HomePage = () => {
                             >
                                 Designer and Developer
                             </Span>
-                        </Box>
+                        </Flex>
                     </Flex>
                 </Container>
             </RedBox>
 
-            <Box bg="#F7F9FA" pt={5}>
-                <Container width={1 / 2}>
-                    <Image src={heli} width={1} />
-                </Container>
-                <Flex justifyContent="center">
-                    <Container p={5}>
-                        <Heading is="h2" fontSize={4} textAlign="center" mb={2}>
+            <Box bg="#F7F9FA" py={24}>
+                <Container>
+                    <Flex flexDirection="column" alignItems="center">
+                        <Box maxWidth={792}>
+                            <Image src={heli} width={1} />
+                        </Box>
+                        <Heading
+                            is="h2"
+                            fontSize={5}
+                            textAlign="center"
+                            mt={4}
+                            mb={2}
+                        >
                             Ready for takeoff?
                         </Heading>
-                        <Flex justifyContent="center">
-                            <Span fontWeight="normal" textAlign="center">
-                                Elevate is available to Airlift Northwest
-                                employees
-                            </Span>
-                        </Flex>
+                        <Span fontWeight="normal" textAlign="center">
+                            Elevate is available to Airlift Northwest employees
+                        </Span>
 
-                        <Flex justifyContent="center" mt={3}>
+                        <Flex justifyContent="center" mt={8}>
                             <Link to="/signin">
-                                <Button>Get Started</Button>
+                                <ButtonPrimaryGradient>
+                                    Get Started
+                                </ButtonPrimaryGradient>
                             </Link>
                             <a
                                 href="https://www.uwmedicine.org/airlift-nw/contact-us"
                                 rel="noopener noreferrer"
                                 target="_blank"
                             >
-                                <ButtonOutline ml={2}>
+                                <ButtonPrimaryOutline ml={4}>
                                     Contact Airlift
-                                </ButtonOutline>
+                                </ButtonPrimaryOutline>
                             </a>
                         </Flex>
-                    </Container>
-                </Flex>
+                    </Flex>
+                </Container>
             </Box>
             <Footer />
         </div>

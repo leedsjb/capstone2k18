@@ -12,40 +12,38 @@ import symbol from "../../images/symbol.svg";
 const Footer = () => {
     return (
         <div>
-            <Box py={8}>
-                <Container width={[7 / 8, 1 / 2]}>
-                    <Flex flexDirection="column" justifyContent="center">
-                        <Box mb={4}>
-                            <Flex justifyContent="center">
-                                <Image
-                                    src={collab}
-                                    alt="AirliftNW Elevate and UW Information School logos"
-                                />
-                            </Flex>
-                        </Box>
-                        <Box width={1}>
-                            <Span
-                                color="#515766"
-                                display="block"
-                                fontWeight="100"
-                                lineHeight={2}
-                                textAlign="center"
-                            >
-                                A University of Washington Information School
-                                Capstone Project in collaboration with Airlift
-                                Northwest, a University of Washington Medicine
-                                entity.
-                            </Span>
-                        </Box>
-                    </Flex>
-                </Container>
-            </Box>
-            <Box pb={4} pt={[0, 0, 4]} px={5}>
+            <Container py={12}>
+                <Flex flexDirection="column" justifyContent="center">
+                    <Box>
+                        <Flex justifyContent="center">
+                            <Image
+                                src={collab}
+                                alt="AirliftNW Elevate and UW Information School logos"
+                            />
+                        </Flex>
+                    </Box>
+                    <Box w={1} maxWidth="30em" mx="auto">
+                        <Span
+                            color="#515766"
+                            display="block"
+                            fontWeight="100"
+                            lineHeight={2}
+                            textAlign="center"
+                            mt={8}
+                        >
+                            A University of Washington Information School
+                            Capstone Project in collaboration with Airlift
+                            Northwest, a University of Washington Medicine
+                            entity.
+                        </Span>
+                    </Box>
+                </Flex>
                 <Flex
                     flexDirection={["column", "row"]}
                     justifyContent="space-between"
+                    mt={18}
                 >
-                    <Flex justifyContent="center" mb={2}>
+                    <Flex justifyContent="center">
                         <Box mr={2} mt={1}>
                             <Image
                                 src={symbol}
@@ -99,7 +97,7 @@ const Footer = () => {
                         </a>
                     </Flex>
                 </Flex>
-            </Box>
+            </Container>
         </div>
     );
 };

@@ -12,7 +12,8 @@ const Heading = sys(
         m: 0
     },
     "color",
-    "textAlign"
+    "textAlign",
+    "maxWidth"
 );
 
 Heading.displayName = "Heading";
