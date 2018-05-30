@@ -25,7 +25,7 @@ msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posF
 # Yakima to Seattle
 
 distA=Math.sqrt(latA**2 + longA**2) 
-numDotsA = distA / 0.005
+numDotsA = distA / 0.1
 
 latDiffA = latB - latA
 longDiffA = longB - longA
@@ -39,7 +39,7 @@ puts numDotsA
 # Seattle to Portland
 
 distB=Math.sqrt(latB**2 + longB**2) 
-numDotsB = distB / 0.005
+numDotsB = distB / 0.1
 
 puts numDotsB
 
@@ -53,7 +53,7 @@ longIncrementB = longDiffB / numDotsB
 # Portland to Yakima
 
 distC=Math.sqrt(latC**2 + longC**2) 
-numDotsC = distC / 0.005
+numDotsC = distC / 0.1
 
 puts numDotsC
 
@@ -68,8 +68,9 @@ while true
         curLat += latIncrementA
         curLong += longIncrementA
         msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
-        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         puts "[#{curLat}, #{curLong}]"
+        puts msg
+        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
 
@@ -82,7 +83,7 @@ while true
         curLong += longIncrementB
         msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
         puts "[#{curLat}, #{curLong}]"
-        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
 
@@ -94,8 +95,8 @@ while true
         curLat += latIncrementC
         curLong += longIncrementC
         msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
-        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         puts "[#{curLat}, #{curLong}]"
+        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
 end

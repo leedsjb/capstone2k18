@@ -913,7 +913,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			duration := ""
 			if oosDetailRow.StartTime.Valid {
 				oosElapsedTime := time.Since(oosDetailRow.StartTime.Time)
-				duration = oosElapsedTime.String()
+				duration = formatDuration(oosElapsedTime)
 			}
 
 			oosDetail = &messages.OOSDetail{
