@@ -238,8 +238,8 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 
 	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraft)
 	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraftDetail)
-	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
-	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
+	ctx.ClientNotify(aircraft, "UPDATE_AIRCRAFT_POSITION", pulledMsg)
+	ctx.ClientNotify(aircraftDetail, "UPDATE_AIRCRAFTDETAIL_POSITION", pulledMsg)
 
 	// ADD POSITION UPDATE TO DB
 	if err := ctx.UpdateAircraftPosition(msg); err != nil {

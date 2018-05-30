@@ -250,6 +250,36 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 func (ctx *ParserContext) ParseMissionComplete(msg *messages.Mission_Complete,
 	pulledMsg *pubsub.Message, msgType string) error {
 	fmt.Printf("[MISSION COMPLETE]\n")
+
+	aircraftID, err := ctx.GetAircraftIDByMission(msg.MissionID)
+	if err != nil {
+		return fmt.Errorf("Couldn't get aircraft ID given mission ID: %v", err)
+	}
+
+	mission := &messages.Mission{
+		Completed: "1",
+	}
+
+	aircraft := &messages.Aircraft{
+		ID:      aircraftID,
+		Mission: mission,
+	}
+
+	missionDetail := &messages.MissionDetail{
+		Completed: "1",
+	}
+
+	aircraftDetail := &messages.AircraftDetail{
+		ID:      aircraftID,
+		Mission: missionDetail,
+	}
+
+	ctx.ClientNotify(aircraft, "AIRCRAFT_MISSION_COMPLETE", pulledMsg)
+	ctx.ClientNotify(aircraftDetail, "AIRCRAFTDETAIL_MISSION_COMPLETE", pulledMsg)
+
+	if err := ctx.CompleteMission(msg.MissionID); err != nil {
+		return fmt.Errorf("Couldn't complete mission: %v", err)
+	}
 	return nil
 }
 

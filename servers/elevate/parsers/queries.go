@@ -47,13 +47,34 @@ func (ctx *ParserContext) GetAircraftIDByCallsign(aircraftCallsign string) (int,
 		aircraftCallsign,
 	)
 	if err != nil {
-		return -1, fmt.Errorf("Error querying MySQL for aircraft ID: %v\n", err)
+		return 0, fmt.Errorf("Error querying MySQL for aircraft ID  by callsign: %v\n", err)
 	}
 	var aircraftID int
 	for aircraftRow.Next() {
 		err = aircraftRow.Scan(&aircraftID)
 		if err != nil {
-			return -1, fmt.Errorf("Error retrieving aircraft ID by callsign: %v\n", err)
+			return 0, fmt.Errorf("Error retrieving aircraft ID by callsign: %v\n", err)
+		}
+	}
+	close(aircraftRow)
+	return aircraftID, nil
+}
+
+func (ctx *ParserContext) GetAircraftIDByMission(missionID string) (int, error) {
+	query := `CALL uspGetAircraftIDByMission(?)`
+	aircraftRow, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		missionID,
+	)
+	if err != nil {
+		return 0, fmt.Errorf("Error querying MySQL for aircraft ID by mission: %v\n", err)
+	}
+	var aircraftID int
+	for aircraftRow.Next() {
+		err = aircraftRow.Scan(&aircraftID)
+		if err != nil {
+			return 0, fmt.Errorf("Error retrieving aircraft ID by mission: %v\n", err)
 		}
 	}
 	close(aircraftRow)
@@ -497,6 +518,20 @@ func (ctx *ParserContext) NewMission(missionInfo *messages.Mission_Create, aircr
 	)
 	if err != nil {
 		return fmt.Errorf("Error adding new mission to DB: %v", err)
+	}
+	close(connect)
+	return nil
+}
+
+func (ctx *ParserContext) CompleteMission(missionID string) error {
+	query := `CALL uspCompleteMission(?)`
+	connect, err := ctx.DB.QueryContext(
+		sqlCtx,
+		query,
+		missionID,
+	)
+	if err != nil {
+		return fmt.Errorf("Error completing mission in DB: %v", err)
 	}
 	close(connect)
 	return nil
