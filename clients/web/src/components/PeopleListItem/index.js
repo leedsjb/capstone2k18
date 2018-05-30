@@ -12,7 +12,9 @@ const PeopleListItem = ({ active, person }) => {
             <Flex alignItems="center">
                 <ColoredAvatar fName={person.fName} size={40} />
                 <Box ml={3}>
-                    <Span fontWeight="bold">{person.fName}</Span>
+                    <Span fontWeight="bold">{`${person.fName} ${
+                        person.lName
+                    }`}</Span>
                     <Box>
                         <Span>{person.position}</Span>
                     </Box>
