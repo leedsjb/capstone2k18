@@ -51,7 +51,7 @@ class AircraftDetailListItem extends Component {
                                 <Box mt={6}>
                                     <Route waypoints={mission.waypoints} />
                                 </Box>
-                                <Heading is="h2" fontSize={4} my={6}>
+                                <Heading is="h2" fontSize={4} mt={8} mb={6}>
                                     Patient Summary
                                 </Heading>
                                 <Box mt={2} mb={4}>
@@ -95,7 +95,7 @@ class AircraftDetailListItem extends Component {
                                     mt={
                                         this.props.aircraftDetail.data.OOS ||
                                         this.props.aircraftDetail.data.mission
-                                            ? 6
+                                            ? 8
                                             : 0
                                     }
                                     mb={2}
@@ -118,7 +118,7 @@ class AircraftDetailListItem extends Component {
                         {mission ? (
                             <div>
                                 <Box>
-                                    <Heading is="h2" fontSize={4} my={6}>
+                                    <Heading is="h2" fontSize={4} mt={8} mb={6}>
                                         Requestor
                                     </Heading>
                                     {mission.requestor ? (
@@ -128,7 +128,7 @@ class AircraftDetailListItem extends Component {
                                     ) : null}
                                 </Box>
                                 <Box>
-                                    <Heading is="h2" fontSize={4} my={6}>
+                                    <Heading is="h2" fontSize={4} mt={8} mb={6}>
                                         Receiver
                                     </Heading>
                                     {mission.receiver ? (
