@@ -54,7 +54,7 @@ const HomePage = () => {
                             </Relative>
                             <div>
                                 <ButtonPrimaryGradient>
-                                    <Link to="/signin">Sign in</Link>
+                                    <Link to="/aircraft">Sign in</Link>
                                 </ButtonPrimaryGradient>
                             </div>
                         </Flex>
@@ -82,7 +82,7 @@ const HomePage = () => {
                                     patients by helicopter to reach life-saving
                                     medical treatment.
                                 </Measure>
-                                <Link to="/signin">
+                                <Link to="/aircraft">
                                     <ButtonPrimaryGradient mt={6}>
                                         Get Started
                                     </ButtonPrimaryGradient>
@@ -429,7 +429,7 @@ const HomePage = () => {
                         </Span>
 
                         <Flex justifyContent="center" mt={8}>
-                            <Link to="/signin">
+                            <Link to="/ai">
                                 <ButtonPrimaryGradient>
                                     Get Started
                                 </ButtonPrimaryGradient>
