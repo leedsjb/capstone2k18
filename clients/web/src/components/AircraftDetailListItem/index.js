@@ -68,12 +68,32 @@ class AircraftDetailListItem extends Component {
                                 ) : null}
                             </div>
                         ) : null}
+                        {this.props.aircraftDetail.data.OOS ? (
+                            <div>
+                                <Heading
+                                    is="h2"
+                                    fontSize={4}
+                                    mt={
+                                        this.props.aircraftDetail.data.mission
+                                            ? 6
+                                            : 0
+                                    }
+                                    mb={4}
+                                >
+                                    Out of Service
+                                </Heading>
+                                <OOSInformation
+                                    OOS={this.props.aircraftDetail.data.OOS}
+                                />
+                            </div>
+                        ) : null}
                         {this.props.aircraftDetail.data.crew ? (
                             <Box>
                                 <Heading
                                     is="h2"
                                     fontSize={4}
                                     mt={
+                                        this.props.aircraftDetail.data.OOS ||
                                         this.props.aircraftDetail.data.mission
                                             ? 6
                                             : 0
@@ -115,25 +135,6 @@ class AircraftDetailListItem extends Component {
                                         <Receiver receiver={mission.receiver} />
                                     ) : null}
                                 </Box>
-                            </div>
-                        ) : null}
-                        {this.props.aircraftDetail.data.OOS ? (
-                            <div>
-                                <Heading
-                                    is="h2"
-                                    fontSize={4}
-                                    mt={
-                                        this.props.aircraftDetail.data.crew
-                                            ? 6
-                                            : 0
-                                    }
-                                    mb={4}
-                                >
-                                    Out of Service
-                                </Heading>
-                                <OOSInformation
-                                    OOS={this.props.aircraftDetail.data.OOS}
-                                />
                             </div>
                         ) : null}
                     </Box>

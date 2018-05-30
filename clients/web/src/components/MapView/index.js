@@ -414,7 +414,11 @@ class MapView extends Component {
                         height: "100%"
                     }}
                     center={this.mapCenter()}
-                    zoom={!this.isAircraftWithWaypoints() ? [10] : undefined}
+                    zoom={
+                        !this.isAircraftWithWaypoints() && this.props.id
+                            ? [10]
+                            : undefined
+                    }
                 >
                     {this.renderMapView()}
 
