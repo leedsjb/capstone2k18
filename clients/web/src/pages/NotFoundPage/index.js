@@ -16,7 +16,7 @@ class NotFoundPage extends Component {
                     <title>Resources</title>
                 </Helmet>
 
-                <TitleBar title="Resources" />
+                <TitleBar title="Page Not Found" />
                 <NavBar />
 
                 <Flex
