@@ -1,7 +1,7 @@
 /*
 pubsub_stored_procedures.sql
 Created: Monday April 30, 2018
-Modified: Sunday May 27, 2018
+Modified: Tuessday May 29, 2018
 Author(s): J. Benjamin Leeds
 License: None
 
@@ -27,7 +27,7 @@ CREATE PROCEDURE uspNewMission(
     IN patient_drips_param          TINYINT,
     IN patient_age_param            TINYINT, 
     IN patient_weight_param         SMALLINT,
-    IN patient_gender_param         INTEGER, -- may not be able to use an integer
+    IN patient_gender_id_param      INTEGER,
     IN patient_cardiac_param        BOOLEAN,
     IN patient_gi_bleed_param       BOOLEAN,
     IN patient_OB_param             BOOLEAN,
@@ -37,8 +37,7 @@ CREATE PROCEDURE uspNewMission(
     IN mission_waypoints_param NVARCHAR(255) -- a json string           
 )
 
-BEGIN
-		    
+BEGIN  
 	DECLARE asid INTEGER;
 	DECLARE msid INTEGER;
 	-- for crew while loop
@@ -59,6 +58,14 @@ BEGIN
     DECLARE waypoint_active_param NVARCHAR(10); -- 0 or 1
     DECLARE waypoint_completed_param NVARCHAR(10); -- 0 or 1
     
+    -- error handling
+	DECLARE errno INTEGER;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		GET CURRENT DIAGNOSTICS CONDITION 1 errno = MYSQL_ERRNO;
+		SELECT errno AS MYSQL_ERROR;
+		ROLLBACK;
+    END;
     
 	START TRANSACTION;
 
@@ -70,8 +77,14 @@ BEGIN
 		SET asid = (SELECT status_id FROM tblAIRCRAFT_STATUS WHERE status_short_desc = "OAM");
 		
 		-- Step 2: assign aircraft (check if aircraft is RFM and update status to OAM)
-		INSERT INTO tblASSIGNED_STATUS(status_id, aircraft_id)
-		VALUES(asid, aircraft_id_param);
+
+		UPDATE tblASSIGNED_STATUS
+		SET status_id = 3
+		WHERE aircraft_id = aircraft_id_param;
+
+		-- TODO implement this logic
+		-- INSERT INTO tblASSIGNED_STATUS(status_id, aircraft_id)
+		-- VALUES(asid, aircraft_id_param);
 		
 		-- determine mission m_status_id
 		SET msid = (SELECT m_status_id FROM tblMISSION_STATUS WHERE m_status_short_desc = "IP");
@@ -82,15 +95,15 @@ BEGIN
         
 		-- Step 4: insert patient details
 		INSERT INTO tblPATIENT(
-			mission_id, patient_gender, patient_short_report, patient_intubated, patient_drips, 
+			mission_id, patient_gender_id, patient_short_report, patient_intubated, patient_drips, 
 			patient_age, patient_weight, patient_cardiac, patient_gi_bleed, patient_OB
 		)
 		VALUES(
-			mission_id_param, patient_gender_param, patient_short_report_param, patient_intubated_param,
+			mission_id_param, patient_gender_id_param, patient_short_report_param, patient_intubated_param,
 			patient_drips_param, patient_age_param, patient_weight_param, patient_cardiac_param,
 			patient_gi_bleed_param, patient_OB_param
 		);
-		
+        
         -- Step 5: iterate over crew and add each crewmember to mission in the specified role
 		SET num_crew =  JSON_LENGTH(mission_personnel_param); -- 2
 
@@ -126,10 +139,10 @@ BEGIN
 			SET selector_2 = CONCAT('$[', iterator_2,  ']'); -- JSON query selector for waypoint in JSON array
 			SET waypoint = JSON_EXTRACT(mission_waypoints_param, selector_2); -- retrieve crew member object from JSON array
 			
-            SET waypoint_id_param = JSON_EXTRACT(waypoint, '$.ID');
-			SET waypoint_ETA_param = JSON_EXTRACT(waypoint, '$.ETA');
-			SET waypoint_active_param = JSON_EXTRACT(waypoint, '$.active');
-			SET waypoint_completed_param = JSON_EXTRACT(waypoint, '$.completed');
+            SET waypoint_id_param = JSON_UNQUOTE(JSON_EXTRACT(waypoint, '$.ID'));
+			SET waypoint_ETA_param = JSON_UNQUOTE(JSON_EXTRACT(waypoint, '$.ETA'));
+			SET waypoint_active_param = JSON_UNQUOTE(JSON_EXTRACT(waypoint, '$.active'));
+			SET waypoint_completed_param = JSON_UNQUOTE(JSON_EXTRACT(waypoint, '$.completed'));
 	
 			-- lookup personnel_crew_type_id from lookup tables
 			SET pctid = (
@@ -156,7 +169,7 @@ DELIMITER ;
 Sample new mission:
 
 CALL uspNewMission(
-	"5",
+	"5", -- new mission id
     "18-0080",
     "2", -- AL3, N124AL, Lear 31A
     "2", -- King County Sherifft
@@ -176,18 +189,53 @@ CALL uspNewMission(
 );
 
 */
-CALL uspUpdateACLocation("1", "47.4441", "-121.3249");
 
+--CALL uspUpdateACLocation("1", "47.4441", "-121.3249", "Bremerton Base");
 DROP PROCEDURE IF EXISTS `uspUpdateACLocation`;
 CREATE PROCEDURE uspUpdateACLocation(
 	IN aid INTEGER, 
 	IN lat_param DECIMAL(9,6),
-	IN long_param DECIMAL(9,6)
+	IN long_param DECIMAL(9,6),
+	IN friendly_name_param NVARCHAR(50)
 )
 BEGIN
 	UPDATE tblAIRCRAFT
-	SET ac_lat = lat_param, ac_long = long_param
+	SET ac_lat = lat_param, ac_long = long_param, ac_loc_display_name = friendly_name_param
 	WHERE tblAIRCRAFT.ac_id = aid;
 END;
 
-SELECT * FROM tblAIRCRAFT;
+-- CALL uspCompleteMission("4");
+DROP PROCEDURE IF EXISTS `uspCompleteMission`;
+CREATE PROCEDURE uspCompleteMission(
+	IN mid INTEGER
+)
+BEGIN
+	DECLARE mission_status_complete_id INTEGER;
+	DECLARE aircraft_status_complete_id INTEGER;
+	DECLARE aid INTEGER;
+
+	CALL uspGetAircraftIDByMission(mid, aid);
+
+	SET mission_status_complete_id = (
+		SELECT m_status_id FROM tblMISSION_STATUS
+		WHERE m_status_short_desc = "COMPLETE"
+	);
+
+	SET aircraft_status_complete_id = (
+		SELECT status_id FROM tblAIRCRAFT_STATUS
+		WHERE status_short_desc = "RFM"
+	);
+
+	INSERT INTO tblASSIGNED_MISSION_STATUS(mission_id, m_status_id)
+	VALUES(mid, mission_status_complete_id);
+
+	UPDATE tblASSIGNED_STATUS
+	SET status_id = aircraft_status_complete_id
+	WHERE aircraft_id = aid;
+
+	-- TODO future state: INSERT instead of update to keep aircraft_status
+	-- history in tblASSIGNED_STATUS bridge table
+
+	-- INSERT INTO tblASSIGNED_STATUS(status_id, aircraft_id)
+	-- VALUES(aircraft_status_complete_id, aid);
+END;
