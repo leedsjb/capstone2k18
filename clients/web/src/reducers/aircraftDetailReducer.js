@@ -2,7 +2,9 @@ import {
     FETCH_AIRCRAFTDETAIL_PENDING,
     FETCH_AIRCRAFTDETAIL_SUCCESS,
     FETCH_AIRCRAFTDETAIL_ERROR,
-    UPDATE_AIRCRAFTDETAIL_POSITION
+    UPDATE_AIRCRAFTDETAIL_POSITION,
+    AIRCRAFTDETAIL_NEW_MISSION,
+    AIRCRAFTDETAIL_MISSION_COMPLETE
 } from "../actions/aircraftDetail/types";
 
 const intitialState = {
@@ -29,13 +31,21 @@ const aircraftDetailReducer = (state = intitialState, action) => {
                 error: action.error
             };
         case UPDATE_AIRCRAFTDETAIL_POSITION:
-            return {
-                ...state,
-                data: {
-                    ...state.data,
-                    ...action.payload
-                }
-            };
+        case AIRCRAFTDETAIL_NEW_MISSION:
+        case AIRCRAFTDETAIL_MISSION_COMPLETE:
+            if (
+                !Array.isArray(state.data) &&
+                state.data.id === action.payload.id
+            ) {
+                return {
+                    ...state,
+                    data: {
+                        ...state.data,
+                        ...action.payload
+                    }
+                };
+            }
+            return state;
         default:
             return state;
     }
