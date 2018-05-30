@@ -297,23 +297,18 @@ func subscribe(subscription *pubsub.Subscription, notifier *handlers.Notifier, p
 			msgType := "aircraft-props-update"
 			parserCtx.ParseAircraftPropsUpdate(msg, pulledMsg, msgType)
 
-		// [PENDING]: Wait for Brian to add ID to these actions
 		case "test_ac_crew_update_sub":
 			msg := &messages.Aircraft_Crew_Update{}
 			msgType := "aircraft-crew-update"
 			parserCtx.ParseAircraftCrewUpdate(msg, pulledMsg, msgType)
-			// TODO: call sql sproc
 		case "test_ac_service_schedule_sub":
 			msg := &messages.Aircraft_Service_Schedule{}
 			msgType := "aircraft-service-schedule"
 			parserCtx.ParseAircraftServiceSchedule(msg, pulledMsg, msgType)
-			// TODO: call sql sproc
 		case "test_ac_position_update_sub":
 			msg := &messages.Aircraft_Pos_Update{}
 			msgType := "aircraft-position-update"
 			parserCtx.ParseAircraftPositionUpdate(msg, pulledMsg, msgType)
-			// TODO: call sql sproc
-		//[END PENDING]
 
 		case "test_user_create_sub":
 			msg := &messages.User{}
