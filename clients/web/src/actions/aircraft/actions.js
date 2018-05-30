@@ -19,10 +19,12 @@ export function fetchAircraft(term, status, category) {
 
             if (term) {
                 url = `${url}?q=${term}`;
-            } else if (status) {
+            } else if (status && !category) {
                 url = `${url}?status=${status}`;
-            } else if (category) {
+            } else if (category && !status) {
                 url = `${url}?category=${category}`;
+            } else if (category && status) {
+                url = `${url}?status=${status}&category=${category}`;
             }
 
             const { data } = await axios.get(url);
