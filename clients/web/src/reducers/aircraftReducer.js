@@ -2,7 +2,9 @@ import {
     FETCH_AIRCRAFT_PENDING,
     FETCH_AIRCRAFT_SUCCESS,
     FETCH_AIRCRAFT_ERROR,
-    UPDATE_AIRCRAFT_POSITION
+    UPDATE_AIRCRAFT_POSITION,
+    AIRCRAFT_NEW_MISSION,
+    AIRCRAFT_MISSION_COMPLETE
 } from "../actions/aircraft/types";
 
 const initialState = {
@@ -29,6 +31,8 @@ const aircraftReducer = (state = initialState, action) => {
                 error: action.error
             };
         case UPDATE_AIRCRAFT_POSITION:
+        case AIRCRAFT_NEW_MISSION:
+        case AIRCRAFT_MISSION_COMPLETE:
             return {
                 ...state,
                 data: [
