@@ -15,7 +15,6 @@ import PeoplePage from "../../pages/PeoplePage";
 import PeopleDetailPage from "../../pages/PeopleDetailPage";
 import ProfilePage from "../../pages/ProfilePage";
 import ResourcesPage from "../../pages/ResourcesPage";
-import SignInPage from "../../pages/SignInPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (

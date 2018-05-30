@@ -1,6 +1,8 @@
 import React from "react";
 import { Flex } from "grid-styled";
 import { Link } from "react-router-dom";
+import { withTheme } from "styled-components";
+import Media from "react-media";
 
 import Box from "../../components/Box";
 import ButtonPrimaryGradient from "../../components/ButtonPrimaryGradient";
@@ -28,17 +30,12 @@ import tiffany from "../../images/tiffany.png";
 import trackMissions from "../../images/trackMissions.png";
 import vincent from "../../images/vincent.png";
 
-const HomePage = () => {
+const HomePage = ({ theme: { colors, breakpoints } }) => {
     return (
         <div>
             <Box bg="#F7F9FA">
                 <Container>
-                    <Box
-                        mx="auto"
-                        width={["100%", 488, "100%"]}
-                        pt={12}
-                        pb={24}
-                    >
+                    <Box mx="auto" pt={12} pb={24}>
                         <Flex
                             justifyContent="space-between"
                             alignItems="center"
@@ -88,9 +85,16 @@ const HomePage = () => {
                                     </ButtonPrimaryGradient>
                                 </Link>
                             </Flex>
-                            <Box maxWidth={320}>
-                                <Image src={phone} w="100%" />
-                            </Box>
+
+                            <Media query={`(min-width: ${breakpoints[1]})`}>
+                                {matches =>
+                                    matches ? (
+                                        <Box maxWidth={320}>
+                                            <Image src={phone} w="100%" />
+                                        </Box>
+                                    ) : null
+                                }
+                            </Media>
                         </Flex>
                     </Box>
                 </Container>
@@ -101,13 +105,17 @@ const HomePage = () => {
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         alignItems="center"
-                        justifyContent="center"
                     >
                         <Box maxWidth={488} mr={[0, 0, 12]}>
                             <Image src={second} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={5} pt={5} color="white">
+                            <Heading
+                                is="h2"
+                                fontSize={5}
+                                mt={[12, 12, 0]}
+                                color="white"
+                            >
                                 Because every second counts
                             </Heading>
                             <Measure mt={3} color="white">
@@ -125,12 +133,12 @@ const HomePage = () => {
             </RedBox>
 
             <Container py={24}>
-                <Box mx="auto" width={["100%", 488, "100%"]}>
+                <Box>
                     <Heading is="h2" fontSize={5} mb={4}>
                         Elevating health care technology
                     </Heading>
-                    <Flex flexWrap={["wrap", "wrap", "nowrap"]} mt={18}>
-                        <Box mr={12}>
+                    <Flex flexWrap={["wrap", "wrap", "nowrap"]}>
+                        <Box mr={[0, 12]} mt={18}>
                             <Icon glyph="devices" size={48} />
                             <Heading is="h4" fontSize={4} mt={8}>
                                 Use anywhere
@@ -141,7 +149,7 @@ const HomePage = () => {
                             </Measure>
                         </Box>
 
-                        <Box mr={12}>
+                        <Box mr={[0, 12]} mt={18}>
                             <Icon glyph="checkShield" size={48} />
                             <Heading is="h4" fontSize={4} mt={8}>
                                 HIPAA Compliant
@@ -152,7 +160,7 @@ const HomePage = () => {
                             </Measure>
                         </Box>
 
-                        <Box>
+                        <Box mt={18}>
                             <Icon glyph="wifiCheck" size={48} />
                             <Heading is="h4" fontSize={4} mt={8}>
                                 Works offline
@@ -176,10 +184,15 @@ const HomePage = () => {
                             "column-reverse",
                             "row"
                         ]}
-                        alignItems="center"
+                        alignItems={["flex-start", "flex-start", "center"]}
                     >
-                        <Box mr={[0, 0, 5]}>
-                            <Heading is="h2" fontSize={5} color="white">
+                        <Box mr={[0, 0, 18]}>
+                            <Heading
+                                is="h2"
+                                fontSize={5}
+                                color="white"
+                                mt={[12, 12, 0]}
+                            >
                                 Track missions
                             </Heading>
                             <Measure mt={3} color="white">
@@ -187,7 +200,7 @@ const HomePage = () => {
                                 missions on a map as they are happening.
                             </Measure>
                         </Box>
-                        <Box maxWidth={320}>
+                        <Box maxWidth={488}>
                             <Image src={trackMissions} width="100%" />
                         </Box>
                     </Flex>
@@ -196,7 +209,7 @@ const HomePage = () => {
 
             <Box bg="#F7F9FA">
                 <Container py={24}>
-                    <Box mx="auto" width={["100%", 488, "100%"]}>
+                    <Box>
                         <Flex
                             flexWrap={["wrap", "wrap", "nowrap"]}
                             alignItems="center"
@@ -227,10 +240,15 @@ const HomePage = () => {
                             "column-reverse",
                             "row"
                         ]}
-                        alignItems="center"
+                        alignItems={["flex-start", "flex-start", "center"]}
                     >
                         <Box mr={[0, 0, 5]}>
-                            <Heading is="h2" fontSize={5} color="white">
+                            <Heading
+                                is="h2"
+                                fontSize={5}
+                                color="white"
+                                mt={[12, 12, 0]}
+                            >
                                 Find the right person
                             </Heading>
                             <Measure mt={3} color="white">
@@ -250,13 +268,12 @@ const HomePage = () => {
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         alignItems="center"
-                        justifyContent="center"
                     >
                         <Box maxWidth={488} mr={[0, 0, 12]}>
                             <Image src={partner} width={1} />
                         </Box>
                         <Box>
-                            <Heading is="h2" fontSize={5}>
+                            <Heading is="h2" fontSize={5} mt={[12, 12, 0]}>
                                 About Airlift Northwest
                             </Heading>
                             <Measure mt={3}>
@@ -283,15 +300,16 @@ const HomePage = () => {
                     <Heading is="h2" fontSize={5} color="white">
                         Team
                     </Heading>
-                    <Flex
-                        flexWrap="wrap"
-                        justifyContent="space-between"
-                        mt={18}
-                    >
+                    <Flex flexWrap="wrap" justifyContent="space-between">
                         <Flex
                             flexDirection="column"
                             alignItems="center"
-                            width="calc(100% / 4 - 24px)"
+                            width={[
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 4 - 24px)"
+                            ]}
+                            mt={18}
                         >
                             <Image
                                 backgroundSize="cover"
@@ -319,7 +337,12 @@ const HomePage = () => {
                         <Flex
                             flexDirection="column"
                             alignItems="center"
-                            width="calc(100% / 4 - 24px)"
+                            width={[
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 4 - 24px)"
+                            ]}
+                            mt={18}
                         >
                             <Image
                                 backgroundSize="cover"
@@ -348,7 +371,12 @@ const HomePage = () => {
                         <Flex
                             flexDirection="column"
                             alignItems="center"
-                            width="calc(100% / 4 - 24px)"
+                            width={[
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 4 - 24px)"
+                            ]}
+                            mt={18}
                         >
                             {" "}
                             <Image
@@ -378,9 +406,13 @@ const HomePage = () => {
                         <Flex
                             flexDirection="column"
                             alignItems="center"
-                            width="calc(100% / 4 - 24px)"
+                            width={[
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 2 - 24px)",
+                                "calc(100% / 4 - 24px)"
+                            ]}
+                            mt={18}
                         >
-                            {" "}
                             <Image
                                 backgroundSize="cover"
                                 borderRadius="50%"
@@ -411,7 +443,10 @@ const HomePage = () => {
 
             <Box bg="#F7F9FA" py={24}>
                 <Container>
-                    <Flex flexDirection="column" alignItems="center">
+                    <Flex
+                        flexDirection="column"
+                        alignItems={["flex-start", "flex-start", "center"]}
+                    >
                         <Box maxWidth={792}>
                             <Image src={heli} width={1} />
                         </Box>
@@ -424,7 +459,10 @@ const HomePage = () => {
                         >
                             Ready for takeoff?
                         </Heading>
-                        <Span fontWeight="normal" textAlign="center">
+                        <Span
+                            fontWeight="normal"
+                            textAlign={["left", "left", "center"]}
+                        >
                             Elevate is available to Airlift Northwest employees
                         </Span>
 
@@ -452,4 +490,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default withTheme(HomePage);
