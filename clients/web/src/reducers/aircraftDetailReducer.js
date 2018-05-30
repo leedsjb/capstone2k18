@@ -1,7 +1,8 @@
 import {
     FETCH_AIRCRAFTDETAIL_PENDING,
     FETCH_AIRCRAFTDETAIL_SUCCESS,
-    FETCH_AIRCRAFTDETAIL_ERROR
+    FETCH_AIRCRAFTDETAIL_ERROR,
+    UPDATE_AIRCRAFTDETAIL_POSITION
 } from "../actions/aircraftDetail/types";
 
 const intitialState = {
@@ -26,6 +27,14 @@ const aircraftDetailReducer = (state = intitialState, action) => {
         case FETCH_AIRCRAFTDETAIL_ERROR:
             return {
                 error: action.error
+            };
+        case UPDATE_AIRCRAFTDETAIL_POSITION:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    ...action.payload
+                }
             };
         default:
             return state;

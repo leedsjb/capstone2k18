@@ -1,7 +1,8 @@
 import {
     FETCH_AIRCRAFT_PENDING,
     FETCH_AIRCRAFT_SUCCESS,
-    FETCH_AIRCRAFT_ERROR
+    FETCH_AIRCRAFT_ERROR,
+    UPDATE_AIRCRAFT_POSITION
 } from "../actions/aircraft/types";
 
 const initialState = {
@@ -27,7 +28,7 @@ const aircraftReducer = (state = initialState, action) => {
             return {
                 error: action.error
             };
-        case "UPDATE_AIRCRAFT_POSITION":
+        case UPDATE_AIRCRAFT_POSITION:
             return {
                 ...state,
                 data: [
