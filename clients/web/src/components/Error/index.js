@@ -10,8 +10,8 @@ import Button from "../Button";
 
 const Error = ({ title, content, theme: { colors }, notFound }) => {
     if (notFound) {
-        title = "TEST";
-        content = "Placeholder text lalala";
+        title = "Page Not Found";
+        content = "The page you are looking for cannot be found";
     }
 
     return (

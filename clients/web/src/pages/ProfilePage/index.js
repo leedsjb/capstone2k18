@@ -34,7 +34,6 @@ class ProfilePage extends Component {
             !Array.isArray(this.props.profile.data)
         ) {
             let colors = this.props.theme.colors;
-            console.log(colors);
 
             return (
                 <Container py={12}>

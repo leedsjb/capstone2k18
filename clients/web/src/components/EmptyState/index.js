@@ -5,7 +5,7 @@ import { withTheme } from "styled-components";
 import Heading from "../Heading";
 import Illustration from "../Illustration";
 
-const EmptyState = ({ page, theme: { colors } }) => {
+const EmptyState = ({ showContent, page, theme: { colors } }) => {
     let glyph;
     let size;
     let title;
@@ -47,7 +47,7 @@ const EmptyState = ({ page, theme: { colors } }) => {
                 textAlign="center"
                 mt={1}
             >
-                {content}
+                {showContent ? content : null}
             </Heading>
         </Flex>
     );

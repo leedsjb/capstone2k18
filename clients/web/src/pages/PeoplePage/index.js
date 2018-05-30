@@ -146,7 +146,11 @@ class PeoplePage extends Component {
     }
 
     renderPeopleList() {
-        if (!this.props.people.pending && this.props.people.data.length > 0) {
+        if (
+            !this.props.people.pending &&
+            this.props.people.data &&
+            this.props.people.data.length > 0
+        ) {
             return this.props.people.data.map((person, i) => {
                 return (
                     <div key={person.id}>
@@ -165,6 +169,17 @@ class PeoplePage extends Component {
                     </div>
                 );
             });
+        } else if (!this.props.people.pending && this.state.isSearchingPeople) {
+            return (
+                <Flex
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    flex={1}
+                >
+                    <EmptyState page="people" showContent />
+                </Flex>
+            );
         } else if (!this.props.people.pending) {
             return (
                 <Flex
@@ -235,7 +250,11 @@ class PeoplePage extends Component {
     }
 
     renderGroupList() {
-        if (!this.props.groups.pending && this.props.groups.data.length > 0) {
+        if (
+            !this.props.groups.pending &&
+            this.props.groups.data &&
+            this.props.groups.data.length > 0
+        ) {
             return this.props.groups.data.map((group, i) => {
                 return (
                     <div key={group.id}>
@@ -256,6 +275,17 @@ class PeoplePage extends Component {
                     </div>
                 );
             });
+        } else if (!this.props.groups.pending && this.state.isSearchingGroups) {
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState page="groups" showContent />
+                </Flex>
+            );
         } else if (!this.props.groups.pending) {
             return (
                 <Flex

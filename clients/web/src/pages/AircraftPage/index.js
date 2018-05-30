@@ -72,7 +72,7 @@ class AircraftPage extends Component {
     }
 
     renderAircraft(aircraft) {
-        if (!aircraft.pending && aircraft.data.length > 0) {
+        if (!aircraft.pending && aircraft.data && aircraft.data.length > 0) {
             return (
                 <div>
                     {aircraft.data.map((a, i) => {
@@ -106,6 +106,17 @@ class AircraftPage extends Component {
                         );
                     })}
                 </div>
+            );
+        } else if (!aircraft.pending && this.state.isSearching) {
+            return (
+                <Flex
+                    flexDirection="column"
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <EmptyState page="aircraft" showContent />
+                </Flex>
             );
         } else if (!aircraft.pending) {
             return (
