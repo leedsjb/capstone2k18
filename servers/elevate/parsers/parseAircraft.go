@@ -14,6 +14,13 @@ import (
 // Write to db?
 // Write to trie?
 
+type aircraftPosition struct {
+	ID   string `json:"id"`
+	Lat  string `json:"lat"`
+	Long string `json:"long"`
+	Area string `json:"area"`
+}
+
 func (ctx *ParserContext) ParseAircraftCreate(msg *messages.Aircraft_Create,
 	pulledMsg *pubsub.Message, msgType string) error {
 	log.Printf("[AIRCRAFT CREATE] before unmarshaling: %v", string(pulledMsg.Data))
@@ -217,29 +224,16 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
-	aircraftCallsign, err := ctx.GetAircraftCallsignByID(msg.ID)
-	if err != nil {
-		return fmt.Errorf("Error getting aircraft callsign: %v\n", err)
-	}
-
-	aircraft := &messages.Aircraft{
-		Callsign: aircraftCallsign,
-		Lat:      msg.PosLat,
-		Long:     msg.PosLong,
-		Area:     msg.PosFriendlyName,
-	}
-
-	aircraftDetail := &messages.AircraftDetail{
-		Callsign: aircraftCallsign,
-		Lat:      msg.PosLat,
-		Long:     msg.PosLong,
-		Area:     msg.PosFriendlyName,
+	aircraft := &aircraftPosition{
+		ID:   msg.ID,
+		Lat:  msg.PosLat,
+		Long: msg.PosLong,
+		Area: msg.PosFriendlyName,
 	}
 
 	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraft)
-	fmt.Printf("[AIRCRAFT POS] Notify client: %v\n", aircraftDetail)
 	ctx.ClientNotify(aircraft, "UPDATE_AIRCRAFT_POSITION", pulledMsg)
-	ctx.ClientNotify(aircraftDetail, "UPDATE_AIRCRAFTDETAIL_POSITION", pulledMsg)
+	ctx.ClientNotify(aircraft, "UPDATE_AIRCRAFTDETAIL_POSITION", pulledMsg)
 
 	// ADD POSITION UPDATE TO DB
 	if err := ctx.UpdateAircraftPosition(msg); err != nil {
