@@ -14,6 +14,39 @@ import (
 // const layout = "2006-01-02 15:04:05.0000000 -07:00"
 const layout = "2006-01-02 15:04:05"
 
+type missionAircraft struct {
+	ID      int         `json:"id"` // aircraft ID
+	Status  string      `json:"status"`
+	Mission *newMission `json:"mission"`
+}
+
+type newMission struct {
+	Type            string                            `json:"type"`
+	NextWaypointETE string                            `json:"nextWaypointETE"`
+	Waypoints       []*messages.ClientMissionWaypoint `json:"waypoints"`
+	FlightNum       string                            `json:"flightNum"`
+	Completed       string                            `json:"completed"`
+}
+
+type missionAircraftDetail struct {
+	ID       int               `json:"id"`
+	Status   string            `json:"status"`
+	Callsign string            `json:"callsign"`
+	Mission  *newMissionDetail `json:"mission"`
+}
+
+type newMissionDetail struct {
+	Type            string                            `json:"type"`
+	NextWaypointETE string                            `json:"nextWaypointETE"`
+	Waypoints       []*messages.ClientMissionWaypoint `json:"waypoints"`
+	FlightNum       string                            `json:"flightNum"`
+	RadioReport     *messages.ClientPatient           `json:"radioReport"`
+	Requestor       *messages.Agency                  `json:"requestor"`
+	Receiver        *messages.Agency                  `json:"receiver"`
+	Completed       string                            `json:"completed"`
+	Crew            []*messages.Person                `json:"crew"`
+}
+
 // ParseMissionCreate handles when a mission is assigned to
 // an aircraft
 // notifies client and writes new info to db
@@ -119,17 +152,23 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		return fmt.Errorf("Couldn't get aircraft callsign: %v", err)
 	}
 
-	mission := &messages.Mission{
+	aircraftID, err := strconv.Atoi(msg.Asset)
+	if err != nil {
+		return fmt.Errorf("Could not convert aircraft ID from string to int: %v", err)
+	}
+
+	mission := &newMission{
 		Type:            msg.CallType,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
+		Completed:       "false",
 	}
 
-	aircraft := &messages.Aircraft{
-		Status:   aircraftStatus,
-		Callsign: aircraftCallsign,
-		Mission:  mission,
+	aircraft := &missionAircraft{
+		ID:      aircraftID,
+		Status:  aircraftStatus,
+		Mission: mission,
 	}
 
 	report := &messages.ClientPatient{}
@@ -179,7 +218,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		report.OB = false
 	}
 
-	missionDetail := &messages.MissionDetail{
+	missionDetail := &newMissionDetail{
 		Type:            msg.CallType,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
@@ -187,12 +226,14 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		RadioReport:     report,
 		Requestor:       requestor,
 		Receiver:        receiver,
+		Crew:            people,
+		Completed:       "false",
 	}
 
-	aircraftDetail := &messages.AircraftDetail{
+	aircraftDetail := &missionAircraftDetail{
+		ID:       aircraftID,
 		Status:   aircraftStatus,
 		Callsign: aircraftCallsign,
-		Crew:     people,
 		Mission:  missionDetail,
 	}
 
@@ -202,10 +243,6 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
 
 	// Notify crewmembers assigned to mission
-	aircraftID, err := strconv.Atoi(msg.Asset)
-	if err != nil {
-		return fmt.Errorf("Could not convert aircraft ID from string to int: %v", err)
-	}
 
 	if len(msg.CrewMembers) > 0 {
 		for _, memberID := range intCrewMemberIDs {
