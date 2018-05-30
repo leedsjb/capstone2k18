@@ -125,29 +125,31 @@ class AircraftDetailPage extends Component {
                             callsign={this.props.aircraftDetail.data.callsign}
                             nNum={this.props.aircraftDetail.data.nNum}
                             status={this.props.aircraftDetail.data.status}
-                            fontSize={3}
+                            fontSize={2}
                         />
                     </Container>
                     <Divider />
-                    <Container mt={3}>
+                    <Container mt={4}>
                         {this.props.aircraftDetail.data.mission ? (
                             <div>
-                                <Heading is="h2" fontSize={3} mt={1} mb={4}>
+                                <Heading is="h2" fontSize={3} mb={4}>
                                     Route
                                 </Heading>
-                                <Route
-                                    mb={4}
-                                    waypoints={
-                                        this.props.aircraftDetail.data.mission
-                                            .waypoints
-                                    }
-                                />
+                                <Box mb={6}>
+                                    <Route
+                                        waypoints={
+                                            this.props.aircraftDetail.data
+                                                .mission.waypoints
+                                        }
+                                    />
+                                </Box>
                             </div>
                         ) : null}
 
                         <Box height={160} my={4}>
                             <InsetMapView id={this.props.id} />
                         </Box>
+
                         <Flex alignItems="center">
                             <Icon glyph="earth" size={16} />
                             <Box ml={2}>
