@@ -13,7 +13,7 @@ const Button = sys(
         px: 3,
         py: 2,
         color: "white",
-        borderRadius: 2,
+        borderRadius: 4,
         border: 0
     },
     props => ({
