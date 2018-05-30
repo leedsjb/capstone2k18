@@ -35,13 +35,16 @@ const aircraftReducer = (state = initialState, action) => {
         case AIRCRAFT_MISSION_COMPLETE:
             return {
                 ...state,
-                data: [
-                    ...state.data.filter(a => a.id !== action.payload.id),
-                    {
-                        ...state.data.find(a => a.id === action.payload.id),
-                        ...action.payload
+                data: state.data.map(item => {
+                    if (item.id !== action.payload.id) {
+                        return item;
                     }
-                ]
+
+                    return {
+                        ...item,
+                        ...action.payload
+                    };
+                })
             };
         default:
             return state;

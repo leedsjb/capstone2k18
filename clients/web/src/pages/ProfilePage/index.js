@@ -33,8 +33,6 @@ class ProfilePage extends Component {
             !this.props.profile.pending &&
             !Array.isArray(this.props.profile.data)
         ) {
-            let colors = this.props.theme.colors;
-
             return (
                 <Container py={12}>
                     <Flex alignItems="center" flexDirection="column">
