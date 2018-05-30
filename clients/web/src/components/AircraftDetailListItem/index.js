@@ -129,7 +129,7 @@ class AircraftDetailListItem extends Component {
                                     }
                                     mb={4}
                                 >
-                                    Out of Service Information
+                                    Out of Service
                                 </Heading>
                                 <OOSInformation
                                     OOS={this.props.aircraftDetail.data.OOS}

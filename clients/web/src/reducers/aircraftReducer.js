@@ -27,6 +27,14 @@ const aircraftReducer = (state = initialState, action) => {
             return {
                 error: action.error
             };
+        case "UPDATE_AIRCRAFT_POSITION":
+            return {
+                ...state,
+                data: [
+                    ...state.data.filter(a => a.id !== action.payload.id),
+                    action.payload
+                ]
+            };
         default:
             return state;
     }
