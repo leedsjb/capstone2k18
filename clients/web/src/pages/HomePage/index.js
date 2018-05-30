@@ -105,6 +105,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
                     <Flex
                         flexWrap={["wrap", "wrap", "nowrap"]}
                         alignItems="center"
+                        justifyContent="center"
                     >
                         <Box maxWidth={488} mr={[0, 0, 12]}>
                             <Image src={second} width={1} />
@@ -133,7 +134,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
             </RedBox>
 
             <Container py={24}>
-                <Box>
+                <Box mx="auto" width={["100%", 488, "100%"]}>
                     <Heading is="h2" fontSize={5} mb={4}>
                         Elevating health care technology
                     </Heading>
@@ -184,7 +185,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
                             "column-reverse",
                             "row"
                         ]}
-                        alignItems={["flex-start", "flex-start", "center"]}
+                        alignItems="center"
                     >
                         <Box mr={[0, 0, 18]}>
                             <Heading
@@ -209,7 +210,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
 
             <Box bg="#F7F9FA">
                 <Container py={24}>
-                    <Box>
+                    <Box mx="auto" width={["100%", 488, "100%"]}>
                         <Flex
                             flexWrap={["wrap", "wrap", "nowrap"]}
                             alignItems="center"
@@ -240,7 +241,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
                             "column-reverse",
                             "row"
                         ]}
-                        alignItems={["flex-start", "flex-start", "center"]}
+                        alignItems="center"
                     >
                         <Box mr={[0, 0, 5]}>
                             <Heading
@@ -265,33 +266,35 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
 
             <Box>
                 <Container py={24}>
-                    <Flex
-                        flexWrap={["wrap", "wrap", "nowrap"]}
-                        alignItems="center"
-                    >
-                        <Box maxWidth={488} mr={[0, 0, 12]}>
-                            <Image src={partner} width={1} />
-                        </Box>
-                        <Box>
-                            <Heading is="h2" fontSize={5} mt={[12, 12, 0]}>
-                                About Airlift Northwest
-                            </Heading>
-                            <Measure mt={3}>
-                                Elevate was built together with Airlift
-                                Northwest, the preeminent medical transport
-                                service in the Pacific Northwest.
-                            </Measure>
-                            <a
-                                href="http://airliftnw.org/"
-                                rel="noopener noreferrer"
-                                target="_blank"
-                            >
-                                <ButtonPrimaryGradient mt={6}>
-                                    Get to know Airlift
-                                </ButtonPrimaryGradient>
-                            </a>
-                        </Box>
-                    </Flex>
+                    <Box mx="auto" width={["100%", 488, "100%"]}>
+                        <Flex
+                            flexWrap={["wrap", "wrap", "nowrap"]}
+                            alignItems="center"
+                        >
+                            <Box maxWidth={488} mr={[0, 0, 12]}>
+                                <Image src={partner} width={1} />
+                            </Box>
+                            <Box>
+                                <Heading is="h2" fontSize={5} mt={[12, 12, 0]}>
+                                    About Airlift Northwest
+                                </Heading>
+                                <Measure mt={3}>
+                                    Elevate was built together with Airlift
+                                    Northwest, the preeminent medical transport
+                                    service in the Pacific Northwest.
+                                </Measure>
+                                <a
+                                    href="http://airliftnw.org/"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
+                                    <ButtonPrimaryGradient mt={6}>
+                                        Get to know Airlift
+                                    </ButtonPrimaryGradient>
+                                </a>
+                            </Box>
+                        </Flex>
+                    </Box>
                 </Container>
             </Box>
 
@@ -443,10 +446,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
 
             <Box bg="#F7F9FA" py={24}>
                 <Container>
-                    <Flex
-                        flexDirection="column"
-                        alignItems={["flex-start", "flex-start", "center"]}
-                    >
+                    <Flex flexDirection="column" alignItems="center">
                         <Box maxWidth={792}>
                             <Image src={heli} width={1} />
                         </Box>
