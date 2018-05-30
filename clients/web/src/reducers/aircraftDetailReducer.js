@@ -33,13 +33,19 @@ const aircraftDetailReducer = (state = intitialState, action) => {
         case UPDATE_AIRCRAFTDETAIL_POSITION:
         case AIRCRAFTDETAIL_NEW_MISSION:
         case AIRCRAFTDETAIL_MISSION_COMPLETE:
-            return {
-                ...state,
-                data: {
-                    ...state.data,
-                    ...action.payload
-                }
-            };
+            if (
+                !Array.isArray(state.data) &&
+                state.data.id === action.payload.id
+            ) {
+                return {
+                    ...state,
+                    data: {
+                        ...state.data,
+                        ...action.payload
+                    }
+                };
+            }
+            return state;
         default:
             return state;
     }
