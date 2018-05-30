@@ -33,11 +33,15 @@ longDiffA = longB - longA
 latIncrementA = latDiffA / numDotsA
 longIncrementA = longDiffA / numDotsA
 
+puts numDotsA
+
 # B -> C
 # Seattle to Portland
 
 distB=Math.sqrt(latB**2 + longB**2) 
 numDotsB = distB / 0.005
+
+puts numDotsB
 
 latDiffB = latC - latB
 longDiffB = longC - longB
@@ -49,7 +53,9 @@ longIncrementB = longDiffB / numDotsB
 # Portland to Yakima
 
 distC=Math.sqrt(latC**2 + longC**2) 
-numDotsC = distC / 0.0025
+numDotsC = distC / 0.005
+
+puts numDotsC
 
 latDiffC = latA - latC
 longDiffC = longA - longC
@@ -61,7 +67,9 @@ while true
     while curLat < latA && curLong < longA
         curLat += latIncrementA
         curLong += longIncrementA
-        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
+        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        puts "[#{curLat}, #{curLong}]"
         sleep 0.5
     end
 
@@ -72,7 +80,9 @@ while true
     while curLat < latB && curLong < longB
         curLat += latIncrementB
         curLong += longIncrementB
-        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
+        puts "[#{curLat}, #{curLong}]"
+        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
 
@@ -83,7 +93,9 @@ while true
     while curLat < latC && curLong < longC
         curLat += latIncrementC
         curLong += longIncrementC
-        %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
+        # %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
+        puts "[#{curLat}, #{curLong}]"
         sleep 0.5
     end
 end

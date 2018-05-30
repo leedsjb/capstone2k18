@@ -547,7 +547,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 				waypoint.ETA = waypointRow.ETA.Time.String()
 
 				if strings.ToLower(waypointRow.Active) == "1" {
-					nextETE = time.Until(waypointRow.ETA.Time).String()
+					nextETE = formatDuration(time.Until(waypointRow.ETA.Time))
 				}
 			}
 
@@ -594,7 +594,7 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			remaining := ""
 			if oosRow.EndTime.Valid {
 				oosFinishTime := time.Until(oosRow.EndTime.Time)
-				remaining = oosFinishTime.String()
+				remaining = formatDuration(oosFinishTime)
 			}
 
 			oos = &messages.OOS{
@@ -789,7 +789,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				waypoint.ETA = waypointRow.ETA.Time.String()
 
 				if strings.ToLower(waypointRow.Active) == "1" {
-					nextETE = time.Until(waypointRow.ETA.Time).String()
+					nextETE = formatDuration(time.Until(waypointRow.ETA.Time))
 				}
 			}
 
@@ -907,7 +907,7 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 			remaining := ""
 			if oosDetailRow.EndTime.Valid {
 				oosFinishTime := time.Until(oosDetailRow.EndTime.Time)
-				remaining = oosFinishTime.String()
+				remaining = formatDuration(oosFinishTime)
 			}
 
 			duration := ""
@@ -1052,4 +1052,35 @@ func (ctx *HandlerContext) getAircraftList(aircraftRows *sql.Rows) ([]*messages.
 		aircraftList = append(aircraftList, aircraft)
 	}
 	return aircraftList, nil
+}
+
+func formatDuration(t time.Duration) string {
+	t = t.Round(time.Minute)
+	h := t / time.Hour
+	t -= h * time.Hour
+	m := t / time.Minute
+
+	if h == 1 {
+		return fmt.Sprintf("%02d hour %02d min", h, m)
+	}
+
+	if h > 24 || h < -24 {
+		d := h / 24
+		h -= d * 24
+		if d == 1 || d == -1 {
+			if h == 1 || h == -1 {
+				return fmt.Sprintf("%02d day %02d hr %02d min", d, h, m)
+			} else {
+				return fmt.Sprintf("%02d day %02d hrs %02d min", d, h, m)
+			}
+		} else {
+			if h == 1 || h == -1 {
+				return fmt.Sprintf("%02d days %02d hr %02d min", d, h, m)
+			} else {
+				return fmt.Sprintf("%02d days %02d hrs %02d min", d, h, m)
+			}
+		}
+	}
+
+	return fmt.Sprintf("%02d hours %02d min", h, m)
 }

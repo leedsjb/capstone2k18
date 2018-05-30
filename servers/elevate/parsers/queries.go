@@ -519,6 +519,7 @@ func (ctx *ParserContext) NewMission(missionInfo *messages.Mission_Create, aircr
 	if err != nil {
 		return fmt.Errorf("Error adding new mission to DB: %v", err)
 	}
+	fmt.Printf("[NEW MISSON] SUCCESFULLY ADDED TO DB?!?!?!?!!!")
 	close(connect)
 	return nil
 }
