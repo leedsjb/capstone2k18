@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/leedsjb/capstone2k18/servers/elevate/models/messages"
@@ -15,7 +16,7 @@ import (
 // Write to trie?
 
 type aircraftPosition struct {
-	ID   string `json:"id"`
+	ID   int    `json:"id"`
 	Lat  string `json:"lat"`
 	Long string `json:"long"`
 	Area string `json:"area"`
@@ -224,8 +225,13 @@ func (ctx *ParserContext) ParseAircraftPositionUpdate(msg *messages.Aircraft_Pos
 	// 	PosFriendlyName string `json:"posFriendlyName"`
 	// }
 
+	aircraftID, err := strconv.Atoi(msg.ID)
+	if err != nil {
+		return fmt.Errorf("Couldn't convert aircraft msg.ID to int: %v", err)
+	}
+
 	aircraft := &aircraftPosition{
-		ID:   msg.ID,
+		ID:   aircraftID,
 		Lat:  msg.PosLat,
 		Long: msg.PosLong,
 		Area: msg.PosFriendlyName,
