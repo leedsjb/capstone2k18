@@ -45,7 +45,7 @@ const EmptyState = ({ showContent, page, theme: { colors } }) => {
                 fontSize={2}
                 fontWeight="normal"
                 textAlign="center"
-                mt={1}
+                mt={2}
             >
                 {showContent ? content : null}
             </Heading>

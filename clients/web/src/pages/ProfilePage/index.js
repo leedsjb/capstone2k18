@@ -44,7 +44,7 @@ class ProfilePage extends Component {
                                 Account
                             </Heading>
                             <Box mt={2}>
-                                <Span>
+                                <Span color="black2">
                                     Contact Chris Bishop if you'd like to update
                                     your information
                                 </Span>

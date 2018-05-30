@@ -37,7 +37,8 @@ class TitleBar extends Component {
                         <GradientBox
                             firstcolor="airlift1"
                             secondcolor="airlift2"
-                            p={3}
+                            px={4}
+                            py={3}
                         >
                             <Flex justifyContent="flex-start" align="center">
                                 <Box width={1 / 3}>
@@ -61,7 +62,8 @@ class TitleBar extends Component {
                         <GradientBox
                             firstcolor="airlift1"
                             secondcolor="airlift2"
-                            p={3}
+                            px={4}
+                            py={3}
                         >
                             <Flex justifyContent="space-between" align="center">
                                 {this.renderIconLeft()}

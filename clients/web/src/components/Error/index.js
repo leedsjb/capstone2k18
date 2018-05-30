@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Heading from "../Heading";
 import Box from "../Box";
 import Illustration from "../Illustration";
-import Button from "../Button";
+import ButtonPrimary from "../ButtonPrimary";
 
 const Error = ({ title, content, theme: { colors }, notFound }) => {
     if (notFound) {
@@ -17,7 +17,7 @@ const Error = ({ title, content, theme: { colors }, notFound }) => {
     return (
         <Flex flexDirection="column" alignItems="center">
             <Illustration glyph="airport" size={160} color={colors.black1} />
-            <Heading is="h3" fontSize={4} textAlign="center" mt={2}>
+            <Heading is="h3" fontSize={4} textAlign="center" mt={4}>
                 {title}
             </Heading>
             <Heading
@@ -25,19 +25,19 @@ const Error = ({ title, content, theme: { colors }, notFound }) => {
                 fontSize={2}
                 fontWeight="normal"
                 textAlign="center"
-                mt={1}
+                mt={2}
             >
                 {content}
             </Heading>
-            <Box mt={6}>
+            <Box mt={8}>
                 {notFound ? (
-                    <Button is={Link} to="/aircraft">
-                        Take me home
-                    </Button>
+                    <Link to="/aircraft">
+                        <ButtonPrimary>Take me home</ButtonPrimary>
+                    </Link>
                 ) : (
-                    <Button onClick={() => window.location.reload()}>
+                    <ButtonPrimary onClick={() => window.location.reload()}>
                         Refresh page
-                    </Button>
+                    </ButtonPrimary>
                 )}
             </Box>
         </Flex>
