@@ -78,9 +78,18 @@ INSERT INTO tblPERSONNEL(personnel_id, personnel_f_name, personnel_l_name, perso
 VALUES
 (1,"Tiffany","Chen","Developer","4258941368","tzc@uw.edu"),
 (2,"Benjamin","Leeds","Developer","7204804092","jbl@uw.edu"),
-(3,"Vincent","Van Der Meulen","Designer/Developer","4255986428","vmvdm@uw.edu"),
+(3,"Vincent","van er Meulen","Designer/Developer","4255986428","vmvdm@uw.edu"),
 (4,"Jessica","Basa","Developer","7757209045","jdb@uw.edu"),
-(5,"Brian","Crownhart","Developer","2222222222","bcrownhart@uw.edu");
+(5,"Brian","Crownhart","Developer","2222222222","bcrownhart@uw.edu"),
+(6,"Samantha","Leeds","Pediatric RN","4255478910","samantha@airliftnw.org"),
+(7, "Curtis", "Basa","Adult RN", "2065469898", "curtis@airliftnw.org"),
+(8, "Miranda", "van der Meulen", "Administrator on Call", "2064569512", "miranda@airliftnw.org"),
+(9, "Esther", "van der Meulen", "Pilot", "6502566847", "esther@airliftnw.org"),
+(10, "Derek", "Burkgren", "Pilot", "9804569879", "derek@airliftnw.org"),
+(11, "Greg", "Sakorafis", "Adult RN", "2063544875", "greg@airliftnw.org"),
+(12, "Daniel", "Leeds", "Pediatric RN", "6598956432", "daniel@airliftnw.org"),
+(13, "Brendan", "Kellogg", "Pediatric RN", "4587785955", "brendan@airliftnw.org"),
+(14, "Ishan", "Saksena", "Pilot", "4256588879", "ishan@airliftnw.org")
 
 INSERT INTO tblPERSONNEL_GROUP(personnel_group_ID,personnel_id,group_id)
 VALUES
@@ -91,7 +100,9 @@ VALUES
 (5,3,20), -- Vincent, RW OOS Mechanical
 (6,3,18), -- Vincent, PAIP
 (7,4,12), -- Jessica, JNU Lear
-(8,4,17); -- Jessica, OOS Group
+(8,4,17), -- Jessica, OOS Group
+(9,6,12),
+(10,6,18);
 
 INSERT INTO tblAIRCRAFT_TYPE(
     aircraft_type_id, aircraft_type_title, aircraft_type_desc,

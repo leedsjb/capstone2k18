@@ -256,6 +256,30 @@ BEGIN
     WHERE tblAIRCRAFT.ac_callsign=callsignQuery;
 END;
 
+DROP PROCEDURE IF EXISTS `uspGetAircraftCallsignByID`;
+CREATE PROCEDURE `uspGetAircraftCallsignByID`( 
+    IN idQuery NVARCHAR(50) 
+) 
+BEGIN 
+    SELECT tblAIRCRAFT.ac_callsign
+    FROM tblAIRCRAFT 
+    WHERE tblAIRCRAFT.ac_id=idQuery; 
+END
+
+-- CALL uspGetAircraftIDByMission("1");
+DROP PROCEDURE IF EXISTS `uspGetAircraftIDByMission`;
+CREATE PROCEDURE `uspGetAircraftIDByMission`( 
+    IN idQuery NVARCHAR(50),
+    OUT aid_output_param INTEGER
+) 
+BEGIN
+    SET aid_output_param = (
+        SELECT tblMISSION.aircraft_id
+        FROM tblMISSION 
+        WHERE tblMISSION.mission_id=idQuery 
+    );
+END;
+
 -- endpoint: /v1/??/{id}
 -- CALL uspGetMissionByAircraft(5);
 -- Given an aircraft return follwing details about current or most recent mission:
