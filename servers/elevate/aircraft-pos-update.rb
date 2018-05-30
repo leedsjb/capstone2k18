@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require "Math"
-
 # Global Constants
 
 areaA = "ALNW - Yakima"
@@ -15,6 +13,11 @@ longB = -122.309785
 areaC = "Portland"
 latC = 45.513499
 longC = -122.676489
+
+# current state
+curLat = latA
+curLong = longA
+friendlyName = areaA
 
 msg = "{\"id\":\"2\", \"posLat\":\"#{curLat}\",\"posLong\":\"#{curLong}\",\"posFriendlyName\":\"#{friendlyName}\"}"
 
@@ -56,22 +59,30 @@ longIncrementC = longDiffC / numDotsC
 
 while true
     while curLat < latA && curLong < longA
-        curLat += latIncrement
-        curLong += longIncrement
+        curLat += latIncrementA
+        curLong += longIncrementA
         %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
+
+    curLat = latB
+    curLong = longB
+    friendlyName = areaB
 
     while curLat < latB && curLong < longB
-        curLat += latIncrement
-        curLong += longIncrement
+        curLat += latIncrementB
+        curLong += longIncrementB
         %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
 
+    curLat = latC
+    curLong = longC
+    friendlyName = areaC
+
     while curLat < latC && curLong < longC
-        curLat += latIncrement
-        curLong += longIncrement
+        curLat += latIncrementC
+        curLong += longIncrementC
         %x(gcloud pubsub topics publish test_ac_position_update --message '#{msg}')
         sleep 0.5
     end
