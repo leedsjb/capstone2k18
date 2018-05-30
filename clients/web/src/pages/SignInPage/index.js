@@ -28,7 +28,7 @@ class SignInPage extends Component {
                         <Link to="/">
                             <Logo />
                         </Link>
-                        <Link to="/signin">Sign in</Link>
+                        <Link to="/aircraft">Sign in</Link>
                     </Flex>
                 </Box>
 

@@ -15,7 +15,6 @@ import PeoplePage from "../../pages/PeoplePage";
 import PeopleDetailPage from "../../pages/PeopleDetailPage";
 import ProfilePage from "../../pages/ProfilePage";
 import ResourcesPage from "../../pages/ResourcesPage";
-import SignInPage from "../../pages/SignInPage";
 
 const App = ({ theme: { breakpoints } }) => {
     return (
@@ -30,7 +29,6 @@ const App = ({ theme: { breakpoints } }) => {
                     matches ? (
                         <Switch>
                             <Route exact path="/" component={HomePage} />
-                            <Route path="/signin" component={SignInPage} />
                             <Route
                                 path="/aircraft/map/:id"
                                 render={({ match }) => (
@@ -63,7 +61,6 @@ const App = ({ theme: { breakpoints } }) => {
                     ) : (
                         <Switch>
                             <Route exact path="/" component={HomePage} />
-                            <Route path="/signin" component={SignInPage} />
                             <Route
                                 path="/aircraft/map/:id"
                                 component={AircraftPage}
