@@ -78,7 +78,7 @@ type Mission struct {
 	NextWaypointETE string                   `json:"nextWaypointETE"`
 	Waypoints       []*ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                   `json:"flightNum"`
-	Completed       string                   `json:"completed"`
+	Completed       bool                     `json:"completed"`
 }
 
 type Agency struct {
@@ -100,7 +100,7 @@ type MissionDetail struct {
 	RadioReport     *ClientPatient           `json:"radioReport"`
 	Requestor       *Agency                  `json:"requestor"`
 	Receiver        *Agency                  `json:"receiver"`
-	Completed       string                   `json:"completed"`
+	Completed       bool                     `json:"completed"`
 	Crew            []*Person                `json:"crew"`
 }
 

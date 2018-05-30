@@ -25,7 +25,7 @@ type newMission struct {
 	NextWaypointETE string                            `json:"nextWaypointETE"`
 	Waypoints       []*messages.ClientMissionWaypoint `json:"waypoints"`
 	FlightNum       string                            `json:"flightNum"`
-	Completed       string                            `json:"completed"`
+	Completed       bool                              `json:"completed"`
 }
 
 type missionAircraftDetail struct {
@@ -43,8 +43,17 @@ type newMissionDetail struct {
 	RadioReport     *messages.ClientPatient           `json:"radioReport"`
 	Requestor       *messages.Agency                  `json:"requestor"`
 	Receiver        *messages.Agency                  `json:"receiver"`
-	Completed       string                            `json:"completed"`
+	Completed       bool                              `json:"completed"`
 	Crew            []*messages.Person                `json:"crew"`
+}
+
+type completeMissionAircraft struct {
+	ID      int              `json:"id"`
+	Mission *completeMission `json:"mission"`
+}
+
+type completeMission struct {
+	Completed bool `json:"completed"`
 }
 
 // ParseMissionCreate handles when a mission is assigned to
@@ -162,7 +171,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		NextWaypointETE: nextWaypointETE,
 		Waypoints:       waypoints,
 		FlightNum:       msg.TCNum,
-		Completed:       "false",
+		Completed:       false,
 	}
 
 	aircraft := &missionAircraft{
@@ -227,7 +236,7 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 		Requestor:       requestor,
 		Receiver:        receiver,
 		Crew:            people,
-		Completed:       "false",
+		Completed:       false,
 	}
 
 	aircraftDetail := &missionAircraftDetail{
@@ -238,9 +247,9 @@ func (ctx *ParserContext) ParseMissionCreate(msg *messages.Mission_Create,
 	}
 
 	log.Printf("[CLIENT NOTIFY] Aircraft: %v", aircraft)
-	ctx.ClientNotify(aircraft, "FETCH_AIRCRAFT_SUCCESS", pulledMsg)
+	ctx.ClientNotify(aircraft, "AIRCRAFT_NEW_MISSION", pulledMsg)
 	log.Printf("[CLIENT NOTIFY AircraftDetail: %v", aircraftDetail)
-	ctx.ClientNotify(aircraftDetail, "FETCH_AIRCRAFTDETAIL_SUCCESS", pulledMsg)
+	ctx.ClientNotify(aircraftDetail, "AIRCRAFTDETAIL_NEW_MISSION", pulledMsg)
 
 	// Notify crewmembers assigned to mission
 
@@ -293,26 +302,14 @@ func (ctx *ParserContext) ParseMissionComplete(msg *messages.Mission_Complete,
 		return fmt.Errorf("Couldn't get aircraft ID given mission ID: %v", err)
 	}
 
-	mission := &messages.Mission{
-		Completed: "1",
-	}
-
 	aircraft := &messages.Aircraft{
 		ID:      aircraftID,
-		Mission: mission,
-	}
-
-	missionDetail := &messages.MissionDetail{
-		Completed: "1",
-	}
-
-	aircraftDetail := &messages.AircraftDetail{
-		ID:      aircraftID,
-		Mission: missionDetail,
+		Status:  "RFM",
+		Mission: nil,
 	}
 
 	ctx.ClientNotify(aircraft, "AIRCRAFT_MISSION_COMPLETE", pulledMsg)
-	ctx.ClientNotify(aircraftDetail, "AIRCRAFTDETAIL_MISSION_COMPLETE", pulledMsg)
+	ctx.ClientNotify(aircraft, "AIRCRAFTDETAIL_MISSION_COMPLETE", pulledMsg)
 
 	if err := ctx.CompleteMission(msg.MissionID); err != nil {
 		return fmt.Errorf("Couldn't complete mission: %v", err)

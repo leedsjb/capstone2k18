@@ -498,10 +498,16 @@ func (ctx *HandlerContext) GetAircraftSummary(currentRow *aircraftRow) (*message
 			if err != nil {
 				return nil, fmt.Errorf("Error scanning mission row: %v", err)
 			}
+
 			mission = &messages.Mission{
 				Type:      missionRow.Type,
 				FlightNum: missionRow.FlightNum,
-				Completed: missionRow.Completed,
+			}
+
+			if missionRow.Completed == "0" {
+				mission.Completed = false
+			} else {
+				mission.Completed = true
 			}
 		}
 		nextETE := ""
@@ -706,8 +712,14 @@ func (ctx *HandlerContext) GetAircraftDetailSummary(currentRow *aircraftDetailRo
 				// RadioReport
 				Requestor: requestor,
 				Receiver:  receiver,
-				Completed: missionDetailRow.Completed,
 			}
+
+			if missionDetailRow.Completed == "1" {
+				missionDetail.Completed = true
+			} else {
+				missionDetail.Completed = false
+			}
+
 		}
 		close(missionDetailRows)
 

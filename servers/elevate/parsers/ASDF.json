@@ -11,7 +11,10 @@ gcloud pubsub topics publish test_ac_position_update --message "{\"id\":\"2\", \
 
 gcloud pubsub topics publish test_ac_position_update --message "{\"id\":\"2\", \"posLat\":\"47.072592\",\"posLong\":\"-120.579702\",\"posFriendlyName\":\"ALNW - Yakima\"}"
 
-47.072592, -120.579702
+ALNW Yakima: 46.573515, -120.552011
+ALNW Seattle: 47.543445, -122.309785
+Portland: 45.513499, -122.676489
+
 
 gcloud pubsub topics publish test_mission_create --message
 "{
