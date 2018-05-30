@@ -6,7 +6,8 @@ const Label = sys(
     {
         is: "label",
         fontSize: 2,
-        mb: 1,
+        mt: 6,
+        mb: 3,
         align: "center",
         fontWeight: "bold"
     },
