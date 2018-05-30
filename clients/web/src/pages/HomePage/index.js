@@ -71,7 +71,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
                                     Critical Communication for Airborne Medical
                                     Missions
                                 </Heading>
-                                <Measure mt={4} mb={0}>
+                                <Measure mt={4} mb={0} mr={[12, 12, 0]}>
                                     Elevate is a mission-critical,
                                     high-availability application for Airlift
                                     Northwest emergency flight nurses and pilots
