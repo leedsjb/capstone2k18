@@ -41,6 +41,13 @@ class AircraftDetailPage extends Component {
         return (
             <Accordion>
                 <Box borderTop={`1px solid ${this.props.theme.colors.gray4}`}>
+                    {this.props.aircraftDetail.data.OOS ? (
+                        <AccordionSection title="OOS Information">
+                            <OOSInformation
+                                OOS={this.props.aircraftDetail.data.OOS}
+                            />
+                        </AccordionSection>
+                    ) : null}
                     {mission && mission.radioReport ? (
                         <AccordionSection title="Radio Report">
                             {mission.radioReport &&
@@ -63,9 +70,11 @@ class AircraftDetailPage extends Component {
                     )}
                     {this.props.aircraftDetail.data.crew ? (
                         <AccordionSection title="Assigned Crew">
-                            <CrewDetailListItem
-                                crew={this.props.aircraftDetail.data.crew}
-                            />
+                            <Box mt={-4} mb={6}>
+                                <CrewDetailListItem
+                                    crew={this.props.aircraftDetail.data.crew}
+                                />
+                            </Box>
                         </AccordionSection>
                     ) : (
                         <div />
@@ -84,13 +93,6 @@ class AircraftDetailPage extends Component {
                     ) : (
                         <div />
                     )}
-                    {this.props.aircraftDetail.data.OOS ? (
-                        <AccordionSection title="OOS Information">
-                            <OOSInformation
-                                OOS={this.props.aircraftDetail.data.OOS}
-                            />
-                        </AccordionSection>
-                    ) : null}
                 </Box>
             </Accordion>
         );
