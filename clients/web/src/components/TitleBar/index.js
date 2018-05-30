@@ -31,7 +31,7 @@ class TitleBar extends Component {
 
     render() {
         return (
-            <Media query={`(min-width: ${this.props.theme.breakpoints[1]})`}>
+            <Media query={`(min-width: 769px)`}>
                 {matches =>
                     matches ? null : this.props.showMap ? (
                         <GradientBox

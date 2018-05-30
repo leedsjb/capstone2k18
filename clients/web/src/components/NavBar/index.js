@@ -14,7 +14,7 @@ import logo from "../../images/logo.svg";
 
 const NavBar = ({ theme: { breakpoints, boxShadows, colors } }) => {
     return (
-        <Media query={`(min-width: ${breakpoints[1]})`}>
+        <Media query={`(min-width: 769px)`}>
             {matches =>
                 matches ? (
                     <Box
