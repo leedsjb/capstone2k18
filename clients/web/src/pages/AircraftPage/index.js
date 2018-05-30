@@ -49,7 +49,9 @@ class AircraftPage extends Component {
         super(props);
         this.state = {
             query: "",
-            isSearching: false
+            isSearching: false,
+            statusFilter: "",
+            categoryFilter: ""
         };
     }
 
@@ -239,10 +241,17 @@ class AircraftPage extends Component {
                                             break;
                                     }
 
-                                    this.props.fetchAircraft(
-                                        null,
-                                        status,
-                                        null
+                                    this.setState(
+                                        {
+                                            statusFilter: status
+                                        },
+                                        () => {
+                                            this.props.fetchAircraft(
+                                                null,
+                                                this.state.statusFilter,
+                                                this.state.categoryFilter
+                                            );
+                                        }
                                     );
                                 }}
                             />
@@ -262,10 +271,17 @@ class AircraftPage extends Component {
                                                 break;
                                         }
 
-                                        this.props.fetchAircraft(
-                                            null,
-                                            null,
-                                            category
+                                        this.setState(
+                                            {
+                                                categoryFilter: category
+                                            },
+                                            () => {
+                                                this.props.fetchAircraft(
+                                                    null,
+                                                    this.state.statusFilter,
+                                                    this.state.categoryFilter
+                                                );
+                                            }
                                         );
                                     }}
                                 />

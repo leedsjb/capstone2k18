@@ -79,7 +79,7 @@ const PeopleDetailsItem = ({ person }) => {
             {person.memberGroups ? (
                 <div>
                     <Container px={8}>
-                        <Heading fontSize={4} mt={6}>
+                        <Heading fontSize={4} mt={12} mb={2}>
                             Groups
                         </Heading>
                     </Container>

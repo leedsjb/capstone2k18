@@ -323,7 +323,7 @@ class PeoplePage extends Component {
                         </Span>
                     </Flex>
                     <Divider />
-                    <Container px={8} mt={6}>
+                    <Container px={8} mt={12} mb={6}>
                         <Heading is="h2" fontSize={4}>
                             Group members
                         </Heading>
