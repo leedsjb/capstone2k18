@@ -467,7 +467,7 @@ const HomePage = ({ theme: { colors, breakpoints } }) => {
                         </Span>
 
                         <Flex justifyContent="center" mt={8}>
-                            <Link to="/ai">
+                            <Link to="/aircraft">
                                 <ButtonPrimaryGradient>
                                     Get Started
                                 </ButtonPrimaryGradient>
