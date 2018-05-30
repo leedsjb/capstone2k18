@@ -32,7 +32,10 @@ const aircraftReducer = (state = initialState, action) => {
                 ...state,
                 data: [
                     ...state.data.filter(a => a.id !== action.payload.id),
-                    action.payload
+                    {
+                        ...state.data.find(a => a.id === action.payload.id),
+                        ...action.payload
+                    }
                 ]
             };
         default:
