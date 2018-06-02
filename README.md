@@ -7,11 +7,27 @@ Elevate is a mission-critical, high-availability application for Airlift Northwe
 
 ### Aircraft
 
+* Track aircraft. For every Airlift aircraft, see its current location and status, as well as any additional information such as patient information
+* Search for specific aircraft
+* Filter aircraft by status and/or category
+
 ### People
+
+* Look up contact information of Airlift Northwest employees
+* Browse organization by people or groups
+* Search for specific people or groups
 
 ### Resources
 
+* Access important Airlift Northwest resources, such as Ninth Brain LMS, in two clicks
+
 ## Project Structure
+
+* clients/web: contains the web client
+* clients/websocket: contains a client for WebSocket testing
+* deployment: contains deployment setup
+* servers/elevate: 
+* servers/mysql; 
 
 ## Rationale
 
