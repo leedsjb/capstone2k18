@@ -40,6 +40,14 @@ Elevate is a mission-critical, high-availability application for Airlift Northwe
 
 ### Backend
 
+* Why Go? 
+
+* Why Kubernetes?  We wanted to ensure that bringing Airlift Northwest the most up-to-date technology would be both sustainable and highly reliable. With Kubernetes, we are able to guarantee that our application will stay up and running without
+
+* Why Google Cloud? Airlift's lack of cloud storage limits the reliability and durability of their data. By using Google Cloud, we were able to avoid infrastructure costs, bypass the acquisition and installation of compute resources that would otherwise have been necessary, and structure our application in a scalable way.
+
+* Why MySQL? MySQL is an industry standard, well supported by development tools and application frameworks. This allows for flexibility on our end to tailor it to our needs.
+
 ## Contact
 
 J. Benjamin Leeds
