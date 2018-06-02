@@ -1,49 +1,34 @@
-# capstone2k18
-University of Washington Informatics Capstone 2018
+# Airlift Northwest Elevate: Delivering lifesaving care, faster.
+[Live](http://test.elevate.airliftnw.org/)
 
-## Development Flow
-Feature work should be done on branches named for the feature that is being developed. Once completed, create a pull request to merge
-your feature into the development branch for internal testing. To deploy to production the development branch will be merged to master. 
+Elevate is a mission-critical, high-availability application for Airlift Northwest emergency flight nurses and pilots in Washington and Alaska. These professionals transport severely ill or injured patients by airplane and helicopter to reach lifesaving medical treatment. We bridge the communication gap between the dispatch center on the ground and flight crews in the air by displaying real-time mission status. Elevate ensures flight crews arrive at the right location with the equipment and information needed to immediately administer lifesaving patient care.
 
-## Resources
-Articles/documentation that together explain our UI rationale. Meant to be read in order. Tutorials are optional.
+## Features
 
+### Aircraft
 
-### Component System
+### People
 
-#### Folder Structure
-[Components vs. containers](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+### Resources
 
-[Scaling React applications (only read the folder part)](https://www.smashingmagazine.com/2016/09/how-to-scale-react-applications/)
+## Project Structure
 
-#### Styled Components
-[Documentation](https://www.styled-components.com/docs)
+## Rationale
 
-[Rationale (optional)](https://www.youtube.com/watch?time_continue=89&v=bIK2NwoK9xk)
+### Frontend
 
-#### Rebass
-[Documentation](http://jxnblk.com/rebass/)
+### Backend
 
+## Contact
 
-### Design System
-[The 8-Point Grid](https://spec.fm/specifics/8-pt-grid)
+J. Benjamin Leeds
+leeds@uw.edu
 
+Tiffany Chen
+tzchen@uw.edu
 
-### Working With Data
+Jessica Basa
+jdbasa24@uw.edu
 
-#### Redux:
-[Documentation](https://redux.js.org/)
-
-[Basic Redux tutorial](https://egghead.io/courses/getting-started-with-redux)
-
-[Advanced Redux tutorial](https://egghead.io/courses/building-react-applications-with-idiomatic-redux)
-
-[react-redux](https://github.com/reactjs/react-redux)
-
-[redux-thunk](https://github.com/gaearon/redux-thunk)
-
-[redux-form](https://redux-form.com)
-
-[reselect](https://github.com/reactjs/reselect)
-
-University of Washington Informatics Capstone 2018
+Vincent van der Meulen
+meulen@uw.edu
