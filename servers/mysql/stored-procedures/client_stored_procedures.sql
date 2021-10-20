@@ -264,7 +264,7 @@ BEGIN
     SELECT tblAIRCRAFT.ac_callsign
     FROM tblAIRCRAFT 
     WHERE tblAIRCRAFT.ac_id=idQuery; 
-END
+END;
 
 -- CALL uspGetAircraftIDByMission("1");
 DROP PROCEDURE IF EXISTS `uspGetAircraftIDByMission`;

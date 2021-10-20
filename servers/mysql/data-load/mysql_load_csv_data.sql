@@ -1,7 +1,7 @@
 /*
     mysql_load_csv_data.sql
     Created: Saturday May 12, 2018
-    Modified: Monday May 21, 2018
+    Modified: Wednesday October 20, 2021
     Authors: J. Benjamin Leeds
     License: None
 
@@ -32,11 +32,32 @@ gsutil cp [filename.ext] gs://elevate-test-flight-vector-import
  FV T-SQL Query: SELECT TOP(50) ID, CallType FROM [Call Types]
  */
 
- -- Handle 1st row 0 issues
+-- Commands to load data from 3 .csv files
+ 
+LOAD DATA 
+    LOCAL
+    INFILE '/Users/benjaminleeds/Desktop/ALNW/tblGROUPS.csv'
+    INTO TABLE tblGROUP
+    FIELDS
+        TERMINATED BY ','
+        ENCLOSED BY '"'
+    LINES TERMINATED BY '\r\n';
 
--- Possible Method to load data: 
-LOAD DATA INFILE 'Crew_Export_test.csv' INTO TABLE tblPERSONNEL_CSV_TEST
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n';
--- IGNORE 1 LINES;
+SELECT * FROM tblMISSION_TYPE;
+LOAD DATA
+    LOCAL
+    INFILE '/Users/benjaminleeds/Desktop/ALNW/tblMISSION_TYPE.csv'
+    INTO TABLE tblMISSION_TYPE
+    FIELDS
+        TERMINATED BY ','
+        ENCLOSED BY '"'
+    LINES TERMINATED BY '\r\n';
+
+LOAD DATA
+    LOCAL
+    INFILE '/Users/benjaminleeds/Desktop/ALNW/tblWAYPOINT.csv'
+    INTO TABLE tblWAYPOINT
+    FIELDS
+        TERMINATED BY ','
+        ENCLOSED BY '"'
+    LINES TERMINATED BY '\r\n';

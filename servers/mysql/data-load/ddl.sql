@@ -28,7 +28,7 @@ CREATE TABLE `tblWAYPOINT` (
     `longitude` DECIMAL(9,6), -- Longitudes range from -180 to 180.
     `waypoint_type` INTEGER,
     PRIMARY KEY (`waypoint_id`),
-    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypoint_type_id),
+    FOREIGN KEY (`waypoint_type`) REFERENCES tblWAYPOINT_TYPE(waypoint_type_id)
 );
 
 CREATE TABLE `tblHOSPITAL` (
