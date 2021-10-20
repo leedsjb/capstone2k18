@@ -12,6 +12,7 @@ Purpose: This Go program serves as the HTTPS web server for ALNW elevate. It ser
 package main
 
 import (
+	"context"
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
@@ -22,6 +23,7 @@ import (
 	"net/url"
 	"os"
 
+	// "github.com/crewjam/saml"
 	"github.com/crewjam/saml/samlsp"
 )
 
@@ -63,69 +65,63 @@ func main() {
 		tlskey = "/etc/crewjam-secret-volume/test.elevate.airliftnw.org-privkey1.pem"
 		host = ""
 		port = "80"
+	} else if ENV == "compute-engine" {
+		log.Println("In: compute engine env")
+		tlscert = "/etc/letsencrypt/live/elevate.benjaminleeds.com/fullchain.pem"
+		tlskey = "/etc/letsencrypt/live/elevate.benjaminleeds.com/privkey.pem"
 	}
 
+	// generate tls.Certificate type from public and private key pair
+	// the tls.Certificate type is from the go/crypto/tls library
 	keyPair, err := tls.LoadX509KeyPair(tlscert, tlskey)
 	if err != nil {
 		log.Fatalf("Error loading keyPair: %v", err)
 	}
 
+	// generate the leaf certificate and store in the keyPair struct
+	// the leaf certificate can reduce per handshake processing
 	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
 	if err != nil {
 		log.Fatalf("Error loading keyPair leaf: %v", err)
 	}
 
-	idpMetadataURL, err := url.Parse("https://idp.u.washington.edu/metadata/idp-metadata.xml")
-	if err != nil {
-		log.Fatalf("error parsing idpMetadataURL: %v", err)
-	}
+	// UW IdP SSO Setup
+	// -------------------------------------------------------------------------
 
-	rootURL := &url.URL{}
+	samlSP := setUpSaml(ENV, &keyPair)
 
-	if ENV == "kubernetes" {
-		log.Println("K8S: setting url to https://test.elevate.airliftnw.org")
-		rootURL, err = url.Parse("https://test.elevate.airliftnw.org")
-		if err != nil {
-			panic(err)
-		}
-	} else if ENV == "local-docker-dev" {
-		rootURL, err = url.Parse("http://localhost:80")
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		rootURL, err = url.Parse("https://localhost:4430")
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	samlSP, _ := samlsp.New(samlsp.Options{
-		URL:            *rootURL,
-		Key:            keyPair.PrivateKey.(*rsa.PrivateKey),
-		Certificate:    keyPair.Leaf,
-		IDPMetadataURL: idpMetadataURL,
-	})
-
-	type HTTPRedir struct {
-		handler http.Handler
-	}
+	// Web Server Setup
+	// -------------------------------------------------------------------------
 
 	mux := http.NewServeMux() // create new mux instead of using default
 
+	// handle "/" route
+	// the "/" route serves a react application from the /build directory
+	// the react application handles its own internal routing
 	mux.Handle("/", http.FileServer(http.Dir("./build"))) // serve application
 
 	// UW NetID Auth Components:
 	mux.HandleFunc("/testing/", testPathHandler)
+
+	// adapts hello func to serve as a request handler
 	app := http.HandlerFunc(hello)
+
+	// when requests arrive at the /sign-in/ route they are routed to the
+	// samlSP middleware. Middleware ensures request has a valid session
+	// associate with it. If not, it routes the user to the handler
+	// associated w/ app to login the user
 	mux.Handle("/sign-in/", samlSP.RequireAccount(app))
+
 	mux.Handle("/saml/", samlSP) // direct requests to the /saml/ route to samlSP
 
 	addr := host + ":" + port
 	var listenServeErr error
 
+	// create an EnsureHTTPS type which wraps the mux provided as an arg
+	// this is like a constructor **
 	wrappedMux := NewEnsureHTTPS(mux)
 
+	// create an http.Server type from the address and wrappedMux
 	srv := &http.Server{
 		// ReadTimeout:  5 * time.Second,
 		// WriteTimeout: 5 * time.Second,
@@ -134,6 +130,9 @@ func main() {
 	}
 
 	if ENV == "kubernetes" {
+		// in the kubernetes environment we use an HTTP server since
+		// TLS connections are terminated at the GCP Load Balancer,
+		// not at this application server
 		fmt.Println("client server listening at: " + addr)
 		listenServeErr = srv.ListenAndServe()
 	} else {
@@ -147,18 +146,30 @@ func main() {
 	}
 }
 
-// create middleware handler
+// End of Main function
+// Helper methods below:
+// -----------------------------------------------------------------------------
+
+// define middleware handler
 type EnsureHTTPS struct {
 	handler http.Handler
 }
 
-// Ensures requests to client web server are HTTPS only
-// with the exception of internal Google Cloud Load Balancer health checks
+/* This method is invoked by the http.Server type which listens for incoming
+* requests and passes them to this handler when appropriate/
+* Concrete implementation of the ServeHTTP method from the http.Handler
+* interface. ServeHTTP takes an htttp.Request and http.ResponseWriter as
+* params, reads the requests and responds via http.ResponseWriter
+* This particular implementation ensures requests to client web server are HTTPS
+* only with the exception of internal Google Cloud Load Balancer health checks
+* which use HTTP
+ */
 func (ea *EnsureHTTPS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// Google Cloud Load Balancer is between client and this server. Therefore, all TLS
-	// connections are terminated at the load balancer. We must check whether the client
-	// connected via HTTP or HTTPS using the X-Forwarded-Proto header the load balancer sets.
+	// Google Cloud Load Balancer is between client and this server. Therefore,
+	// all TLS connections are terminated at the load balancer. We must check
+	// whether the client connected via HTTP or HTTPS using the
+	// X-Forwarded-Proto header the load balancer sets.
 
 	// print entire request to log
 	requestDump, err := httputil.DumpRequest(r, true)
@@ -181,17 +192,26 @@ func (ea *EnsureHTTPS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("not redirecting")
 
+	// this function operates on the http.Handler stored in the handler field
+	// of the EnsureHTTPS type, ea, which is provided to this method
+	// via reflection **??
 	ea.handler.ServeHTTP(w, r)
 }
 
+/*
+* Method takes an http.Handler as a parameter and returns pointer to EnsureHTTPS
+* user type with the http.Handler stored in the handler field
+ */
 func NewEnsureHTTPS(handlerToWrap http.Handler) *EnsureHTTPS {
 	return &EnsureHTTPS{handlerToWrap}
 }
 
-// trivial protected page resource must be signed in via SAML SSO to access
+/* HTTP request handler for requests to the
+* trivial protected page resource must be signed in via SAML SSO to access
 // prints information about signed is session to page from the request object
+*/
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %s", samlsp.Token(r.Context()).Attributes.Get("ePPN"))
+	// fmt.Fprintf(w, "Hello, %s", samlsp.Token(r.Context()).Attributes.Get("ePPN"))
 
 	fmt.Println("request URI: " + r.RequestURI)
 	fmt.Println("request Method:" + r.Method)
@@ -242,4 +262,54 @@ func testPathHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "must be a get request", http.StatusBadRequest)
 		return
 	}
+}
+
+func setUpSaml(ENV string, keyPair *tls.Certificate) *samlsp.Middleware {
+
+	test := &http.Client{}
+
+	// metadataServer := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 	// w.Write()
+	// })
+
+	idpMetadataURL, err := url.Parse("https://idp.u.washington.edu/metadata/idp-metadata.xml")
+	if err != nil {
+		log.Fatalf("error parsing idpMetadataURL: %v", err)
+	}
+
+	samlEntityDescriptor, err := samlsp.FetchMetadata(context.TODO(), test, *idpMetadataURL)
+
+	log.Println("*")
+	log.Println(samlEntityDescriptor)
+
+	rootURL := &url.URL{}
+
+	if ENV == "kubernetes" {
+		log.Println("K8S: setting url to https://test.elevate.airliftnw.org")
+		rootURL, err = url.Parse("https://test.elevate.airliftnw.org")
+		if err != nil {
+			panic(err)
+		}
+	} else if ENV == "local-docker-dev" {
+		rootURL, err = url.Parse("http://localhost:80")
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		rootURL, err = url.Parse("https://localhost:4430")
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	samlSP, _ := samlsp.New(samlsp.Options{
+		URL:         *rootURL,
+		Key:         keyPair.PrivateKey.(*rsa.PrivateKey),
+		Certificate: keyPair.Leaf,
+		IDPMetadata: samlEntityDescriptor,
+		// IDPMetadataURL: idpMetadataURL,
+	})
+
+	return samlSP
+
 }
